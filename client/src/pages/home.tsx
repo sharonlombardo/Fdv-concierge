@@ -1041,13 +1041,27 @@ export default function Home() {
                 {getPageTitle(p)}
               </button>
             ))}
-            <div className="pt-12 border-t border-current/20 mt-12">
+            <div className="pt-12 border-t border-current/20 mt-12 space-y-4">
+              <a 
+                href="/library"
+                className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all"
+                data-testid="link-image-library"
+              >
+                Image Library
+              </a>
+              <a 
+                href="/rules"
+                className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all"
+                data-testid="link-image-rules"
+              >
+                Image Rules
+              </a>
               <a 
                 href="/images"
                 className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all"
                 data-testid="link-image-management"
               >
-                Manage Images
+                Manual Overrides
               </a>
             </div>
           </div>

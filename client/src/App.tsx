@@ -7,12 +7,16 @@ import { ThemeProvider } from "@/components/theme-provider";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import ImageManagement from "@/pages/image-management";
+import ImageLibrary from "@/pages/image-library";
+import ImageRules from "@/pages/image-rules";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/images" component={ImageManagement} />
+      <Route path="/library" component={ImageLibrary} />
+      <Route path="/rules" component={ImageRules} />
       <Route component={NotFound} />
     </Switch>
   );
