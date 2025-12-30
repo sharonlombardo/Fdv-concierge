@@ -21,7 +21,8 @@ import {
   Sparkles,
   Loader2,
   Share2,
-  Save
+  Save,
+  Download
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -305,6 +306,9 @@ interface ShareModalProps {
 }
 
 function ShareModal({ item, entries, onClose }: ShareModalProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
   const handleNativeShare = async () => {
     if (navigator.share) {
       try {
@@ -321,6 +325,81 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
     }
   };
 
+  const handleDownloadForStories = async () => {
+    setIsDownloading(true);
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      
+      canvas.width = 1080;
+      canvas.height = 1920;
+      
+      ctx.fillStyle = '#faf8f5';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      const imageSrc = entries[item.id]?.logImage || entries[item.id]?.image || item.image;
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('Image load failed'));
+        img.src = imageSrc;
+      });
+      
+      const imgY = 200;
+      const imgWidth = 900;
+      const imgHeight = 1100;
+      const imgX = (canvas.width - imgWidth) / 2;
+      ctx.filter = 'grayscale(100%)';
+      ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight);
+      ctx.filter = 'none';
+      
+      ctx.fillStyle = '#1a1a1a';
+      ctx.font = 'bold 24px Inter, sans-serif';
+      ctx.letterSpacing = '8px';
+      ctx.fillText('FDV CONCIERGE — 2026', 90, 120);
+      
+      ctx.font = 'bold 56px Playfair Display, serif';
+      ctx.letterSpacing = '0px';
+      ctx.fillText(item.title, 90, 1450);
+      
+      ctx.font = 'italic 32px Playfair Display, serif';
+      ctx.fillStyle = '#666666';
+      const note = entries[item.id]?.note || 'A rhythm found in Morocco.';
+      const words = note.split(' ');
+      let line = '"';
+      let y = 1520;
+      for (const word of words) {
+        const testLine = line + word + ' ';
+        if (ctx.measureText(testLine).width > 900) {
+          ctx.fillText(line, 90, y);
+          line = word + ' ';
+          y += 44;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line.trim() + '"', 90, y);
+      
+      ctx.fillStyle = '#cccccc';
+      ctx.font = 'bold 18px Inter, sans-serif';
+      ctx.fillText('FDV CONCIERGE', 90, 1820);
+      
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `fdv-morocco-${item.title.toLowerCase().replace(/\s+/g, '-')}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Download failed:', err);
+      alert('Could not generate image. Please take a screenshot instead.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[9999] bg-foreground dark:bg-background flex flex-col items-center justify-center p-4">
       <button 
@@ -331,12 +410,12 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
         <X className="w-8 h-8" />
       </button>
       
-      <div className="w-full max-w-[400px] aspect-[9/16] bg-background dark:bg-card shadow-2xl flex flex-col justify-between p-12 relative overflow-hidden animate-in fade-in zoom-in-95 duration-700 rounded-md">
+      <div ref={cardRef} className="w-full max-w-[400px] aspect-[9/16] bg-background dark:bg-card shadow-2xl flex flex-col justify-between p-12 relative overflow-hidden animate-in fade-in zoom-in-95 duration-700 rounded-md">
         <div className="space-y-8 z-10">
           <div className="text-[12px] font-bold tracking-[0.6em] uppercase opacity-40">FDV CONCIERGE — 2026</div>
           <div className="aspect-[4/5] w-full overflow-hidden grayscale bg-foreground/5 shadow-2xl rounded-md">
             <img 
-              src={entries[item.id]?.image || item.image} 
+              src={entries[item.id]?.logImage || entries[item.id]?.image || item.image} 
               className="w-full h-full object-cover" 
               alt="Moment" 
             />
@@ -354,17 +433,31 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
         </div>
       </div>
 
-      <div className="mt-12 flex flex-col items-center gap-6">
+      <div className="mt-12 flex flex-col items-center gap-4">
+        <Button 
+          onClick={handleDownloadForStories} 
+          disabled={isDownloading}
+          className="rounded-full px-12 py-5"
+          data-testid="button-download-stories"
+        >
+          {isDownloading ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <Download className="w-4 h-4 mr-2" />
+          )}
+          Download for Stories
+        </Button>
         <Button 
           onClick={handleNativeShare} 
-          variant="secondary"
+          variant="outline"
           className="rounded-full px-12 py-5"
           data-testid="button-share-save"
         >
-          Share / Save
+          <Share2 className="w-4 h-4 mr-2" />
+          Send via Message
         </Button>
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-background/40 dark:text-foreground/40 italic">
-          Screenshot if menu fails
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-background/40 dark:text-foreground/40 italic mt-2">
+          Download saves image to add to your Story
         </p>
       </div>
     </div>
