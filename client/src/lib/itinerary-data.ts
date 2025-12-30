@@ -9,6 +9,9 @@ export interface FlowItem {
   wardrobe?: string;
   commercialWardrobe?: string;
   contact?: string;
+  email?: string;
+  address?: string;
+  notes?: string;
   map?: string;
   ticketLink?: string;
 }
@@ -109,8 +112,10 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         description: 'Arrival at Marrakech Menara Airport, a masterpiece of modern Islamic architecture.',
         wardrobe: 'Breathable travel layers. Natural linen or soft cotton recommended.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800',
-        contact: '+212 5244-47910',
-        map: 'https://www.google.com/maps/search/RAK+Airport+Marrakech'
+        contact: '+212 524 447 910',
+        address: 'Ménara, Marrakech 40000',
+        notes: 'International arrivals, currency exchange inside terminal',
+        map: 'https://www.google.com/maps/search/Marrakech+Menara+Airport'
       },
       { 
         id: 'd1-2', 
@@ -130,7 +135,10 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         description: 'Perched on a hilltop in the Ourika Valley, this eco-lodge offers 360-degree views of the Atlas Mountains.',
         wardrobe: 'Mountain casual. A light cashmere wrap for the afternoon.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80&w=800',
-        contact: '+212 661-634234',
+        contact: '+212 524 368 200',
+        email: 'reservations@babourika.com',
+        address: 'Ourika Valley, 35 km from Marrakech',
+        notes: 'Transfer coordination, guided village walks',
         map: 'https://www.google.com/maps/search/Kasbah+Bab+Ourika'
       },
       {
@@ -314,7 +322,10 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         description: 'El Fenn is your anchor in Marrakech. A sanctuary of bold colors, resident tortoises, and curated modern art.',
         wardrobe: 'Urban chic transition. Polished linen sets.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80&w=800',
-        contact: '+212 5244-41210',
+        contact: '+212 524 441 010',
+        email: 'info@elfenn.com',
+        address: 'Derb Moulay Abdullah Ben Hezzian',
+        notes: 'Rooftop cocktails, spa, gallery shop',
         map: 'https://www.google.com/maps/search/El+Fenn+Marrakech'
       },
       {
@@ -385,6 +396,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         description: "A stunning 1910 pasha's palace, now a museum showcasing Moroccan craftsmanship and history.",
         wardrobe: 'Elegant morning attire. Modest but polished.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1550614000-4b9519e0947f?auto=format&fit=crop&q=80&w=800',
+        contact: '+212 524 390 403',
+        address: 'Rue Fatima Al Fihria, Medina',
+        notes: 'Ticketed entry, mornings best',
         map: 'https://www.google.com/maps/search/Dar+El+Bacha+Marrakech'
       },
       { 
@@ -396,7 +410,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         description: "Housed within Dar El Bacha, Bacha Coffee offers a legendary coffee list in a room of intricate tilework.",
         wardrobe: 'Continue in morning attire.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1550614000-4b9519e0947f?auto=format&fit=crop&q=80&w=800',
-        contact: '+212 5243-81297',
+        contact: '+212 524 386 090',
+        address: 'Inside Dar El Bacha',
+        notes: 'No reservations, expect wait midday',
         map: 'https://www.google.com/maps/search/Bacha+Coffee+Marrakech'
       },
       { 
@@ -408,7 +424,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         description: 'Modern Moroccan cuisine with a rooftop terrace overlooking the spice souks. Fresh, inventive, and beautifully presented.',
         wardrobe: 'Smart casual. Light layers for the terrace.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800',
-        contact: '+212 5243-81620',
+        contact: '+212 524 387 630',
+        address: '1 Derb Aarjane, Rahba Lakdima',
+        notes: 'Reservations recommended for lunch terrace',
         map: 'https://www.google.com/maps/search/Nomad+Restaurant+Marrakech'
       },
       { 
@@ -420,6 +438,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         description: 'A 19th-century masterpiece of Moroccan architecture. Wander through painted ceilings, serene courtyards, and gardens.',
         wardrobe: 'Comfortable walking shoes. Covered shoulders.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1550614000-4b9519e0947f?auto=format&fit=crop&q=80&w=800',
+        contact: '+212 524 389 564',
+        address: 'Rue Riad Zitoun el Jdid',
+        notes: 'Open daily, modest entry fee',
         map: 'https://www.google.com/maps/search/Bahia+Palace+Marrakech',
         ticketLink: 'https://www.visitmarrakech.com/bahia-palace'
       },
@@ -432,6 +453,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         description: 'A curated collective of boutiques featuring contemporary Moroccan design, textiles, and crafts.',
         wardrobe: 'Shopping-ready layers.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800',
+        contact: '+212 524 376 194',
+        address: 'Sidi Abdelaziz, Medina',
+        notes: 'Curated artisans, fixed pricing',
         map: 'https://www.google.com/maps/search/Souk+Cherifia+Marrakech'
       },
       { 
@@ -443,6 +467,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         description: 'A legendary treasure house of Moroccan antiques, textiles, and lighting. Worth getting lost in.',
         wardrobe: 'Continue in afternoon attire.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800',
+        contact: '+212 524 375 601',
+        address: '142 Rue Sidi Abdelaziz',
+        notes: 'By appointment feel, serious buyers only',
         map: 'https://www.google.com/maps/search/Mustapha+Blaoui+Marrakech'
       },
       { 
@@ -464,7 +491,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         description: 'One of the most opulent hotels in the world. Sip cocktails in the gardens or the rooftop bar.',
         wardrobe: 'Evening elegant. Dress to match the setting.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&q=80&w=800',
-        contact: '+212 5298-08080',
+        contact: '+212 529 808 080',
+        address: 'Rue Abou Abbas El Sebti',
+        notes: 'Bar reservations via concierge',
         map: 'https://www.google.com/maps/search/Royal+Mansour+Marrakech'
       },
       { 
@@ -476,7 +505,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         description: 'A Marrakech institution. Legendary for its atmosphere, traditional live music, and a multi-course Moroccan banquet.',
         wardrobe: 'Evening formal. Dress up for this institution.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&q=80&w=800',
-        contact: '+212 5243-82929',
+        contact: '+212 524 377 579',
+        address: 'Derb Sidi Ahmed Soussi',
+        notes: 'Mandatory reservation, fixed menu, early seating advised',
         map: 'https://www.google.com/maps/search/Dar+Yacout+Marrakech'
       }
     ]
@@ -703,7 +734,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1200',
         description: 'One of the most opulent hotels in the world. A fitting midday pause.',
         wardrobe: 'Elegant afternoon attire.',
-        contact: '+212 5298-08080',
+        contact: '+212 529 808 080',
+        address: 'Rue Abou Abbas El Sebti',
+        notes: 'Bar reservations via concierge',
         map: 'https://www.google.com/maps/search/Royal+Mansour+Marrakech'
       },
       { 
