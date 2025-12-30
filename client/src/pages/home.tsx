@@ -445,10 +445,10 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
         <X className="w-8 h-8" />
       </button>
       
-      <div ref={cardRef} className="w-full max-w-[400px] aspect-[9/16] bg-background dark:bg-card shadow-2xl flex flex-col justify-between p-12 relative overflow-hidden animate-in fade-in zoom-in-95 duration-700 rounded-md">
-        <div className="space-y-8 z-10">
-          <div className="text-[12px] font-bold tracking-[0.6em] uppercase opacity-40">FDV CONCIERGE — 2026</div>
-          <div className="aspect-[4/5] w-full overflow-hidden grayscale bg-foreground/5 shadow-2xl rounded-md">
+      <div ref={cardRef} className="w-full max-w-[400px] max-h-[85vh] overflow-y-auto bg-background dark:bg-card shadow-2xl flex flex-col p-8 relative animate-in fade-in zoom-in-95 duration-700 rounded-md">
+        <div className="space-y-6 z-10">
+          <div className="text-[11px] font-bold tracking-[0.5em] uppercase opacity-40">FDV CONCIERGE — 2026</div>
+          <div className="aspect-square w-full overflow-hidden grayscale bg-foreground/5 shadow-xl rounded-md">
             <img 
               src={entries[item.id]?.logImage || entries[item.id]?.image || item.image} 
               className="w-full h-full object-cover" 
@@ -456,12 +456,12 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
             />
           </div>
         </div>
-        <div className="space-y-8 z-10 mt-auto">
-          <h4 className="text-3xl md:text-4xl font-serif font-bold tracking-tight leading-none">{item.title}</h4>
-          <p className="text-lg md:text-xl italic opacity-80 leading-relaxed font-serif">
+        <div className="space-y-4 z-10 mt-6">
+          <h4 className="text-2xl md:text-3xl font-serif font-bold tracking-tight leading-tight">{item.title}</h4>
+          <p className="text-base md:text-lg italic opacity-80 leading-relaxed font-serif">
             "{entries[item.id]?.note || "A rhythm found in Morocco."}"
           </p>
-          <div className="flex justify-between items-end pt-8 border-t border-border text-[9px] font-bold tracking-[0.4em] opacity-30">
+          <div className="flex justify-between items-end pt-4 border-t border-border text-[9px] font-bold tracking-[0.4em] opacity-30">
             <span>FDV CONCIERGE</span>
             <MapPin className="w-3.5 h-3.5 opacity-20" />
           </div>
