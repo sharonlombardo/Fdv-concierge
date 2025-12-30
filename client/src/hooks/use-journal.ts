@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 
@@ -37,6 +37,9 @@ export function useJournal() {
   }, []);
 
   const entries = { ...localEntries, ...(serverEntries ?? {}) };
+  
+  const entriesRef = useRef(entries);
+  entriesRef.current = entries;
 
   const saveMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<JournalEntry> }) => {
@@ -51,16 +54,19 @@ export function useJournal() {
   const saveEntry = useCallback((id: string, data: Partial<JournalEntry>) => {
     setStatus('saving');
     
-    const currentEntry = entries[id] || {};
-    const updatedEntry = { ...currentEntry, ...data, updatedAt: Date.now() };
-    const updatedEntries = { ...localEntries, [id]: updatedEntry };
-    
-    setLocalEntries(updatedEntries);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedEntries));
-    } catch (e) { 
-      console.warn("Quota exceeded"); 
-    }
+    setLocalEntries(prev => {
+      const currentEntry = entriesRef.current[id] || prev[id] || {};
+      const updatedEntry = { ...currentEntry, ...data, updatedAt: Date.now() };
+      const updatedEntries = { ...prev, [id]: updatedEntry };
+      
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedEntries));
+      } catch (e) { 
+        console.warn("Quota exceeded"); 
+      }
+      
+      return updatedEntries;
+    });
 
     saveMutation.mutate(
       { id, data },
@@ -71,7 +77,7 @@ export function useJournal() {
         },
       }
     );
-  }, [entries, localEntries, saveMutation]);
+  }, [saveMutation]);
 
   return { 
     entries, 
