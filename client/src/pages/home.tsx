@@ -93,6 +93,11 @@ interface ItemDetailDrawerProps {
   onShare: () => void;
 }
 
+interface LocalLogImage {
+  src: string;
+  caption: string;
+}
+
 function ItemDetailDrawer({ 
   item, 
   entries, 
@@ -102,11 +107,24 @@ function ItemDetailDrawer({
   onImageUpload,
   onShare 
 }: ItemDetailDrawerProps) {
-  const existingImages = entries[item.id]?.logImages || (entries[item.id]?.logImage ? [entries[item.id].logImage!] : []);
+  const getExistingImages = (): LocalLogImage[] => {
+    const entry = entries[item.id];
+    if (entry?.logImages && entry.logImages.length > 0) {
+      return entry.logImages.map(img => 
+        typeof img === 'string' ? { src: img, caption: '' } : { src: img.src, caption: img.caption || '' }
+      );
+    }
+    if (entry?.logImage) {
+      return [{ src: entry.logImage, caption: '' }];
+    }
+    return [];
+  };
+
   const [localNote, setLocalNote] = useState(entries[item.id]?.note || '');
-  const [localLogImages, setLocalLogImages] = useState<string[]>(existingImages);
+  const [localLogImages, setLocalLogImages] = useState<LocalLogImage[]>(getExistingImages);
   const [localMyLook, setLocalMyLook] = useState(entries[item.id]?.myLook || '');
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const captionDebounceRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleNoteChange = useCallback((value: string) => {
     setLocalNote(value);
@@ -121,7 +139,7 @@ function ItemDetailDrawer({
     reader.onload = (e) => {
       const result = e.target?.result as string;
       if (field === 'logImage') {
-        setLocalLogImages(prev => [...prev, result]);
+        setLocalLogImages(prev => [...prev, { src: result, caption: '' }]);
       } else if (field === 'myLook') {
         setLocalMyLook(result);
       }
@@ -134,9 +152,18 @@ function ItemDetailDrawer({
     setLocalLogImages(prev => prev.filter((_, i) => i !== index));
   }, []);
 
+  const handleCaptionChange = useCallback((index: number, caption: string) => {
+    setLocalLogImages(prev => prev.map((img, i) => i === index ? { ...img, caption } : img));
+    if (captionDebounceRef.current) clearTimeout(captionDebounceRef.current);
+    captionDebounceRef.current = setTimeout(() => {
+      // Trigger save via parent
+    }, 800);
+  }, []);
+
   useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (captionDebounceRef.current) clearTimeout(captionDebounceRef.current);
     };
   }, []);
 
@@ -283,17 +310,27 @@ function ItemDetailDrawer({
           />
 
           <div className="space-y-6">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {localLogImages.map((img, index) => (
-                <div key={index} className="aspect-square relative group overflow-hidden rounded-md">
-                  <img src={img} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" alt={`Log ${index + 1}`} />
-                  <button 
-                    onClick={() => handleRemoveImage(index)}
-                    className="absolute top-2 right-2 bg-background/80 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    data-testid={`button-remove-image-${index}`}
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                <div key={index} className="space-y-3">
+                  <div className="aspect-square relative group overflow-hidden rounded-md">
+                    <img src={img.src} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" alt={`Log ${index + 1}`} />
+                    <button 
+                      onClick={() => handleRemoveImage(index)}
+                      className="absolute top-2 right-2 bg-background/80 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      data-testid={`button-remove-image-${index}`}
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <input 
+                    type="text"
+                    placeholder="Add a caption..."
+                    className="w-full bg-transparent border-b border-border px-2 py-2 font-serif italic text-sm focus:outline-none focus:border-foreground/40 transition-all"
+                    value={img.caption}
+                    onChange={(e) => handleCaptionChange(index, e.target.value)}
+                    data-testid={`input-caption-${index}`}
+                  />
                 </div>
               ))}
               <label className="aspect-square bg-card border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 hover:bg-muted cursor-pointer relative overflow-hidden group rounded-md">
@@ -371,8 +408,11 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
     ctx.fillStyle = '#faf8f5';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    const logImages = entries[item.id]?.logImages || (entries[item.id]?.logImage ? [entries[item.id].logImage!] : []);
-    const userImage = logImages[0] || entries[item.id]?.image;
+    const logImagesRaw = entries[item.id]?.logImages || [];
+    const firstImage = logImagesRaw.length > 0 
+      ? (typeof logImagesRaw[0] === 'string' ? logImagesRaw[0] : logImagesRaw[0].src)
+      : entries[item.id]?.logImage;
+    const userImage = firstImage || entries[item.id]?.image;
     
     if (userImage && userImage.startsWith('data:')) {
       const img = new Image();
@@ -493,7 +533,13 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
           <div className="text-[11px] font-bold tracking-[0.5em] uppercase opacity-40">FDV CONCIERGE — 2026</div>
           <div className="aspect-square w-full overflow-hidden grayscale bg-foreground/5 shadow-xl rounded-md">
             <img 
-              src={(entries[item.id]?.logImages?.[0]) || entries[item.id]?.logImage || entries[item.id]?.image || item.image} 
+              src={(() => {
+                const first = entries[item.id]?.logImages?.[0];
+                if (first) {
+                  return typeof first === 'string' ? first : first.src;
+                }
+                return entries[item.id]?.logImage || entries[item.id]?.image || item.image;
+              })()} 
               className="w-full h-full object-cover" 
               alt="Moment" 
             />
@@ -581,9 +627,14 @@ export default function Home() {
         const base64 = canvas.toDataURL('image/jpeg', 0.6);
         
         if (field === 'logImage') {
-          const existingImages = journalEntries[itemId]?.logImages || 
-            (journalEntries[itemId]?.logImage ? [journalEntries[itemId].logImage!] : []);
-          saveEntry(itemId, { logImages: [...existingImages, base64] });
+          const existingImages = journalEntries[itemId]?.logImages || [];
+          const normalizedImages = existingImages.map(img => 
+            typeof img === 'string' ? { src: img, caption: '' } : img
+          );
+          if (journalEntries[itemId]?.logImage && normalizedImages.length === 0) {
+            normalizedImages.push({ src: journalEntries[itemId].logImage!, caption: '' });
+          }
+          saveEntry(itemId, { logImages: [...normalizedImages, { src: base64, caption: '' }] });
         } else {
           saveEntry(itemId, { [field]: base64 });
         }
@@ -790,19 +841,28 @@ export default function Home() {
               {Object.keys(journalEntries).length > 0 ? (
                 Object.keys(journalEntries).sort().map((key) => {
                   const entry = journalEntries[key];
-                  const allImages = entry.logImages || (entry.logImage ? [entry.logImage] : []);
+                  const rawImages = entry.logImages || [];
+                  const allImages = rawImages.map(img => typeof img === 'string' ? { src: img, caption: '' } : img);
+                  if (entry.logImage && allImages.length === 0) {
+                    allImages.push({ src: entry.logImage, caption: '' });
+                  }
                   if (!entry.note && !entry.image && allImages.length === 0) return null;
                   const matchingItem = findItemById(key);
                   return (
                     <div key={key} className="space-y-8 group">
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {(allImages.length > 0 ? allImages : [entry.image || "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=800"]).map((img, idx) => (
-                          <div key={idx} className="aspect-square grayscale group-hover:grayscale-0 transition-all duration-1000 shadow-xl overflow-hidden bg-muted rounded-md">
-                            <img 
-                              src={img} 
-                              className="w-full h-full object-cover" 
-                              alt={`Memory ${idx + 1}`}
-                            />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {(allImages.length > 0 ? allImages : [{ src: entry.image || "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=800", caption: '' }]).map((img, idx) => (
+                          <div key={idx} className="space-y-2">
+                            <div className="aspect-square grayscale group-hover:grayscale-0 transition-all duration-1000 shadow-xl overflow-hidden bg-muted rounded-md">
+                              <img 
+                                src={img.src} 
+                                className="w-full h-full object-cover" 
+                                alt={`Memory ${idx + 1}`}
+                              />
+                            </div>
+                            {img.caption && (
+                              <p className="text-sm font-serif italic text-muted-foreground">"{img.caption}"</p>
+                            )}
                           </div>
                         ))}
                       </div>

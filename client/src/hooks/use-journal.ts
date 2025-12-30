@@ -2,12 +2,17 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 
+export interface LogImage {
+  src: string;
+  caption?: string;
+}
+
 export interface JournalEntry {
   note?: string;
   image?: string;
   myLook?: string;
   logImage?: string;
-  logImages?: string[];
+  logImages?: LogImage[];
   updatedAt?: number;
 }
 
