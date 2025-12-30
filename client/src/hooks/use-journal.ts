@@ -36,7 +36,13 @@ export function useJournal() {
     }
   }, []);
 
-  const entries = { ...localEntries, ...(serverEntries ?? {}) };
+  const entries: JournalEntries = {};
+  const allIds = Array.from(new Set([...Object.keys(localEntries), ...Object.keys(serverEntries ?? {})]));
+  allIds.forEach(id => {
+    const local = localEntries[id] || {};
+    const server = (serverEntries ?? {})[id] || {};
+    entries[id] = { ...server, ...local };
+  });
   
   const entriesRef = useRef(entries);
   entriesRef.current = entries;
