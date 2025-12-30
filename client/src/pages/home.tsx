@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   ChevronRight, 
   ChevronLeft, 
@@ -96,6 +96,23 @@ function ItemDetailDrawer({
   onImageUpload,
   onShare 
 }: ItemDetailDrawerProps) {
+  const [localNote, setLocalNote] = useState(entries[item.id]?.note || '');
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleNoteChange = useCallback((value: string) => {
+    setLocalNote(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      onJournalChange(item.id, value);
+    }, 800);
+  }, [item.id, onJournalChange]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
+
   return (
     <div className="fixed inset-0 z-[9999] bg-background p-6 md:p-12 overflow-y-auto animate-in slide-in-from-right duration-500">
       <div className="fixed top-6 right-6 z-[10000] flex gap-4">
@@ -233,8 +250,8 @@ function ItemDetailDrawer({
           <textarea 
             placeholder="Record the moment..."
             className="w-full bg-card border border-border p-6 font-serif italic text-lg focus:outline-none focus:border-foreground/20 transition-all min-h-[150px] rounded-md mb-8 resize-none"
-            value={entries[item.id]?.note || ''}
-            onChange={(e) => onJournalChange(item.id, e.target.value)}
+            value={localNote}
+            onChange={(e) => handleNoteChange(e.target.value)}
             data-testid="textarea-journal"
           />
 

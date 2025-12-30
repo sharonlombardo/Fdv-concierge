@@ -68,15 +68,22 @@ export function useJournal() {
       return updatedEntries;
     });
 
-    saveMutation.mutate(
-      { id, data },
-      {
-        onSettled: () => {
-          setStatus('saved');
-          setTimeout(() => setStatus('idle'), 2000);
-        },
-      }
-    );
+    const hasImageData = 'myLook' in data || 'logImage' in data || 'image' in data;
+    
+    if (!hasImageData) {
+      saveMutation.mutate(
+        { id, data },
+        {
+          onSettled: () => {
+            setStatus('saved');
+            setTimeout(() => setStatus('idle'), 2000);
+          },
+        }
+      );
+    } else {
+      setStatus('saved');
+      setTimeout(() => setStatus('idle'), 2000);
+    }
   }, [saveMutation]);
 
   return { 
