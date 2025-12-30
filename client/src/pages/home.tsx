@@ -35,7 +35,8 @@ import {
   type CoverPage,
   type IntroPage,
   type FieldNotesPage,
-  type JournalPage as JournalPageType
+  type JournalPage as JournalPageType,
+  type PackingListPage
 } from '@/lib/itinerary-data';
 
 function isDayPage(page: ItineraryPage): page is DayPage {
@@ -56,6 +57,10 @@ function isFieldNotesPage(page: ItineraryPage): page is FieldNotesPage {
 
 function isJournalPage(page: ItineraryPage): page is JournalPageType {
   return 'type' in page && page.type === 'journal';
+}
+
+function isPackingListPage(page: ItineraryPage): page is PackingListPage {
+  return 'type' in page && page.type === 'packing-list';
 }
 
 function WeatherDisplay({ weather }: { weather: { temp: number; cond: string } }) {
@@ -778,6 +783,51 @@ export default function Home() {
                   Memories will persist here once captured.
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {isPackingListPage(currentPage) && (
+          <div className="flex-1 py-12 animate-in fade-in duration-1000">
+            <div className="mb-24 text-center">
+              <h2 className="text-5xl md:text-7xl font-serif font-bold tracking-tighter mb-6 uppercase">{currentPage.title}</h2>
+              <div className="h-1.5 w-24 bg-foreground mx-auto" />
+              <p className="text-sm tracking-[0.6em] font-bold uppercase text-muted-foreground mt-12">{currentPage.subtitle}</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+              {(() => {
+                const looks = Object.entries(journalEntries)
+                  .filter(([_, entry]) => entry.myLook)
+                  .map(([key, entry]) => ({ key, look: entry.myLook!, item: findItemById(key) }));
+                
+                if (looks.length === 0) {
+                  return (
+                    <div className="col-span-full text-center py-20 border-2 border-dashed border-border rounded-md opacity-30 italic uppercase tracking-widest text-[10px]">
+                      Upload your looks in each day's activities to build your packing list.
+                    </div>
+                  );
+                }
+                
+                return looks.map(({ key, look, item }) => (
+                  <div key={key} className="group">
+                    <div className="aspect-[3/4] overflow-hidden bg-muted rounded-md shadow-lg grayscale group-hover:grayscale-0 transition-all duration-700">
+                      <img 
+                        src={look} 
+                        className="w-full h-full object-cover" 
+                        alt="Your look"
+                      />
+                    </div>
+                    <div className="mt-3 space-y-1">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40">
+                        {item?.time || 'YOUR LOOK'}
+                      </p>
+                      <p className="text-sm font-serif font-medium truncate">
+                        {item?.title || key}
+                      </p>
+                    </div>
+                  </div>
+                ));
+              })()}
             </div>
           </div>
         )}

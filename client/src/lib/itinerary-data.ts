@@ -51,7 +51,13 @@ export interface JournalPage {
   subtitle: string;
 }
 
-export type ItineraryPage = CoverPage | IntroPage | FieldNotesPage | DayPage | JournalPage;
+export interface PackingListPage {
+  type: 'packing-list';
+  title: string;
+  subtitle: string;
+}
+
+export type ItineraryPage = CoverPage | IntroPage | FieldNotesPage | DayPage | JournalPage | PackingListPage;
 
 export const ITINERARY_DATA: ItineraryPage[] = [
   {
@@ -350,5 +356,10 @@ export const ITINERARY_DATA: ItineraryPage[] = [
     type: 'journal', 
     title: 'THE LOG', 
     subtitle: 'COLLECTED MEMORIES' 
+  },
+  { 
+    type: 'packing-list', 
+    title: 'THE PACKING LIST', 
+    subtitle: 'YOUR CURATED LOOKS' 
   }
 ];
