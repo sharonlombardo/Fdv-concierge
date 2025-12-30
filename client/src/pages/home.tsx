@@ -552,6 +552,16 @@ export default function Home() {
     return '';
   };
 
+  const findItemById = (id: string): FlowItem | null => {
+    for (const page of ITINERARY_DATA) {
+      if (isDayPage(page)) {
+        const found = page.flow.find(item => item.id === id);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-foreground selection:text-background transition-colors duration-500 overflow-x-hidden">
       
@@ -731,6 +741,7 @@ export default function Home() {
                 Object.keys(journalEntries).sort().map((key) => {
                   const entry = journalEntries[key];
                   if (!entry.note && !entry.image && !entry.logImage) return null;
+                  const matchingItem = findItemById(key);
                   return (
                     <div key={key} className="grid md:grid-cols-12 gap-8 md:gap-16 items-center group">
                       <div className="md:col-span-7 aspect-square grayscale group-hover:grayscale-0 transition-all duration-1000 shadow-xl overflow-hidden bg-muted rounded-md">
@@ -747,6 +758,17 @@ export default function Home() {
                         <p className="text-xl md:text-2xl lg:text-3xl leading-[1.6] font-serif italic opacity-90">
                           "{entry.note || "A moment captured."}"
                         </p>
+                        {matchingItem && (
+                          <Button 
+                            onClick={() => { setActiveItem(matchingItem); setIsShareMode(true); }}
+                            variant="outline"
+                            className="rounded-full"
+                            data-testid={`button-share-journal-${key}`}
+                          >
+                            <Share2 className="w-3.5 h-3.5 mr-2" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest">Share Story</span>
+                          </Button>
+                        )}
                       </div>
                     </div>
                   );
