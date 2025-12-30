@@ -588,7 +588,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         description: 'Modern, fresh Australian-influenced cuisine in the Gueliz district.',
         wardrobe: 'Casual evening chic. Jeans and a nice top.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?auto=format&fit=crop&q=80&w=800',
-        contact: '+212 5244-33777',
+        contact: '+212 524 433 777',
+        address: 'Gueliz district',
         map: 'https://www.google.com/maps/search/plus+61+Marrakech'
       }
     ]
@@ -620,6 +621,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1553522991-71439aa62779?auto=format&fit=crop&q=80&w=1200',
         description: 'A stunning 16th-century royal necropolis, rediscovered in 1917. Intricate tilework and carved cedar.',
         wardrobe: 'Comfortable walking attire. Covered shoulders.',
+        address: 'Rue de la Kasbah, Medina',
+        notes: 'Open daily, modest entry fee, mornings less crowded',
         map: 'https://www.google.com/maps/search/Saadian+Tombs+Marrakech'
       },
       { 
@@ -630,6 +633,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1548018560-c7196548e84d?auto=format&fit=crop&q=80&w=1200',
         description: 'Museum of African Contemporary Art. A beautifully curated space in a restored building.',
         wardrobe: 'Elegant but comfortable.',
+        address: 'Place de la Kissaria, Medina',
+        notes: 'Contemporary African art exhibitions',
         map: 'https://www.google.com/maps/search/MAP+Marrakech+Museum'
       },
       { 
@@ -640,6 +645,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200',
         description: 'A hidden garden restaurant serving vegetarian Moroccan cuisine. Fresh, seasonal, and beautifully presented.',
         wardrobe: 'Smart casual.',
+        address: '42 Rue Riad Zitoun el Jdid, Medina',
+        notes: 'Vegetarian focused, garden setting, no reservations',
         map: 'https://www.google.com/maps/search/La+Famille+Marrakech'
       },
       { 
@@ -659,7 +666,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=1200',
         description: 'A hands-on workshop in a tranquil garden setting. Learn the alchemy of Moroccan spices.',
         wardrobe: 'Smart casual. Comfortable shoes for standing.',
-        contact: '+212 5243-87010',
+        contact: '+212 524 387 010',
+        address: 'Medina',
+        notes: 'Cooking class reservations required',
         map: 'https://www.google.com/maps/search/La+Maison+Arabe+Marrakech'
       },
       { 
@@ -679,7 +688,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200',
         description: 'Rooftop dining in the heart of the medina. Moroccan and Mediterranean flavors with views.',
         wardrobe: 'Casual evening attire.',
-        contact: '+212 5243-75904',
+        contact: '+212 524 375 904',
+        address: 'Souk Cherifia, Medina',
+        notes: 'Rooftop terrace, reservations recommended',
         map: 'https://www.google.com/maps/search/Terrasse+des+Epices+Marrakech'
       }
     ]
@@ -713,7 +724,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         wardrobe: 'Vibrant colors or monochrome white to pop against the Majorelle Blue.',
         commercialWardrobe: 'https://images.unsplash.com/photo-1589465885857-44ed45993464?auto=format&fit=crop&q=80&w=800',
         ticketLink: 'https://www.jardinmajorelle.com/en/official-ticketing/',
-        contact: '+212 5243-13047',
+        contact: '+212 524 313 047',
+        address: 'Rue Yves Saint Laurent, Gueliz',
+        notes: 'Buy tickets online to skip lines',
         map: 'https://www.google.com/maps/search/Jardin+Majorelle+Marrakech'
       },
       { 
@@ -724,6 +737,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=1200',
         description: 'A stunning terracotta museum dedicated to the legendary designer. Adjacent to Jardin Majorelle.',
         wardrobe: 'Elegant but comfortable.',
+        address: 'Rue Yves Saint Laurent, Gueliz',
+        notes: 'Adjacent to Jardin Majorelle, combined tickets available',
         map: 'https://www.google.com/maps/search/Yves+Saint+Laurent+Museum+Marrakech'
       },
       { 
