@@ -1,0 +1,690 @@
+import { useState, useEffect } from 'react';
+import { 
+  ChevronRight, 
+  ChevronLeft, 
+  MapPin, 
+  Sun, 
+  Cloud, 
+  Wind, 
+  Menu, 
+  X, 
+  Phone, 
+  Navigation, 
+  Clock, 
+  Info,
+  ArrowRight,
+  Camera,
+  PenLine,
+  CloudUpload,
+  Ticket,
+  ShoppingBag,
+  Sparkles,
+  Loader2,
+  Share2,
+  Save
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { useJournal, type JournalEntry } from '@/hooks/use-journal';
+import { 
+  ITINERARY_DATA, 
+  type ItineraryPage, 
+  type FlowItem, 
+  type DayPage,
+  type CoverPage,
+  type IntroPage,
+  type FieldNotesPage,
+  type JournalPage as JournalPageType
+} from '@/lib/itinerary-data';
+
+function isDayPage(page: ItineraryPage): page is DayPage {
+  return 'day' in page;
+}
+
+function isCoverPage(page: ItineraryPage): page is CoverPage {
+  return 'type' in page && page.type === 'cover';
+}
+
+function isIntroPage(page: ItineraryPage): page is IntroPage {
+  return 'type' in page && page.type === 'intro';
+}
+
+function isFieldNotesPage(page: ItineraryPage): page is FieldNotesPage {
+  return 'type' in page && page.type === 'field-notes-global';
+}
+
+function isJournalPage(page: ItineraryPage): page is JournalPageType {
+  return 'type' in page && page.type === 'journal';
+}
+
+function WeatherDisplay({ weather }: { weather: { temp: number; cond: string } }) {
+  const getIcon = (cond: string) => {
+    const c = cond?.toLowerCase() || '';
+    if (c.includes('rain')) return <Cloud className="w-4 h-4" />;
+    if (c.includes('wind')) return <Wind className="w-4 h-4" />;
+    if (c.includes('cloud')) return <Cloud className="w-4 h-4" />;
+    return <Sun className="w-4 h-4" />;
+  };
+  
+  return (
+    <div className="flex items-center gap-4 bg-card/50 dark:bg-card/30 backdrop-blur px-5 py-2.5 rounded-full border border-border">
+      <div className="text-foreground">{getIcon(weather.cond)}</div>
+      <div className="flex flex-col">
+        <span className="text-[11px] font-bold uppercase tracking-tight leading-none">{weather.temp}°F / {weather.cond}</span>
+        <span className="text-[9px] text-muted-foreground uppercase tracking-widest leading-none mt-1">Live Conditions</span>
+      </div>
+    </div>
+  );
+}
+
+interface ItemDetailDrawerProps {
+  item: FlowItem;
+  entries: { [key: string]: JournalEntry };
+  status: 'idle' | 'saving' | 'saved';
+  onClose: () => void;
+  onJournalChange: (id: string, note: string) => void;
+  onImageUpload: (id: string, file: File, field: string) => void;
+  onShare: () => void;
+}
+
+function ItemDetailDrawer({ 
+  item, 
+  entries, 
+  status, 
+  onClose, 
+  onJournalChange, 
+  onImageUpload,
+  onShare 
+}: ItemDetailDrawerProps) {
+  return (
+    <div className="fixed inset-0 z-[9999] bg-background p-6 md:p-12 overflow-y-auto animate-in slide-in-from-right duration-500">
+      <div className="fixed top-6 right-6 z-[10000] flex gap-4">
+        <Button 
+          onClick={onClose} 
+          className="rounded-full"
+          data-testid="button-close-detail"
+        >
+          Close
+        </Button>
+      </div>
+      
+      <div className="max-w-2xl mx-auto space-y-16 pb-32 pt-12">
+        
+        <div className="flex items-center justify-between border-b border-border pb-6">
+          <div className="flex items-center gap-3 text-[11px] font-bold tracking-[0.4em] uppercase text-muted-foreground">
+            <Clock className="w-3.5 h-3.5" /> {item.time}
+          </div>
+          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em]">
+            <Sun className="w-3.5 h-3.5" /> 72°F
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight leading-none" data-testid="text-item-title">
+            {item.title}
+          </h2>
+          <div className="aspect-[16/9] w-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 bg-muted my-6 rounded-md">
+            <img 
+              src={item.image} 
+              className="w-full h-full object-cover" 
+              alt={item.title}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200';
+              }}
+            />
+          </div>
+          <p className="text-lg md:text-xl text-muted-foreground leading-[1.8] font-serif italic border-l-2 border-border pl-8">
+            {item.description || item.body}
+          </p>
+        </div>
+
+        {(item.contact || item.map || item.ticketLink) && (
+          <div className="pt-8 border-t border-border">
+            <h3 className="text-[11px] font-bold tracking-[0.5em] uppercase mb-8 flex items-center gap-3">
+              <MapPin className="w-4 h-4" /> LOGISTICS
+            </h3>
+            <div className="space-y-4">
+              {item.contact && (
+                <a 
+                  href={`tel:${item.contact}`} 
+                  className="flex items-center gap-4 text-sm font-medium border-b border-border/50 pb-3 hover:border-foreground transition-all"
+                  data-testid="link-contact"
+                >
+                  <Phone className="w-3.5 h-3.5" /> {item.contact}
+                </a>
+              )}
+              {item.map && (
+                <a 
+                  href={item.map} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 text-sm font-medium border-b border-border/50 pb-3 hover:border-foreground transition-all"
+                  data-testid="link-map"
+                >
+                  <Navigation className="w-3.5 h-3.5" /> Open in Maps
+                </a>
+              )}
+              {item.ticketLink && (
+                <a 
+                  href={item.ticketLink} 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-4 text-sm font-medium bg-foreground text-background px-6 py-4 rounded-full hover:opacity-80 transition-all"
+                  data-testid="link-tickets"
+                >
+                  <Ticket className="w-3.5 h-3.5" /> Book Tickets
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
+        {item.wardrobe && (
+          <div className="pt-16 border-t border-border">
+            <h3 className="text-[11px] font-bold tracking-[0.5em] uppercase mb-8 flex items-center gap-3">
+              <Sparkles className="w-4 h-4" /> THE LOOK
+            </h3>
+            <p className="text-base font-medium italic opacity-70 leading-relaxed mb-8">"{item.wardrobe}"</p>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <div className="aspect-[3/4] w-full bg-muted overflow-hidden grayscale rounded-md">
+                  <img 
+                    src={item.commercialWardrobe || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800"} 
+                    className="w-full h-full object-cover" 
+                    alt="Style recommendation"
+                  />
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic">FDV Recommendation</p>
+                  <button className="text-[10px] font-medium underline" data-testid="button-shop-look">Shop Look</button>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <label className="aspect-[3/4] w-full bg-card border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 hover:bg-muted cursor-pointer relative overflow-hidden group rounded-md">
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                    onChange={(e) => e.target.files?.[0] && onImageUpload(item.id, e.target.files[0], 'myLook')}
+                    data-testid="input-my-look"
+                  />
+                  {entries[item.id]?.myLook ? (
+                    <img src={entries[item.id].myLook} className="w-full h-full object-cover" alt="My look" />
+                  ) : (
+                    <>
+                      <ShoppingBag className="w-6 h-6 opacity-20 group-hover:opacity-100 transition-opacity" />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-center px-4">Upload My Look</span>
+                    </>
+                  )}
+                </label>
+                <p className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic text-center">Tap to Swap</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="pt-16 border-t border-border">
+          <h3 className="text-[11px] font-bold tracking-[0.5em] uppercase mb-8 flex items-center gap-3">
+            <PenLine className="w-4 h-4" /> TRAVEL LOG
+          </h3>
+          
+          <textarea 
+            placeholder="Record the moment..."
+            className="w-full bg-card border border-border p-6 font-serif italic text-lg focus:outline-none focus:border-foreground/20 transition-all min-h-[150px] rounded-md mb-8 resize-none"
+            value={entries[item.id]?.note || ''}
+            onChange={(e) => onJournalChange(item.id, e.target.value)}
+            data-testid="textarea-journal"
+          />
+
+          <div className="grid md:grid-cols-2 gap-8 items-start">
+            <label className="aspect-square bg-card border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 hover:bg-muted cursor-pointer relative overflow-hidden group rounded-md">
+              <input 
+                type="file" 
+                accept="image/*" 
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                onChange={(e) => e.target.files?.[0] && onImageUpload(item.id, e.target.files[0], 'logImage')}
+                data-testid="input-log-image"
+              />
+              {entries[item.id]?.logImage ? (
+                <img src={entries[item.id].logImage} className="w-full h-full object-cover grayscale" alt="Log" />
+              ) : (
+                <>
+                  <Camera className="w-8 h-8 opacity-20 group-hover:opacity-100 transition-opacity" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Upload Photo</span>
+                </>
+              )}
+            </label>
+
+            <div className="space-y-6">
+              <Button 
+                onClick={onShare} 
+                className="w-full rounded-md"
+                data-testid="button-share"
+              >
+                <Share2 className="w-3.5 h-3.5 mr-2" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Share to Instagram</span>
+              </Button>
+
+              <div className="flex items-center justify-center gap-2 p-4 bg-muted rounded-md">
+                {status === 'saving' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                <span className="text-[10px] font-bold uppercase tracking-widest">
+                  {status === 'saving' ? 'Saving...' : 'Saved to Log'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface ShareModalProps {
+  item: FlowItem;
+  entries: { [key: string]: JournalEntry };
+  onClose: () => void;
+}
+
+function ShareModal({ item, entries, onClose }: ShareModalProps) {
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'FDV Concierge - Morocco 2026',
+          text: `Checking in at ${item.title}`,
+          url: window.location.href,
+        });
+      } catch (err) { 
+        console.log(err); 
+      }
+    } else {
+      alert("Screenshot this view to share!");
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[9999] bg-foreground dark:bg-background flex flex-col items-center justify-center p-4">
+      <button 
+        onClick={onClose} 
+        className="fixed top-8 right-8 text-background/50 dark:text-foreground/50 hover:text-background dark:hover:text-foreground transition-colors z-[10000]"
+        data-testid="button-close-share"
+      >
+        <X className="w-8 h-8" />
+      </button>
+      
+      <div className="w-full max-w-[400px] aspect-[9/16] bg-background dark:bg-card shadow-2xl flex flex-col justify-between p-12 relative overflow-hidden animate-in fade-in zoom-in-95 duration-700 rounded-md">
+        <div className="space-y-8 z-10">
+          <div className="text-[12px] font-bold tracking-[0.6em] uppercase opacity-40">FDV CONCIERGE — 2026</div>
+          <div className="aspect-[4/5] w-full overflow-hidden grayscale bg-foreground/5 shadow-2xl rounded-md">
+            <img 
+              src={entries[item.id]?.image || item.image} 
+              className="w-full h-full object-cover" 
+              alt="Moment" 
+            />
+          </div>
+        </div>
+        <div className="space-y-8 z-10 mt-auto">
+          <h4 className="text-3xl md:text-4xl font-serif font-bold tracking-tight leading-none">{item.title}</h4>
+          <p className="text-lg md:text-xl italic opacity-80 leading-relaxed font-serif">
+            "{entries[item.id]?.note || "A rhythm found in Morocco."}"
+          </p>
+          <div className="flex justify-between items-end pt-8 border-t border-border text-[9px] font-bold tracking-[0.4em] opacity-30">
+            <span>FDV CONCIERGE</span>
+            <MapPin className="w-3.5 h-3.5 opacity-20" />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-12 flex flex-col items-center gap-6">
+        <Button 
+          onClick={handleNativeShare} 
+          variant="secondary"
+          className="rounded-full px-12 py-5"
+          data-testid="button-share-save"
+        >
+          Share / Save
+        </Button>
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-background/40 dark:text-foreground/40 italic">
+          Screenshot if menu fails
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default function Home() {
+  const [pageIndex, setPageIndex] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState<FlowItem | null>(null);
+  const [isShareMode, setIsShareMode] = useState(false);
+
+  const { entries: journalEntries, saveEntry, status: saveStatus } = useJournal();
+  
+  useEffect(() => { 
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+  }, [pageIndex]);
+
+  const handleJournalChange = (itemId: string, note: string) => {
+    saveEntry(itemId, { note });
+  };
+
+  const processImage = (itemId: string, file: File, field: string = 'image') => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 1200;
+        let width = img.width;
+        let height = img.height;
+        if (width > MAX_WIDTH) { 
+          height *= MAX_WIDTH / width; 
+          width = MAX_WIDTH; 
+        }
+        canvas.width = width; 
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        const base64 = canvas.toDataURL('image/jpeg', 0.6);
+        saveEntry(itemId, { [field]: base64 });
+      };
+    };
+  };
+
+  const nextPage = () => pageIndex < ITINERARY_DATA.length - 1 && setPageIndex(pageIndex + 1);
+  const prevPage = () => pageIndex > 0 && setPageIndex(pageIndex - 1);
+  const currentPage = ITINERARY_DATA[pageIndex];
+
+  const getPageTitle = (page: ItineraryPage): string => {
+    if (isCoverPage(page)) return 'Start';
+    if (isDayPage(page)) return `Day ${page.day}: ${page.title.replace('Daily Flow: ', '')}`;
+    if ('title' in page) return page.title;
+    return '';
+  };
+
+  return (
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-foreground selection:text-background transition-colors duration-500 overflow-x-hidden">
+      
+      <nav className="fixed top-0 left-0 right-0 p-4 md:p-6 flex justify-between items-center z-[50] bg-background/80 backdrop-blur-md border-b border-border">
+        <div 
+          className="text-[11px] font-bold uppercase tracking-[0.5em] cursor-pointer" 
+          onClick={() => setPageIndex(0)}
+          data-testid="link-home"
+        >
+          FDV / MOROCCO
+        </div>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => setMenuOpen(!menuOpen)}
+            data-testid="button-menu"
+          >
+            {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          </Button>
+        </div>
+      </nav>
+
+      <div className="pt-32 pb-48 px-6 md:px-12 max-w-5xl mx-auto min-h-screen flex flex-col">
+        
+        {isCoverPage(currentPage) && (
+          <div className="flex-1 flex flex-col justify-center items-center text-center px-4 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+            <h1 
+              className="text-[min(16vw,180px)] font-serif font-bold tracking-tighter leading-none m-0 uppercase select-none w-full whitespace-nowrap overflow-visible"
+              data-testid="text-cover-title"
+            >
+              {currentPage.title}
+            </h1>
+            <div className="h-[2px] w-32 md:w-48 bg-foreground mt-8" />
+            <p className="text-[10px] md:text-sm tracking-[1em] font-bold uppercase text-muted-foreground mt-8">
+              {currentPage.subtitle}
+            </p>
+            <div className="w-full max-w-4xl aspect-[4/5] md:aspect-[21/9] relative overflow-hidden mt-12 grayscale shadow-2xl transition-all duration-1000 hover:grayscale-0 rounded-md">
+              <img 
+                src={currentPage.image} 
+                className="w-full h-full object-cover scale-110" 
+                alt={currentPage.title}
+                onError={(e) => { 
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200'; 
+                }}
+              />
+            </div>
+            <Button 
+              onClick={nextPage} 
+              variant="outline"
+              className="mt-16 px-12 py-6 text-[11px] font-bold uppercase tracking-[0.4em] rounded-sm"
+              data-testid="button-begin"
+            >
+              BEGIN JOURNEY
+            </Button>
+          </div>
+        )}
+
+        {isIntroPage(currentPage) && (
+          <div className="flex-1 flex flex-col justify-center max-w-2xl mx-auto space-y-20 animate-in fade-in duration-1000">
+            <h2 className="text-[11px] font-bold tracking-[0.6em] uppercase text-muted-foreground">THE RHYTHM</h2>
+            <div className="space-y-16">
+              {currentPage.body.map((para, i) => (
+                <p 
+                  key={i} 
+                  className={`text-2xl md:text-3xl lg:text-4xl leading-[1.6] font-serif ${i === currentPage.body.length - 1 ? 'italic font-bold border-t-2 pt-16 border-border' : 'text-muted-foreground'}`}
+                >
+                  {para}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {isFieldNotesPage(currentPage) && (
+          <div className="flex-1 py-12 animate-in fade-in duration-1000 uppercase">
+            <div className="mb-24 text-center">
+              <h2 className="text-5xl md:text-7xl font-serif font-bold tracking-tighter mb-6">{currentPage.title}</h2>
+              <div className="h-1.5 w-24 bg-foreground mx-auto" />
+            </div>
+            <div className="grid md:grid-cols-2 gap-x-24 gap-y-20">
+              {currentPage.notes.map((note, i) => (
+                <div key={i} className="space-y-6 border-l border-border pl-10">
+                  <h3 className="text-xs font-bold uppercase tracking-[0.4em]">{note.title}</h3>
+                  <p className="text-muted-foreground text-base md:text-lg leading-relaxed font-serif normal-case">{note.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {isDayPage(currentPage) && (
+          <div className="flex-1 animate-in fade-in duration-1000">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20 border-b border-border pb-16">
+              <div className="space-y-6">
+                <p className="text-[12px] font-bold tracking-[0.5em] uppercase text-muted-foreground">
+                  DAY {currentPage.day} — {currentPage.date}
+                </p>
+                <h2 
+                  className="text-4xl md:text-6xl lg:text-8xl font-serif font-bold tracking-tighter leading-none m-0 uppercase"
+                  data-testid="text-day-title"
+                >
+                  {currentPage.title}
+                </h2>
+                <div className="flex items-center gap-4 text-[12px] font-bold uppercase tracking-[0.4em] text-muted-foreground">
+                  <MapPin className="w-4 h-4 text-foreground" /> {currentPage.location}
+                </div>
+              </div>
+              <WeatherDisplay weather={currentPage.weather} />
+            </div>
+
+            <div className="mb-20 space-y-6">
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] flex items-center gap-3">
+                <Info className="w-4 h-4" /> FIELD NOTES
+              </h3>
+              <div className="text-xl md:text-2xl leading-relaxed text-muted-foreground font-serif italic border-l-2 border-border pl-10 opacity-90 whitespace-pre-wrap">
+                {currentPage.fieldNotes}
+              </div>
+            </div>
+
+            <div className="mb-32">
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] pb-4 border-b-2 border-foreground mb-16">SCHEDULE</h3>
+              <div className="space-y-6">
+                {currentPage.flow.map((item, i) => (
+                  <button 
+                    key={i} 
+                    onClick={() => setActiveItem(item)} 
+                    className="group w-full text-left p-8 md:p-10 bg-card border border-border hover:border-foreground transition-all rounded-md flex gap-6 md:gap-10 items-start active:scale-[0.99]"
+                    data-testid={`button-flow-item-${item.id}`}
+                  >
+                    <div className="text-[12px] font-bold tracking-widest text-muted-foreground/50 group-hover:text-foreground transition-colors w-20 md:w-24 pt-1 shrink-0">
+                      {item.time}
+                    </div>
+                    <div className="flex-1 space-y-4 min-w-0">
+                      <div className="text-[10px] font-bold tracking-[0.4em] uppercase text-muted-foreground group-hover:text-foreground">
+                        {item.heading}
+                      </div>
+                      <div className="flex items-center gap-4 flex-wrap">
+                        <h4 className="text-2xl md:text-3xl font-serif font-bold tracking-tight leading-none group-hover:opacity-70">
+                          {item.title}
+                        </h4>
+                        {journalEntries[item.id] && (
+                          <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-tighter bg-foreground text-background px-2 py-0.5 rounded-full">
+                            <CloudUpload className="w-2.5 h-2.5" /> Logged
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-base md:text-lg text-muted-foreground line-clamp-2 italic font-serif leading-relaxed opacity-60 group-hover:opacity-100 transition-all">
+                        {item.description || item.body}
+                      </p>
+                    </div>
+                    <ArrowRight className="w-6 h-6 text-muted-foreground/30 group-hover:text-foreground group-hover:translate-x-3 transition-all shrink-0" />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-20 border-t-2 border-border flex flex-col items-center">
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] mb-12">DAILY MANTRA</h3>
+              <p className="text-xl md:text-2xl lg:text-3xl font-bold tracking-widest uppercase italic text-center max-w-2xl leading-relaxed font-serif">
+                "{currentPage.mantra}"
+              </p>
+            </div>
+          </div>
+        )}
+
+        {isJournalPage(currentPage) && (
+          <div className="flex-1 py-12 animate-in fade-in duration-1000">
+            <div className="mb-24 text-center">
+              <h2 className="text-5xl md:text-7xl font-serif font-bold tracking-tighter mb-6 uppercase">{currentPage.title}</h2>
+              <div className="h-1.5 w-24 bg-foreground mx-auto" />
+              <p className="text-sm tracking-[0.6em] font-bold uppercase text-muted-foreground mt-12">{currentPage.subtitle}</p>
+            </div>
+            <div className="space-y-32">
+              {Object.keys(journalEntries).length > 0 ? (
+                Object.keys(journalEntries).sort().map((key) => {
+                  const entry = journalEntries[key];
+                  if (!entry.note && !entry.image && !entry.logImage) return null;
+                  return (
+                    <div key={key} className="grid md:grid-cols-12 gap-8 md:gap-16 items-center group">
+                      <div className="md:col-span-7 aspect-square grayscale group-hover:grayscale-0 transition-all duration-1000 shadow-xl overflow-hidden bg-muted rounded-md">
+                        <img 
+                          src={entry.logImage || entry.image || "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=800"} 
+                          className="w-full h-full object-cover" 
+                          alt="Memory"
+                        />
+                      </div>
+                      <div className="md:col-span-5 space-y-6">
+                        <div className="text-[10px] font-bold tracking-[0.4em] uppercase opacity-30 border-b border-border pb-2">
+                          REF: {key.toUpperCase()}
+                        </div>
+                        <p className="text-xl md:text-2xl lg:text-3xl leading-[1.6] font-serif italic opacity-90">
+                          "{entry.note || "A moment captured."}"
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-center py-20 border-2 border-dashed border-border rounded-md opacity-30 italic uppercase tracking-widest text-[10px]">
+                  Memories will persist here once captured.
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        <footer className="mt-32 border-t border-border pt-16 flex items-center justify-between gap-4">
+          <Button 
+            onClick={prevPage} 
+            disabled={pageIndex === 0} 
+            variant="ghost"
+            className="flex items-center gap-2 md:gap-4 text-[12px] font-bold uppercase tracking-[0.5em] disabled:opacity-0 transition-all"
+            data-testid="button-prev"
+          >
+            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" /> 
+            <span className="hidden sm:inline">PREV</span>
+          </Button>
+          <div className="text-[11px] font-bold tracking-[0.8em] text-muted-foreground uppercase">
+            {pageIndex + 1} / {ITINERARY_DATA.length}
+          </div>
+          <Button 
+            onClick={nextPage} 
+            disabled={pageIndex === ITINERARY_DATA.length - 1}
+            variant="ghost"
+            className="flex items-center gap-2 md:gap-4 text-[12px] font-bold uppercase tracking-[0.5em] disabled:opacity-0 transition-all"
+            data-testid="button-next"
+          >
+            <span className="hidden sm:inline">NEXT</span> 
+            <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+          </Button>
+        </footer>
+      </div>
+
+      {menuOpen && (
+        <div className="fixed inset-0 bg-foreground dark:bg-card text-background dark:text-foreground z-[200] flex flex-col justify-center items-center p-8 transition-all duration-500 overflow-y-auto">
+          <button 
+            onClick={() => setMenuOpen(false)} 
+            className="fixed top-6 right-6 z-[210]"
+            data-testid="button-close-menu"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <div className="w-full max-w-lg space-y-8 text-center py-24">
+            {ITINERARY_DATA.map((p, i) => (
+              <button 
+                key={i} 
+                className={`block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] transition-all transform hover:scale-105 font-serif ${pageIndex === i ? 'opacity-100 font-bold italic underline underline-offset-8' : 'opacity-25 hover:opacity-100'}`} 
+                onClick={() => { setPageIndex(i); setMenuOpen(false); }}
+                data-testid={`button-menu-item-${i}`}
+              >
+                {getPageTitle(p)}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {activeItem && !isShareMode && (
+        <ItemDetailDrawer
+          item={activeItem}
+          entries={journalEntries}
+          status={saveStatus}
+          onClose={() => setActiveItem(null)}
+          onJournalChange={handleJournalChange}
+          onImageUpload={processImage}
+          onShare={() => setIsShareMode(true)}
+        />
+      )}
+
+      {isShareMode && activeItem && (
+        <ShareModal
+          item={activeItem}
+          entries={journalEntries}
+          onClose={() => setIsShareMode(false)}
+        />
+      )}
+    </div>
+  );
+}

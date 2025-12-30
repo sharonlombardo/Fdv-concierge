@@ -1,0 +1,781 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  ChevronRight, 
+  ChevronLeft, 
+  MapPin, 
+  Sun, 
+  Cloud, 
+  Wind, 
+  Menu, 
+  X, 
+  Phone, 
+  Navigation, 
+  Clock, 
+  Info,
+  Briefcase,
+  ArrowRight,
+  Camera,
+  PenLine,
+  CloudUpload,
+  CheckCircle,
+  Instagram,
+  Ticket,
+  ShoppingBag,
+  Sparkles,
+  Loader2,
+  Share2,
+  Save
+} from 'lucide-react';
+
+const apiKey = ""; 
+
+// --- PURE LOCAL STORAGE ENGINE (Crash-Proof) ---
+const useJournal = () => {
+  const [entries, setEntries] = useState({});
+  const [status, setStatus] = useState('idle');
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('morocco_soul_final_v15');
+      if (saved) {
+        setEntries(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.warn("Storage restricted");
+    }
+  }, []);
+
+  const saveEntry = (id, data) => {
+    setStatus('saving');
+    setTimeout(() => {
+      const currentEntry = entries[id] || {};
+      const updatedEntries = {
+        ...entries,
+        [id]: { ...currentEntry, ...data, updatedAt: Date.now() }
+      };
+      setEntries(updatedEntries);
+      try {
+        localStorage.setItem('morocco_soul_final_v15', JSON.stringify(updatedEntries));
+      } catch (e) { console.warn("Quota exceeded"); }
+      setStatus('saved');
+      
+      // Reset status back to idle after a moment
+      setTimeout(() => setStatus('idle'), 2000);
+    }, 400);
+  };
+
+  return { entries, saveEntry, status };
+};
+
+// --- CONTENT CONSTANTS ---
+const ITINERARY_DATA = [
+  {
+    type: 'cover',
+    title: 'MOROCCO',
+    subtitle: 'APRIL 2026',
+    image: 'https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&q=80&w=1200',
+    caption: 'The light of the Maghreb.'
+  },
+  {
+    type: 'intro',
+    title: 'THE RHYTHM',
+    body: [
+      "Morocco is a place of rhythm rather than itinerary. Light shifts quickly. Mornings are generous, afternoons ask for pause, evenings reward attention. The landscape moves from mountain to city to sea, each setting offering a different way of inhabiting time.",
+      "This journey is designed to unfold with ease. Architecture, food, and movement are woven together with moments of rest and openness. Nothing here is meant to be rushed or completed. Follow what draws you, linger where it feels right, and let the experience gather meaning as you go.",
+      "Morocco rewards presence more than planning."
+    ]
+  },
+  {
+    type: 'field-notes-global',
+    title: 'TRAVEL NOTES',
+    notes: [
+      { title: '1. Dress With Ease', text: 'Loose layers, natural fabrics, and covered shoulders feel most comfortable here.' },
+      { title: '2. Walk Softly', text: 'Medinas are beautiful and uneven. Comfortable shoes matter more than you think.' },
+      { title: '3. Carry Small Cash', text: 'Small bills are useful for souks, cafés, and taxis.' },
+      { title: '4. Follow the Light', text: 'Early mornings and late afternoons are when the city feels most generous.' },
+      { title: '5. Rooftops Over Rush', text: 'A rooftop drink at sunset often says more than another stop.' },
+      { title: '6. Accept the No', text: 'A polite “no, thank you” goes a long way in the souks.' },
+      { title: '7. Eat Simply, Eat Well', text: 'Lunches are relaxed. Dinners are about mood. Trust your appetite.' },
+      { title: '8. Hammam Is a Reset', text: 'It’s meant to ground you, not rush you.' }
+    ]
+  },
+  {
+    day: 1,
+    id: 'd1',
+    date: "Friday, April 3, 2026",
+    location: "Arrival → Atlas Mountains",
+    title: "Daily Flow: Arrival",
+    weather: { temp: 72, cond: "Sunny" },
+    mantra: "Today is about arrival and decompression. No need to do more.",
+    fieldNotes: "Arrival in the Red City. The transition from the bustle of Marrakech Menara to the stillness of the Ourika Valley sets the tone for the journey.",
+    flow: [
+      { 
+        id: 'd1-1', 
+        time: '9:00 AM', 
+        heading: 'MORNING', 
+        title: 'Arrival at Marrakech Menara', 
+        image: 'https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?auto=format&fit=crop&q=80&w=1200', 
+        description: 'Arrival at Marrakech Menara Airport, a masterpiece of modern Islamic architecture. Your private transfer will meet you for the 60-minute ascent into the Atlas range.',
+        wardrobe: 'Breathable travel layers. Natural linen or soft cotton recommended.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800',
+        contact: '+212 5244-47910',
+        map: 'https://www.google.com/maps/search/RAK+Airport+Marrakech'
+      },
+      { 
+        id: 'd1-2', 
+        time: '2:30 PM', 
+        heading: 'AFTERNOON', 
+        title: 'Check-in at Kasbah Bab Ourika', 
+        image: 'https://images.unsplash.com/photo-1505089182331-50e58f00062b?auto=format&fit=crop&q=80&w=1200',
+        description: 'Check-in at Kasbah Bab Ourika. Perched on a hilltop in the Ourika Valley, this eco-lodge offers 360-degree views of the Atlas Mountains.',
+        wardrobe: 'Mountain casual. A light cashmere wrap for the afternoon.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80&w=800',
+        contact: '+212 661-634234',
+        map: 'https://www.google.com/maps/search/Kasbah+Bab+Ourika'
+      },
+      {
+        id: 'd1-3',
+        time: '7:30 PM',
+        heading: 'EVENING',
+        title: 'Dinner at the Kasbah',
+        image: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=1200',
+        description: 'Dinner using organic produce from the Kasbah gardens. A quiet evening as the temperature drops in the valley.',
+        wardrobe: 'Warm knitwear or heavy wrap.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&q=80&w=800'
+      }
+    ]
+  },
+  {
+    day: 2,
+    id: 'd2',
+    date: "Saturday, April 4, 2026",
+    location: "Atlas Mountains",
+    title: "Daily Flow: Atlas Mountains",
+    weather: { temp: 68, cond: "Clear" },
+    mantra: "Follow the light and your energy. This day is intentionally unstructured.",
+    fieldNotes: "Mornings in the valley are quiet. The Ourika Valley is known for its red earth and ancient Berber traditions.",
+    flow: [
+      { 
+        id: 'd2-1', 
+        time: '8:30 AM', 
+        heading: 'MORNING', 
+        title: 'Village Walk & Hike', 
+        image: 'https://images.unsplash.com/photo-1536713009761-0d3815e109d9?auto=format&fit=crop&q=80&w=1200',
+        description: 'Optional gentle hike through nearby Berber villages. Witness the traditional way of life.',
+        wardrobe: 'Active mountain wear. Sturdy sneakers or hiking boots. Protective sun hat.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=800'
+      },
+      {
+        id: 'd2-2',
+        time: '1:00 PM',
+        heading: 'AFTERNOON',
+        title: 'Pool & Reading',
+        image: 'https://images.unsplash.com/photo-1518331647614-7a1f04cd34cf?auto=format&fit=crop&q=80&w=1200',
+        description: 'Unstructured time. The mountain midday sun is best enjoyed by the infinity pool.',
+        wardrobe: 'Swimwear and cover-up.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1574914629385-d7d1e83161df?auto=format&fit=crop&q=80&w=800'
+      }
+    ]
+  },
+  {
+    day: 3,
+    id: 'd3',
+    date: "Sunday, April 5, 2026",
+    location: "Atlas Mountains → Marrakech",
+    title: "Daily Flow: Atlas → Marrakech",
+    weather: { temp: 78, cond: "Sunny" },
+    mantra: "El Fenn reveals itself slowly.",
+    fieldNotes: "Descending from the peaks back into the Red City. The energy shifts from the horizontal landscape of the mountains to the vertical architecture of the Medina.",
+    flow: [
+      { 
+        id: 'd3-1', 
+        time: '1:00 PM', 
+        heading: 'AFTERNOON', 
+        title: 'Check-in at El Fenn', 
+        image: 'https://images.unsplash.com/photo-1534067783941-51c9c23ea337?auto=format&fit=crop&q=80&w=1200',
+        description: 'El Fenn is your anchor in Marrakech. A sanctuary of bold colors, resident tortoises, and curated modern art.',
+        wardrobe: 'Urban chic transition. Polished linen sets.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80&w=800',
+        contact: '+212 5244-41210',
+        map: 'https://www.google.com/maps/search/El+Fenn+Marrakech'
+      },
+      {
+        id: 'd3-2',
+        time: '6:30 PM',
+        heading: 'EVENING',
+        title: 'Sunset at El Fenn',
+        image: 'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=80&w=1200',
+        description: 'Rooftop cocktails and dinner. The ultimate spot for sunset over the Koutoubia Mosque.',
+        wardrobe: 'Cocktail attire. Elevated but comfortable.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800'
+      }
+    ]
+  },
+  {
+    day: 4,
+    id: 'd4',
+    date: "Monday, April 6, 2026",
+    location: "Marrakech",
+    title: "Daily Flow: Marrakech",
+    weather: { temp: 81, cond: "Sunny" },
+    mantra: "Rest in the afternoon so the evening feels effortless.",
+    fieldNotes: "The Medina is a labyrinth of craft and history. Today is about navigating the layers of the city, from palace ruins to modern rooftop dining.",
+    flow: [
+      { 
+        id: 'd4-1', 
+        time: '10:00 AM', 
+        heading: 'MORNING', 
+        title: 'Bacha Coffee & Dar El Bacha', 
+        image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=1200',
+        description: 'Housed in a 1910 pasha’s palace, Bacha Coffee offers a legendary coffee list in a room of intricate tilework.',
+        wardrobe: 'Elegant morning attire. Modest but polished.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1550614000-4b9519e0947f?auto=format&fit=crop&q=80&w=800',
+        contact: '+212 5243-81297',
+        map: 'https://www.google.com/maps/search/Bacha+Coffee+Marrakech'
+      },
+      { 
+        id: 'd4-2', 
+        time: '7:30 PM', 
+        heading: 'EVENING', 
+        title: 'Dinner at Dar Yacout', 
+        image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&q=80&w=1200',
+        description: 'A Marrakech institution. Legendary for its atmosphere, traditional live music, and a multi-course Moroccan banquet.',
+        wardrobe: 'Evening formal. Dress up for this institution.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&q=80&w=800',
+        contact: '+212 5243-82929',
+        map: 'https://www.google.com/maps/search/Dar+Yacout+Marrakech'
+      }
+    ]
+  },
+  {
+    day: 5,
+    id: 'd5',
+    date: "Tuesday, April 7, 2026",
+    location: "Essaouira (Day Trip)",
+    title: "Daily Flow: Essaouira",
+    weather: { temp: 70, cond: "Windy" },
+    mantra: "Essaouira is about air and openness.",
+    fieldNotes: "A pause from the city. Essaouira is the 'Windy City' of Africa. The air is cooler, the Medina is blue-and-white.",
+    flow: [
+      { 
+        id: 'd5-1', 
+        time: '8:30 AM', 
+        heading: 'MORNING', 
+        title: 'Essaouira Ramparts', 
+        image: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&q=80&w=1200',
+        description: 'Explore the 18th-century seafront ramparts and the historic port with its fleet of bright blue wooden fishing boats.',
+        wardrobe: 'Coastal layers. A windbreaker or light trench is essential.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1577900232427-18219b9166a3?auto=format&fit=crop&q=80&w=800',
+        map: 'https://www.google.com/maps/search/Essaouira+Ramparts'
+      },
+      { 
+        id: 'd5-2', 
+        time: '7:30 PM', 
+        heading: 'EVENING', 
+        title: 'Dinner at +61', 
+        image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=1200',
+        description: 'Modern, fresh Australian-influenced cuisine in the Gueliz district.',
+        wardrobe: 'Casual evening chic. Jeans and a nice top.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?auto=format&fit=crop&q=80&w=800',
+        contact: '+212 5244-33777',
+        map: 'https://www.google.com/maps/search/plus+61+Marrakech'
+      }
+    ]
+  },
+  {
+    day: 6,
+    id: 'd6',
+    date: "Wednesday, April 8, 2026",
+    location: "Marrakech — Culture & Food",
+    title: "Daily Flow: Culture & Food",
+    weather: { temp: 80, cond: "Sunny" },
+    mantra: "This is a sensory day. Eat well, rest between moments.",
+    fieldNotes: "Pattern and shadow. Today we focus on the artistic heritage of the city, from the Saadian tilework to the olfactory history of Moroccan perfume.",
+    flow: [
+      { 
+        id: 'd6-1', 
+        time: '6:00 PM', 
+        heading: 'EVENING', 
+        title: 'Maison Arabe Cooking Class', 
+        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=1200',
+        description: 'A chef-led workshop in a tranquil garden setting. Learn the alchemy of Moroccan spices.',
+        wardrobe: 'Smart casual. Comfortable shoes for standing.',
+        contact: '+212 5243-87010',
+        map: 'https://www.google.com/maps/search/La+Maison+Arabe+Marrakech'
+      }
+    ]
+  },
+  {
+    day: 7,
+    id: 'd7',
+    date: "Thursday, April 9, 2026",
+    location: "Marrakech & Agafay Desert",
+    title: "Daily Flow: Desert Evening",
+    weather: { temp: 84, cond: "Clear" },
+    mantra: "Dress simply but beautifully. The desert does the rest.",
+    fieldNotes: "The city loosens its grip. Jardin Majorelle offers a botanical sanctuary before we head out to the stone desert. Note: The Agafay is a 'Reg' (stone desert).",
+    flow: [
+      { 
+        id: 'd7-1', 
+        time: '10:00 AM', 
+        heading: 'MORNING', 
+        title: 'Jardin Majorelle', 
+        image: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=1200',
+        description: 'Jardin Majorelle is a famous botanical garden known for its vibrant cobalt blue buildings. Originally created by Jacques Majorelle.',
+        wardrobe: 'Vibrant colors or monochrome white to pop against the Majorelle Blue.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1589465885857-44ed45993464?auto=format&fit=crop&q=80&w=800',
+        ticketLink: 'https://www.jardinmajorelle.com/en/official-ticketing/',
+        contact: '+212 5243-13047',
+        map: 'https://www.google.com/maps/search/Jardin+Majorelle+Marrakech'
+      },
+      { 
+        id: 'd7-2', 
+        time: '6:30 PM', 
+        heading: 'EVENING', 
+        title: 'Desert Dinner: Agafay', 
+        image: 'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=80&w=1200',
+        description: 'Sunset camel ride followed by dinner in a luxury stone desert camp. The silence of the desert at dusk is unparalleled.',
+        wardrobe: 'Desert chic with heavy layers. Temperatures drop significantly at night.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=800'
+      }
+    ]
+  },
+  {
+    day: 8,
+    id: 'd8',
+    date: "Friday, April 10, 2026",
+    location: "Marrakech",
+    title: "Daily Flow: RETURN",
+    weather: { temp: 75, cond: "Sunny" },
+    mantra: "The journey continues, just in a different rhythm.",
+    fieldNotes: "One last walk through familiar paths. Memory begins to settle in now. Unpack slowly.",
+    flow: [
+      { id: 'd8-1', time: '11:30 AM', heading: 'AFTERNOON', title: 'Transit', image: 'https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?auto=format&fit=crop&q=80&w=1200', description: 'Transfer to Menara Airport for the flight home.', wardrobe: 'Comfortable travel knits.' }
+    ]
+  },
+  { type: 'journal', title: 'THE LOG', subtitle: 'COLLECTED MEMORIES' }
+];
+
+const StoneBackground = ({ children }) => (
+  <div className="min-h-screen bg-[#F5F5F3] text-black font-serif selection:bg-black selection:text-white transition-colors duration-500 overflow-x-hidden">
+    {children}
+  </div>
+);
+
+const WeatherDisplay = ({ weather }) => {
+  if (!weather) return null;
+  const getIcon = (cond) => {
+    const c = cond?.toLowerCase() || '';
+    if (c.includes('rain')) return <CloudRain size={18} />;
+    if (c.includes('wind')) return <Wind size={18} />;
+    if (c.includes('cloud')) return <Cloud size={18} />;
+    return <Sun size={18} />;
+  };
+  return (
+    <div className="flex items-center gap-4 bg-white/50 backdrop-blur px-5 py-2.5 rounded-full border border-black/10 shadow-sm">
+      <div className="text-black">{getIcon(weather.cond)}</div>
+      <div className="flex flex-col">
+        <span className="text-[11px] font-black uppercase tracking-tighter leading-none">{weather.temp}°F / {weather.cond}</span>
+        <span className="text-[9px] text-slate-500 uppercase tracking-widest leading-none mt-1">Live Conditions</span>
+      </div>
+    </div>
+  );
+};
+
+// --- ERROR BOUNDARY ---
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="fixed inset-0 flex items-center justify-center bg-white p-8 text-center">
+          <div>
+            <h2 className="text-xl font-bold mb-2">Something went wrong</h2>
+            <pre className="text-xs bg-gray-100 p-4 rounded text-left overflow-auto max-w-sm">{this.state.error?.toString()}</pre>
+            <button onClick={() => window.location.reload()} className="mt-4 px-4 py-2 bg-black text-white rounded">Reload</button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export default function App() {
+  const [pageIndex, setPageIndex] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState(null);
+  
+  // States for Sharing
+  const [isShareMode, setIsShareMode] = useState(false);
+  const [shareFormat, setShareFormat] = useState('story');
+  
+  // State for Image Upload
+  const [isUploading, setIsUploading] = useState(false);
+  const [bwFilter, setBwFilter] = useState(false);
+
+  // Persistence Hook
+  const { entries: journalEntries, saveEntry, status: saveStatus } = useJournal();
+  
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [pageIndex]);
+
+  const handleJournalChange = (itemId, note) => {
+    saveEntry(itemId, { note });
+  };
+
+  const processImage = (itemId, file, field = 'image') => {
+    if (!file) return;
+    setIsUploading(true);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 1200;
+        let width = img.width;
+        let height = img.height;
+        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        const base64 = canvas.toDataURL('image/jpeg', 0.6);
+        saveEntry(itemId, { [field]: base64 });
+        setIsUploading(false);
+      };
+    };
+  };
+
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Morocco Soul 2026',
+          text: `Checking in at ${activeItem.title}`,
+          url: window.location.href,
+        });
+      } catch (err) { console.log(err); }
+    } else {
+      alert("Screenshot this view to share!");
+    }
+  };
+
+  const nextPage = () => pageIndex < ITINERARY_DATA.length - 1 && setPageIndex(pageIndex + 1);
+  const prevPage = () => pageIndex > 0 && setPageIndex(pageIndex - 1);
+  const currentPage = ITINERARY_DATA[pageIndex];
+
+  return (
+    <ErrorBoundary>
+      <StoneBackground>
+        {/* --- PAGE CONTENT --- */}
+        <div className="pt-32 pb-48 px-6 md:px-12 max-w-5xl mx-auto min-h-screen flex flex-col">
+          
+          {/* COVER */}
+          {currentPage.type === 'cover' && (
+            <div className="flex-1 flex flex-col justify-center items-center text-center px-4 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+              <h1 className="text-[min(16vw,200px)] font-black tracking-tighter leading-none m-0 uppercase select-none w-full whitespace-nowrap overflow-visible">{currentPage.title}</h1>
+              <div className="h-[2px] w-32 md:w-48 bg-black mt-8" />
+              <p className="text-[10px] md:text-sm tracking-[1em] font-black uppercase text-slate-400 mt-8">{currentPage.subtitle}</p>
+              <div className="w-full max-w-4xl aspect-[4/5] md:aspect-[21/9] relative overflow-hidden mt-12 grayscale shadow-2xl transition-all duration-1000 hover:grayscale-0">
+                <img 
+                  src={currentPage.image} 
+                  className="w-full h-full object-cover scale-110" 
+                  onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200'; }}
+                />
+              </div>
+              <button onClick={nextPage} className="mt-16 px-12 py-4 border-2 border-black text-[11px] font-black uppercase tracking-[0.4em] hover:bg-black hover:text-white transition-all duration-500">BEGIN JOURNEY</button>
+            </div>
+          )}
+
+          {/* INTRO */}
+          {currentPage.type === 'intro' && (
+            <div className="flex-1 flex flex-col justify-center max-w-2xl mx-auto space-y-20 animate-in fade-in duration-1000">
+              <h2 className="text-[11px] font-black tracking-[0.6em] uppercase text-slate-300">THE RHYTHM</h2>
+              <div className="space-y-16">
+                {currentPage.body.map((para, i) => (
+                  <p key={i} className={`text-3xl md:text-4xl leading-[1.6] ${i === currentPage.body.length - 1 ? 'italic font-black text-black border-t-2 pt-16 border-black/5' : 'text-slate-800'}`}>{para}</p>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* FIELD NOTES */}
+          {currentPage.type === 'field-notes-global' && (
+            <div className="flex-1 py-12 animate-in fade-in duration-1000 uppercase">
+              <div className="mb-24 text-center">
+                <h2 className="text-7xl font-black tracking-tighter mb-6">{currentPage.title}</h2>
+                <div className="h-1.5 w-24 bg-black mx-auto" />
+              </div>
+              <div className="grid md:grid-cols-2 gap-x-24 gap-y-20">
+                {currentPage.notes.map((note, i) => (
+                  <div key={i} className="space-y-6 border-l border-black/10 pl-10">
+                    <h3 className="text-xs font-black uppercase tracking-[0.4em] text-black">{note.title}</h3>
+                    <p className="text-slate-700 text-lg leading-relaxed font-serif normal-case">{note.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* DAILY PAGE */}
+          {currentPage.day && (
+            <div className="flex-1 animate-in fade-in duration-1000">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20 border-b border-black/10 pb-16">
+                <div className="space-y-6">
+                  <p className="text-[12px] font-black tracking-[0.5em] uppercase text-slate-400">DAY {currentPage.day} — {currentPage.date}</p>
+                  <h2 className="text-6xl md:text-8xl font-black tracking-tighter leading-none m-0 uppercase">{currentPage.title}</h2>
+                  <div className="flex items-center gap-4 text-[12px] font-black uppercase tracking-[0.4em] text-slate-500"><MapPin size={16} className="text-black" /> {currentPage.location}</div>
+                </div>
+                <WeatherDisplay weather={currentPage.weather} />
+              </div>
+
+              <div className="mb-20 space-y-6">
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.6em] flex items-center gap-3"><Info size={16} /> FIELD NOTES</h3>
+                  <div className="text-2xl leading-relaxed text-slate-800 font-serif italic border-l-2 border-black/10 pl-10 opacity-90 whitespace-pre-wrap">{currentPage.fieldNotes}</div>
+              </div>
+
+              <div className="mb-32">
+                <h3 className="text-[11px] font-black uppercase tracking-[0.6em] pb-4 border-b-2 border-black mb-16">SCHEDULE</h3>
+                <div className="space-y-6">
+                  {currentPage.flow.map((item, i) => (
+                    <button key={i} onClick={() => setActiveItem(item)} className="group w-full text-left p-10 bg-white border border-black/5 hover:border-black transition-all rounded-[2rem] flex gap-10 items-start shadow-sm active:scale-[0.98]">
+                      <div className="text-[12px] font-black tracking-widest text-slate-200 group-hover:text-black transition-colors w-24 pt-1 shrink-0">{item.time}</div>
+                      <div className="flex-1 space-y-4">
+                        <div className="text-[10px] font-black tracking-[0.4em] uppercase text-slate-400 group-hover:text-black">{item.heading}</div>
+                        <div className="flex items-center gap-4">
+                          <h4 className="text-3xl font-black tracking-tight leading-none group-hover:opacity-70">{item.title}</h4>
+                          {journalEntries[item.id] && <div className="flex items-center gap-1 text-[9px] font-black uppercase tracking-tighter bg-black text-white px-2 py-0.5 rounded-full"><CloudUpload size={10} /> Logged</div>}
+                        </div>
+                        <p className="text-lg text-slate-500 line-clamp-2 italic font-serif leading-relaxed opacity-60 group-hover:opacity-100 transition-all">{item.description || item.body}</p>
+                      </div>
+                      <ArrowRight size={24} className="text-slate-100 group-hover:text-black group-hover:translate-x-3 transition-all shrink-0" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-20 border-t-2 border-black/10 flex flex-col items-center">
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.6em] mb-12">DAILY MANTRA</h3>
+                  <p className="text-2xl md:text-3xl font-black tracking-widest uppercase italic text-center max-w-2xl leading-relaxed">"{currentPage.mantra}"</p>
+              </div>
+            </div>
+          )}
+
+          {/* JOURNAL */}
+          {currentPage.type === 'journal' && (
+            <div className="flex-1 py-12 animate-in fade-in duration-1000">
+              <div className="mb-24 text-center">
+                <h2 className="text-7xl font-black tracking-tighter mb-6 uppercase">{currentPage.title}</h2>
+                <div className="h-1.5 w-24 bg-black mx-auto" />
+                <p className="text-sm tracking-[0.6em] font-black uppercase text-slate-400 mt-12">{currentPage.subtitle}</p>
+              </div>
+              <div className="space-y-32">
+                {Object.keys(journalEntries).length > 0 ? Object.keys(journalEntries).sort().map((key) => {
+                    const entry = journalEntries[key];
+                    if (!entry.note && !entry.image) return null;
+                    return (
+                      <div key={key} className="grid md:grid-cols-12 gap-16 items-center group">
+                        <div className="md:col-span-7 aspect-square grayscale group-hover:grayscale-0 transition-all duration-1000 shadow-xl overflow-hidden bg-black/5">
+                          <img src={entry.image || "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=800"} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="md:col-span-5 space-y-6">
+                          <div className="text-[10px] font-black tracking-[0.4em] uppercase opacity-30 border-b border-black/10 pb-2">REF: {key.toUpperCase()}</div>
+                          <p className="text-2xl md:text-3xl leading-[1.6] font-serif italic opacity-90">"{entry.note || "A moment captured."}"</p>
+                        </div>
+                      </div>
+                    );
+                  }) : <div className="text-center py-20 border-2 border-dashed border-black/10 rounded-3xl opacity-30 italic uppercase tracking-widest text-[10px]">Memories will persist here once captured.</div>}
+              </div>
+            </div>
+          )}
+
+          <footer className="mt-32 border-t border-black/10 pt-16 flex items-center justify-between">
+            <button onClick={prevPage} disabled={pageIndex === 0} className="flex items-center gap-4 text-[12px] font-black uppercase tracking-[0.5em] disabled:opacity-0 transition-all hover:-translate-x-4 group"><ChevronLeft size={24} className="group-hover:text-black" /> PREV</button>
+            <div className="text-[11px] font-black tracking-[0.8em] text-slate-300 uppercase">{pageIndex + 1} / {ITINERARY_DATA.length}</div>
+            <button onClick={nextPage} disabled={pageIndex === ITINERARY_DATA.length - 1} className="flex items-center gap-4 text-[12px] font-black uppercase tracking-[0.5em] disabled:opacity-0 transition-all hover:translate-x-4 group">NEXT <ChevronRight size={24} className="group-hover:text-black" /></button>
+          </footer>
+        </div>
+
+        {/* NAV */}
+        <nav className="fixed top-0 left-0 right-0 p-6 flex justify-between items-center z-[50] bg-[#F5F5F3]/80 backdrop-blur-md border-b border-black/5">
+          <div className="text-[11px] font-black uppercase tracking-[0.5em] cursor-pointer" onClick={() => setPageIndex(0)}>MOROCCO / 2026</div>
+          <button onClick={() => setMenuOpen(!menuOpen)} className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-3 group">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-black/5 group-hover:bg-black group-hover:text-white transition-all">{menuOpen ? <X size={16} /> : <Menu size={16} />}</div>
+            {menuOpen ? 'CLOSE' : 'INDEX'}
+          </button>
+        </nav>
+
+        {/* MENU */}
+        {menuOpen && (
+          <div className="fixed inset-0 bg-black text-[#F5F5F3] z-[200] flex flex-col justify-center items-center p-8 transition-all duration-500 overflow-y-auto">
+            <div className="w-full max-w-lg space-y-8 text-center py-24">
+              {ITINERARY_DATA.map((p, i) => (
+                <button key={i} className={`block w-full text-2xl md:text-3xl uppercase tracking-[0.2em] transition-all transform hover:scale-105 ${pageIndex === i ? 'opacity-100 font-black italic underline underline-offset-8' : 'opacity-25 hover:opacity-100'}`} onClick={() => { setPageIndex(i); setMenuOpen(false); }}>
+                  {p.type === 'cover' ? 'Start' : p.day ? `Day ${p.day}: ${p.title.replace('Daily Flow: ', '')}` : p.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* MODALS - MOVED TO BOTTOM FOR Z-INDEX SAFETY */}
+        
+        {/* Instagram Preview */}
+        {isShareMode && activeItem && (
+          <div className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center p-4">
+            <button onClick={() => setIsShareMode(false)} className="fixed top-8 right-8 text-white/50 hover:text-white transition-colors z-[10000]"><X size={32} /></button>
+            <div id="story-frame" className="w-full max-w-[400px] aspect-[9/16] bg-[#F5F5F3] shadow-2xl flex flex-col justify-between p-12 relative overflow-hidden animate-in fade-in zoom-in-95 duration-700">
+              <div className="space-y-8 z-10">
+                <div className="text-[12px] font-black tracking-[0.6em] uppercase opacity-40">MOROCCO — 2026</div>
+                <div className="aspect-[4/5] w-full overflow-hidden grayscale bg-black shadow-2xl">
+                  <img src={entries[activeItem.id]?.image || activeItem.image} className="w-full h-full object-cover" alt="Moment" />
+                </div>
+              </div>
+              <div className="space-y-8 z-10 mt-auto">
+                <h4 className="text-4xl font-black tracking-tighter leading-none uppercase">{activeItem.title}</h4>
+                <p className="text-xl italic opacity-80 leading-relaxed font-serif">"{entries[activeItem.id]?.note || "A rhythm found in the Red City."}"</p>
+                <div className="flex justify-between items-end pt-8 border-t border-black/5 text-[9px] font-black tracking-[0.4em] opacity-30">
+                  <span>SOUL OF THE MAGHREB</span>
+                  <MapPin size={14} className="opacity-20" />
+                </div>
+              </div>
+              <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
+            </div>
+
+            <div className="mt-12 flex flex-col items-center gap-6">
+              <button onClick={handleNativeShare} className="flex items-center gap-4 text-[12px] font-black uppercase tracking-[0.4em] bg-white text-black px-12 py-5 rounded-full active:scale-95 transition-all shadow-2xl hover:bg-white/90">
+                <Instagram size={20} /> Share / Save
+              </button>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 italic">Screenshot if menu fails</p>
+            </div>
+          </div>
+        )}
+
+        {/* Detailed Item Drawer (Reordered 1-10) */}
+        {activeItem && !isShareMode && (
+          <div className="fixed inset-0 z-[9999] bg-[#F5F5F3] p-6 md:p-12 overflow-y-auto animate-in slide-in-from-right duration-500">
+            <div className="fixed top-6 right-6 z-[10000] flex gap-4">
+               <button onClick={() => setActiveItem(null)} className="px-6 py-2 bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-2xl hover:opacity-80 transition-opacity">Close</button>
+            </div>
+            
+            <div className="max-w-2xl mx-auto space-y-16 pb-32 pt-12">
+              
+              {/* 1. WEATHER & TIME */}
+              <div className="flex items-center justify-between border-b border-black/10 pb-6">
+                  <div className="flex items-center gap-3 text-[11px] font-black tracking-[0.4em] uppercase text-slate-400"><Clock size={14} /> {activeItem.time}</div>
+                  <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em]"><Sun size={14} /> 72°F</div>
+              </div>
+
+              {/* 2. DESCRIPTION */}
+              <div className="space-y-4">
+                <h2 className="text-5xl font-black tracking-tighter leading-none">{activeItem.title}</h2>
+                <div className="aspect-[16/9] w-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 bg-black/5 shadow-inner my-6">
+                  <img src={activeItem.image} className="w-full h-full object-cover" />
+                </div>
+                <p className="text-xl text-slate-800 leading-[1.8] font-serif italic border-l-2 border-black/10 pl-8">{activeItem.description}</p>
+              </div>
+
+              {/* 3. LOGISTICS */}
+              <div className="pt-8 border-t border-black/10">
+                <h3 className="text-[11px] font-black tracking-[0.5em] uppercase mb-8 flex items-center gap-3"><MapPin size={16} /> LOGISTICS</h3>
+                <div className="space-y-4">
+                  {activeItem.contact && <a href={`tel:${activeItem.contact}`} className="flex items-center gap-4 text-sm font-bold border-b border-black/5 pb-3 hover:border-black transition-all"><Phone size={14} /> {activeItem.contact}</a>}
+                  {activeItem.map && <a href={activeItem.map} target="_blank" className="flex items-center gap-4 text-sm font-bold border-b border-black/5 pb-3 hover:border-black transition-all"><Navigation size={14} /> Open in Maps</a>}
+                  {activeItem.ticketLink && (
+                    <a href={activeItem.ticketLink} target="_blank" className="flex items-center gap-4 text-sm font-bold bg-black text-white px-6 py-4 rounded-full w-fit hover:opacity-80 transition-all">
+                      <Ticket size={14} /> Book Tickets
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* 4-7. WARDROBE (Commercial & User Swap) */}
+              <div className="pt-16 border-t border-black/10">
+                <h3 className="text-[11px] font-black tracking-[0.5em] uppercase mb-8 flex items-center gap-3"><Sparkles size={16} /> THE LOOK</h3>
+                <p className="text-base font-medium italic opacity-70 leading-relaxed mb-8">"{activeItem.wardrobe}"</p>
+                
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* Fil de Vie Suggestion */}
+                  <div className="space-y-4">
+                     <div className="aspect-[3/4] w-full bg-black/5 overflow-hidden grayscale">
+                        <img src={activeItem.commercialWardrobe || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800"} className="w-full h-full object-cover" />
+                     </div>
+                     <div className="flex justify-between items-center">
+                       <p className="text-[10px] font-black uppercase tracking-widest opacity-40 italic">Fil de Vie Recommendation</p>
+                       <button className="text-[10px] font-bold underline">Shop Look</button>
+                     </div>
+                  </div>
+
+                  {/* User Swap */}
+                  <div className="space-y-4">
+                     <label className="aspect-[3/4] w-full bg-white border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-4 hover:bg-black/5 cursor-pointer relative overflow-hidden group">
+                        <input type="file" accept="image/*" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onChange={(e) => processImage(activeItem.id, e.target.files[0], 'myLook')} />
+                        {entries[activeItem.id]?.myLook ? (
+                          <img src={entries[activeItem.id].myLook} className="w-full h-full object-cover" />
+                        ) : (
+                          <>
+                            <ShoppingBag size={24} className="opacity-20 group-hover:opacity-100 transition-opacity" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-center px-4">Upload My Look</span>
+                          </>
+                        )}
+                     </label>
+                     <p className="text-[10px] font-black uppercase tracking-widest opacity-40 italic text-center">Tap to Swap</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 8-9. TRAVEL LOG (Text & Photo) */}
+              <div className="pt-16 border-t border-black/10">
+                 <h3 className="text-[11px] font-black tracking-[0.5em] uppercase mb-8 flex items-center gap-3"><PenLine size={16} /> TRAVEL LOG</h3>
+                 
+                 <textarea 
+                  placeholder="Record the moment..."
+                  className="w-full bg-white border border-black/5 p-6 font-serif italic text-lg focus:outline-none focus:border-black/20 transition-all min-h-[150px] rounded-xl mb-8"
+                  value={entries[activeItem.id]?.note || ''}
+                  onChange={(e) => handleJournalChange(activeItem.id, e.target.value)}
+                />
+
+                <div className="grid md:grid-cols-2 gap-8 items-start">
+                   <label className="aspect-square bg-white border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-4 hover:bg-black/5 cursor-pointer relative overflow-hidden group rounded-xl">
+                      <input type="file" accept="image/*" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onChange={(e) => processImage(activeItem.id, e.target.files[0], 'logImage')} />
+                      {entries[activeItem.id]?.logImage ? (
+                        <img src={entries[activeItem.id].logImage} className="w-full h-full object-cover grayscale" />
+                      ) : (
+                        <>
+                          <Camera size={32} className="opacity-20 group-hover:opacity-100 transition-opacity" />
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Upload Photo</span>
+                        </>
+                      )}
+                   </label>
+
+                   <div className="space-y-6">
+                      {/* 9. SHARE BUTTON */}
+                      <button onClick={() => setIsShareMode(true)} className="w-full flex items-center justify-center gap-3 bg-black text-white px-6 py-4 rounded-lg hover:opacity-80 transition-opacity">
+                         <Share2 size={14} />
+                         <span className="text-[10px] font-black uppercase tracking-widest">Share to Instagram</span>
+                      </button>
+
+                      {/* 10. SAVE BUTTON */}
+                      <div className="flex items-center justify-center gap-2 p-4 bg-black/5 rounded-lg">
+                         {status === 'saving' ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                         <span className="text-[10px] font-black uppercase tracking-widest">{status === 'saving' ? 'Saving...' : 'Saved to Log'}</span>
+                      </div>
+                   </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+      </StoneBackground>
+    </ErrorBoundary>
+  );
+}
+

@@ -1,20 +1,23 @@
-import { type User, type InsertUser } from "@shared/schema";
+import { type User, type InsertUser, type JournalEntry, type JournalEntries } from "@shared/schema";
 import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  
+  getJournalEntries(): Promise<JournalEntries>;
+  saveJournalEntry(id: string, data: Partial<JournalEntry>): Promise<JournalEntry>;
+  getJournalEntry(id: string): Promise<JournalEntry | undefined>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
+  private journalEntries: JournalEntries;
 
   constructor() {
     this.users = new Map();
+    this.journalEntries = {};
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -32,6 +35,25 @@ export class MemStorage implements IStorage {
     const user: User = { ...insertUser, id };
     this.users.set(id, user);
     return user;
+  }
+
+  async getJournalEntries(): Promise<JournalEntries> {
+    return this.journalEntries;
+  }
+
+  async saveJournalEntry(id: string, data: Partial<JournalEntry>): Promise<JournalEntry> {
+    const currentEntry = this.journalEntries[id] || {};
+    const updatedEntry: JournalEntry = {
+      ...currentEntry,
+      ...data,
+      updatedAt: Date.now(),
+    };
+    this.journalEntries[id] = updatedEntry;
+    return updatedEntry;
+  }
+
+  async getJournalEntry(id: string): Promise<JournalEntry | undefined> {
+    return this.journalEntries[id];
   }
 }
 
