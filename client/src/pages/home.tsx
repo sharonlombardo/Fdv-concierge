@@ -30,6 +30,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useJournal, type JournalEntry } from '@/hooks/use-journal';
+import { useCustomImages } from '@/hooks/use-custom-images';
 import { 
   ITINERARY_DATA, 
   type ItineraryPage, 
@@ -92,6 +93,7 @@ interface ItemDetailDrawerProps {
   status: 'idle' | 'saving' | 'saved';
   onClose: () => void;
   onJournalChange: (id: string, note: string) => void;
+  getImageUrl: (key: string, defaultUrl: string) => string;
   onImageUpload: (id: string, file: File, field: string) => void;
   onImagesUpdate: (id: string, images: LocalLogImage[]) => void;
   onShare: () => void;
@@ -107,7 +109,8 @@ function ItemDetailDrawer({
   entries, 
   status, 
   onClose, 
-  onJournalChange, 
+  onJournalChange,
+  getImageUrl,
   onImageUpload,
   onImagesUpdate,
   onShare 
@@ -204,7 +207,7 @@ function ItemDetailDrawer({
           </h2>
           <div className="aspect-[16/9] w-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 bg-muted my-6 rounded-md">
             <img 
-              src={item.image} 
+              src={getImageUrl(item.id, item.image)} 
               className="w-full h-full object-cover" 
               alt={item.title}
               onError={(e) => {
@@ -639,6 +642,7 @@ export default function Home() {
   const [isShareMode, setIsShareMode] = useState(false);
 
   const { entries: journalEntries, saveEntry, status: saveStatus } = useJournal();
+  const { getImageUrl } = useCustomImages();
   
   useEffect(() => { 
     window.scrollTo({ top: 0, behavior: 'smooth' }); 
@@ -751,7 +755,7 @@ export default function Home() {
             </p>
             <div className="w-full max-w-4xl aspect-[4/5] md:aspect-[21/9] relative overflow-hidden mt-12 grayscale shadow-2xl transition-all duration-1000 hover:grayscale-0 rounded-md">
               <img 
-                src={currentPage.image} 
+                src={getImageUrl('cover-main', currentPage.image)} 
                 className="w-full h-full object-cover scale-110" 
                 alt={currentPage.title}
                 onError={(e) => { 
@@ -1037,6 +1041,15 @@ export default function Home() {
                 {getPageTitle(p)}
               </button>
             ))}
+            <div className="pt-12 border-t border-current/20 mt-12">
+              <a 
+                href="/images"
+                className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all"
+                data-testid="link-image-management"
+              >
+                Manage Images
+              </a>
+            </div>
           </div>
         </div>
       )}
@@ -1048,6 +1061,7 @@ export default function Home() {
           status={saveStatus}
           onClose={() => setActiveItem(null)}
           onJournalChange={handleJournalChange}
+          getImageUrl={getImageUrl}
           onImageUpload={processImage}
           onImagesUpdate={handleImagesUpdate}
           onShare={() => setIsShareMode(true)}
