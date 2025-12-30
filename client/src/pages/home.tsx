@@ -98,6 +98,8 @@ function ItemDetailDrawer({
   onShare 
 }: ItemDetailDrawerProps) {
   const [localNote, setLocalNote] = useState(entries[item.id]?.note || '');
+  const [localLogImage, setLocalLogImage] = useState(entries[item.id]?.logImage || '');
+  const [localMyLook, setLocalMyLook] = useState(entries[item.id]?.myLook || '');
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleNoteChange = useCallback((value: string) => {
@@ -107,6 +109,20 @@ function ItemDetailDrawer({
       onJournalChange(item.id, value);
     }, 800);
   }, [item.id, onJournalChange]);
+
+  const handleImageUpload = useCallback((file: File, field: string) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      if (field === 'logImage') {
+        setLocalLogImage(result);
+      } else if (field === 'myLook') {
+        setLocalMyLook(result);
+      }
+    };
+    reader.readAsDataURL(file);
+    onImageUpload(item.id, file, field);
+  }, [item.id, onImageUpload]);
 
   useEffect(() => {
     return () => {
@@ -225,11 +241,11 @@ function ItemDetailDrawer({
                     type="file" 
                     accept="image/*" 
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-                    onChange={(e) => e.target.files?.[0] && onImageUpload(item.id, e.target.files[0], 'myLook')}
+                    onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'myLook')}
                     data-testid="input-my-look"
                   />
-                  {entries[item.id]?.myLook ? (
-                    <img src={entries[item.id].myLook} className="w-full h-full object-cover" alt="My look" />
+                  {localMyLook ? (
+                    <img src={localMyLook} className="w-full h-full object-cover" alt="My look" />
                   ) : (
                     <>
                       <ShoppingBag className="w-6 h-6 opacity-20 group-hover:opacity-100 transition-opacity" />
@@ -262,11 +278,11 @@ function ItemDetailDrawer({
                 type="file" 
                 accept="image/*" 
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-                onChange={(e) => e.target.files?.[0] && onImageUpload(item.id, e.target.files[0], 'logImage')}
+                onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'logImage')}
                 data-testid="input-log-image"
               />
-              {entries[item.id]?.logImage ? (
-                <img src={entries[item.id].logImage} className="w-full h-full object-cover grayscale" alt="Log" />
+              {localLogImage ? (
+                <img src={localLogImage} className="w-full h-full object-cover grayscale" alt="Log" />
               ) : (
                 <>
                   <Camera className="w-8 h-8 opacity-20 group-hover:opacity-100 transition-opacity" />
