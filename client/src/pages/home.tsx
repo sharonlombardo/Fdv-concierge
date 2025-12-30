@@ -90,6 +90,7 @@ interface ItemDetailDrawerProps {
   onClose: () => void;
   onJournalChange: (id: string, note: string) => void;
   onImageUpload: (id: string, file: File, field: string) => void;
+  onImagesUpdate: (id: string, images: LocalLogImage[]) => void;
   onShare: () => void;
 }
 
@@ -105,6 +106,7 @@ function ItemDetailDrawer({
   onClose, 
   onJournalChange, 
   onImageUpload,
+  onImagesUpdate,
   onShare 
 }: ItemDetailDrawerProps) {
   const getExistingImages = (): LocalLogImage[] => {
@@ -149,16 +151,19 @@ function ItemDetailDrawer({
   }, [item.id, onImageUpload]);
 
   const handleRemoveImage = useCallback((index: number) => {
-    setLocalLogImages(prev => prev.filter((_, i) => i !== index));
-  }, []);
+    const newImages = localLogImages.filter((_, i) => i !== index);
+    setLocalLogImages(newImages);
+    onImagesUpdate(item.id, newImages);
+  }, [item.id, localLogImages, onImagesUpdate]);
 
   const handleCaptionChange = useCallback((index: number, caption: string) => {
-    setLocalLogImages(prev => prev.map((img, i) => i === index ? { ...img, caption } : img));
+    const newImages = localLogImages.map((img, i) => i === index ? { ...img, caption } : img);
+    setLocalLogImages(newImages);
     if (captionDebounceRef.current) clearTimeout(captionDebounceRef.current);
     captionDebounceRef.current = setTimeout(() => {
-      // Trigger save via parent
+      onImagesUpdate(item.id, newImages);
     }, 800);
-  }, []);
+  }, [item.id, localLogImages, onImagesUpdate]);
 
   useEffect(() => {
     return () => {
@@ -604,6 +609,10 @@ export default function Home() {
     saveEntry(itemId, { note });
   };
 
+  const handleImagesUpdate = (itemId: string, images: LocalLogImage[]) => {
+    saveEntry(itemId, { logImages: images });
+  };
+
   const processImage = (itemId: string, file: File, field: string = 'image') => {
     if (!file) return;
     const reader = new FileReader();
@@ -1001,6 +1010,7 @@ export default function Home() {
           onClose={() => setActiveItem(null)}
           onJournalChange={handleJournalChange}
           onImageUpload={processImage}
+          onImagesUpdate={handleImagesUpdate}
           onShare={() => setIsShareMode(true)}
         />
       )}
