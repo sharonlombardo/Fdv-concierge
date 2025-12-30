@@ -588,6 +588,15 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-background/40 dark:text-foreground/40 italic mt-2">
           Tap Save to add to your Photos for Instagram Stories
         </p>
+        <Button 
+          onClick={onClose} 
+          variant="ghost"
+          className="rounded-full px-12 py-5 mt-4 text-background/60 dark:text-foreground/60"
+          data-testid="button-back-share"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back
+        </Button>
       </div>
     </div>
   );
