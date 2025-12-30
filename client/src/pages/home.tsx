@@ -360,96 +360,119 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
     }
   };
 
-  const handleDownloadForStories = async () => {
+  const generateStoryImage = async (): Promise<Blob | null> => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    
+    canvas.width = 1080;
+    canvas.height = 1920;
+    
+    ctx.fillStyle = '#faf8f5';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    const logImages = entries[item.id]?.logImages || (entries[item.id]?.logImage ? [entries[item.id].logImage!] : []);
+    const userImage = logImages[0] || entries[item.id]?.image;
+    
+    if (userImage && userImage.startsWith('data:')) {
+      const img = new Image();
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('Image load failed'));
+        img.src = userImage;
+      });
+      
+      const imgX = 90;
+      const imgY = 180;
+      const imgWidth = 900;
+      const imgHeight = 900;
+      ctx.filter = 'grayscale(100%)';
+      ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight);
+      ctx.filter = 'none';
+    } else {
+      ctx.fillStyle = '#e8e4df';
+      ctx.fillRect(90, 180, 900, 900);
+      ctx.fillStyle = '#999999';
+      ctx.font = '24px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Your Photo Here', 540, 640);
+      ctx.textAlign = 'left';
+    }
+    
+    ctx.fillStyle = '#999999';
+    ctx.font = '600 22px Inter, sans-serif';
+    ctx.fillText('FDV CONCIERGE', 90, 100);
+    ctx.fillStyle = '#cccccc';
+    ctx.fillText(' — MOROCCO 2026', 280, 100);
+    
+    ctx.fillStyle = '#1a1a1a';
+    ctx.font = 'bold 64px Georgia, serif';
+    ctx.fillText(item.title, 90, 1200);
+    
+    ctx.font = 'italic 36px Georgia, serif';
+    ctx.fillStyle = '#555555';
+    const note = entries[item.id]?.note || 'A rhythm found in Morocco.';
+    const words = note.split(' ');
+    let line = '"';
+    let y = 1280;
+    for (const word of words) {
+      const testLine = line + word + ' ';
+      if (ctx.measureText(testLine).width > 900) {
+        ctx.fillText(line, 90, y);
+        line = word + ' ';
+        y += 50;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line.trim() + '"', 90, y);
+    
+    ctx.strokeStyle = '#dddddd';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(90, 1750);
+    ctx.lineTo(990, 1750);
+    ctx.stroke();
+    
+    ctx.fillStyle = '#aaaaaa';
+    ctx.font = '600 18px Inter, sans-serif';
+    ctx.fillText('FDV CONCIERGE', 90, 1800);
+    
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => resolve(blob), 'image/png');
+    });
+  };
+
+  const handleSaveToPhotos = async () => {
     setIsDownloading(true);
     try {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      const blob = await generateStoryImage();
+      if (!blob) throw new Error('Could not generate image');
       
-      canvas.width = 1080;
-      canvas.height = 1920;
+      const filename = `fdv-morocco-${item.title.toLowerCase().replace(/\s+/g, '-')}.png`;
+      const file = new File([blob], filename, { type: 'image/png' });
       
-      ctx.fillStyle = '#faf8f5';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      const logImages = entries[item.id]?.logImages || (entries[item.id]?.logImage ? [entries[item.id].logImage!] : []);
-      const userImage = logImages[0] || entries[item.id]?.image;
-      
-      if (userImage && userImage.startsWith('data:')) {
-        const img = new Image();
-        await new Promise<void>((resolve, reject) => {
-          img.onload = () => resolve();
-          img.onerror = () => reject(new Error('Image load failed'));
-          img.src = userImage;
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'FDV Concierge - Morocco 2026',
         });
-        
-        const imgX = 90;
-        const imgY = 180;
-        const imgWidth = 900;
-        const imgHeight = 900;
-        ctx.filter = 'grayscale(100%)';
-        ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight);
-        ctx.filter = 'none';
       } else {
-        ctx.fillStyle = '#e8e4df';
-        ctx.fillRect(90, 180, 900, 900);
-        ctx.fillStyle = '#999999';
-        ctx.font = '24px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Your Photo Here', 540, 640);
-        ctx.textAlign = 'left';
+        const dataUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(dataUrl);
+        alert('Image downloaded. On mobile, long-press the image to save to Photos.');
       }
-      
-      ctx.fillStyle = '#999999';
-      ctx.font = '600 22px Inter, sans-serif';
-      ctx.fillText('FDV CONCIERGE', 90, 100);
-      ctx.fillStyle = '#cccccc';
-      ctx.fillText(' — MOROCCO 2026', 280, 100);
-      
-      ctx.fillStyle = '#1a1a1a';
-      ctx.font = 'bold 64px Georgia, serif';
-      ctx.fillText(item.title, 90, 1200);
-      
-      ctx.font = 'italic 36px Georgia, serif';
-      ctx.fillStyle = '#555555';
-      const note = entries[item.id]?.note || 'A rhythm found in Morocco.';
-      const words = note.split(' ');
-      let line = '"';
-      let y = 1280;
-      for (const word of words) {
-        const testLine = line + word + ' ';
-        if (ctx.measureText(testLine).width > 900) {
-          ctx.fillText(line, 90, y);
-          line = word + ' ';
-          y += 50;
-        } else {
-          line = testLine;
-        }
-      }
-      ctx.fillText(line.trim() + '"', 90, y);
-      
-      ctx.strokeStyle = '#dddddd';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(90, 1750);
-      ctx.lineTo(990, 1750);
-      ctx.stroke();
-      
-      ctx.fillStyle = '#aaaaaa';
-      ctx.font = '600 18px Inter, sans-serif';
-      ctx.fillText('FDV CONCIERGE', 90, 1800);
-      
-      const dataUrl = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.download = `fdv-morocco-${item.title.toLowerCase().replace(/\s+/g, '-')}.png`;
-      link.href = dataUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (err) {
-      console.error('Download failed:', err);
-      alert('Could not generate image. Please take a screenshot instead.');
+      if ((err as Error).name !== 'AbortError') {
+        console.error('Save failed:', err);
+        alert('Could not save image. Please take a screenshot instead.');
+      }
     } finally {
       setIsDownloading(false);
     }
@@ -490,17 +513,17 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
 
       <div className="mt-12 flex flex-col items-center gap-4">
         <Button 
-          onClick={handleDownloadForStories} 
+          onClick={handleSaveToPhotos} 
           disabled={isDownloading}
           className="rounded-full px-12 py-5"
-          data-testid="button-download-stories"
+          data-testid="button-save-photos"
         >
           {isDownloading ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
           ) : (
             <Download className="w-4 h-4 mr-2" />
           )}
-          Download for Stories
+          Save to Photos
         </Button>
         <Button 
           onClick={handleNativeShare} 
@@ -512,7 +535,7 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
           Send via Message
         </Button>
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-background/40 dark:text-foreground/40 italic mt-2">
-          Download saves image to add to your Story
+          Tap Save to add to your Photos for Instagram Stories
         </p>
       </div>
     </div>
