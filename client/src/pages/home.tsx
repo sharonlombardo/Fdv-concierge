@@ -102,8 +102,9 @@ function ItemDetailDrawer({
   onImageUpload,
   onShare 
 }: ItemDetailDrawerProps) {
+  const existingImages = entries[item.id]?.logImages || (entries[item.id]?.logImage ? [entries[item.id].logImage!] : []);
   const [localNote, setLocalNote] = useState(entries[item.id]?.note || '');
-  const [localLogImage, setLocalLogImage] = useState(entries[item.id]?.logImage || '');
+  const [localLogImages, setLocalLogImages] = useState<string[]>(existingImages);
   const [localMyLook, setLocalMyLook] = useState(entries[item.id]?.myLook || '');
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -120,7 +121,7 @@ function ItemDetailDrawer({
     reader.onload = (e) => {
       const result = e.target?.result as string;
       if (field === 'logImage') {
-        setLocalLogImage(result);
+        setLocalLogImages(prev => [...prev, result]);
       } else if (field === 'myLook') {
         setLocalMyLook(result);
       }
@@ -128,6 +129,10 @@ function ItemDetailDrawer({
     reader.readAsDataURL(file);
     onImageUpload(item.id, file, field);
   }, [item.id, onImageUpload]);
+
+  const handleRemoveImage = useCallback((index: number) => {
+    setLocalLogImages(prev => prev.filter((_, i) => i !== index));
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -277,30 +282,39 @@ function ItemDetailDrawer({
             data-testid="textarea-journal"
           />
 
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            <label className="aspect-square bg-card border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 hover:bg-muted cursor-pointer relative overflow-hidden group rounded-md">
-              <input 
-                type="file" 
-                accept="image/*" 
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-                onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'logImage')}
-                data-testid="input-log-image"
-              />
-              {localLogImage ? (
-                <img src={localLogImage} className="w-full h-full object-cover grayscale" alt="Log" />
-              ) : (
-                <>
-                  <Camera className="w-8 h-8 opacity-20 group-hover:opacity-100 transition-opacity" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Upload Photo</span>
-                </>
-              )}
-            </label>
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {localLogImages.map((img, index) => (
+                <div key={index} className="aspect-square relative group overflow-hidden rounded-md">
+                  <img src={img} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" alt={`Log ${index + 1}`} />
+                  <button 
+                    onClick={() => handleRemoveImage(index)}
+                    className="absolute top-2 right-2 bg-background/80 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    data-testid={`button-remove-image-${index}`}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+              <label className="aspect-square bg-card border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 hover:bg-muted cursor-pointer relative overflow-hidden group rounded-md">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                  onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'logImage')}
+                  data-testid="input-log-image"
+                />
+                <Camera className="w-6 h-6 opacity-20 group-hover:opacity-100 transition-opacity" />
+                <span className="text-[9px] font-bold uppercase tracking-[0.15em]">Add Photo</span>
+              </label>
+            </div>
 
-            <div className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-4">
               <Button 
                 onClick={onShare} 
                 className="w-full rounded-md"
                 data-testid="button-share"
+                disabled={localLogImages.length === 0}
               >
                 <Share2 className="w-3.5 h-3.5 mr-2" />
                 <span className="text-[10px] font-bold uppercase tracking-widest">Share to Instagram</span>
@@ -359,7 +373,8 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
       ctx.fillStyle = '#faf8f5';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      const userImage = entries[item.id]?.logImage || entries[item.id]?.image;
+      const logImages = entries[item.id]?.logImages || (entries[item.id]?.logImage ? [entries[item.id].logImage!] : []);
+      const userImage = logImages[0] || entries[item.id]?.image;
       
       if (userImage && userImage.startsWith('data:')) {
         const img = new Image();
@@ -455,7 +470,7 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
           <div className="text-[11px] font-bold tracking-[0.5em] uppercase opacity-40">FDV CONCIERGE — 2026</div>
           <div className="aspect-square w-full overflow-hidden grayscale bg-foreground/5 shadow-xl rounded-md">
             <img 
-              src={entries[item.id]?.logImage || entries[item.id]?.image || item.image} 
+              src={(entries[item.id]?.logImages?.[0]) || entries[item.id]?.logImage || entries[item.id]?.image || item.image} 
               className="w-full h-full object-cover" 
               alt="Moment" 
             />
@@ -541,7 +556,14 @@ export default function Home() {
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(img, 0, 0, width, height);
         const base64 = canvas.toDataURL('image/jpeg', 0.6);
-        saveEntry(itemId, { [field]: base64 });
+        
+        if (field === 'logImage') {
+          const existingImages = journalEntries[itemId]?.logImages || 
+            (journalEntries[itemId]?.logImage ? [journalEntries[itemId].logImage!] : []);
+          saveEntry(itemId, { logImages: [...existingImages, base64] });
+        } else {
+          saveEntry(itemId, { [field]: base64 });
+        }
       };
     };
   };
@@ -745,16 +767,21 @@ export default function Home() {
               {Object.keys(journalEntries).length > 0 ? (
                 Object.keys(journalEntries).sort().map((key) => {
                   const entry = journalEntries[key];
-                  if (!entry.note && !entry.image && !entry.logImage) return null;
+                  const allImages = entry.logImages || (entry.logImage ? [entry.logImage] : []);
+                  if (!entry.note && !entry.image && allImages.length === 0) return null;
                   const matchingItem = findItemById(key);
                   return (
-                    <div key={key} className="grid md:grid-cols-12 gap-8 md:gap-16 items-center group">
-                      <div className="md:col-span-7 aspect-square grayscale group-hover:grayscale-0 transition-all duration-1000 shadow-xl overflow-hidden bg-muted rounded-md">
-                        <img 
-                          src={entry.logImage || entry.image || "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=800"} 
-                          className="w-full h-full object-cover" 
-                          alt="Memory"
-                        />
+                    <div key={key} className="space-y-8 group">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {(allImages.length > 0 ? allImages : [entry.image || "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=800"]).map((img, idx) => (
+                          <div key={idx} className="aspect-square grayscale group-hover:grayscale-0 transition-all duration-1000 shadow-xl overflow-hidden bg-muted rounded-md">
+                            <img 
+                              src={img} 
+                              className="w-full h-full object-cover" 
+                              alt={`Memory ${idx + 1}`}
+                            />
+                          </div>
+                        ))}
                       </div>
                       <div className="md:col-span-5 space-y-6">
                         <div className="text-[10px] font-bold tracking-[0.4em] uppercase opacity-30 border-b border-border pb-2">

@@ -7,6 +7,7 @@ export interface JournalEntry {
   image?: string;
   myLook?: string;
   logImage?: string;
+  logImages?: string[];
   updatedAt?: number;
 }
 
