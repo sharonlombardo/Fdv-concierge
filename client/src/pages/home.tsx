@@ -91,9 +91,10 @@ interface ItemDetailDrawerProps {
   item: FlowItem;
   entries: { [key: string]: JournalEntry };
   status: 'idle' | 'saving' | 'saved';
+  location?: string;
   onClose: () => void;
   onJournalChange: (id: string, note: string) => void;
-  getImageUrl: (key: string, defaultUrl: string) => string;
+  getImageUrl: (key: string, defaultUrl: string, context?: { time?: string; location?: string; title?: string; description?: string; imageType?: 'item' | 'wardrobe' | 'cover' }) => string;
   onImageUpload: (id: string, file: File, field: string) => void;
   onImagesUpdate: (id: string, images: LocalLogImage[]) => void;
   onShare: () => void;
@@ -108,6 +109,7 @@ function ItemDetailDrawer({
   item, 
   entries, 
   status, 
+  location,
   onClose, 
   onJournalChange,
   getImageUrl,
@@ -207,7 +209,7 @@ function ItemDetailDrawer({
           </h2>
           <div className="aspect-[16/9] w-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 bg-muted my-6 rounded-md">
             <img 
-              src={getImageUrl(item.id, item.image)} 
+              src={getImageUrl(item.id, item.image, { time: item.time, location, title: item.title, description: item.description, imageType: 'item' })} 
               className="w-full h-full object-cover" 
               alt={item.title}
               onError={(e) => {
@@ -755,7 +757,7 @@ export default function Home() {
             </p>
             <div className="w-full max-w-4xl aspect-[4/5] md:aspect-[21/9] relative overflow-hidden mt-12 grayscale shadow-2xl transition-all duration-1000 hover:grayscale-0 rounded-md">
               <img 
-                src={getImageUrl('cover-main', currentPage.image)} 
+                src={getImageUrl('cover-main', currentPage.image, { imageType: 'cover' })} 
                 className="w-full h-full object-cover scale-110" 
                 alt={currentPage.title}
                 onError={(e) => { 
@@ -1073,6 +1075,7 @@ export default function Home() {
           item={activeItem}
           entries={journalEntries}
           status={saveStatus}
+          location={isDayPage(currentPage) ? currentPage.location : undefined}
           onClose={() => setActiveItem(null)}
           onJournalChange={handleJournalChange}
           getImageUrl={getImageUrl}
