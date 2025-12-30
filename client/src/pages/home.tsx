@@ -354,60 +354,79 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
       ctx.fillStyle = '#faf8f5';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      const imageSrc = entries[item.id]?.logImage || entries[item.id]?.image || item.image;
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
+      const userImage = entries[item.id]?.logImage || entries[item.id]?.image;
       
-      await new Promise<void>((resolve, reject) => {
-        img.onload = () => resolve();
-        img.onerror = () => reject(new Error('Image load failed'));
-        img.src = imageSrc;
-      });
+      if (userImage && userImage.startsWith('data:')) {
+        const img = new Image();
+        await new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject(new Error('Image load failed'));
+          img.src = userImage;
+        });
+        
+        const imgX = 90;
+        const imgY = 180;
+        const imgWidth = 900;
+        const imgHeight = 900;
+        ctx.filter = 'grayscale(100%)';
+        ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight);
+        ctx.filter = 'none';
+      } else {
+        ctx.fillStyle = '#e8e4df';
+        ctx.fillRect(90, 180, 900, 900);
+        ctx.fillStyle = '#999999';
+        ctx.font = '24px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Your Photo Here', 540, 640);
+        ctx.textAlign = 'left';
+      }
       
-      const imgY = 200;
-      const imgWidth = 900;
-      const imgHeight = 1100;
-      const imgX = (canvas.width - imgWidth) / 2;
-      ctx.filter = 'grayscale(100%)';
-      ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight);
-      ctx.filter = 'none';
+      ctx.fillStyle = '#999999';
+      ctx.font = '600 22px Inter, sans-serif';
+      ctx.fillText('FDV CONCIERGE', 90, 100);
+      ctx.fillStyle = '#cccccc';
+      ctx.fillText(' — MOROCCO 2026', 280, 100);
       
       ctx.fillStyle = '#1a1a1a';
-      ctx.font = 'bold 24px Inter, sans-serif';
-      ctx.letterSpacing = '8px';
-      ctx.fillText('FDV CONCIERGE — 2026', 90, 120);
+      ctx.font = 'bold 64px Georgia, serif';
+      ctx.fillText(item.title, 90, 1200);
       
-      ctx.font = 'bold 56px Playfair Display, serif';
-      ctx.letterSpacing = '0px';
-      ctx.fillText(item.title, 90, 1450);
-      
-      ctx.font = 'italic 32px Playfair Display, serif';
-      ctx.fillStyle = '#666666';
+      ctx.font = 'italic 36px Georgia, serif';
+      ctx.fillStyle = '#555555';
       const note = entries[item.id]?.note || 'A rhythm found in Morocco.';
       const words = note.split(' ');
       let line = '"';
-      let y = 1520;
+      let y = 1280;
       for (const word of words) {
         const testLine = line + word + ' ';
         if (ctx.measureText(testLine).width > 900) {
           ctx.fillText(line, 90, y);
           line = word + ' ';
-          y += 44;
+          y += 50;
         } else {
           line = testLine;
         }
       }
       ctx.fillText(line.trim() + '"', 90, y);
       
-      ctx.fillStyle = '#cccccc';
-      ctx.font = 'bold 18px Inter, sans-serif';
-      ctx.fillText('FDV CONCIERGE', 90, 1820);
+      ctx.strokeStyle = '#dddddd';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(90, 1750);
+      ctx.lineTo(990, 1750);
+      ctx.stroke();
+      
+      ctx.fillStyle = '#aaaaaa';
+      ctx.font = '600 18px Inter, sans-serif';
+      ctx.fillText('FDV CONCIERGE', 90, 1800);
       
       const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.download = `fdv-morocco-${item.title.toLowerCase().replace(/\s+/g, '-')}.png`;
       link.href = dataUrl;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
     } catch (err) {
       console.error('Download failed:', err);
       alert('Could not generate image. Please take a screenshot instead.');
