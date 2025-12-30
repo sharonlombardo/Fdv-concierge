@@ -311,6 +311,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=1200',
         description: 'A fantastical botanical garden created by Austrian artist Andre Heller. Worth a detour if time allows.',
         wardrobe: 'Comfortable walking attire.',
+        address: 'Douar Sbiti, Ourika Road',
+        notes: 'Created by Andre Heller, shuttle from Marrakech available',
         map: 'https://www.google.com/maps/search/Anima+Garden+Marrakech'
       },
       { 
@@ -540,6 +542,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&q=80&w=1200',
         description: 'Explore the 18th-century seafront ramparts and the historic port with its fleet of bright blue wooden fishing boats.',
         wardrobe: 'Coastal layers.',
+        address: 'Essaouira Medina, Atlantic Coast',
+        notes: 'UNESCO World Heritage site, windy conditions common',
         map: 'https://www.google.com/maps/search/Essaouira+Ramparts'
       },
       { 
@@ -550,6 +554,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200',
         description: 'Fresh seafood and Moroccan classics in a charming medina setting.',
         wardrobe: 'Continue in coastal attire.',
+        address: 'Rue Youssef el Fassi, Essaouira Medina',
+        notes: 'Fresh seafood, rooftop terrace available',
         map: 'https://www.google.com/maps/search/Dar+Baba+Essaouira'
       },
       { 
@@ -559,7 +565,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Coastal E-Bike Ride', 
         image: 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?auto=format&fit=crop&q=80&w=1200',
         description: 'Ride along the coast with the Atlantic breeze. A refreshing way to explore.',
-        wardrobe: 'Active coastal wear. Wind-resistant layers.'
+        wardrobe: 'Active coastal wear. Wind-resistant layers.',
+        notes: 'Arrange through local tour operator, helmets provided'
       },
       { 
         id: 'd5-5', 
@@ -568,7 +575,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Walk Along the Water', 
         image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1200',
         description: 'A final stroll along the beach before heading back.',
-        wardrobe: 'Comfortable walking attire.'
+        wardrobe: 'Comfortable walking attire.',
+        address: 'Essaouira Beach',
+        notes: 'Best views at sunset, can be windy'
       },
       { 
         id: 'd5-6', 
@@ -678,7 +687,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Optional Hammam at El Fenn or La Mamounia', 
         image: 'https://images.unsplash.com/photo-1534067783941-51c9c23ea337?auto=format&fit=crop&q=80&w=1200',
         description: 'A traditional hammam experience. Deep relaxation before the final days.',
-        wardrobe: 'Robe and comfortable layers after.'
+        wardrobe: 'Robe and comfortable layers after.',
+        notes: 'Book in advance, private hammam recommended'
       },
       { 
         id: 'd6-8', 
@@ -762,7 +772,9 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200',
         description: 'Drive out to the stone desert. The landscape opens up as the city fades.',
         wardrobe: 'Desert chic with layers. Temperatures drop significantly at night.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=800'
+        commercialWardrobe: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=800',
+        address: 'Agafay Desert, 40km from Marrakech',
+        notes: '45-minute drive, arranged through tour operator'
       },
       { 
         id: 'd7-6', 
@@ -771,7 +783,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Dune Buggy Ride', 
         image: 'https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?auto=format&fit=crop&q=80&w=1200',
         description: 'An exhilarating ride through the stone desert landscape.',
-        wardrobe: 'Active desert wear. Scarf for dust.'
+        wardrobe: 'Active desert wear. Scarf for dust.',
+        notes: 'Safety gear provided, 30-45 minute ride'
       },
       { 
         id: 'd7-7', 
@@ -780,7 +793,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Camel Ride at Sunset', 
         image: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&q=80&w=1200',
         description: 'A sunset camel ride through the desert. The silence at dusk is unparalleled.',
-        wardrobe: 'Comfortable layers. Heavy wrap for evening chill.'
+        wardrobe: 'Comfortable layers. Heavy wrap for evening chill.',
+        notes: 'Guides assist with mounting, 20-30 minute ride'
       },
       { 
         id: 'd7-8', 
@@ -789,7 +803,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Dinner in the Desert', 
         image: 'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=80&w=1200',
         description: 'Dinner under the stars in a luxury stone desert camp.',
-        wardrobe: 'Desert chic with heavy layers.'
+        wardrobe: 'Desert chic with heavy layers.',
+        notes: 'Traditional Moroccan dinner, stargazing included'
       },
       { 
         id: 'd7-9', 
@@ -847,7 +862,10 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?auto=format&fit=crop&q=80&w=1200', 
         description: 'Transfer to the airport for your international flight.', 
         wardrobe: 'Comfortable travel layers.',
-        map: 'https://www.google.com/maps/search/RAK+Airport+Marrakech'
+        contact: '+212 524 447 910',
+        address: 'Ménara, Marrakech 40000',
+        notes: 'Allow 2 hours before international flights',
+        map: 'https://www.google.com/maps/search/Marrakech+Menara+Airport'
       },
       { 
         id: 'd8-5', 

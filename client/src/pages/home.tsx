@@ -13,6 +13,7 @@ import {
   Clock, 
   Info,
   ArrowRight,
+  ArrowLeft,
   Camera,
   PenLine,
   CloudUpload,
@@ -22,7 +23,9 @@ import {
   Loader2,
   Share2,
   Save,
-  Download
+  Download,
+  Mail,
+  FileText
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -214,12 +217,21 @@ function ItemDetailDrawer({
           </p>
         </div>
 
-        {(item.contact || item.map || item.ticketLink) && (
+        {(item.contact || item.email || item.address || item.notes || item.map || item.ticketLink) && (
           <div className="pt-8 border-t border-border">
             <h3 className="text-[11px] font-bold tracking-[0.5em] uppercase mb-8 flex items-center gap-3">
               <MapPin className="w-4 h-4" /> LOGISTICS
             </h3>
             <div className="space-y-4">
+              {item.address && (
+                <div 
+                  className="flex items-start gap-4 text-sm font-medium border-b border-border/50 pb-3"
+                  data-testid="text-address"
+                >
+                  <MapPin className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" /> 
+                  <span>{item.address}</span>
+                </div>
+              )}
               {item.contact && (
                 <a 
                   href={`tel:${item.contact}`} 
@@ -228,6 +240,24 @@ function ItemDetailDrawer({
                 >
                   <Phone className="w-3.5 h-3.5" /> {item.contact}
                 </a>
+              )}
+              {item.email && (
+                <a 
+                  href={`mailto:${item.email}`} 
+                  className="flex items-center gap-4 text-sm font-medium border-b border-border/50 pb-3 hover:border-foreground transition-all"
+                  data-testid="link-email"
+                >
+                  <Mail className="w-3.5 h-3.5" /> {item.email}
+                </a>
+              )}
+              {item.notes && (
+                <div 
+                  className="flex items-start gap-4 text-sm text-muted-foreground border-b border-border/50 pb-3"
+                  data-testid="text-notes"
+                >
+                  <FileText className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" /> 
+                  <span className="italic">{item.notes}</span>
+                </div>
               )}
               {item.map && (
                 <a 
