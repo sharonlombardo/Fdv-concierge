@@ -649,7 +649,7 @@ export default function Home() {
   const [isShareMode, setIsShareMode] = useState(false);
 
   const { entries: journalEntries, saveEntry, status: saveStatus } = useJournal();
-  const { getImageUrl } = useCustomImages();
+  const { getImageUrl, hasCustomImage } = useCustomImages();
   
   useEffect(() => { 
     localStorage.setItem('fdv_page_index', pageIndex.toString());
@@ -979,37 +979,54 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
               {(() => {
-                const looks = Object.entries(journalEntries)
-                  .filter(([_, entry]) => entry.myLook)
-                  .map(([key, entry]) => ({ key, look: entry.myLook!, item: findItemById(key) }));
-                
-                if (looks.length === 0) {
+                const wardrobeItems: { key: string; dayNumber: number; itemTitle: string; time: string; suggestedImage: string }[] = [];
+                ITINERARY_DATA.forEach((page) => {
+                  if (isDayPage(page)) {
+                    page.flow.forEach((item) => {
+                      if (item.commercialWardrobe) {
+                        wardrobeItems.push({
+                          key: `${item.id}-wardrobe`,
+                          dayNumber: page.day,
+                          itemTitle: item.title,
+                          time: item.time,
+                          suggestedImage: item.commercialWardrobe,
+                        });
+                      }
+                    });
+                  }
+                });
+
+                return wardrobeItems.map((wardrobeItem) => {
+                  const customLook = journalEntries[wardrobeItem.key.replace('-wardrobe', '')]?.myLook;
+                  const customImage = hasCustomImage(wardrobeItem.key);
+                  const displayUrl = customLook || getImageUrl(wardrobeItem.key, wardrobeItem.suggestedImage);
+                  const isCustom = !!customLook || customImage;
+
                   return (
-                    <div className="col-span-full text-center py-20 border-2 border-dashed border-border rounded-md opacity-30 italic uppercase tracking-widest text-[10px]">
-                      Upload your looks in each day's activities to build your packing list.
+                    <div key={wardrobeItem.key} className="group">
+                      <div className="aspect-[3/4] overflow-hidden bg-muted rounded-md shadow-lg relative">
+                        <img 
+                          src={displayUrl} 
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                          alt={wardrobeItem.itemTitle}
+                        />
+                        {isCustom && (
+                          <div className="absolute top-2 right-2 bg-foreground/80 text-background text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                            Custom
+                          </div>
+                        )}
+                      </div>
+                      <div className="mt-3 space-y-1">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40">
+                          Day {wardrobeItem.dayNumber} · {wardrobeItem.time}
+                        </p>
+                        <p className="text-sm font-serif font-medium truncate">
+                          {wardrobeItem.itemTitle}
+                        </p>
+                      </div>
                     </div>
                   );
-                }
-                
-                return looks.map(({ key, look, item }) => (
-                  <div key={key} className="group">
-                    <div className="aspect-[3/4] overflow-hidden bg-muted rounded-md shadow-lg">
-                      <img 
-                        src={look} 
-                        className="w-full h-full object-cover" 
-                        alt="Your look"
-                      />
-                    </div>
-                    <div className="mt-3 space-y-1">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40">
-                        {item?.time || 'YOUR LOOK'}
-                      </p>
-                      <p className="text-sm font-serif font-medium truncate">
-                        {item?.title || key}
-                      </p>
-                    </div>
-                  </div>
-                ));
+                });
               })()}
             </div>
           </div>
