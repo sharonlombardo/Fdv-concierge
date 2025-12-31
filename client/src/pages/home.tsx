@@ -207,7 +207,7 @@ function ItemDetailDrawer({
           <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight leading-none" data-testid="text-item-title">
             {item.title}
           </h2>
-          <div className="aspect-[16/9] w-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 bg-muted my-6 rounded-md">
+          <div className="aspect-[16/9] w-full overflow-hidden bg-muted my-6 rounded-md">
             <img 
               src={getImageUrl(item.id, item.image, { time: item.time, location, title: item.title, description: item.description, imageType: 'item' })} 
               className="w-full h-full object-cover" 
@@ -299,7 +299,7 @@ function ItemDetailDrawer({
             
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <div className="aspect-[3/4] w-full bg-muted overflow-hidden grayscale rounded-md">
+                <div className="aspect-[3/4] w-full bg-muted overflow-hidden rounded-md">
                   <img 
                     src={getImageUrl(
                       `${item.id}-wardrobe`,
@@ -358,7 +358,7 @@ function ItemDetailDrawer({
               {localLogImages.map((img, index) => (
                 <div key={index} className="space-y-3">
                   <div className="aspect-square relative group overflow-hidden rounded-md">
-                    <img src={img.src} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" alt={`Log ${index + 1}`} />
+                    <img src={img.src} className="w-full h-full object-cover" alt={`Log ${index + 1}`} />
                     <button 
                       onClick={() => handleRemoveImage(index)}
                       className="absolute top-2 right-2 bg-background/80 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -470,9 +470,7 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
       const imgY = 180;
       const imgWidth = 900;
       const imgHeight = 900;
-      ctx.filter = 'grayscale(100%)';
       ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight);
-      ctx.filter = 'none';
     } else {
       ctx.fillStyle = '#e8e4df';
       ctx.fillRect(90, 180, 900, 900);
@@ -575,7 +573,7 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
       <div ref={cardRef} className="w-full max-w-[400px] max-h-[85vh] overflow-y-auto bg-background dark:bg-card shadow-2xl flex flex-col p-8 relative animate-in fade-in zoom-in-95 duration-700 rounded-md">
         <div className="space-y-6 z-10">
           <div className="text-[11px] font-bold tracking-[0.5em] uppercase opacity-40">FDV CONCIERGE — 2026</div>
-          <div className="aspect-square w-full overflow-hidden grayscale bg-foreground/5 shadow-xl rounded-md">
+          <div className="aspect-square w-full overflow-hidden bg-foreground/5 shadow-xl rounded-md">
             <img 
               src={(() => {
                 const first = entries[item.id]?.logImages?.[0];
@@ -915,7 +913,7 @@ export default function Home() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {(allImages.length > 0 ? allImages : [{ src: entry.image || "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=800", caption: '' }]).map((img, idx) => (
                           <div key={idx} className="space-y-2">
-                            <div className="aspect-square grayscale group-hover:grayscale-0 transition-all duration-1000 shadow-xl overflow-hidden bg-muted rounded-md">
+                            <div className="aspect-square shadow-xl overflow-hidden bg-muted rounded-md">
                               <img 
                                 src={img.src} 
                                 className="w-full h-full object-cover" 
@@ -982,7 +980,7 @@ export default function Home() {
                 
                 return looks.map(({ key, look, item }) => (
                   <div key={key} className="group">
-                    <div className="aspect-[3/4] overflow-hidden bg-muted rounded-md shadow-lg grayscale group-hover:grayscale-0 transition-all duration-700">
+                    <div className="aspect-[3/4] overflow-hidden bg-muted rounded-md shadow-lg">
                       <img 
                         src={look} 
                         className="w-full h-full object-cover" 

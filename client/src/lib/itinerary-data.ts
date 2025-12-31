@@ -719,20 +719,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
       },
       { 
         id: 'd7-4', 
-        time: 'Afternoon', 
-        heading: 'AFTERNOON', 
-        title: 'Lunch or Drinks at Royal Mansour', 
-        image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1200',
-        description: 'One of the most opulent hotels in the world. A fitting midday pause.',
-        wardrobe: 'Elegant afternoon attire. Polished and refined.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800',
-        contact: '+212 529 808 080',
-        address: 'Rue Abou Abbas El Sebti',
-        notes: 'Bar reservations via concierge',
-        map: 'https://www.google.com/maps/search/Royal+Mansour+Marrakech'
-      },
-      { 
-        id: 'd7-5', 
         time: 'Evening', 
         heading: 'EVENING', 
         title: 'Transfer to Agafay Desert', 
