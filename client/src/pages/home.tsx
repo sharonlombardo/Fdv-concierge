@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import fdvLogo from '@assets/LOGO_1767219658929.png';
 import { 
   ChevronRight, 
   ChevronLeft, 
@@ -572,7 +573,7 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
       
       <div ref={cardRef} className="w-full max-w-[400px] max-h-[85vh] overflow-y-auto bg-background dark:bg-card shadow-2xl flex flex-col p-8 relative animate-in fade-in zoom-in-95 duration-700 rounded-md">
         <div className="space-y-6 z-10">
-          <div className="text-[11px] font-bold tracking-[0.5em] uppercase opacity-40">FDV CONCIERGE — 2026</div>
+          <img src={fdvLogo} alt="FDV Concierge" className="h-6 w-auto opacity-40 dark:invert" />
           <div className="aspect-square w-full overflow-hidden bg-foreground/5 shadow-xl rounded-md">
             <img 
               src={(() => {
@@ -592,8 +593,8 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
           <p className="text-base md:text-lg italic opacity-80 leading-relaxed font-serif">
             "{entries[item.id]?.note || "A rhythm found in Morocco."}"
           </p>
-          <div className="flex justify-between items-end pt-4 border-t border-border text-[9px] font-bold tracking-[0.4em] opacity-30">
-            <span>FDV CONCIERGE</span>
+          <div className="flex justify-between items-end pt-4 border-t border-border">
+            <img src={fdvLogo} alt="FDV Concierge" className="h-4 w-auto opacity-30 dark:invert" />
             <MapPin className="w-3.5 h-3.5 opacity-20" />
           </div>
         </div>
@@ -728,11 +729,11 @@ export default function Home() {
       
       <nav className="fixed top-0 left-0 right-0 p-4 md:p-6 flex justify-between items-center z-[50] bg-background/80 backdrop-blur-md border-b border-border">
         <div 
-          className="text-[11px] font-bold uppercase tracking-[0.5em] cursor-pointer" 
+          className="cursor-pointer" 
           onClick={() => setPageIndex(0)}
           data-testid="link-home"
         >
-          FDV / MOROCCO
+          <img src={fdvLogo} alt="FDV Concierge" className="h-8 w-auto dark:invert" />
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
