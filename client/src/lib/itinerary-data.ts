@@ -123,8 +123,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'MORNING', 
         title: 'Transfer to the Atlas Mountains', 
         image: 'https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200',
-        description: 'Private transfer for the 60-minute ascent into the Atlas range. Watch the landscape transform from city to valley.',
-        wardrobe: 'Comfortable travel layers.'
+        description: 'Private transfer for the 60-minute ascent into the Atlas range. Watch the landscape transform from city to valley.'
       },
       { 
         id: 'd1-3', 
@@ -147,8 +146,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'AFTERNOON',
         title: 'Walk the Grounds',
         image: 'https://images.unsplash.com/photo-1536713009761-0d3815e109d9?auto=format&fit=crop&q=80&w=1200',
-        description: 'Explore the organic gardens and terraces. Take in the mountain views.',
-        wardrobe: 'Comfortable walking attire.'
+        description: 'Explore the organic gardens and terraces. Take in the mountain views.'
       },
       {
         id: 'd1-5',
@@ -156,8 +154,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'AFTERNOON',
         title: 'Settle In and Rest',
         image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1200',
-        description: 'Unpack, decompress, and let the mountain air settle in.',
-        wardrobe: 'Relaxed layers.'
+        description: 'Unpack, decompress, and let the mountain air settle in.'
       },
       {
         id: 'd1-6',
@@ -175,8 +172,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'EVENING',
         title: 'Early Night',
         image: 'https://images.unsplash.com/photo-1518331647614-7a1f04cd34cf?auto=format&fit=crop&q=80&w=1200',
-        description: 'Rest early. The journey begins tomorrow.',
-        wardrobe: 'Comfortable sleepwear.'
+        description: 'Rest early. The journey begins tomorrow.'
       }
     ]
   },
@@ -197,7 +193,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Breakfast at the Kasbah', 
         image: 'https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200',
         description: 'Fresh breakfast with views of the Atlas range.',
-        wardrobe: 'Relaxed morning layers.'
+        wardrobe: 'Relaxed morning layers. Comfortable linen or cotton.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800'
       },
       { 
         id: 'd2-2', 
@@ -205,8 +202,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'MORNING', 
         title: 'Walk the Grounds', 
         image: 'https://images.unsplash.com/photo-1536713009761-0d3815e109d9?auto=format&fit=crop&q=80&w=1200',
-        description: 'Explore the organic gardens and terraces at your own pace.',
-        wardrobe: 'Comfortable walking attire.'
+        description: 'Explore the organic gardens and terraces at your own pace.'
       },
       { 
         id: 'd2-3', 
@@ -214,9 +210,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'MORNING', 
         title: 'Optional Village Walk or Light Hike', 
         image: 'https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200',
-        description: 'Optional gentle hike through nearby Berber villages. Witness the traditional way of life.',
-        wardrobe: 'Active mountain wear. Sturdy sneakers or hiking boots. Protective sun hat.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=800'
+        description: 'Optional gentle hike through nearby Berber villages. Witness the traditional way of life.'
       },
       {
         id: 'd2-4',
@@ -225,7 +219,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Lunch at the Kasbah',
         image: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=1200',
         description: 'Lunch featuring organic produce from the gardens.',
-        wardrobe: 'Relaxed layers.'
+        wardrobe: 'Relaxed afternoon layers. Light and breathable.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80&w=800'
       },
       {
         id: 'd2-5',
@@ -233,9 +228,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'AFTERNOON',
         title: 'Pool or Terrace Time',
         image: 'https://images.unsplash.com/photo-1518331647614-7a1f04cd34cf?auto=format&fit=crop&q=80&w=1200',
-        description: 'Unstructured time. The mountain midday sun is best enjoyed by the infinity pool.',
-        wardrobe: 'Swimwear and cover-up.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1574914629385-d7d1e83161df?auto=format&fit=crop&q=80&w=800'
+        description: 'Unstructured time. The mountain midday sun is best enjoyed by the infinity pool.'
       },
       {
         id: 'd2-6',
@@ -243,8 +236,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'AFTERNOON',
         title: 'Reading, Walking, or Rest',
         image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1200',
-        description: 'Follow your energy. This time is intentionally unstructured.',
-        wardrobe: 'Comfortable attire.'
+        description: 'Follow your energy. This time is intentionally unstructured.'
       },
       {
         id: 'd2-7',
@@ -253,7 +245,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Dinner at the Kasbah',
         image: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=1200',
         description: 'Another quiet evening with mountain views and organic cuisine.',
-        wardrobe: 'Warm knitwear or heavy wrap.'
+        wardrobe: 'Warm knitwear or heavy wrap for mountain evening.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&q=80&w=800'
       },
       {
         id: 'd2-8',
@@ -261,8 +254,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'EVENING',
         title: 'Early Night',
         image: 'https://images.unsplash.com/photo-1518331647614-7a1f04cd34cf?auto=format&fit=crop&q=80&w=1200',
-        description: 'Rest well before the transition to Marrakech.',
-        wardrobe: 'Comfortable sleepwear.'
+        description: 'Rest well before the transition to Marrakech.'
       }
     ]
   },
@@ -283,7 +275,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Breakfast at the Kasbah', 
         image: 'https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200',
         description: 'Final breakfast with mountain views.',
-        wardrobe: 'Relaxed morning layers.'
+        wardrobe: 'Relaxed morning layers. Comfortable linen or cotton.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800'
       },
       { 
         id: 'd3-2', 
@@ -291,8 +284,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'MORNING', 
         title: 'Final Walk and Views', 
         image: 'https://images.unsplash.com/photo-1536713009761-0d3815e109d9?auto=format&fit=crop&q=80&w=1200',
-        description: 'One last walk through the grounds before departure.',
-        wardrobe: 'Comfortable walking attire.'
+        description: 'One last walk through the grounds before departure.'
       },
       { 
         id: 'd3-3', 
@@ -300,8 +292,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'AFTERNOON', 
         title: 'Transfer to Marrakech', 
         image: 'https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200',
-        description: 'Descend from the peaks back into the Red City. The energy shifts from the horizontal landscape of the mountains to the vertical architecture of the Medina.',
-        wardrobe: 'Urban chic transition. Polished linen sets.'
+        description: 'Descend from the peaks back into the Red City. The energy shifts from the horizontal landscape of the mountains to the vertical architecture of the Medina.'
       },
       { 
         id: 'd3-4', 
@@ -310,7 +301,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Optional Stop at Anima Garden', 
         image: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=1200',
         description: 'A fantastical botanical garden created by Austrian artist Andre Heller. Worth a detour if time allows.',
-        wardrobe: 'Comfortable walking attire.',
         address: 'Douar Sbiti, Ourika Road',
         notes: 'Created by Andre Heller, shuttle from Marrakech available',
         map: 'https://www.google.com/maps/search/Anima+Garden+Marrakech'
@@ -336,8 +326,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'AFTERNOON',
         title: 'Explore Courtyards and Hidden Rooms',
         image: 'https://images.unsplash.com/photo-1548018560-c7196548e84d?auto=format&fit=crop&q=80&w=1200',
-        description: 'Wander the riad at your own pace. Discover hidden corners, art pieces, and quiet terraces.',
-        wardrobe: 'Relaxed but polished.'
+        description: 'Wander the riad at your own pace. Discover hidden corners, art pieces, and quiet terraces.'
       },
       {
         id: 'd3-7',
@@ -345,8 +334,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'AFTERNOON',
         title: 'Visit El Fenn Gift Shop',
         image: 'https://images.unsplash.com/photo-1531501410720-c8d437636169?auto=format&fit=crop&q=80&w=1200',
-        description: 'Browse the curated collection of Moroccan crafts and contemporary design.',
-        wardrobe: 'Continue in afternoon attire.'
+        description: 'Browse the curated collection of Moroccan crafts and contemporary design.'
       },
       {
         id: 'd3-8',
@@ -354,9 +342,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'EVENING',
         title: 'Rooftop Snacks and Cocktails at El Fenn',
         image: 'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=80&w=1200',
-        description: 'Watch the light change over the Medina with cocktails and snacks.',
-        wardrobe: 'Cocktail attire. Elevated but comfortable.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800'
+        description: 'Watch the light change over the Medina with cocktails and snacks.'
       },
       {
         id: 'd3-9',
@@ -365,7 +351,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Dinner at El Fenn Rooftop',
         image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200',
         description: 'The ultimate spot for dinner with sunset views over the Koutoubia Mosque.',
-        wardrobe: 'Cocktail attire. Elevated but comfortable.'
+        wardrobe: 'Cocktail attire. Elevated but comfortable.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800'
       }
     ]
   },
@@ -396,8 +383,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Dar El Bacha', 
         image: 'https://images.unsplash.com/photo-1548018560-c7196548e84d?auto=format&fit=crop&q=80&w=1200',
         description: "A stunning 1910 pasha's palace, now a museum showcasing Moroccan craftsmanship and history.",
-        wardrobe: 'Elegant morning attire. Modest but polished.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1550614000-4b9519e0947f?auto=format&fit=crop&q=80&w=800',
         contact: '+212 524 390 403',
         address: 'Rue Fatima Al Fihria, Medina',
         notes: 'Ticketed entry, mornings best',
@@ -410,8 +395,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Coffee at Bacha Coffee', 
         image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=1200',
         description: "Housed within Dar El Bacha, Bacha Coffee offers a legendary coffee list in a room of intricate tilework.",
-        wardrobe: 'Continue in morning attire.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1550614000-4b9519e0947f?auto=format&fit=crop&q=80&w=800',
         contact: '+212 524 386 090',
         address: 'Inside Dar El Bacha',
         notes: 'No reservations, expect wait midday',
@@ -438,8 +421,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Bahia Palace', 
         image: 'https://images.unsplash.com/photo-1553522991-71439aa62779?auto=format&fit=crop&q=80&w=1200',
         description: 'A 19th-century masterpiece of Moroccan architecture. Wander through painted ceilings, serene courtyards, and gardens.',
-        wardrobe: 'Comfortable walking shoes. Covered shoulders.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1550614000-4b9519e0947f?auto=format&fit=crop&q=80&w=800',
         contact: '+212 524 389 564',
         address: 'Rue Riad Zitoun el Jdid',
         notes: 'Open daily, modest entry fee',
@@ -453,8 +434,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Souk Cherifia', 
         image: 'https://images.unsplash.com/photo-1531501410720-c8d437636169?auto=format&fit=crop&q=80&w=1200',
         description: 'A curated collective of boutiques featuring contemporary Moroccan design, textiles, and crafts.',
-        wardrobe: 'Shopping-ready layers.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800',
         contact: '+212 524 376 194',
         address: 'Sidi Abdelaziz, Medina',
         notes: 'Curated artisans, fixed pricing',
@@ -467,8 +446,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Mustapha Blaoui', 
         image: 'https://images.unsplash.com/photo-1590073242678-70ee3fc28f8e?auto=format&fit=crop&q=80&w=1200',
         description: 'A legendary treasure house of Moroccan antiques, textiles, and lighting. Worth getting lost in.',
-        wardrobe: 'Continue in afternoon attire.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800',
         contact: '+212 524 375 601',
         address: '142 Rue Sidi Abdelaziz',
         notes: 'By appointment feel, serious buyers only',
@@ -480,9 +457,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'AFTERNOON', 
         title: 'Rest at El Fenn', 
         image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1200',
-        description: 'Return to the riad. Rooftop, pool, or quiet room. Recharge before the evening.',
-        wardrobe: 'Something comfortable for rest.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800'
+        description: 'Return to the riad. Rooftop, pool, or quiet room. Recharge before the evening.'
       },
       { 
         id: 'd4-9', 
@@ -505,8 +480,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Dinner at Dar Yacout', 
         image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&q=80&w=1200',
         description: 'A Marrakech institution. Legendary for its atmosphere, traditional live music, and a multi-course Moroccan banquet.',
-        wardrobe: 'Evening formal. Dress up for this institution.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&q=80&w=800',
         contact: '+212 524 377 579',
         address: 'Derb Sidi Ahmed Soussi',
         notes: 'Mandatory reservation, fixed menu, early seating advised',
@@ -541,7 +514,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Walk Ramparts and Old Town', 
         image: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&q=80&w=1200',
         description: 'Explore the 18th-century seafront ramparts and the historic port with its fleet of bright blue wooden fishing boats.',
-        wardrobe: 'Coastal layers.',
         address: 'Essaouira Medina, Atlantic Coast',
         notes: 'UNESCO World Heritage site, windy conditions common',
         map: 'https://www.google.com/maps/search/Essaouira+Ramparts'
@@ -553,7 +525,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Lunch at Dar Baba', 
         image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200',
         description: 'Fresh seafood and Moroccan classics in a charming medina setting.',
-        wardrobe: 'Continue in coastal attire.',
+        wardrobe: 'Continue in coastal attire. Light layers.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1577900232427-18219b9166a3?auto=format&fit=crop&q=80&w=800',
         address: 'Rue Youssef el Fassi, Essaouira Medina',
         notes: 'Fresh seafood, rooftop terrace available',
         map: 'https://www.google.com/maps/search/Dar+Baba+Essaouira'
@@ -565,7 +538,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Coastal E-Bike Ride', 
         image: 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?auto=format&fit=crop&q=80&w=1200',
         description: 'Ride along the coast with the Atlantic breeze. A refreshing way to explore.',
-        wardrobe: 'Active coastal wear. Wind-resistant layers.',
         notes: 'Arrange through local tour operator, helmets provided'
       },
       { 
@@ -575,7 +547,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Walk Along the Water', 
         image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1200',
         description: 'A final stroll along the beach before heading back.',
-        wardrobe: 'Comfortable walking attire.',
         address: 'Essaouira Beach',
         notes: 'Best views at sunset, can be windy'
       },
@@ -585,8 +556,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'EVENING', 
         title: 'Return to Marrakech', 
         image: 'https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200',
-        description: 'Drive back to the Red City as the sun sets.',
-        wardrobe: 'Comfortable travel layers.'
+        description: 'Drive back to the Red City as the sun sets.'
       },
       { 
         id: 'd5-7', 
@@ -620,7 +590,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Breakfast at the Riad', 
         image: 'https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200',
         description: 'Start the day slowly at El Fenn.',
-        wardrobe: 'Relaxed morning layers.'
+        wardrobe: 'Relaxed morning layers. Comfortable linen or cotton.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800'
       },
       { 
         id: 'd6-2', 
@@ -629,7 +600,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Saadian Tombs', 
         image: 'https://images.unsplash.com/photo-1553522991-71439aa62779?auto=format&fit=crop&q=80&w=1200',
         description: 'A stunning 16th-century royal necropolis, rediscovered in 1917. Intricate tilework and carved cedar.',
-        wardrobe: 'Comfortable walking attire. Covered shoulders.',
         address: 'Rue de la Kasbah, Medina',
         notes: 'Open daily, modest entry fee, mornings less crowded',
         map: 'https://www.google.com/maps/search/Saadian+Tombs+Marrakech'
@@ -641,7 +611,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'MAP Marrakech', 
         image: 'https://images.unsplash.com/photo-1548018560-c7196548e84d?auto=format&fit=crop&q=80&w=1200',
         description: 'Museum of African Contemporary Art. A beautifully curated space in a restored building.',
-        wardrobe: 'Elegant but comfortable.',
         address: 'Place de la Kissaria, Medina',
         notes: 'Contemporary African art exhibitions',
         map: 'https://www.google.com/maps/search/MAP+Marrakech+Museum'
@@ -653,7 +622,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Lunch at La Famille', 
         image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200',
         description: 'A hidden garden restaurant serving vegetarian Moroccan cuisine. Fresh, seasonal, and beautifully presented.',
-        wardrobe: 'Smart casual.',
+        wardrobe: 'Smart casual. Light and elegant.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800',
         address: '42 Rue Riad Zitoun el Jdid, Medina',
         notes: 'Vegetarian focused, garden setting, no reservations',
         map: 'https://www.google.com/maps/search/La+Famille+Marrakech'
@@ -664,8 +634,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'AFTERNOON', 
         title: 'Rest at El Fenn', 
         image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1200',
-        description: 'Return to the riad. Pool, terrace, or quiet room. Recharge before the evening.',
-        wardrobe: 'Something comfortable for rest.'
+        description: 'Return to the riad. Pool, terrace, or quiet room. Recharge before the evening.'
       },
       { 
         id: 'd6-6', 
@@ -674,7 +643,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Chef-led Cooking Workshop at La Maison Arabe', 
         image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=1200',
         description: 'A hands-on workshop in a tranquil garden setting. Learn the alchemy of Moroccan spices.',
-        wardrobe: 'Smart casual. Comfortable shoes for standing.',
+        wardrobe: 'Smart casual evening wear. Comfortable shoes for standing.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800',
         contact: '+212 524 387 010',
         address: 'Medina',
         notes: 'Cooking class reservations required',
@@ -687,7 +657,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Optional Hammam at El Fenn or La Mamounia', 
         image: 'https://images.unsplash.com/photo-1534067783941-51c9c23ea337?auto=format&fit=crop&q=80&w=1200',
         description: 'A traditional hammam experience. Deep relaxation before the final days.',
-        wardrobe: 'Robe and comfortable layers after.',
         notes: 'Book in advance, private hammam recommended'
       },
       { 
@@ -697,7 +666,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Dinner at Terrasse des Epices', 
         image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200',
         description: 'Rooftop dining in the heart of the medina. Moroccan and Mediterranean flavors with views.',
-        wardrobe: 'Casual evening attire.',
         contact: '+212 524 375 904',
         address: 'Souk Cherifia, Medina',
         notes: 'Rooftop terrace, reservations recommended',
@@ -722,7 +690,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Breakfast at the Riad', 
         image: 'https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200',
         description: 'Start the day slowly at El Fenn.',
-        wardrobe: 'Relaxed morning layers.'
+        wardrobe: 'Relaxed morning layers. Comfortable linen or cotton.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800'
       },
       { 
         id: 'd7-2', 
@@ -731,8 +700,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Jardin Majorelle', 
         image: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=1200',
         description: 'A famous botanical garden known for its vibrant cobalt blue buildings. Originally created by Jacques Majorelle.',
-        wardrobe: 'Vibrant colors or monochrome white to pop against the Majorelle Blue.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1589465885857-44ed45993464?auto=format&fit=crop&q=80&w=800',
         ticketLink: 'https://www.jardinmajorelle.com/en/official-ticketing/',
         contact: '+212 524 313 047',
         address: 'Rue Yves Saint Laurent, Gueliz',
@@ -746,7 +713,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Yves Saint Laurent Museum', 
         image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=1200',
         description: 'A stunning terracotta museum dedicated to the legendary designer. Adjacent to Jardin Majorelle.',
-        wardrobe: 'Elegant but comfortable.',
         address: 'Rue Yves Saint Laurent, Gueliz',
         notes: 'Adjacent to Jardin Majorelle, combined tickets available',
         map: 'https://www.google.com/maps/search/Yves+Saint+Laurent+Museum+Marrakech'
@@ -758,7 +724,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Lunch or Drinks at Royal Mansour', 
         image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1200',
         description: 'One of the most opulent hotels in the world. A fitting midday pause.',
-        wardrobe: 'Elegant afternoon attire.',
+        wardrobe: 'Elegant afternoon attire. Polished and refined.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800',
         contact: '+212 529 808 080',
         address: 'Rue Abou Abbas El Sebti',
         notes: 'Bar reservations via concierge',
@@ -771,8 +738,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Transfer to Agafay Desert', 
         image: 'https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200',
         description: 'Drive out to the stone desert. The landscape opens up as the city fades.',
-        wardrobe: 'Desert chic with layers. Temperatures drop significantly at night.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=800',
         address: 'Agafay Desert, 40km from Marrakech',
         notes: '45-minute drive, arranged through tour operator'
       },
@@ -783,7 +748,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Dune Buggy Ride', 
         image: 'https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?auto=format&fit=crop&q=80&w=1200',
         description: 'An exhilarating ride through the stone desert landscape.',
-        wardrobe: 'Active desert wear. Scarf for dust.',
+        wardrobe: 'Desert chic with layers. Active wear. Scarf for dust.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=800',
         notes: 'Safety gear provided, 30-45 minute ride'
       },
       { 
@@ -793,7 +759,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Camel Ride at Sunset', 
         image: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&q=80&w=1200',
         description: 'A sunset camel ride through the desert. The silence at dusk is unparalleled.',
-        wardrobe: 'Comfortable layers. Heavy wrap for evening chill.',
         notes: 'Guides assist with mounting, 20-30 minute ride'
       },
       { 
@@ -803,7 +768,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Dinner in the Desert', 
         image: 'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=80&w=1200',
         description: 'Dinner under the stars in a luxury stone desert camp.',
-        wardrobe: 'Desert chic with heavy layers.',
         notes: 'Traditional Moroccan dinner, stargazing included'
       },
       { 
@@ -812,8 +776,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'EVENING', 
         title: 'Return to Marrakech', 
         image: 'https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200',
-        description: 'Drive back to the city under the stars.',
-        wardrobe: 'Comfortable travel layers.'
+        description: 'Drive back to the city under the stars.'
       }
     ]
   },
@@ -834,7 +797,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Breakfast at the Riad', 
         image: 'https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200',
         description: 'Final breakfast at El Fenn.',
-        wardrobe: 'Comfortable travel layers.'
+        wardrobe: 'Comfortable travel layers. Natural linen or soft cotton.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800'
       },
       { 
         id: 'd8-2', 
@@ -842,8 +806,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'MORNING', 
         title: 'Final Packing', 
         image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1200',
-        description: 'Take your time. Let the memories settle.',
-        wardrobe: 'Comfortable travel attire.'
+        description: 'Take your time. Let the memories settle.'
       },
       { 
         id: 'd8-3', 
@@ -851,8 +814,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'MORNING', 
         title: 'Check-out and Departure Preparations', 
         image: 'https://images.unsplash.com/photo-1534067783941-51c9c23ea337?auto=format&fit=crop&q=80&w=1200',
-        description: 'Final moments at El Fenn before the journey home.',
-        wardrobe: 'Comfortable travel attire.'
+        description: 'Final moments at El Fenn before the journey home.'
       },
       { 
         id: 'd8-4', 
@@ -861,7 +823,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Transfer to Marrakech Menara Airport', 
         image: 'https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?auto=format&fit=crop&q=80&w=1200', 
         description: 'Transfer to the airport for your international flight.', 
-        wardrobe: 'Comfortable travel layers.',
+        wardrobe: 'Comfortable travel layers. Breathable and relaxed.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800',
         contact: '+212 524 447 910',
         address: 'Ménara, Marrakech 40000',
         notes: 'Allow 2 hours before international flights',
@@ -873,8 +836,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'AFTERNOON', 
         title: 'International Flight to New York', 
         image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=1200', 
-        description: 'Begin the journey home.', 
-        wardrobe: 'Comfortable travel layers.'
+        description: 'Begin the journey home.'
       },
       { 
         id: 'd8-6', 
@@ -882,8 +844,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         heading: 'EVENING', 
         title: 'Arrival in New York', 
         image: 'https://images.unsplash.com/photo-1485738422979-f5c462d49f74?auto=format&fit=crop&q=80&w=1200', 
-        description: 'The journey continues, just in a different rhythm.', 
-        wardrobe: 'Travel attire.'
+        description: 'The journey continues, just in a different rhythm.'
       }
     ]
   },
