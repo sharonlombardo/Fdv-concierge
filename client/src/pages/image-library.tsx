@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { ArrowLeft, Plus, X, Tag, Trash2, Upload, Check, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { ArrowLeft, Plus, X, Tag, Trash2, Upload, Check, Image as ImageIcon, Loader2, Pencil } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,6 +36,8 @@ const CATEGORIES = [
 export default function ImageLibrary() {
   const { toast } = useToast();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [editingImage, setEditingImage] = useState<ImageLibraryItem | null>(null);
+  const [editTagInput, setEditTagInput] = useState('');
   const [newImage, setNewImage] = useState<{
     imageUrl: string;
     name: string;
@@ -102,6 +104,42 @@ export default function ImageLibrary() {
       });
     },
   });
+
+  const updateImageMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: Partial<ImageLibraryItem> }) => {
+      return apiRequest('PATCH', `/api/library/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/library'] });
+      refetch();
+      setEditingImage(null);
+      toast({
+        title: "Image updated",
+        description: "Your changes have been saved.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Update failed",
+        description: error instanceof Error ? error.message : "Failed to update image.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const addEditTag = (tag: string) => {
+    if (!editingImage) return;
+    const normalizedTag = tag.toLowerCase().trim();
+    if (normalizedTag && !editingImage.tags?.includes(normalizedTag)) {
+      setEditingImage(prev => prev ? { ...prev, tags: [...(prev.tags || []), normalizedTag] } : null);
+    }
+    setEditTagInput('');
+  };
+
+  const removeEditTag = (tag: string) => {
+    if (!editingImage) return;
+    setEditingImage(prev => prev ? { ...prev, tags: (prev.tags || []).filter(t => t !== tag) } : null);
+  };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -367,7 +405,15 @@ export default function ImageLibrary() {
                     alt={image.name}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      onClick={() => setEditingImage(image)}
+                      data-testid={`button-edit-image-${image.id}`}
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button
@@ -437,6 +483,121 @@ export default function ImageLibrary() {
             </div>
           </div>
         )}
+
+        {/* Edit Dialog */}
+        <Dialog open={!!editingImage} onOpenChange={(open) => !open && setEditingImage(null)}>
+          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Edit Image</DialogTitle>
+              <DialogDescription>Update the image name, category, and tags.</DialogDescription>
+            </DialogHeader>
+            {editingImage && (
+              <div className="space-y-4 pt-4">
+                <div className="aspect-video rounded-md overflow-hidden bg-muted">
+                  <img src={editingImage.imageUrl} alt={editingImage.name} className="w-full h-full object-cover" />
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium">Name</label>
+                  <Input
+                    value={editingImage.name}
+                    onChange={(e) => setEditingImage(prev => prev ? { ...prev, name: e.target.value } : null)}
+                    placeholder="Image name"
+                    data-testid="input-edit-image-name"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium">Category</label>
+                  <Select
+                    value={editingImage.category || 'general'}
+                    onValueChange={(value) => setEditingImage(prev => prev ? { ...prev, category: value } : null)}
+                  >
+                    <SelectTrigger data-testid="select-edit-category">
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map(cat => (
+                        <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium">Tags</label>
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {(editingImage.tags || []).map(tag => (
+                      <Badge key={tag} variant="secondary" className="gap-1">
+                        {tag}
+                        <button onClick={() => removeEditTag(tag)} className="hover:text-destructive">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      value={editTagInput}
+                      onChange={(e) => setEditTagInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addEditTag(editTagInput);
+                        }
+                      }}
+                      placeholder="Add tag..."
+                      data-testid="input-edit-tag"
+                    />
+                    <Button size="icon" onClick={() => addEditTag(editTagInput)} disabled={!editTagInput.trim()} data-testid="button-add-edit-tag">
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="mt-2">
+                    <span className="text-xs text-muted-foreground">Suggested:</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {SUGGESTED_TAGS.filter(t => !(editingImage.tags || []).includes(t)).slice(0, 12).map(tag => (
+                        <Badge
+                          key={tag}
+                          variant="outline"
+                          className="cursor-pointer text-xs"
+                          onClick={() => addEditTag(tag)}
+                        >
+                          + {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setEditingImage(null)}>
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() => updateImageMutation.mutate({
+                      id: editingImage.id,
+                      data: {
+                        name: editingImage.name,
+                        category: editingImage.category,
+                        tags: editingImage.tags
+                      }
+                    })}
+                    disabled={!editingImage.name || updateImageMutation.isPending}
+                    data-testid="button-save-edit"
+                  >
+                    {updateImageMutation.isPending ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Check className="w-4 h-4 mr-2" />
+                    )}
+                    Save Changes
+                  </Button>
+                </DialogFooter>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
