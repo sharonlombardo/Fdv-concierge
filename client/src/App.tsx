@@ -9,6 +9,7 @@ import Home from "@/pages/home";
 import ImageManagement from "@/pages/image-management";
 import ImageLibrary from "@/pages/image-library";
 import ImageRules from "@/pages/image-rules";
+import PackingList from "@/pages/packing-list";
 
 function Router() {
   return (
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/images" component={ImageManagement} />
       <Route path="/library" component={ImageLibrary} />
       <Route path="/rules" component={ImageRules} />
+      <Route path="/packing" component={PackingList} />
       <Route component={NotFound} />
     </Switch>
   );
