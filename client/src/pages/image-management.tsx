@@ -201,10 +201,12 @@ export default function ImageManagement() {
         reader.readAsDataURL(file);
       });
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/images'] });
-      refetch();
-      setUploadingKey(null);
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({ queryKey: ['/api/images'] });
+      await refetch();
+      setTimeout(() => {
+        setUploadingKey(null);
+      }, 100);
       toast({
         title: "Image saved",
         description: `Custom image for "${data.label}" has been saved.`,
@@ -224,9 +226,9 @@ export default function ImageManagement() {
     mutationFn: async (imageKey: string) => {
       await apiRequest('DELETE', `/api/images/${imageKey}`);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/images'] });
-      refetch();
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['/api/images'] });
+      await refetch();
       toast({
         title: "Image removed",
         description: "Custom image has been removed.",
