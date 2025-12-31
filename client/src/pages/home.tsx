@@ -845,7 +845,7 @@ export default function Home() {
             </div>
 
             <div className="mb-20">
-              <div className="aspect-[21/9] w-full overflow-hidden rounded-md shadow-xl bg-muted">
+              <div className="aspect-[21/18] w-full overflow-hidden rounded-md shadow-xl bg-muted">
                 <img 
                   src={getImageUrl(`day-${currentPage.day}-hero`, currentPage.flow[0]?.image || '', { imageType: 'cover', title: currentPage.title, location: currentPage.location })} 
                   className="w-full h-full object-cover" 
