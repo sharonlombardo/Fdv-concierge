@@ -638,6 +638,15 @@ export const ITINERARY_DATA: ItineraryPage[] = [
       },
       { 
         id: 'd6-6', 
+        time: 'Afternoon', 
+        heading: 'AFTERNOON', 
+        title: 'Optional Hammam at El Fenn or La Mamounia', 
+        image: 'https://images.unsplash.com/photo-1534067783941-51c9c23ea337?auto=format&fit=crop&q=80&w=1200',
+        description: 'A traditional hammam experience. Deep relaxation before the final days.',
+        notes: 'Book in advance, private hammam recommended'
+      },
+      { 
+        id: 'd6-7', 
         time: 'Evening', 
         heading: 'EVENING', 
         title: 'Chef-led Cooking Workshop at La Maison Arabe', 
@@ -649,15 +658,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         address: 'Medina',
         notes: 'Cooking class reservations required',
         map: 'https://www.google.com/maps/search/La+Maison+Arabe+Marrakech'
-      },
-      { 
-        id: 'd6-7', 
-        time: 'Evening', 
-        heading: 'EVENING', 
-        title: 'Optional Hammam at El Fenn or La Mamounia', 
-        image: 'https://images.unsplash.com/photo-1534067783941-51c9c23ea337?auto=format&fit=crop&q=80&w=1200',
-        description: 'A traditional hammam experience. Deep relaxation before the final days.',
-        notes: 'Book in advance, private hammam recommended'
       },
       { 
         id: 'd6-8', 
@@ -733,11 +733,13 @@ export const ITINERARY_DATA: ItineraryPage[] = [
       },
       { 
         id: 'd7-5', 
-        time: 'Afternoon', 
-        heading: 'AFTERNOON', 
+        time: 'Evening', 
+        heading: 'EVENING', 
         title: 'Transfer to Agafay Desert', 
         image: 'https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200',
         description: 'Drive out to the stone desert. The landscape opens up as the city fades.',
+        wardrobe: 'Desert chic with layers. Temperatures drop significantly at night.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=800',
         address: 'Agafay Desert, 40km from Marrakech',
         notes: '45-minute drive, arranged through tour operator'
       },
@@ -748,8 +750,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Dune Buggy Ride', 
         image: 'https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?auto=format&fit=crop&q=80&w=1200',
         description: 'An exhilarating ride through the stone desert landscape.',
-        wardrobe: 'Desert chic with layers. Active wear. Scarf for dust.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=800',
         notes: 'Safety gear provided, 30-45 minute ride'
       },
       { 
