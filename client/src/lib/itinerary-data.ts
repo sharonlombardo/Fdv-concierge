@@ -418,14 +418,13 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         id: 'd4-5', 
         time: 'Afternoon', 
         heading: 'AFTERNOON', 
-        title: 'Bahia Palace', 
+        title: 'Badi Palace', 
         image: 'https://images.unsplash.com/photo-1553522991-71439aa62779?auto=format&fit=crop&q=80&w=1200',
-        description: 'A 19th-century masterpiece of Moroccan architecture. Wander through painted ceilings, serene courtyards, and gardens.',
-        contact: '+212 524 389 564',
-        address: 'Rue Riad Zitoun el Jdid',
-        notes: 'Open daily, modest entry fee',
-        map: 'https://www.google.com/maps/search/Bahia+Palace+Marrakech',
-        ticketLink: 'https://www.visitmarrakech.com/bahia-palace'
+        description: 'A 16th-century ruined palace built by Sultan Ahmad al-Mansur. Dramatic sunken gardens, towering walls, and resident storks.',
+        contact: '+212 524 378 163',
+        address: 'Ksibat Nhass, Medina',
+        notes: 'Open daily, modest entry fee, less crowded than Bahia',
+        map: 'https://www.google.com/maps/search/Badi+Palace+Marrakech'
       },
       { 
         id: 'd4-6', 
@@ -640,24 +639,22 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         id: 'd6-6', 
         time: 'Afternoon', 
         heading: 'AFTERNOON', 
-        title: 'Optional Hammam at El Fenn or La Mamounia', 
-        image: 'https://images.unsplash.com/photo-1534067783941-51c9c23ea337?auto=format&fit=crop&q=80&w=1200',
-        description: 'A traditional hammam experience. Deep relaxation before the final days.',
-        notes: 'Book in advance, private hammam recommended'
-      },
-      { 
-        id: 'd6-7', 
-        time: 'Evening', 
-        heading: 'EVENING', 
         title: 'Chef-led Cooking Workshop at La Maison Arabe', 
         image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=1200',
         description: 'A hands-on workshop in a tranquil garden setting. Learn the alchemy of Moroccan spices.',
-        wardrobe: 'Smart casual evening wear. Comfortable shoes for standing.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800',
         contact: '+212 524 387 010',
         address: 'Medina',
         notes: 'Cooking class reservations required',
         map: 'https://www.google.com/maps/search/La+Maison+Arabe+Marrakech'
+      },
+      { 
+        id: 'd6-7', 
+        time: 'Afternoon', 
+        heading: 'AFTERNOON', 
+        title: 'Optional Hammam at El Fenn or La Mamounia', 
+        image: 'https://images.unsplash.com/photo-1534067783941-51c9c23ea337?auto=format&fit=crop&q=80&w=1200',
+        description: 'A traditional hammam experience. Deep relaxation before the final days.',
+        notes: 'Book in advance, private hammam recommended'
       },
       { 
         id: 'd6-8', 
@@ -666,6 +663,8 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         title: 'Dinner at Terrasse des Epices', 
         image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200',
         description: 'Rooftop dining in the heart of the medina. Moroccan and Mediterranean flavors with views.',
+        wardrobe: 'Smart casual evening wear. Relaxed elegance for rooftop dining.',
+        commercialWardrobe: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800',
         contact: '+212 524 375 904',
         address: 'Souk Cherifia, Medina',
         notes: 'Rooftop terrace, reservations recommended',
