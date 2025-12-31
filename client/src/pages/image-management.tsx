@@ -5,6 +5,7 @@ import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { queryClient, apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 import { 
   ITINERARY_DATA, 
   type ItineraryPage, 
@@ -158,6 +159,7 @@ function ImageCard({
 }
 
 export default function ImageManagement() {
+  const { toast } = useToast();
   const [uploadingKey, setUploadingKey] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>('all');
   
@@ -168,7 +170,7 @@ export default function ImageManagement() {
     ? allImages 
     : allImages.filter(img => img.category === filter);
 
-  const { data: customImages = [], isLoading } = useQuery<CustomImage[]>({
+  const { data: customImages = [], isLoading, refetch } = useQuery<CustomImage[]>({
     queryKey: ['/api/images'],
   });
 
@@ -199,12 +201,22 @@ export default function ImageManagement() {
         reader.readAsDataURL(file);
       });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['/api/images'] });
+      refetch();
       setUploadingKey(null);
+      toast({
+        title: "Image saved",
+        description: `Custom image for "${data.label}" has been saved.`,
+      });
     },
-    onError: () => {
+    onError: (error) => {
       setUploadingKey(null);
+      toast({
+        title: "Upload failed",
+        description: error instanceof Error ? error.message : "Failed to save custom image.",
+        variant: "destructive",
+      });
     }
   });
 
@@ -214,6 +226,18 @@ export default function ImageManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/images'] });
+      refetch();
+      toast({
+        title: "Image removed",
+        description: "Custom image has been removed.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Delete failed",
+        description: error instanceof Error ? error.message : "Failed to remove custom image.",
+        variant: "destructive",
+      });
     }
   });
 

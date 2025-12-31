@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { ArrowLeft, Plus, X, Tag, Trash2, Upload, Check, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -33,6 +34,7 @@ const CATEGORIES = [
 ];
 
 export default function ImageLibrary() {
+  const { toast } = useToast();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newImage, setNewImage] = useState<{
     imageUrl: string;
@@ -52,18 +54,31 @@ export default function ImageLibrary() {
   const [filterTag, setFilterTag] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data: images = [], isLoading } = useQuery<ImageLibraryItem[]>({
+  const { data: images = [], isLoading, refetch } = useQuery<ImageLibraryItem[]>({
     queryKey: ['/api/library'],
   });
 
   const addImageMutation = useMutation({
     mutationFn: async (data: typeof newImage) => {
-      return apiRequest('POST', '/api/library', data);
+      const response = await apiRequest('POST', '/api/library', data);
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/library'] });
+      refetch();
       setIsAddDialogOpen(false);
       setNewImage({ imageUrl: '', name: '', tags: [], category: 'general', priority: 0 });
+      toast({
+        title: "Image added",
+        description: "The image has been added to your library.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Upload failed",
+        description: error instanceof Error ? error.message : "Failed to add image to library.",
+        variant: "destructive",
+      });
     },
   });
 
@@ -73,6 +88,18 @@ export default function ImageLibrary() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/library'] });
+      refetch();
+      toast({
+        title: "Image deleted",
+        description: "The image has been removed from your library.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Delete failed",
+        description: error instanceof Error ? error.message : "Failed to delete image.",
+        variant: "destructive",
+      });
     },
   });
 
