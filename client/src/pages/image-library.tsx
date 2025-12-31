@@ -296,6 +296,23 @@ export default function ImageLibrary() {
       </header>
 
       <main className="container max-w-6xl mx-auto px-4 py-8">
+        <Card className="mb-8 bg-muted/50">
+          <CardContent className="py-4">
+            <h2 className="text-sm font-medium mb-2">How to Use the Image Library</h2>
+            <p className="text-sm text-muted-foreground mb-3">
+              The Image Library stores your photos that can be automatically assigned to itinerary items using tags. Here's how it works:
+            </p>
+            <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
+              <li><strong>Add images</strong> - Upload photos and give them descriptive tags (like "morning", "marrakech", "dining")</li>
+              <li><strong>Create rules</strong> - Go to <a href="/rules" className="underline">Image Rules</a> to set up automatic matching</li>
+              <li><strong>Images appear</strong> - When an itinerary item matches a rule's criteria, a tagged library image will be used</li>
+            </ol>
+            <p className="text-xs text-muted-foreground mt-3 italic">
+              Tip: For quick, direct image replacement, use <a href="/images" className="underline">Image Management</a> instead.
+            </p>
+          </CardContent>
+        </Card>
+
         <div className="mb-6 flex flex-wrap gap-4 items-center">
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Category:</span>

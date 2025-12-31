@@ -321,7 +321,7 @@ export default function ImageRules() {
       </header>
 
       <main className="container max-w-4xl mx-auto px-4 py-8">
-        <Card className="mb-6">
+        <Card className="mb-6 bg-muted/50">
           <CardContent className="pt-6">
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
@@ -329,10 +329,16 @@ export default function ImageRules() {
               </div>
               <div>
                 <h2 className="font-medium mb-1">How Rules Work</h2>
-                <p className="text-sm text-muted-foreground">
-                  Rules automatically assign images from your library to itinerary items based on matching criteria.
-                  When an item matches a rule (by time, location, or keywords), images with the assigned tags are used.
-                  Higher priority rules are checked first.
+                <p className="text-sm text-muted-foreground mb-3">
+                  Rules automatically assign images from your <a href="/library" className="underline">Image Library</a> to itinerary items based on matching criteria:
+                </p>
+                <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside mb-3">
+                  <li><strong>Set matching criteria</strong> - Choose time of day, location, and/or keywords</li>
+                  <li><strong>Assign tags</strong> - Select which library image tags to use when criteria match</li>
+                  <li><strong>Priority order</strong> - Higher priority rules are checked first</li>
+                </ol>
+                <p className="text-xs text-muted-foreground italic">
+                  Example: A rule matching "morning" + "marrakech" with tag "medina-sunrise" will show that tagged image for morning Marrakech items.
                 </p>
               </div>
             </div>

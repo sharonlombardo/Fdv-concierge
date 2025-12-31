@@ -642,7 +642,10 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
 }
 
 export default function Home() {
-  const [pageIndex, setPageIndex] = useState(0);
+  const [pageIndex, setPageIndex] = useState(() => {
+    const saved = localStorage.getItem('fdv_page_index');
+    return saved ? parseInt(saved, 10) : 0;
+  });
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<FlowItem | null>(null);
   const [isShareMode, setIsShareMode] = useState(false);
@@ -651,6 +654,7 @@ export default function Home() {
   const { getImageUrl } = useCustomImages();
   
   useEffect(() => { 
+    localStorage.setItem('fdv_page_index', pageIndex.toString());
     window.scrollTo({ top: 0, behavior: 'smooth' }); 
   }, [pageIndex]);
 
