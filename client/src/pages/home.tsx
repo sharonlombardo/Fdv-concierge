@@ -1004,17 +1004,12 @@ export default function Home() {
 
                   return (
                     <div key={wardrobeItem.key} className="group">
-                      <div className="aspect-[3/4] overflow-hidden bg-muted rounded-md shadow-lg relative">
+                      <div className="aspect-[3/4] overflow-hidden bg-muted rounded-md shadow-lg">
                         <img 
                           src={displayUrl} 
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
                           alt={wardrobeItem.itemTitle}
                         />
-                        {isCustom && (
-                          <div className="absolute top-2 right-2 bg-foreground/80 text-background text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                            Custom
-                          </div>
-                        )}
                       </div>
                       <div className="mt-3 space-y-1">
                         <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40">
