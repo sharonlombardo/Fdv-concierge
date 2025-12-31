@@ -37,6 +37,15 @@ function extractAllImages(): ImageItem[] {
     
     if ('day' in page) {
       const dayPage = page as DayPage;
+      
+      // Add day hero image
+      images.push({
+        key: `day-${dayPage.day}-hero`,
+        label: `Day ${dayPage.day}: Hero Image`,
+        originalUrl: dayPage.flow[0]?.image || '',
+        category: `Day ${dayPage.day}`
+      });
+      
       dayPage.flow.forEach((item, index) => {
         images.push({
           key: item.id,
