@@ -844,6 +844,19 @@ export default function Home() {
               </div>
             </div>
 
+            <div className="mb-20">
+              <div className="aspect-[21/9] w-full overflow-hidden rounded-md shadow-xl bg-muted">
+                <img 
+                  src={getImageUrl(`day-${currentPage.day}-hero`, currentPage.flow[0]?.image || '', { imageType: 'cover', title: currentPage.title, location: currentPage.location })} 
+                  className="w-full h-full object-cover" 
+                  alt={`Day ${currentPage.day}`}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200';
+                  }}
+                />
+              </div>
+            </div>
+
             <div className="mb-32">
               <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] pb-4 border-b-2 border-foreground mb-16">SCHEDULE</h3>
               <div className="space-y-6">
