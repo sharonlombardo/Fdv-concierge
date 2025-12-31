@@ -301,7 +301,11 @@ function ItemDetailDrawer({
               <div className="space-y-4">
                 <div className="aspect-[3/4] w-full bg-muted overflow-hidden grayscale rounded-md">
                   <img 
-                    src={item.commercialWardrobe || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800"} 
+                    src={getImageUrl(
+                      `${item.id}-wardrobe`,
+                      item.commercialWardrobe || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800",
+                      { imageType: 'wardrobe', title: item.title }
+                    )} 
                     className="w-full h-full object-cover" 
                     alt="Style recommendation"
                   />
