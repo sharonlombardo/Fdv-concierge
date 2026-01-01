@@ -62,6 +62,17 @@ function extractAllImages(): ImageItem[] {
             category: `Day ${dayPage.day} - Style`
           });
         }
+        
+        if (item.wardrobeExtras) {
+          item.wardrobeExtras.forEach((extra, idx) => {
+            images.push({
+              key: `${item.id}-extra-${idx}`,
+              label: `Day ${dayPage.day}: ${extra.name}`,
+              originalUrl: extra.image,
+              category: `Day ${dayPage.day} - Essentials`
+            });
+          });
+        }
       });
     }
   });
