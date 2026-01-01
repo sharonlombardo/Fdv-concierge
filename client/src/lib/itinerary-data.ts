@@ -1,3 +1,10 @@
+export interface WardrobeExtra {
+  id: string;
+  name: string;
+  image: string;
+  shopLink?: string;
+}
+
 export interface FlowItem {
   id: string;
   time: string;
@@ -8,6 +15,7 @@ export interface FlowItem {
   body?: string;
   wardrobe?: string;
   commercialWardrobe?: string;
+  wardrobeExtras?: WardrobeExtra[];
   contact?: string;
   email?: string;
   address?: string;

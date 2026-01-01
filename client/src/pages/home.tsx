@@ -133,7 +133,6 @@ function ItemDetailDrawer({
 
   const [localNote, setLocalNote] = useState(entries[item.id]?.note || '');
   const [localLogImages, setLocalLogImages] = useState<LocalLogImage[]>(getExistingImages);
-  const [localMyLook, setLocalMyLook] = useState(entries[item.id]?.myLook || '');
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const captionDebounceRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -151,8 +150,6 @@ function ItemDetailDrawer({
       const result = e.target?.result as string;
       if (field === 'logImage') {
         setLocalLogImages(prev => [...prev, { src: result, caption: '' }]);
-      } else if (field === 'myLook') {
-        setLocalMyLook(result);
       }
     };
     reader.readAsDataURL(file);
@@ -298,9 +295,9 @@ function ItemDetailDrawer({
             </h3>
             <p className="text-base font-medium italic opacity-70 leading-relaxed mb-8">"{item.wardrobe}"</p>
             
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-6">
               <div className="space-y-4">
-                <div className="aspect-[3/4] w-full bg-muted overflow-hidden rounded-md">
+                <div className="aspect-[3/4] w-full max-w-md mx-auto bg-muted overflow-hidden rounded-md">
                   <img 
                     src={getImageUrl(
                       `${item.id}-wardrobe`,
@@ -311,31 +308,43 @@ function ItemDetailDrawer({
                     alt="Style recommendation"
                   />
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center max-w-md mx-auto">
                   <p className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic">FDV Recommendation</p>
                   <button className="text-[10px] font-medium underline" data-testid="button-shop-look">Shop Look</button>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <label className="aspect-[3/4] w-full bg-card border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 hover:bg-muted cursor-pointer relative overflow-hidden group rounded-md">
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-                    onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'myLook')}
-                    data-testid="input-my-look"
-                  />
-                  {localMyLook ? (
-                    <img src={localMyLook} className="w-full h-full object-cover" alt="My look" />
-                  ) : (
-                    <>
-                      <ShoppingBag className="w-6 h-6 opacity-20 group-hover:opacity-100 transition-opacity" />
-                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-center px-4">Upload My Look</span>
-                    </>
-                  )}
-                </label>
-                <p className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic text-center">Tap to Swap</p>
+              <div className="grid grid-cols-4 gap-3 max-w-md mx-auto">
+                {[0, 1, 2, 3].map((index) => {
+                  const extra = item.wardrobeExtras?.[index];
+                  return (
+                    <div key={index} className="space-y-2">
+                      <div className="aspect-square bg-card border border-border rounded-md overflow-hidden">
+                        {extra ? (
+                          <a 
+                            href={extra.shopLink} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="block w-full h-full"
+                          >
+                            <img 
+                              src={getImageUrl(`${item.id}-extra-${index}`, extra.image)} 
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
+                              alt={extra.name}
+                            />
+                          </a>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center opacity-20">
+                            <ShoppingBag className="w-4 h-4" />
+                          </div>
+                        )}
+                      </div>
+                      {extra && (
+                        <p className="text-[9px] font-medium uppercase tracking-wider text-center truncate opacity-60">{extra.name}</p>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
