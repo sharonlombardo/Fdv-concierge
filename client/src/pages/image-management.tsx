@@ -61,17 +61,17 @@ function extractAllImages(): ImageItem[] {
             originalUrl: item.commercialWardrobe,
             category: `Day ${dayPage.day} - Style`
           });
-        }
-        
-        if (item.wardrobeExtras) {
-          item.wardrobeExtras.forEach((extra, idx) => {
+          
+          // Always add 4 extra slots for each wardrobe item
+          for (let idx = 0; idx < 4; idx++) {
+            const extra = item.wardrobeExtras?.[idx];
             images.push({
               key: `${item.id}-extra-${idx}`,
-              label: `Day ${dayPage.day}: ${extra.name}`,
-              originalUrl: extra.image,
+              label: `Day ${dayPage.day}: ${item.title} - Extra ${idx + 1}${extra?.name ? ` (${extra.name})` : ''}`,
+              originalUrl: extra?.image || '',
               category: `Day ${dayPage.day} - Essentials`
             });
-          });
+          }
         }
       });
     }

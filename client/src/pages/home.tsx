@@ -96,6 +96,7 @@ interface ItemDetailDrawerProps {
   onClose: () => void;
   onJournalChange: (id: string, note: string) => void;
   getImageUrl: (key: string, defaultUrl: string, context?: { time?: string; location?: string; title?: string; description?: string; imageType?: 'item' | 'wardrobe' | 'cover' }) => string;
+  hasCustomImage: (key: string) => boolean;
   onImageUpload: (id: string, file: File, field: string) => void;
   onImagesUpdate: (id: string, images: LocalLogImage[]) => void;
   onShare: () => void;
@@ -114,6 +115,7 @@ function ItemDetailDrawer({
   onClose, 
   onJournalChange,
   getImageUrl,
+  hasCustomImage,
   onImageUpload,
   onImagesUpdate,
   onShare 
@@ -317,30 +319,44 @@ function ItemDetailDrawer({
               <div className="grid grid-cols-4 gap-3 max-w-md mx-auto">
                 {[0, 1, 2, 3].map((index) => {
                   const extra = item.wardrobeExtras?.[index];
+                  const extraKey = `${item.id}-extra-${index}`;
+                  const customImageUrl = hasCustomImage(extraKey) ? getImageUrl(extraKey, '') : null;
+                  const hasImage = customImageUrl || extra?.image;
+                  
                   return (
                     <div key={index} className="space-y-2">
                       <div className="aspect-square bg-card border border-border rounded-md overflow-hidden">
-                        {extra ? (
-                          <a 
-                            href={extra.shopLink} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="block w-full h-full"
-                          >
+                        {hasImage ? (
+                          extra?.shopLink ? (
+                            <a 
+                              href={extra.shopLink} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="block w-full h-full"
+                            >
+                              <img 
+                                src={getImageUrl(extraKey, extra?.image || '')} 
+                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
+                                alt={extra?.name || `Extra ${index + 1}`}
+                              />
+                            </a>
+                          ) : (
                             <img 
-                              src={getImageUrl(`${item.id}-extra-${index}`, extra.image)} 
-                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
-                              alt={extra.name}
+                              src={getImageUrl(extraKey, extra?.image || '')} 
+                              className="w-full h-full object-cover" 
+                              alt={extra?.name || `Extra ${index + 1}`}
                             />
-                          </a>
+                          )
                         ) : (
                           <div className="w-full h-full flex items-center justify-center opacity-20">
                             <ShoppingBag className="w-4 h-4" />
                           </div>
                         )}
                       </div>
-                      {extra && (
-                        <p className="text-[9px] font-medium uppercase tracking-wider text-center truncate opacity-60">{extra.name}</p>
+                      {(extra?.name || customImageUrl) && (
+                        <p className="text-[9px] font-medium uppercase tracking-wider text-center truncate opacity-60">
+                          {extra?.name || `Item ${index + 1}`}
+                        </p>
                       )}
                     </div>
                   );
@@ -1028,18 +1044,25 @@ export default function Home() {
                         isExtra: false,
                       });
                     }
-                    if (item.wardrobeExtras) {
-                      item.wardrobeExtras.forEach((extra, idx) => {
-                        allItems.push({
-                          key: `${item.id}-extra-${idx}`,
-                          dayNumber: page.day,
-                          itemTitle: item.title,
-                          time: item.time,
-                          suggestedImage: extra.image,
-                          isExtra: true,
-                          extraName: extra.name,
-                        });
-                      });
+                    // Always add 4 extra slots for each wardrobe item
+                    if (item.commercialWardrobe) {
+                      for (let idx = 0; idx < 4; idx++) {
+                        const extra = item.wardrobeExtras?.[idx];
+                        const extraKey = `${item.id}-extra-${idx}`;
+                        const hasCustom = hasCustomImage(extraKey);
+                        // Only include if there's data or a custom image
+                        if (extra || hasCustom) {
+                          allItems.push({
+                            key: extraKey,
+                            dayNumber: page.day,
+                            itemTitle: item.title,
+                            time: item.time,
+                            suggestedImage: extra?.image || '',
+                            isExtra: true,
+                            extraName: extra?.name || `Item ${idx + 1}`,
+                          });
+                        }
+                      }
                     }
                   });
                 }
@@ -1253,6 +1276,7 @@ export default function Home() {
           onClose={() => setActiveItem(null)}
           onJournalChange={handleJournalChange}
           getImageUrl={getImageUrl}
+          hasCustomImage={hasCustomImage}
           onImageUpload={processImage}
           onImagesUpdate={handleImagesUpdate}
           onShare={() => setIsShareMode(true)}
