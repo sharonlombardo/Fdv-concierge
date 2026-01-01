@@ -649,6 +649,11 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
   );
 }
 
+interface PackingListItem {
+  hidden?: boolean;
+  customImage?: string;
+}
+
 export default function Home() {
   const [pageIndex, setPageIndex] = useState(() => {
     const saved = localStorage.getItem('fdv_page_index');
@@ -657,9 +662,30 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<FlowItem | null>(null);
   const [isShareMode, setIsShareMode] = useState(false);
+  const [packingListItems, setPackingListItems] = useState<Record<string, PackingListItem>>(() => {
+    const saved = localStorage.getItem('fdv_packing_list');
+    return saved ? JSON.parse(saved) : {};
+  });
 
   const { entries: journalEntries, saveEntry, status: saveStatus } = useJournal();
   const { getImageUrl, hasCustomImage } = useCustomImages();
+
+  const updatePackingItem = (key: string, updates: Partial<PackingListItem>) => {
+    setPackingListItems(prev => {
+      const newItems = { ...prev, [key]: { ...prev[key], ...updates } };
+      localStorage.setItem('fdv_packing_list', JSON.stringify(newItems));
+      return newItems;
+    });
+  };
+
+  const handlePackingImageUpload = (key: string, file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      updatePackingItem(key, { customImage: result, hidden: false });
+    };
+    reader.readAsDataURL(file);
+  };
   
   useEffect(() => { 
     localStorage.setItem('fdv_page_index', pageIndex.toString());
@@ -987,53 +1013,160 @@ export default function Home() {
               <div className="h-1.5 w-24 bg-foreground mx-auto" />
               <p className="text-sm tracking-[0.6em] font-bold uppercase text-muted-foreground mt-12">{currentPage.subtitle}</p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-              {(() => {
-                const wardrobeItems: { key: string; dayNumber: number; itemTitle: string; time: string; suggestedImage: string }[] = [];
-                ITINERARY_DATA.forEach((page) => {
-                  if (isDayPage(page)) {
-                    page.flow.forEach((item) => {
-                      if (item.commercialWardrobe) {
-                        wardrobeItems.push({
-                          key: `${item.id}-wardrobe`,
+            {(() => {
+              const allItems: { key: string; dayNumber: number; itemTitle: string; time: string; suggestedImage: string; isExtra: boolean; extraName?: string }[] = [];
+              ITINERARY_DATA.forEach((page) => {
+                if (isDayPage(page)) {
+                  page.flow.forEach((item) => {
+                    if (item.commercialWardrobe) {
+                      allItems.push({
+                        key: `${item.id}-wardrobe`,
+                        dayNumber: page.day,
+                        itemTitle: item.title,
+                        time: item.time,
+                        suggestedImage: item.commercialWardrobe,
+                        isExtra: false,
+                      });
+                    }
+                    if (item.wardrobeExtras) {
+                      item.wardrobeExtras.forEach((extra, idx) => {
+                        allItems.push({
+                          key: `${item.id}-extra-${idx}`,
                           dayNumber: page.day,
                           itemTitle: item.title,
                           time: item.time,
-                          suggestedImage: item.commercialWardrobe,
+                          suggestedImage: extra.image,
+                          isExtra: true,
+                          extraName: extra.name,
                         });
-                      }
-                    });
-                  }
-                });
+                      });
+                    }
+                  });
+                }
+              });
 
-                return wardrobeItems.map((wardrobeItem) => {
-                  const customLook = journalEntries[wardrobeItem.key.replace('-wardrobe', '')]?.myLook;
-                  const customImage = hasCustomImage(wardrobeItem.key);
-                  const displayUrl = customLook || getImageUrl(wardrobeItem.key, wardrobeItem.suggestedImage);
-                  const isCustom = !!customLook || customImage;
+              const mainItems = allItems.filter(i => !i.isExtra && !packingListItems[i.key]?.hidden);
+              const extraItems = allItems.filter(i => i.isExtra && !packingListItems[i.key]?.hidden);
 
-                  return (
-                    <div key={wardrobeItem.key} className="group">
-                      <div className="aspect-[3/4] overflow-hidden bg-muted rounded-md shadow-lg">
-                        <img 
-                          src={displayUrl} 
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                          alt={wardrobeItem.itemTitle}
-                        />
+              return (
+                <>
+                  <h3 className="text-[11px] font-bold tracking-[0.5em] uppercase mb-8 flex items-center gap-3">
+                    <Sparkles className="w-4 h-4" /> WARDROBE
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 mb-16">
+                    {mainItems.map((wardrobeItem) => {
+                      const packingItem = packingListItems[wardrobeItem.key];
+                      const displayUrl = packingItem?.customImage || getImageUrl(wardrobeItem.key, wardrobeItem.suggestedImage);
+
+                      return (
+                        <div key={wardrobeItem.key} className="group relative">
+                          <div className="aspect-[3/4] overflow-hidden bg-muted rounded-md shadow-lg relative">
+                            <img 
+                              src={displayUrl} 
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                              alt={wardrobeItem.itemTitle}
+                            />
+                            <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                              <label className="bg-background text-foreground rounded-full p-2 cursor-pointer hover:scale-110 transition-transform">
+                                <input 
+                                  type="file" 
+                                  accept="image/*" 
+                                  className="hidden" 
+                                  onChange={(e) => e.target.files?.[0] && handlePackingImageUpload(wardrobeItem.key, e.target.files[0])}
+                                  data-testid={`input-swap-${wardrobeItem.key}`}
+                                />
+                                <Camera className="w-4 h-4" />
+                              </label>
+                              <button 
+                                onClick={() => updatePackingItem(wardrobeItem.key, { hidden: true })}
+                                className="bg-background text-foreground rounded-full p-2 hover:scale-110 transition-transform"
+                                data-testid={`button-hide-${wardrobeItem.key}`}
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                          <div className="mt-3 space-y-1">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40">
+                              Day {wardrobeItem.dayNumber} · {wardrobeItem.time}
+                            </p>
+                            <p className="text-sm font-serif font-medium truncate">
+                              {wardrobeItem.itemTitle}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {extraItems.length > 0 && (
+                    <>
+                      <h3 className="text-[11px] font-bold tracking-[0.5em] uppercase mb-8 flex items-center gap-3 mt-16">
+                        <ShoppingBag className="w-4 h-4" /> ESSENTIALS
+                      </h3>
+                      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        {extraItems.map((extraItem) => {
+                          const packingItem = packingListItems[extraItem.key];
+                          const displayUrl = packingItem?.customImage || getImageUrl(extraItem.key, extraItem.suggestedImage);
+
+                          return (
+                            <div key={extraItem.key} className="group relative">
+                              <div className="aspect-square overflow-hidden bg-muted rounded-md shadow-lg relative">
+                                <img 
+                                  src={displayUrl} 
+                                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                                  alt={extraItem.extraName}
+                                />
+                                <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                                  <label className="bg-background text-foreground rounded-full p-2 cursor-pointer hover:scale-110 transition-transform">
+                                    <input 
+                                      type="file" 
+                                      accept="image/*" 
+                                      className="hidden" 
+                                      onChange={(e) => e.target.files?.[0] && handlePackingImageUpload(extraItem.key, e.target.files[0])}
+                                      data-testid={`input-swap-${extraItem.key}`}
+                                    />
+                                    <Camera className="w-4 h-4" />
+                                  </label>
+                                  <button 
+                                    onClick={() => updatePackingItem(extraItem.key, { hidden: true })}
+                                    className="bg-background text-foreground rounded-full p-2 hover:scale-110 transition-transform"
+                                    data-testid={`button-hide-${extraItem.key}`}
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </div>
+                              <div className="mt-2">
+                                <p className="text-[9px] font-bold uppercase tracking-wider text-center truncate opacity-60">
+                                  {extraItem.extraName}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
-                      <div className="mt-3 space-y-1">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40">
-                          Day {wardrobeItem.dayNumber} · {wardrobeItem.time}
-                        </p>
-                        <p className="text-sm font-serif font-medium truncate">
-                          {wardrobeItem.itemTitle}
-                        </p>
-                      </div>
+                    </>
+                  )}
+
+                  {(mainItems.length < allItems.filter(i => !i.isExtra).length || extraItems.length < allItems.filter(i => i.isExtra).length) && (
+                    <div className="mt-12 text-center">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setPackingListItems({});
+                          localStorage.removeItem('fdv_packing_list');
+                        }}
+                        className="text-[10px] font-bold uppercase tracking-[0.3em]"
+                        data-testid="button-restore-items"
+                      >
+                        Restore Hidden Items
+                      </Button>
                     </div>
-                  );
-                });
-              })()}
-            </div>
+                  )}
+                </>
+              );
+            })()}
           </div>
         )}
 
