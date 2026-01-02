@@ -1,157 +1,600 @@
-import { ArrowLeft } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { ArrowLeft, Check, ChevronDown, X, Eye } from 'lucide-react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useCustomImages } from '@/hooks/use-custom-images';
 import { 
   ITINERARY_DATA, 
-  type DayPage 
+  type DayPage,
+  type FlowItem,
+  type WardrobeExtra
 } from '@/lib/itinerary-data';
+import logoImage from '@assets/LOGO_1767219658929.png';
 
-interface WardrobeItem {
-  key: string;
+interface PackingItem {
+  id: string;
+  imageKey: string;
+  name: string;
+  brand?: string;
+  image: string;
+  context: string;
+  whyText: string;
   dayNumber: number;
-  itemTitle: string;
-  time: string;
-  suggestedImage: string;
+  time: 'Morning' | 'Afternoon' | 'Evening';
+  isLook: boolean;
+  flowItemId: string;
+  extraIndex?: number;
 }
 
-function extractWardrobeItems(): WardrobeItem[] {
-  const items: WardrobeItem[] = [];
-  
+interface WardrobeRow {
+  flowId: string;
+  flowTitle: string;
+  items: PackingItem[];
+}
+
+interface DayData {
+  day: number;
+  location: string;
+  weather: { temp: number; cond: string };
+  venue?: string;
+  morning: WardrobeRow[];
+  afternoon: WardrobeRow[];
+  evening: WardrobeRow[];
+}
+
+function extractPackingData(): DayData[] {
+  const days: DayData[] = [];
+
   ITINERARY_DATA.forEach((page) => {
     if ('day' in page) {
       const dayPage = page as DayPage;
-      dayPage.flow.forEach((item) => {
-        if (item.commercialWardrobe) {
-          items.push({
-            key: `${item.id}-wardrobe`,
-            dayNumber: dayPage.day,
-            itemTitle: item.title,
-            time: item.time,
-            suggestedImage: item.commercialWardrobe,
-          });
+      
+      const morningRows: WardrobeRow[] = [];
+      const afternoonRows: WardrobeRow[] = [];
+      const eveningRows: WardrobeRow[] = [];
+
+      const getTimeCategory = (time: string): 'Morning' | 'Afternoon' | 'Evening' => {
+        const lower = time.toLowerCase();
+        if (lower.includes('morning') || (lower.match(/\d/) && parseInt(lower) < 12)) return 'Morning';
+        if (lower.includes('evening') || lower.includes('night')) return 'Evening';
+        return 'Afternoon';
+      };
+
+      const processFlow = (flow: FlowItem, timeCategory: 'Morning' | 'Afternoon' | 'Evening'): WardrobeRow | null => {
+        if (!flow.commercialWardrobe) return null;
+        
+        const items: PackingItem[] = [];
+        
+        items.push({
+          id: `${flow.id}-look`,
+          imageKey: `${flow.id}-wardrobe`,
+          name: 'Total Look',
+          image: flow.commercialWardrobe,
+          context: `${timeCategory} • ${flow.title}`,
+          whyText: flow.wardrobe || 'Styled outfit for this activity.',
+          dayNumber: dayPage.day,
+          time: timeCategory,
+          isLook: true,
+          flowItemId: flow.id,
+        });
+
+        for (let i = 0; i < 4; i++) {
+          const extra = flow.wardrobeExtras?.[i];
+          if (extra) {
+            items.push({
+              id: `${flow.id}-extra-${i}`,
+              imageKey: `${flow.id}-extra-${i}`,
+              name: extra.name,
+              image: extra.image,
+              context: `${timeCategory} • ${flow.title}`,
+              whyText: `Essential item for ${flow.title.toLowerCase()}.`,
+              dayNumber: dayPage.day,
+              time: timeCategory,
+              isLook: false,
+              flowItemId: flow.id,
+              extraIndex: i,
+            });
+          } else {
+            const placeholderNames = ['Layer', 'Footwear', 'Accessory', 'Bag'];
+            items.push({
+              id: `${flow.id}-placeholder-${i}`,
+              imageKey: `${flow.id}-extra-${i}`,
+              name: placeholderNames[i] || 'Item',
+              image: '',
+              context: `${timeCategory} • ${flow.title}`,
+              whyText: 'Add your own item.',
+              dayNumber: dayPage.day,
+              time: timeCategory,
+              isLook: false,
+              flowItemId: flow.id,
+            });
+          }
         }
+
+        return {
+          flowId: flow.id,
+          flowTitle: flow.title,
+          items,
+        };
+      };
+
+      dayPage.flow.forEach(flow => {
+        const timeCategory = getTimeCategory(flow.time);
+        const row = processFlow(flow, timeCategory);
+        if (row) {
+          if (timeCategory === 'Morning') morningRows.push(row);
+          else if (timeCategory === 'Afternoon') afternoonRows.push(row);
+          else eveningRows.push(row);
+        }
+      });
+
+      const venues = dayPage.flow
+        .filter(f => f.commercialWardrobe)
+        .map(f => f.title)
+        .slice(0, 2)
+        .join(' → ');
+
+      days.push({
+        day: dayPage.day,
+        location: dayPage.location,
+        weather: dayPage.weather,
+        venue: venues,
+        morning: morningRows,
+        afternoon: afternoonRows,
+        evening: eveningRows,
       });
     }
   });
-  
-  return items;
+
+  return days;
 }
 
-function WardrobeCard({ 
-  item,
-  getImageUrl,
-  hasCustomImage,
-}: { 
-  item: WardrobeItem;
+interface ItemCardProps {
+  item: PackingItem;
+  isPacked: boolean;
+  onTogglePack: () => void;
+  onOpenModal: () => void;
   getImageUrl: (key: string, defaultUrl: string) => string;
-  hasCustomImage: (key: string) => boolean;
-}) {
-  const displayUrl = getImageUrl(item.key, item.suggestedImage);
-  const isCustom = hasCustomImage(item.key);
+}
+
+function ItemCard({ item, isPacked, onTogglePack, onOpenModal, getImageUrl }: ItemCardProps) {
+  const displayImage = item.image ? getImageUrl(item.imageKey, item.image) : '';
+  
+  const handleCheckClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onTogglePack();
+  };
 
   return (
-    <div className="group">
-      <div className="aspect-[3/4] relative overflow-hidden rounded-md bg-muted">
-        <img 
-          src={displayUrl} 
-          alt={item.itemTitle}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=400';
-          }}
-        />
-        {isCustom && (
-          <div className="absolute top-2 right-2 bg-foreground/80 text-background text-xs px-2 py-0.5 rounded-full font-medium">
-            Custom
+    <div 
+      className="cursor-pointer group"
+      onClick={onOpenModal}
+      data-testid={`card-item-${item.id}`}
+    >
+      <div className="relative w-full aspect-square bg-card rounded-md mb-2 overflow-hidden">
+        {displayImage ? (
+          <img 
+            src={displayImage}
+            alt={item.name}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
+          />
+        ) : (
+          <div 
+            className="w-full h-full flex items-center justify-center text-muted-foreground text-xs"
+            style={{ background: 'linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted)/0.7) 100%)' }}
+          >
+            {item.isLook ? 'COMPLETE LOOK' : 'ADD ITEM'}
           </div>
         )}
+        
+        <div 
+          className={`absolute top-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-xs transition-opacity ${
+            isPacked 
+              ? 'bg-foreground text-background opacity-100' 
+              : 'bg-background/90 border border-border opacity-0 group-hover:opacity-100'
+          }`}
+          onClick={handleCheckClick}
+          data-testid={`check-item-${item.id}`}
+        >
+          {isPacked ? <Check className="w-3 h-3" /> : item.isLook ? <Eye className="w-3 h-3" /> : <Check className="w-3 h-3" />}
+        </div>
       </div>
-      <div className="mt-3 space-y-1">
-        <p className="text-xs text-muted-foreground uppercase tracking-wider">
-          Day {item.dayNumber} · {item.time}
-        </p>
-        <p className="text-sm font-medium leading-tight">
-          {item.itemTitle}
-        </p>
+      <p className="text-xs text-center text-muted-foreground leading-tight font-light">
+        {item.name}
+      </p>
+    </div>
+  );
+}
+
+interface DaySectionProps {
+  dayData: DayData;
+  isExpanded: boolean;
+  onToggle: () => void;
+  viewMode: 'organize' | 'pack';
+  packedItems: Set<string>;
+  onTogglePack: (id: string) => void;
+  onOpenModal: (item: PackingItem) => void;
+  getImageUrl: (key: string, defaultUrl: string) => string;
+}
+
+function DaySection({ 
+  dayData, 
+  isExpanded, 
+  onToggle, 
+  viewMode,
+  packedItems,
+  onTogglePack,
+  onOpenModal,
+  getImageUrl 
+}: DaySectionProps) {
+  const hasItems = dayData.morning.length > 0 || dayData.afternoon.length > 0 || dayData.evening.length > 0;
+  
+  if (!hasItems) return null;
+
+  const isPackView = viewMode === 'pack';
+  const shouldExpand = isPackView || isExpanded;
+
+  return (
+    <div className="bg-card border-b border-border" data-testid={`section-day-${dayData.day}`}>
+      <div 
+        className={`px-5 py-6 ${isPackView ? '' : 'cursor-pointer hover:bg-muted/30'} transition-colors select-none`}
+        onClick={isPackView ? undefined : onToggle}
+        data-testid={`header-day-${dayData.day}`}
+      >
+        <div className="flex justify-between items-center mb-1.5">
+          <span className="font-serif text-lg font-normal tracking-wide">Day {dayData.day}</span>
+          {!isPackView && (
+            <ChevronDown 
+              className={`w-4 h-4 text-muted-foreground transition-transform ${shouldExpand ? 'rotate-180' : ''}`} 
+            />
+          )}
+        </div>
+        <p className="text-sm text-muted-foreground mb-3 font-light">{dayData.location}</p>
+        <div className="flex gap-4 text-xs text-muted-foreground/70">
+          {dayData.venue && <span>{dayData.venue}</span>}
+          <span>{dayData.weather.temp}°F</span>
+        </div>
+      </div>
+
+      <div 
+        className={`overflow-hidden transition-all duration-300 ${
+          shouldExpand ? 'max-h-[3000px]' : 'max-h-0'
+        }`}
+      >
+        <div className="px-5 pb-8">
+          {dayData.morning.length > 0 && (
+            <div className="mb-8">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-normal">Morning</p>
+              {dayData.morning.map((row) => (
+                <div key={row.flowId} className="mb-4">
+                  <div className="grid grid-cols-5 gap-4">
+                    {row.items.map((item) => (
+                      <ItemCard
+                        key={item.id}
+                        item={item}
+                        isPacked={packedItems.has(item.id)}
+                        onTogglePack={() => onTogglePack(item.id)}
+                        onOpenModal={() => onOpenModal(item)}
+                        getImageUrl={getImageUrl}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {dayData.afternoon.length > 0 && (
+            <div className="mb-8">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-normal">Afternoon</p>
+              {dayData.afternoon.map((row) => (
+                <div key={row.flowId} className="mb-4">
+                  <div className="grid grid-cols-5 gap-4">
+                    {row.items.map((item) => (
+                      <ItemCard
+                        key={item.id}
+                        item={item}
+                        isPacked={packedItems.has(item.id)}
+                        onTogglePack={() => onTogglePack(item.id)}
+                        onOpenModal={() => onOpenModal(item)}
+                        getImageUrl={getImageUrl}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {dayData.evening.length > 0 && (
+            <div>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-normal">Evening</p>
+              {dayData.evening.map((row) => (
+                <div key={row.flowId} className="mb-4">
+                  <div className="grid grid-cols-5 gap-4">
+                    {row.items.map((item) => (
+                      <ItemCard
+                        key={item.id}
+                        item={item}
+                        isPacked={packedItems.has(item.id)}
+                        onTogglePack={() => onTogglePack(item.id)}
+                        onOpenModal={() => onOpenModal(item)}
+                        getImageUrl={getImageUrl}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface ItemModalProps {
+  item: PackingItem | null;
+  onClose: () => void;
+  isPacked: boolean;
+  onTogglePack: () => void;
+  getImageUrl: (key: string, defaultUrl: string) => string;
+}
+
+function ItemModal({ item, onClose, isPacked, onTogglePack, getImageUrl }: ItemModalProps) {
+  if (!item) return null;
+
+  const displayImage = item.image ? getImageUrl(item.imageKey, item.image) : '';
+
+  return (
+    <div 
+      className="fixed inset-0 bg-black/40 z-[1000] flex items-end justify-center"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      data-testid="modal-overlay"
+    >
+      <div 
+        className="bg-background w-full max-w-md rounded-t-2xl max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300"
+        data-testid="modal-item-detail"
+      >
+        <div className="sticky top-0 bg-background px-5 py-4 border-b border-border flex justify-between items-center z-10">
+          <h3 className="font-serif text-xl font-normal">{item.name}</h3>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full bg-muted"
+            onClick={onClose}
+            data-testid="button-modal-close"
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
+
+        <div className="p-5">
+          <div className="w-full aspect-square bg-muted rounded-lg mb-5 overflow-hidden">
+            {displayImage ? (
+              <img 
+                src={displayImage}
+                alt={item.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div 
+                className="w-full h-full flex items-center justify-center text-muted-foreground"
+                style={{ background: 'linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted)/0.7) 100%)' }}
+              >
+                No image
+              </div>
+            )}
+          </div>
+
+          {item.brand && (
+            <p className="text-sm text-muted-foreground mb-5">{item.brand}</p>
+          )}
+
+          <div className="bg-muted/50 rounded-lg p-4 mb-4">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">{item.context}</p>
+            <p className="text-sm leading-relaxed font-light">{item.whyText}</p>
+          </div>
+
+          <div className="bg-muted/50 rounded-lg p-4">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Packing Intelligence</p>
+            <p className="text-sm leading-relaxed font-light">
+              This piece works across multiple days in your capsule. Natural fiber breathes in heat, transitions from day to evening.
+            </p>
+          </div>
+
+          <div className="flex gap-3 mt-6 pt-5 border-t border-border">
+            <Button 
+              variant="outline" 
+              className="flex-1"
+              onClick={onTogglePack}
+              data-testid="button-mark-packed"
+            >
+              {isPacked ? 'Unmark Packed' : 'Mark Packed'}
+            </Button>
+            <Button className="flex-1" data-testid="button-shop-item">
+              Shop Item
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
 export default function PackingList() {
-  const { getImageUrl, hasCustomImage, isLoading } = useCustomImages();
-  const wardrobeItems = extractWardrobeItems();
+  const { getImageUrl, isLoading } = useCustomImages();
+  const [viewMode, setViewMode] = useState<'organize' | 'pack'>('organize');
+  const [expandedDays, setExpandedDays] = useState<Set<number>>(new Set());
+  const [packedItems, setPackedItems] = useState<Set<string>>(() => {
+    const saved = localStorage.getItem('fdv_packed_items');
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  });
+  const [selectedItem, setSelectedItem] = useState<PackingItem | null>(null);
 
-  const groupedByDay = wardrobeItems.reduce((acc, item) => {
-    if (!acc[item.dayNumber]) {
-      acc[item.dayNumber] = [];
-    }
-    acc[item.dayNumber].push(item);
-    return acc;
-  }, {} as Record<number, WardrobeItem[]>);
+  const packingData = useMemo(() => extractPackingData(), []);
+
+  const toggleDay = (day: number) => {
+    setExpandedDays(prev => {
+      const next = new Set(prev);
+      if (next.has(day)) {
+        next.delete(day);
+      } else {
+        next.add(day);
+      }
+      return next;
+    });
+  };
+
+  const togglePacked = (id: string) => {
+    setPackedItems(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      localStorage.setItem('fdv_packed_items', JSON.stringify(Array.from(next)));
+      return next;
+    });
+  };
+
+  const totalItems = packingData.reduce((acc, d) => 
+    acc + d.morning.length + d.afternoon.length + d.evening.length, 0
+  );
+  const packedCount = packedItems.size;
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
+      <header className="bg-card border-b border-border sticky top-0 z-50">
+        <div className="max-w-lg mx-auto px-5 py-6 text-center">
           <Link href="/">
-            <Button variant="ghost" size="icon" data-testid="button-back-home">
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
+            <img 
+              src={logoImage} 
+              alt="FDV" 
+              className="h-6 mx-auto mb-2 dark:invert cursor-pointer"
+              data-testid="link-logo-home"
+            />
           </Link>
-          <div>
-            <h1 className="font-serif text-xl font-medium">Packing List</h1>
-            <p className="text-sm text-muted-foreground">Wardrobe suggestions for Morocco</p>
-          </div>
+          <h1 className="font-serif text-2xl font-light tracking-wide mb-1">Packing List</h1>
+          <p className="text-sm text-muted-foreground font-light">Morocco • April 3–10, 2026</p>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <div className="bg-card border-b border-border px-5 py-4 flex justify-center">
+        <div className="inline-flex">
+          <button
+            className={`px-6 py-2.5 text-sm font-normal border transition-colors ${
+              viewMode === 'organize'
+                ? 'bg-foreground text-background border-foreground'
+                : 'bg-transparent text-muted-foreground border-border hover:bg-muted/50'
+            } rounded-l-md border-r-0`}
+            onClick={() => setViewMode('organize')}
+            data-testid="button-view-organize"
+          >
+            Organize View
+          </button>
+          <button
+            className={`px-6 py-2.5 text-sm font-normal border transition-colors ${
+              viewMode === 'pack'
+                ? 'bg-foreground text-background border-foreground'
+                : 'bg-transparent text-muted-foreground border-border hover:bg-muted/50'
+            } rounded-r-md`}
+            onClick={() => setViewMode('pack')}
+            data-testid="button-view-pack"
+          >
+            Pack View
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-lg mx-auto">
         {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
+          <div className="p-8 space-y-4">
+            {[...Array(3)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-[3/4] bg-muted rounded-md" />
-                <div className="mt-3 space-y-2">
-                  <div className="h-3 bg-muted rounded w-1/2" />
-                  <div className="h-4 bg-muted rounded w-3/4" />
-                </div>
+                <div className="h-24 bg-muted rounded-md" />
               </div>
             ))}
           </div>
         ) : (
-          <div className="space-y-12">
-            {Object.entries(groupedByDay).map(([day, items]) => (
-              <section key={day}>
-                <h2 className="font-serif text-lg mb-6 pb-2 border-b">
-                  Day {day}
-                </h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {items.map((item) => (
-                    <WardrobeCard
-                      key={item.key}
-                      item={item}
-                      getImageUrl={getImageUrl}
-                      hasCustomImage={hasCustomImage}
-                    />
-                  ))}
-                </div>
-              </section>
+          <>
+            {packingData.map((dayData) => (
+              <DaySection
+                key={dayData.day}
+                dayData={dayData}
+                isExpanded={expandedDays.has(dayData.day)}
+                onToggle={() => toggleDay(dayData.day)}
+                viewMode={viewMode}
+                packedItems={packedItems}
+                onTogglePack={togglePacked}
+                onOpenModal={setSelectedItem}
+                getImageUrl={getImageUrl}
+              />
             ))}
-          </div>
+          </>
         )}
+      </div>
 
-        <div className="mt-12 pt-8 border-t">
-          <p className="text-sm text-muted-foreground text-center">
-            Customize wardrobe images in the{' '}
-            <Link href="/images">
-              <span className="underline hover:text-foreground cursor-pointer">Image Management</span>
-            </Link>
-            {' '}page.
-          </p>
+      <div className="h-24" />
+
+      <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50">
+        <div className="max-w-lg mx-auto flex justify-around py-2 pb-5">
+          <Link href="/">
+            <button className="flex flex-col items-center gap-1 px-4 py-2 text-muted-foreground" data-testid="nav-home">
+              <span className="text-lg">
+                <ArrowLeft className="w-5 h-5" />
+              </span>
+              <span className="text-xs">Home</span>
+            </button>
+          </Link>
+          <button className="flex flex-col items-center gap-1 px-4 py-2 text-foreground" data-testid="nav-suitcase">
+            <span className="text-lg">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </span>
+            <span className="text-xs">Suitcase</span>
+          </button>
+          <Link href="/images">
+            <button className="flex flex-col items-center gap-1 px-4 py-2 text-muted-foreground" data-testid="nav-manage">
+              <span className="text-lg">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </span>
+              <span className="text-xs">Manage</span>
+            </button>
+          </Link>
         </div>
-      </main>
+      </nav>
+
+      {selectedItem && (
+        <ItemModal
+          item={selectedItem}
+          onClose={() => setSelectedItem(null)}
+          isPacked={packedItems.has(selectedItem.id)}
+          onTogglePack={() => togglePacked(selectedItem.id)}
+          getImageUrl={getImageUrl}
+        />
+      )}
+
+      <style>{`
+        @media print {
+          .fixed, nav, header button {
+            display: none !important;
+          }
+          .max-h-0 {
+            max-height: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
