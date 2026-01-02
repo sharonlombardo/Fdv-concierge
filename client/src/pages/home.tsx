@@ -1244,9 +1244,9 @@ export default function Home() {
               <a 
                 href="/packing"
                 className="block w-full text-lg uppercase tracking-[0.3em] opacity-70 hover:opacity-100 transition-all font-semibold"
-                data-testid="link-packing-list"
+                data-testid="link-suitcase"
               >
-                Packing List
+                Suitcase
               </a>
               <a 
                 href="/library"
