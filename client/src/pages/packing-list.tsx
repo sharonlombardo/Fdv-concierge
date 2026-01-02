@@ -155,10 +155,12 @@ interface ItemCardProps {
   onTogglePack: () => void;
   onOpenModal: () => void;
   getImageUrl: (key: string, defaultUrl: string) => string;
+  hasCustomImage: (key: string) => boolean;
 }
 
-function ItemCard({ item, isPacked, onTogglePack, onOpenModal, getImageUrl }: ItemCardProps) {
-  const displayImage = item.image ? getImageUrl(item.imageKey, item.image) : '';
+function ItemCard({ item, isPacked, onTogglePack, onOpenModal, getImageUrl, hasCustomImage }: ItemCardProps) {
+  const hasCustom = hasCustomImage(item.imageKey);
+  const displayImage = (hasCustom || item.image) ? getImageUrl(item.imageKey, item.image) : '';
   
   const handleCheckClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -218,6 +220,7 @@ interface DaySectionProps {
   onTogglePack: (id: string) => void;
   onOpenModal: (item: PackingItem) => void;
   getImageUrl: (key: string, defaultUrl: string) => string;
+  hasCustomImage: (key: string) => boolean;
 }
 
 function DaySection({ 
@@ -228,7 +231,8 @@ function DaySection({
   packedItems,
   onTogglePack,
   onOpenModal,
-  getImageUrl 
+  getImageUrl,
+  hasCustomImage 
 }: DaySectionProps) {
   const hasItems = dayData.morning.length > 0 || dayData.afternoon.length > 0 || dayData.evening.length > 0;
   
@@ -279,6 +283,7 @@ function DaySection({
                         onTogglePack={() => onTogglePack(item.id)}
                         onOpenModal={() => onOpenModal(item)}
                         getImageUrl={getImageUrl}
+                        hasCustomImage={hasCustomImage}
                       />
                     ))}
                   </div>
@@ -301,6 +306,7 @@ function DaySection({
                         onTogglePack={() => onTogglePack(item.id)}
                         onOpenModal={() => onOpenModal(item)}
                         getImageUrl={getImageUrl}
+                        hasCustomImage={hasCustomImage}
                       />
                     ))}
                   </div>
@@ -323,6 +329,7 @@ function DaySection({
                         onTogglePack={() => onTogglePack(item.id)}
                         onOpenModal={() => onOpenModal(item)}
                         getImageUrl={getImageUrl}
+                        hasCustomImage={hasCustomImage}
                       />
                     ))}
                   </div>
@@ -342,12 +349,14 @@ interface ItemModalProps {
   isPacked: boolean;
   onTogglePack: () => void;
   getImageUrl: (key: string, defaultUrl: string) => string;
+  hasCustomImage: (key: string) => boolean;
 }
 
-function ItemModal({ item, onClose, isPacked, onTogglePack, getImageUrl }: ItemModalProps) {
+function ItemModal({ item, onClose, isPacked, onTogglePack, getImageUrl, hasCustomImage }: ItemModalProps) {
   if (!item) return null;
 
-  const displayImage = item.image ? getImageUrl(item.imageKey, item.image) : '';
+  const hasCustom = hasCustomImage(item.imageKey);
+  const displayImage = (hasCustom || item.image) ? getImageUrl(item.imageKey, item.image) : '';
 
   return (
     <div 
@@ -428,7 +437,7 @@ function ItemModal({ item, onClose, isPacked, onTogglePack, getImageUrl }: ItemM
 }
 
 export default function PackingList() {
-  const { getImageUrl, isLoading } = useCustomImages();
+  const { getImageUrl, hasCustomImage, isLoading } = useCustomImages();
   const [viewMode, setViewMode] = useState<'organize' | 'pack'>('organize');
   const [expandedDays, setExpandedDays] = useState<Set<number>>(new Set());
   const [packedItems, setPackedItems] = useState<Set<string>>(() => {
@@ -535,6 +544,7 @@ export default function PackingList() {
                 onTogglePack={togglePacked}
                 onOpenModal={setSelectedItem}
                 getImageUrl={getImageUrl}
+                hasCustomImage={hasCustomImage}
               />
             ))}
           </>
@@ -582,6 +592,7 @@ export default function PackingList() {
           isPacked={packedItems.has(selectedItem.id)}
           onTogglePack={() => togglePacked(selectedItem.id)}
           getImageUrl={getImageUrl}
+          hasCustomImage={hasCustomImage}
         />
       )}
 
