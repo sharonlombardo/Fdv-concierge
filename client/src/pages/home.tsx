@@ -1240,14 +1240,14 @@ export default function Home() {
                 {getPageTitle(p)}
               </button>
             ))}
+            <a 
+              href="/packing"
+              className="block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] opacity-25 hover:opacity-100 transition-all transform hover:scale-105 font-serif mt-8"
+              data-testid="link-suitcase"
+            >
+              Suitcase
+            </a>
             <div className="pt-12 border-t border-current/20 mt-12 space-y-4">
-              <a 
-                href="/packing"
-                className="block w-full text-lg uppercase tracking-[0.3em] opacity-70 hover:opacity-100 transition-all font-semibold"
-                data-testid="link-suitcase"
-              >
-                Suitcase
-              </a>
               <a 
                 href="/library"
                 className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all"
