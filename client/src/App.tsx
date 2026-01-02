@@ -11,6 +11,7 @@ import Home from "@/pages/home";
 import ImageManagement from "@/pages/image-management";
 import ImageLibrary from "@/pages/image-library";
 import ImageRules from "@/pages/image-rules";
+import Editorial from "@/pages/editorial";
 import PackingList from "@/pages/packing-list";
 
 function Router() {
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/images" component={ImageManagement} />
       <Route path="/library" component={ImageLibrary} />
       <Route path="/rules" component={ImageRules} />
+      <Route path="/editorial" component={Editorial} />
       <Route path="/packing" component={PackingList} />
       <Route component={NotFound} />
     </Switch>
@@ -29,7 +31,7 @@ function Router() {
 function FloatingSuitcase() {
   const [location] = useLocation();
   
-  if (location === '/packing') return null;
+  if (location === '/packing' || location === '/editorial') return null;
   
   return (
     <Link href="/packing">

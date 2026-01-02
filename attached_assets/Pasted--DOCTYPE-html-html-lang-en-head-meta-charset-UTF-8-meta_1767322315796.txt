@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FDV Concierge - Morocco Editorial View</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #faf9f7;
+        color: #2c2c2c;
+        line-height: 1.6;
+    }
+    
+    .hero {
+        height: 100vh;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800"><rect fill="%23d4c4b0" width="1200" height="800"/></svg>');
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+    }
+    
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, transparent 60%, rgba(250,249,247,0.8) 100%);
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: white;
+    }
+    
+    .hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(4rem, 12vw, 10rem);
+        font-weight: 400;
+        letter-spacing: 0.3em;
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+    
+    .hero-subtitle {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.125rem;
+        font-weight: 300;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+    
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+    
+    .day-section {
+        padding: 6rem 0;
+        border-bottom: 1px solid #e8e4df;
+    }
+    
+    .day-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .day-number {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #8b7d6b;
+        margin-bottom: 0.5rem;
+    }
+    
+    .day-location {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        font-weight: 400;
+        color: #2c2c2c;
+    }
+    
+    .day-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        margin-bottom: 4rem;
+    }
+    
+    .grid-item {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .grid-item img {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.6s ease;
+    }
+    
+    .grid-item:hover img {
+        transform: scale(1.05);
+    }
+    
+    .grid-label {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #8b7d6b;
+        margin-top: 1rem;
+        text-align: center;
+    }
+    
+    .mantra {
+        text-align: center;
+        padding: 4rem 0;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .mantra-text {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        font-style: italic;
+        font-weight: 300;
+        line-height: 1.6;
+        color: #2c2c2c;
+    }
+    
+    .wardrobe-section {
+        padding: 8rem 0;
+        background: white;
+    }
+    
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        font-weight: 400;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .section-subtitle {
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        font-weight: 300;
+        text-align: center;
+        color: #8b7d6b;
+        margin-bottom: 4rem;
+        letter-spacing: 0.05em;
+    }
+    
+    .wardrobe-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+    
+    .wardrobe-item {
+        text-align: center;
+    }
+    
+    .wardrobe-item img {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+        margin-bottom: 1rem;
+    }
+    
+    .wardrobe-item-name {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: #2c2c2c;
+    }
+    
+    .wardrobe-item-time {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 300;
+        color: #8b7d6b;
+        margin-top: 0.25rem;
+    }
+    
+    @media (max-width: 768px) {
+        .day-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            letter-spacing: 0.2em;
+        }
+        
+        .day-location {
+            font-size: 2rem;
+        }
+        
+        .mantra-text {
+            font-size: 1.5rem;
+        }
+        
+        .wardrobe-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>MOROCCO</h1>
+            <p class="hero-subtitle">April 3–10, 2026</p>
+        </div>
+    </div>
+
+```
+<div class="container">
+    <!-- Day 1: Marrakech -->
+    <div class="day-section">
+        <div class="day-header">
+            <div class="day-number">Day One</div>
+            <h2 class="day-location">Marrakech</h2>
+        </div>
+        
+        <div class="day-grid">
+            <div class="grid-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800'><rect fill='%23b8a590' width='600' height='800'/><text x='50%' y='50%' font-family='serif' font-size='24' fill='white' text-anchor='middle' dominant-baseline='middle'>Woman in flowing dress,&#10;terracotta courtyard,&#10;dappled afternoon light</text></svg>" alt="Lifestyle">
+                <div class="grid-label">The Arrival</div>
+            </div>
+            <div class="grid-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800'><rect fill='%23d4c4b0' width='600' height='800'/><text x='50%' y='50%' font-family='serif' font-size='24' fill='%23333' text-anchor='middle' dominant-baseline='middle'>Wardrobe flat lay:&#10;Linen wide-leg pants,&#10;cotton tee,&#10;leather sandals</text></svg>" alt="Wardrobe">
+                <div class="grid-label">Your Capsule</div>
+            </div>
+            <div class="grid-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800'><rect fill='%23a89884' width='600' height='800'/><text x='50%' y='50%' font-family='serif' font-size='24' fill='white' text-anchor='middle' dominant-baseline='middle'>Marrakech rooftops&#10;at golden hour,&#10;Atlas Mountains&#10;in distance</text></svg>" alt="Place">
+                <div class="grid-label">The Place</div>
+            </div>
+        </div>
+        
+        <div class="mantra">
+            <p class="mantra-text">"Let the ancient city slow your breath and sharpen your senses."</p>
+        </div>
+    </div>
+
+    <!-- Day 2: Atlas Mountains -->
+    <div class="day-section">
+        <div class="day-header">
+            <div class="day-number">Day Two</div>
+            <h2 class="day-location">Atlas Mountains</h2>
+        </div>
+        
+        <div class="day-grid">
+            <div class="grid-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800'><rect fill='%238a7b6a' width='600' height='800'/><text x='50%' y='50%' font-family='serif' font-size='24' fill='white' text-anchor='middle' dominant-baseline='middle'>Hiking figure&#10;against mountain vista,&#10;morning mist rising</text></svg>" alt="Lifestyle">
+                <div class="grid-label">The Journey</div>
+            </div>
+            <div class="grid-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800'><rect fill='%23cfc0af' width='600' height='800'/><text x='50%' y='50%' font-family='serif' font-size='24' fill='%23333' text-anchor='middle' dominant-baseline='middle'>Wool sweater,&#10;breathable linen,&#10;sturdy sandals,&#10;canvas bag</text></svg>" alt="Wardrobe">
+                <div class="grid-label">Your Capsule</div>
+            </div>
+            <div class="grid-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800'><rect fill='%236b5d4f' width='600' height='800'/><text x='50%' y='50%' font-family='serif' font-size='24' fill='white' text-anchor='middle' dominant-baseline='middle'>Kasbah Bab Ourika&#10;stone architecture,&#10;mountain backdrop</text></svg>" alt="Place">
+                <div class="grid-label">The Place</div>
+            </div>
+        </div>
+        
+        <div class="mantra">
+            <p class="mantra-text">"In elevation, find clarity. In silence, find truth."</p>
+        </div>
+    </div>
+
+    <!-- Day 3: Essaouira -->
+    <div class="day-section">
+        <div class="day-header">
+            <div class="day-number">Day Three</div>
+            <h2 class="day-location">Essaouira</h2>
+        </div>
+        
+        <div class="day-grid">
+            <div class="grid-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800'><rect fill='%2394b8c4' width='600' height='800'/><text x='50%' y='50%' font-family='serif' font-size='24' fill='white' text-anchor='middle' dominant-baseline='middle'>Windswept figure&#10;by whitewashed walls,&#10;Atlantic blue beyond</text></svg>" alt="Lifestyle">
+                <div class="grid-label">The Coast</div>
+            </div>
+            <div class="grid-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800'><rect fill='%23e5ddd5' width='600' height='800'/><text x='50%' y='50%' font-family='serif' font-size='24' fill='%23333' text-anchor='middle' dominant-baseline='middle'>Striped linen dress,&#10;woven basket,&#10;leather slides,&#10;sun hat</text></svg>" alt="Wardrobe">
+                <div class="grid-label">Your Capsule</div>
+            </div>
+            <div class="grid-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800'><rect fill='%237a98a8' width='600' height='800'/><text x='50%' y='50%' font-family='serif' font-size='24' fill='white' text-anchor='middle' dominant-baseline='middle'>Blue fishing boats,&#10;medina walls,&#10;endless ocean</text></svg>" alt="Place">
+                <div class="grid-label">The Place</div>
+            </div>
+        </div>
+        
+        <div class="mantra">
+            <p class="mantra-text">"Let the ocean winds carry away what no longer serves you."</p>
+        </div>
+    </div>
+
+    <!-- Day 4: Agafay Desert -->
+    <div class="day-section">
+        <div class="day-header">
+            <div class="day-number">Day Four</div>
+            <h2 class="day-location">Agafay Desert</h2>
+        </div>
+        
+        <div class="day-grid">
+            <div class="grid-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800'><rect fill='%23c9b8a0' width='600' height='800'/><text x='50%' y='50%' font-family='serif' font-size='24' fill='%23333' text-anchor='middle' dominant-baseline='middle'>Low seating,&#10;sunset glow,&#10;desert stillness</text></svg>" alt="Lifestyle">
+                <div class="grid-label">The Ritual</div>
+            </div>
+            <div class="grid-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800'><rect fill='%23ddd2c6' width='600' height='800'/><text x='50%' y='50%' font-family='serif' font-size='24' fill='%23333' text-anchor='middle' dominant-baseline='middle'>Flowing caftan,&#10;leather babouche,&#10;silver jewelry,&#10;linen wrap</text></svg>" alt="Wardrobe">
+                <div class="grid-label">Your Capsule</div>
+            </div>
+            <div class="grid-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800'><rect fill='%23a89076' width='600' height='800'/><text x='50%' y='50%' font-family='serif' font-size='24' fill='white' text-anchor='middle' dominant-baseline='middle'>Stone desert&#10;meeting sky,&#10;endless horizon</text></svg>" alt="Place">
+                <div class="grid-label">The Place</div>
+            </div>
+        </div>
+        
+        <div class="mantra">
+            <p class="mantra-text">"In vast emptiness, discover what fills you."</p>
+        </div>
+    </div>
+</div>
+
+<!-- Complete Wardrobe Section -->
+<div class="wardrobe-section">
+    <div class="container">
+        <h2 class="section-title">Your Morocco Capsule</h2>
+        <p class="section-subtitle">Twenty-four looks, curated for movement, ritual, and light</p>
+        
+        <div class="wardrobe-grid">
+            <div class="wardrobe-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'><rect fill='%23e8e0d5' width='300' height='400'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23666' text-anchor='middle'>Linen&#10;Wide-Leg&#10;Pants</text></svg>" alt="Look 1">
+                <div class="wardrobe-item-name">Linen Wide-Leg Pants</div>
+                <div class="wardrobe-item-time">Day 1, Morning</div>
+            </div>
+            <div class="wardrobe-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'><rect fill='%23d4c8bc' width='300' height='400'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23666' text-anchor='middle'>Cotton&#10;Tee</text></svg>" alt="Look 2">
+                <div class="wardrobe-item-name">Cotton Tee</div>
+                <div class="wardrobe-item-time">Day 1, Morning</div>
+            </div>
+            <div class="wardrobe-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'><rect fill='%23c0b5a8' width='300' height='400'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23666' text-anchor='middle'>Leather&#10;Sandals</text></svg>" alt="Look 3">
+                <div class="wardrobe-item-name">Leather Sandals</div>
+                <div class="wardrobe-item-time">Day 1, Afternoon</div>
+            </div>
+            <div class="wardrobe-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'><rect fill='%23b0a599' width='300' height='400'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23666' text-anchor='middle'>Wool&#10;Sweater</text></svg>" alt="Look 4">
+                <div class="wardrobe-item-name">Wool Sweater</div>
+                <div class="wardrobe-item-time">Day 2, Morning</div>
+            </div>
+            <div class="wardrobe-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'><rect fill='%239d9288' width='300' height='400'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='white' text-anchor='middle'>Canvas&#10;Bag</text></svg>" alt="Look 5">
+                <div class="wardrobe-item-name">Canvas Bag</div>
+                <div class="wardrobe-item-time">Day 2, Afternoon</div>
+            </div>
+            <div class="wardrobe-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'><rect fill='%2394b8c4' width='300' height='400'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='white' text-anchor='middle'>Striped&#10;Linen&#10;Dress</text></svg>" alt="Look 6">
+                <div class="wardrobe-item-name">Striped Linen Dress</div>
+                <div class="wardrobe-item-time">Day 3, Morning</div>
+            </div>
+            <div class="wardrobe-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'><rect fill='%23e5ddd5' width='300' height='400'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23666' text-anchor='middle'>Woven&#10;Basket</text></svg>" alt="Look 7">
+                <div class="wardrobe-item-name">Woven Basket</div>
+                <div class="wardrobe-item-time">Day 3, Afternoon</div>
+            </div>
+            <div class="wardrobe-item">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'><rect fill='%23c9b8a0' width='300' height='400'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23666' text-anchor='middle'>Flowing&#10;Caftan</text></svg>" alt="Look 8">
+                <div class="wardrobe-item-name">Flowing Caftan</div>
+                <div class="wardrobe-item-time">Day 4, Evening</div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+</body>
+</html>
