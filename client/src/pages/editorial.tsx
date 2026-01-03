@@ -151,9 +151,6 @@ function DaySection({ day, getImageUrl, hasCustomImage }: DaySectionProps) {
             className="w-full h-full object-cover"
           />
         </div>
-        <p className="text-xs font-medium tracking-[0.1em] uppercase text-muted-foreground mt-3 text-center">
-          The Day
-        </p>
       </div>
 
       {/* Flow Items - Event + Wardrobe pairs */}
@@ -181,13 +178,11 @@ function DaySection({ day, getImageUrl, hasCustomImage }: DaySectionProps) {
               <div className={`grid gap-6 ${wardrobeImage ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}>
                 <ImageCard 
                   imageUrl={eventImage} 
-                  label="The Moment"
                   aspectRatio="aspect-[4/5]"
                 />
                 {wardrobeImage && (
                   <ImageCard 
                     imageUrl={wardrobeImage} 
-                    label="Your Look"
                     aspectRatio="aspect-[4/5]"
                   />
                 )}
