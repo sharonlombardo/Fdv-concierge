@@ -26,7 +26,8 @@ import {
   Save,
   Download,
   Mail,
-  FileText
+  FileText,
+  Calendar
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -68,6 +69,93 @@ function isPackingListPage(page: ItineraryPage): page is PackingListPage {
   return 'type' in page && page.type === 'packing-list';
 }
 
+// Calendar link helpers
+function getEventDateTime(date: string, time: string): { start: Date; end: Date } {
+  // Parse date like "Friday, April 3, 2026"
+  const dateMatch = date.match(/(\w+),\s+(\w+)\s+(\d+),\s+(\d+)/);
+  if (!dateMatch) {
+    // Default to April 3, 2026
+    const defaultDate = new Date(2026, 3, 3);
+    return { start: defaultDate, end: new Date(defaultDate.getTime() + 2 * 60 * 60 * 1000) };
+  }
+  
+  const monthNames: Record<string, number> = {
+    'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
+    'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11
+  };
+  
+  const month = monthNames[dateMatch[2]] ?? 3;
+  const day = parseInt(dateMatch[3]);
+  const year = parseInt(dateMatch[4]);
+  
+  // Parse time like "Morning", "Afternoon", "Evening", "07:30", etc.
+  let hour = 9; // default morning
+  const timeLower = time.toLowerCase();
+  if (timeLower.includes('morning') || timeLower === 'am') hour = 9;
+  else if (timeLower.includes('afternoon')) hour = 14;
+  else if (timeLower.includes('evening')) hour = 19;
+  else if (timeLower.includes('night')) hour = 20;
+  else {
+    // Try parsing specific time like "07:30"
+    const timeMatch = time.match(/(\d{1,2}):?(\d{2})?/);
+    if (timeMatch) {
+      hour = parseInt(timeMatch[1]);
+      if (hour < 6) hour += 12; // Assume PM for times like 7:30
+    }
+  }
+  
+  const start = new Date(year, month, day, hour, 0, 0);
+  const end = new Date(start.getTime() + 2 * 60 * 60 * 1000); // 2 hour duration
+  
+  return { start, end };
+}
+
+function formatDateForGoogle(date: Date): string {
+  return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+}
+
+function generateGoogleCalendarUrl(title: string, description: string, location: string, date: string, time: string): string {
+  const { start, end } = getEventDateTime(date, time);
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: `FDV Morocco: ${title}`,
+    details: description || title,
+    location: location,
+    dates: `${formatDateForGoogle(start)}/${formatDateForGoogle(end)}`,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+function generateICSContent(title: string, description: string, location: string, date: string, time: string): string {
+  const { start, end } = getEventDateTime(date, time);
+  const formatICS = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  
+  return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//FDV Concierge//Morocco 2026//EN
+BEGIN:VEVENT
+DTSTART:${formatICS(start)}
+DTEND:${formatICS(end)}
+SUMMARY:FDV Morocco: ${title}
+DESCRIPTION:${description || title}
+LOCATION:${location}
+END:VEVENT
+END:VCALENDAR`;
+}
+
+function downloadICS(title: string, description: string, location: string, date: string, time: string) {
+  const icsContent = generateICSContent(title, description, location, date, time);
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `fdv-morocco-${title.toLowerCase().replace(/\s+/g, '-')}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 function WeatherDisplay({ weather }: { weather: { temp: number; cond: string } }) {
   const getIcon = (cond: string) => {
     const c = cond?.toLowerCase() || '';
@@ -93,6 +181,7 @@ interface ItemDetailDrawerProps {
   entries: { [key: string]: JournalEntry };
   status: 'idle' | 'saving' | 'saved';
   location?: string;
+  date?: string;
   onClose: () => void;
   onJournalChange: (id: string, note: string) => void;
   getImageUrl: (key: string, defaultUrl: string, context?: { time?: string; location?: string; title?: string; description?: string; imageType?: 'item' | 'wardrobe' | 'cover' }) => string;
@@ -112,6 +201,7 @@ function ItemDetailDrawer({
   entries, 
   status, 
   location,
+  date,
   onClose, 
   onJournalChange,
   getImageUrl,
@@ -286,6 +376,33 @@ function ItemDetailDrawer({
                   <Ticket className="w-3.5 h-3.5" /> Book Tickets
                 </a>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Calendar Links - Always show for timed events */}
+        {date && (
+          <div className="pt-8 border-t border-border">
+            <h3 className="text-[11px] font-bold tracking-[0.5em] uppercase mb-6 flex items-center gap-3">
+              <Calendar className="w-4 h-4" /> ADD TO CALENDAR
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              <a 
+                href={generateGoogleCalendarUrl(item.title, item.description || '', location || '', date, item.time)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-medium border border-border px-4 py-2.5 rounded-full hover:border-foreground transition-all"
+                data-testid="link-google-calendar"
+              >
+                <Calendar className="w-3.5 h-3.5" /> Google Calendar
+              </a>
+              <button 
+                onClick={() => downloadICS(item.title, item.description || '', location || '', date, item.time)}
+                className="inline-flex items-center gap-2 text-sm font-medium border border-border px-4 py-2.5 rounded-full hover:border-foreground transition-all"
+                data-testid="button-apple-calendar"
+              >
+                <Download className="w-3.5 h-3.5" /> Apple Calendar
+              </button>
             </div>
           </div>
         )}
@@ -1287,6 +1404,7 @@ export default function Home() {
           entries={journalEntries}
           status={saveStatus}
           location={isDayPage(currentPage) ? currentPage.location : undefined}
+          date={isDayPage(currentPage) ? currentPage.date : undefined}
           onClose={() => setActiveItem(null)}
           onJournalChange={handleJournalChange}
           getImageUrl={getImageUrl}
