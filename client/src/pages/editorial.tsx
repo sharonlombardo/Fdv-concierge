@@ -1,53 +1,58 @@
 import { Link } from "wouter";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { useCustomImages } from "@/hooks/use-custom-images";
-import { ITINERARY_DATA, DayPage } from "@/lib/itinerary-data";
+import { ITINERARY_DATA, DayPage, FlowItem } from "@/lib/itinerary-data";
 import logoImage from "@assets/LOGO_1767219658929.png";
 
-interface DayOverview {
+interface DayEditorial {
   dayNumber: number;
   dayLabel: string;
   location: string;
+  date: string;
   mantra: string;
-  lifestyleLabel: string;
-  lifestyleImageKey: string;
-  wardrobeImageKey: string;
-  placeImageKey: string;
-  placeImage?: string;
+  heroImageKey: string;
+  heroImageDefault: string;
+  flows: FlowEditorial[];
 }
 
-function extractEditorialData(): DayOverview[] {
-  const days: DayOverview[] = [];
-  
+interface FlowEditorial {
+  id: string;
+  time: string;
+  title: string;
+  eventImageKey: string;
+  eventImageDefault: string;
+  wardrobeImageKey: string | null;
+  wardrobeImageDefault: string | null;
+}
+
+function extractEditorialData(): DayEditorial[] {
+  const days: DayEditorial[] = [];
   const dayLabels = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'];
-  const lifestyleLabels = [
-    'The Arrival', 
-    'The Journey', 
-    'The Exploration', 
-    'The Discovery',
-    'The Coast',
-    'The Ritual',
-    'The Adventure',
-    'The Return'
-  ];
   
   ITINERARY_DATA.forEach((page) => {
     if ('day' in page) {
       const dayPage = page as DayPage;
       const dayIndex = dayPage.day - 1;
       
-      const firstFlow = dayPage.flow.find(f => f.commercialWardrobe);
+      const flows: FlowEditorial[] = dayPage.flow.map((flow: FlowItem) => ({
+        id: flow.id,
+        time: flow.time,
+        title: flow.title,
+        eventImageKey: flow.id,
+        eventImageDefault: flow.image,
+        wardrobeImageKey: flow.commercialWardrobe ? `${flow.id}-wardrobe` : null,
+        wardrobeImageDefault: flow.commercialWardrobe || null,
+      }));
       
       days.push({
         dayNumber: dayPage.day,
         dayLabel: dayLabels[dayIndex] || `Day ${dayPage.day}`,
         location: dayPage.location,
+        date: dayPage.date,
         mantra: dayPage.mantra || '"Let each moment unfold with intention."',
-        lifestyleLabel: lifestyleLabels[dayIndex] || 'The Moment',
-        lifestyleImageKey: `day-${dayPage.day}-hero`,
-        wardrobeImageKey: firstFlow ? `${firstFlow.id}-wardrobe` : `day-${dayPage.day}-wardrobe`,
-        placeImageKey: firstFlow ? `${firstFlow.id}-extra-0` : `day-${dayPage.day}-place`,
-        placeImage: firstFlow?.image,
+        heroImageKey: `day-${dayPage.day}-hero`,
+        heroImageDefault: dayPage.flow[0]?.image || '',
+        flows,
       });
     }
   });
@@ -59,20 +64,20 @@ function HeroSection() {
   return (
     <div className="h-screen relative flex items-center justify-center overflow-hidden">
       <div 
-        className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-background/80"
+        className="absolute inset-0"
         style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1600')`,
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1600')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/90" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
       
       <div className="relative z-10 text-center text-white">
-        <h1 className="font-serif text-[clamp(4rem,12vw,10rem)] font-normal tracking-[0.3em] mb-8 drop-shadow-lg">
+        <h1 className="font-serif text-[clamp(3.5rem,10vw,8rem)] font-normal tracking-[0.25em] mb-6 drop-shadow-lg">
           MOROCCO
         </h1>
-        <p className="text-lg font-light tracking-[0.1em] uppercase">
+        <p className="text-base md:text-lg font-light tracking-[0.15em] uppercase opacity-90">
           April 3–10, 2026
         </p>
       </div>
@@ -84,82 +89,115 @@ function HeroSection() {
   );
 }
 
+interface ImageCardProps {
+  imageUrl: string;
+  label?: string;
+  aspectRatio?: string;
+}
+
+function ImageCard({ imageUrl, label, aspectRatio = "aspect-[3/4]" }: ImageCardProps) {
+  return (
+    <div className="group">
+      <div className={`${aspectRatio} overflow-hidden rounded-md bg-muted`}>
+        <img 
+          src={imageUrl}
+          alt={label || "Editorial image"}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
+          }}
+        />
+      </div>
+      {label && (
+        <p className="text-xs font-medium tracking-[0.1em] uppercase text-muted-foreground mt-3 text-center">
+          {label}
+        </p>
+      )}
+    </div>
+  );
+}
+
 interface DaySectionProps {
-  day: DayOverview;
+  day: DayEditorial;
   getImageUrl: (key: string, defaultUrl: string) => string;
   hasCustomImage: (key: string) => boolean;
 }
 
 function DaySection({ day, getImageUrl, hasCustomImage }: DaySectionProps) {
-  const lifestyleDefault = "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=800";
-  const wardrobeDefault = "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&q=80&w=800";
-  const placeDefault = day.placeImage || "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&q=80&w=800";
-  
-  const lifestyleImage = hasCustomImage(day.lifestyleImageKey) 
-    ? getImageUrl(day.lifestyleImageKey, lifestyleDefault) 
-    : lifestyleDefault;
-  const wardrobeImage = hasCustomImage(day.wardrobeImageKey) 
-    ? getImageUrl(day.wardrobeImageKey, '') 
-    : getImageUrl(day.wardrobeImageKey, wardrobeDefault);
-  const placeImage = hasCustomImage(day.placeImageKey) 
-    ? getImageUrl(day.placeImageKey, placeDefault) 
-    : placeDefault;
+  const heroImage = hasCustomImage(day.heroImageKey) 
+    ? getImageUrl(day.heroImageKey, day.heroImageDefault)
+    : day.heroImageDefault;
 
   return (
-    <div className="py-24 border-b border-border">
-      <div className="text-center mb-12">
-        <p className="text-sm font-medium tracking-[0.15em] uppercase text-muted-foreground mb-2">
+    <div className="py-20 md:py-28 border-b border-border">
+      {/* Day Header */}
+      <div className="text-center mb-16">
+        <p className="text-xs md:text-sm font-medium tracking-[0.2em] uppercase text-muted-foreground mb-3">
           Day {day.dayLabel}
         </p>
-        <h2 className="font-serif text-5xl md:text-6xl font-normal">
+        <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-normal mb-2">
           {day.location}
         </h2>
+        <p className="text-sm text-muted-foreground tracking-wide">{day.date}</p>
       </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-        <div className="group">
-          <div className="overflow-hidden rounded-md">
-            <img 
-              src={lifestyleImage}
-              alt={day.lifestyleLabel}
-              className="w-full h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-          </div>
-          <p className="text-xs font-medium tracking-[0.1em] uppercase text-muted-foreground mt-4 text-center">
-            {day.lifestyleLabel}
-          </p>
-        </div>
-        
-        <div className="group">
-          <div className="overflow-hidden rounded-md">
-            <img 
-              src={wardrobeImage}
-              alt="Your Capsule"
-              className="w-full h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-          </div>
-          <p className="text-xs font-medium tracking-[0.1em] uppercase text-muted-foreground mt-4 text-center">
-            Your Capsule
-          </p>
-        </div>
-        
-        <div className="group">
-          <div className="overflow-hidden rounded-md">
-            <img 
-              src={placeImage}
-              alt="The Place"
-              className="w-full h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-          </div>
-          <p className="text-xs font-medium tracking-[0.1em] uppercase text-muted-foreground mt-4 text-center">
-            The Place
-          </p>
+
+      {/* Day Hero Image */}
+      <div className="mb-16">
+        <div className="aspect-[21/9] overflow-hidden rounded-md bg-muted">
+          <img 
+            src={heroImage}
+            alt={day.location}
+            className="w-full h-full object-cover"
+          />
         </div>
       </div>
-      
-      <div className="max-w-3xl mx-auto text-center">
-        <p className="font-serif text-2xl md:text-3xl italic font-light leading-relaxed">
-          {day.mantra}
+
+      {/* Flow Items - Event + Wardrobe pairs */}
+      <div className="space-y-16">
+        {day.flows.map((flow) => {
+          const eventImage = hasCustomImage(flow.eventImageKey)
+            ? getImageUrl(flow.eventImageKey, flow.eventImageDefault)
+            : flow.eventImageDefault;
+          
+          const wardrobeImage = flow.wardrobeImageKey && flow.wardrobeImageDefault
+            ? (hasCustomImage(flow.wardrobeImageKey)
+              ? getImageUrl(flow.wardrobeImageKey, flow.wardrobeImageDefault)
+              : flow.wardrobeImageDefault)
+            : null;
+
+          return (
+            <div key={flow.id} className="space-y-6">
+              <div className="text-center">
+                <p className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground">
+                  {flow.time}
+                </p>
+                <h3 className="font-serif text-xl md:text-2xl mt-1">{flow.title}</h3>
+              </div>
+              
+              <div className={`grid gap-6 ${wardrobeImage ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}>
+                <ImageCard 
+                  imageUrl={eventImage} 
+                  label="The Moment"
+                  aspectRatio="aspect-[4/5]"
+                />
+                {wardrobeImage && (
+                  <ImageCard 
+                    imageUrl={wardrobeImage} 
+                    label="Your Look"
+                    aspectRatio="aspect-[4/5]"
+                  />
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Mantra */}
+      <div className="max-w-3xl mx-auto text-center mt-20">
+        <p className="font-serif text-xl md:text-2xl lg:text-3xl italic font-light leading-relaxed text-muted-foreground">
+          "{day.mantra}"
         </p>
       </div>
     </div>
@@ -180,21 +218,24 @@ export default function Editorial() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-transparent">
-        <div className="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
+      {/* Fixed Header */}
+      <header className="fixed top-0 left-0 right-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 flex justify-between items-center">
           <Link href="/">
-            <button className="text-white hover:opacity-70 transition-opacity" data-testid="button-back">
-              <ArrowLeft className="w-6 h-6" />
+            <button className="text-white hover:opacity-70 transition-opacity p-2" data-testid="button-back">
+              <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
             </button>
           </Link>
-          <img src={logoImage} alt="FDV" className="h-6 invert" />
-          <div className="w-6" />
+          <img src={logoImage} alt="FDV" className="h-5 md:h-6 invert" />
+          <div className="w-9 md:w-10" />
         </div>
       </header>
 
+      {/* Hero */}
       <HeroSection />
 
-      <div className="max-w-7xl mx-auto px-6">
+      {/* Day Sections */}
+      <div className="max-w-5xl mx-auto px-4 md:px-6">
         {editorialData.map((day) => (
           <DaySection 
             key={day.dayNumber}
@@ -205,11 +246,12 @@ export default function Editorial() {
         ))}
       </div>
 
-      <div className="py-24 text-center">
-        <p className="font-serif text-4xl md:text-5xl font-normal mb-4">The Journey Awaits</p>
-        <p className="text-muted-foreground text-lg font-light tracking-wide">April 2026</p>
+      {/* Footer CTA */}
+      <div className="py-20 md:py-28 text-center px-4">
+        <p className="font-serif text-3xl md:text-4xl lg:text-5xl font-normal mb-3">The Journey Awaits</p>
+        <p className="text-muted-foreground text-base md:text-lg font-light tracking-wide">April 2026</p>
         
-        <div className="mt-12 flex justify-center gap-6">
+        <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
           <Link href="/">
             <button 
               className="px-8 py-3 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors rounded-md text-sm font-medium tracking-wide"
@@ -229,7 +271,8 @@ export default function Editorial() {
         </div>
       </div>
 
-      <footer className="border-t border-border py-12 text-center">
+      {/* Footer */}
+      <footer className="border-t border-border py-10 text-center">
         <p className="text-xs text-muted-foreground tracking-widest uppercase">
           FDV Concierge
         </p>
