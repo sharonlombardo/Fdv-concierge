@@ -44,9 +44,9 @@ function extractEditorialData(): DayOverview[] {
         location: dayPage.location,
         mantra: dayPage.mantra || '"Let each moment unfold with intention."',
         lifestyleLabel: lifestyleLabels[dayIndex] || 'The Moment',
-        lifestyleImageKey: firstFlow ? `${firstFlow.id}-lifestyle` : `day-${dayPage.day}-lifestyle`,
+        lifestyleImageKey: `day-${dayPage.day}-hero`,
         wardrobeImageKey: firstFlow ? `${firstFlow.id}-wardrobe` : `day-${dayPage.day}-wardrobe`,
-        placeImageKey: `day-${dayPage.day}-place`,
+        placeImageKey: firstFlow ? `${firstFlow.id}-extra-0` : `day-${dayPage.day}-place`,
         placeImage: firstFlow?.image,
       });
     }
