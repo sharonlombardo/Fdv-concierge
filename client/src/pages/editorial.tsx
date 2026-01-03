@@ -143,14 +143,17 @@ function DaySection({ day, getImageUrl, hasCustomImage }: DaySectionProps) {
       </div>
 
       {/* Day Hero Image */}
-      <div className="mb-16">
-        <div className="aspect-[21/9] overflow-hidden rounded-md bg-muted">
+      <div className="mb-16 max-w-2xl mx-auto">
+        <div className="aspect-[4/5] overflow-hidden rounded-md bg-muted">
           <img 
             src={heroImage}
             alt={day.location}
             className="w-full h-full object-cover"
           />
         </div>
+        <p className="text-xs font-medium tracking-[0.1em] uppercase text-muted-foreground mt-3 text-center">
+          The Day
+        </p>
       </div>
 
       {/* Flow Items - Event + Wardrobe pairs */}
