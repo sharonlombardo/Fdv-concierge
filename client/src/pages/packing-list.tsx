@@ -95,7 +95,7 @@ function extractPackingData(): DayData[] {
               extraIndex: i,
             });
           } else {
-            const placeholderNames = ['Layer', 'Footwear', 'Accessory', 'Bag'];
+            const placeholderNames = ['Footwear', 'Bag', 'Jewelry', 'Accessory'];
             items.push({
               id: `${flow.id}-placeholder-${i}`,
               imageKey: `${flow.id}-extra-${i}`,
