@@ -1347,23 +1347,30 @@ export default function Home() {
             <X className="w-6 h-6" />
           </button>
           <div className="w-full max-w-lg space-y-8 text-center py-24">
-            {ITINERARY_DATA.map((p, i) => (
-              <button 
-                key={i} 
-                className={`block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] transition-all transform hover:scale-105 font-serif ${pageIndex === i ? 'opacity-100 font-bold italic underline underline-offset-8' : 'opacity-25 hover:opacity-100'}`} 
-                onClick={() => { setPageIndex(i); setMenuOpen(false); }}
-                data-testid={`button-menu-item-${i}`}
-              >
-                {getPageTitle(p)}
-              </button>
-            ))}
-            <a 
-              href="/editorial"
-              className="block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] opacity-25 hover:opacity-100 transition-all transform hover:scale-105 font-serif mt-8"
-              data-testid="link-editorial"
-            >
-              Overview
-            </a>
+            {ITINERARY_DATA.map((p, i) => {
+              // Insert Overview link right before Travel Notes (field-notes-global page)
+              const isBeforeTravelNotes = 'type' in p && p.type === 'field-notes-global';
+              return (
+                <div key={i}>
+                  {isBeforeTravelNotes && (
+                    <a 
+                      href="/editorial"
+                      className="block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] opacity-25 hover:opacity-100 transition-all transform hover:scale-105 font-serif mb-8"
+                      data-testid="link-editorial"
+                    >
+                      Overview
+                    </a>
+                  )}
+                  <button 
+                    className={`block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] transition-all transform hover:scale-105 font-serif ${pageIndex === i ? 'opacity-100 font-bold italic underline underline-offset-8' : 'opacity-25 hover:opacity-100'}`} 
+                    onClick={() => { setPageIndex(i); setMenuOpen(false); }}
+                    data-testid={`button-menu-item-${i}`}
+                  >
+                    {getPageTitle(p)}
+                  </button>
+                </div>
+              );
+            })}
             <a 
               href="/packing"
               className="block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] opacity-25 hover:opacity-100 transition-all transform hover:scale-105 font-serif mt-4"
