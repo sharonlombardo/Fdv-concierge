@@ -490,7 +490,7 @@ export default function PackingList() {
               data-testid="link-logo-home"
             />
           </Link>
-          <h1 className="font-serif text-2xl font-light tracking-wide mb-1">Packing List</h1>
+          <h1 className="font-serif text-2xl font-light tracking-wide mb-1">Suitcase</h1>
           <p className="text-sm text-muted-foreground font-light">Morocco • April 3–10, 2026</p>
         </div>
       </header>
