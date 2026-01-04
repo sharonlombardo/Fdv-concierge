@@ -1305,9 +1305,10 @@ export default function Home() {
                               const accessory = group.accessories.find(a => a.key.endsWith(`-extra-${idx}`));
                               const extraKey = `${group.lookKey.replace('-wardrobe', '')}-extra-${idx}`;
                               const accPackingItem = packingListItems[extraKey];
-                              const accDisplayUrl = accessory 
-                                ? (accPackingItem?.customImage || getImageUrl(extraKey, accessory.suggestedImage))
-                                : (accPackingItem?.customImage || '');
+                              const hasCustom = hasCustomImage(extraKey);
+                              const accDisplayUrl = hasCustom 
+                                ? getImageUrl(extraKey, accessory?.suggestedImage || '')
+                                : (accPackingItem?.customImage || accessory?.suggestedImage || '');
 
                               return (
                                 <div key={extraKey} className="group relative">
