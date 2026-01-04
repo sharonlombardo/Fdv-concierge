@@ -28,7 +28,8 @@ import {
   Download,
   Mail,
   FileText,
-  Calendar
+  Calendar,
+  Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -1219,111 +1220,147 @@ export default function Home() {
                 }
               });
 
-              const mainItems = allItems.filter(i => !i.isExtra && !packingListItems[i.key]?.hidden);
-              const extraItems = allItems.filter(i => i.isExtra && !packingListItems[i.key]?.hidden);
+              // Group items by flow item ID for look + accessories layout
+              const groupedItems: { 
+                lookKey: string; 
+                dayNumber: number; 
+                itemTitle: string; 
+                time: string; 
+                suggestedImage: string;
+                accessories: typeof allItems;
+              }[] = [];
+
+              // Build grouped structure
+              allItems.forEach((item) => {
+                if (!item.isExtra && !packingListItems[item.key]?.hidden) {
+                  // This is a look - find its accessories
+                  const flowId = item.key.replace('-wardrobe', '');
+                  const accessories = allItems.filter(
+                    a => a.isExtra && a.key.startsWith(`${flowId}-extra-`) && !packingListItems[a.key]?.hidden
+                  );
+                  groupedItems.push({
+                    lookKey: item.key,
+                    dayNumber: item.dayNumber,
+                    itemTitle: item.itemTitle,
+                    time: item.time,
+                    suggestedImage: item.suggestedImage,
+                    accessories,
+                  });
+                }
+              });
 
               return (
                 <>
                   <h3 className="text-[11px] font-bold tracking-[0.5em] uppercase mb-8 flex items-center gap-3">
                     <Sparkles className="w-4 h-4" /> WARDROBE
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 mb-16">
-                    {mainItems.map((wardrobeItem) => {
-                      const packingItem = packingListItems[wardrobeItem.key];
-                      const displayUrl = packingItem?.customImage || getImageUrl(wardrobeItem.key, wardrobeItem.suggestedImage);
+                  <div className="space-y-8">
+                    {groupedItems.map((group) => {
+                      const packingItem = packingListItems[group.lookKey];
+                      const displayUrl = packingItem?.customImage || getImageUrl(group.lookKey, group.suggestedImage);
 
                       return (
-                        <div key={wardrobeItem.key} className="group relative">
-                          <div className="aspect-[3/4] overflow-hidden bg-muted rounded-md shadow-lg relative">
-                            <img 
-                              src={displayUrl} 
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                              alt={wardrobeItem.itemTitle}
-                            />
-                            <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-                              <label className="bg-background text-foreground rounded-full p-2 cursor-pointer hover:scale-110 transition-transform">
-                                <input 
-                                  type="file" 
-                                  accept="image/*" 
-                                  className="hidden" 
-                                  onChange={(e) => e.target.files?.[0] && handlePackingImageUpload(wardrobeItem.key, e.target.files[0])}
-                                  data-testid={`input-swap-${wardrobeItem.key}`}
-                                />
-                                <Camera className="w-4 h-4" />
-                              </label>
-                              <button 
-                                onClick={() => updatePackingItem(wardrobeItem.key, { hidden: true })}
-                                className="bg-background text-foreground rounded-full p-2 hover:scale-110 transition-transform"
-                                data-testid={`button-hide-${wardrobeItem.key}`}
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
+                        <div key={group.lookKey} className="flex gap-4">
+                          {/* Look on the left - 1/3 width */}
+                          <div className="w-1/3 min-w-[100px] group relative">
+                            <div className="aspect-[3/4] overflow-hidden bg-muted rounded-md shadow-lg relative">
+                              <img 
+                                src={displayUrl} 
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                                alt={group.itemTitle}
+                              />
+                              <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                                <label className="bg-background text-foreground rounded-full p-2 cursor-pointer hover:scale-110 transition-transform">
+                                  <input 
+                                    type="file" 
+                                    accept="image/*" 
+                                    className="hidden" 
+                                    onChange={(e) => e.target.files?.[0] && handlePackingImageUpload(group.lookKey, e.target.files[0])}
+                                    data-testid={`input-swap-${group.lookKey}`}
+                                  />
+                                  <Camera className="w-4 h-4" />
+                                </label>
+                                <button 
+                                  onClick={() => updatePackingItem(group.lookKey, { hidden: true })}
+                                  className="bg-background text-foreground rounded-full p-2 hover:scale-110 transition-transform"
+                                  data-testid={`button-hide-${group.lookKey}`}
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                            <div className="mt-3 space-y-1">
+                              <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40">
+                                Day {group.dayNumber} · {group.time}
+                              </p>
+                              <p className="text-sm font-serif font-medium truncate">
+                                {group.itemTitle}
+                              </p>
                             </div>
                           </div>
-                          <div className="mt-3 space-y-1">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40">
-                              Day {wardrobeItem.dayNumber} · {wardrobeItem.time}
-                            </p>
-                            <p className="text-sm font-serif font-medium truncate">
-                              {wardrobeItem.itemTitle}
-                            </p>
+
+                          {/* Accessories on the right - 2/3 width in grid */}
+                          <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-2">
+                            {[0, 1, 2, 3].map((idx) => {
+                              const accessory = group.accessories.find(a => a.key.endsWith(`-extra-${idx}`));
+                              const extraKey = `${group.lookKey.replace('-wardrobe', '')}-extra-${idx}`;
+                              const accPackingItem = packingListItems[extraKey];
+                              const accDisplayUrl = accessory 
+                                ? (accPackingItem?.customImage || getImageUrl(extraKey, accessory.suggestedImage))
+                                : (accPackingItem?.customImage || '');
+
+                              return (
+                                <div key={extraKey} className="group relative">
+                                  <div className="aspect-square overflow-hidden bg-muted rounded-md shadow-lg relative">
+                                    {accDisplayUrl ? (
+                                      <img 
+                                        src={accDisplayUrl} 
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                                        alt={accessory?.extraName || `Item ${idx + 1}`}
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
+                                        <Plus className="w-6 h-6" />
+                                      </div>
+                                    )}
+                                    <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                                      <label className="bg-background text-foreground rounded-full p-2 cursor-pointer hover:scale-110 transition-transform">
+                                        <input 
+                                          type="file" 
+                                          accept="image/*" 
+                                          className="hidden" 
+                                          onChange={(e) => e.target.files?.[0] && handlePackingImageUpload(extraKey, e.target.files[0])}
+                                          data-testid={`input-swap-${extraKey}`}
+                                        />
+                                        <Camera className="w-4 h-4" />
+                                      </label>
+                                      {accDisplayUrl && (
+                                        <button 
+                                          onClick={() => updatePackingItem(extraKey, { hidden: true })}
+                                          className="bg-background text-foreground rounded-full p-2 hover:scale-110 transition-transform"
+                                          data-testid={`button-hide-${extraKey}`}
+                                        >
+                                          <X className="w-4 h-4" />
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="mt-2 text-center">
+                                    <p className="text-[10px] font-medium text-muted-foreground truncate">
+                                      {accessory?.extraName || ['Footwear', 'Bag', 'Jewelry', 'Accessory'][idx]}
+                                    </p>
+                                  </div>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       );
                     })}
                   </div>
 
-                  {extraItems.length > 0 && (
-                    <>
-                      <h3 className="text-[11px] font-bold tracking-[0.5em] uppercase mb-8 flex items-center gap-3 mt-16">
-                        <ShoppingBag className="w-4 h-4" /> ESSENTIALS
-                      </h3>
-                      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        {extraItems.map((extraItem) => {
-                          const packingItem = packingListItems[extraItem.key];
-                          const displayUrl = packingItem?.customImage || getImageUrl(extraItem.key, extraItem.suggestedImage);
-
-                          return (
-                            <div key={extraItem.key} className="group relative">
-                              <div className="aspect-square overflow-hidden bg-muted rounded-md shadow-lg relative">
-                                <img 
-                                  src={displayUrl} 
-                                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                                  alt={extraItem.extraName}
-                                />
-                                <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-                                  <label className="bg-background text-foreground rounded-full p-2 cursor-pointer hover:scale-110 transition-transform">
-                                    <input 
-                                      type="file" 
-                                      accept="image/*" 
-                                      className="hidden" 
-                                      onChange={(e) => e.target.files?.[0] && handlePackingImageUpload(extraItem.key, e.target.files[0])}
-                                      data-testid={`input-swap-${extraItem.key}`}
-                                    />
-                                    <Camera className="w-4 h-4" />
-                                  </label>
-                                  <button 
-                                    onClick={() => updatePackingItem(extraItem.key, { hidden: true })}
-                                    className="bg-background text-foreground rounded-full p-2 hover:scale-110 transition-transform"
-                                    data-testid={`button-hide-${extraItem.key}`}
-                                  >
-                                    <X className="w-4 h-4" />
-                                  </button>
-                                </div>
-                              </div>
-                              <div className="mt-2">
-                                <p className="text-[9px] font-bold uppercase tracking-wider text-center truncate opacity-60">
-                                  {extraItem.extraName}
-                                </p>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </>
-                  )}
-
-                  {(mainItems.length < allItems.filter(i => !i.isExtra).length || extraItems.length < allItems.filter(i => i.isExtra).length) && (
+                  {/* Restore hidden items button */}
+                  {groupedItems.length < allItems.filter(i => !i.isExtra).length && (
                     <div className="mt-12 text-center">
                       <Button 
                         variant="outline" 
