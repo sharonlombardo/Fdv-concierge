@@ -1,7 +1,8 @@
-import { Link } from "wouter";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { Link, useLocation } from "wouter";
+import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCustomImages } from "@/hooks/use-custom-images";
 import { ITINERARY_DATA, DayPage, FlowItem } from "@/lib/itinerary-data";
+import { Button } from "@/components/ui/button";
 import logoImage from "@assets/LOGO_1767219658929.png";
 
 interface DayEditorial {
@@ -15,6 +16,11 @@ interface DayEditorial {
   flows: FlowEditorial[];
 }
 
+interface WardrobeExtra {
+  imageKey: string;
+  imageDefault: string;
+}
+
 interface FlowEditorial {
   id: string;
   time: string;
@@ -23,6 +29,7 @@ interface FlowEditorial {
   eventImageDefault: string;
   wardrobeImageKey: string | null;
   wardrobeImageDefault: string | null;
+  wardrobeExtras: WardrobeExtra[];
 }
 
 function extractEditorialData(): DayEditorial[] {
@@ -34,15 +41,27 @@ function extractEditorialData(): DayEditorial[] {
       const dayPage = page as DayPage;
       const dayIndex = dayPage.day - 1;
       
-      const flows: FlowEditorial[] = dayPage.flow.map((flow: FlowItem) => ({
-        id: flow.id,
-        time: flow.time,
-        title: flow.title,
-        eventImageKey: flow.id,
-        eventImageDefault: flow.image,
-        wardrobeImageKey: flow.commercialWardrobe ? `${flow.id}-wardrobe` : null,
-        wardrobeImageDefault: flow.commercialWardrobe || null,
-      }));
+      const flows: FlowEditorial[] = dayPage.flow.map((flow: FlowItem) => {
+        // Generate wardrobe extras (4 accessory slots) - always generate regardless of commercialWardrobe
+        const extras: WardrobeExtra[] = [];
+        for (let i = 0; i < 4; i++) {
+          extras.push({
+            imageKey: `${flow.id}-extra-${i}`,
+            imageDefault: '', // No default - only show if custom image uploaded
+          });
+        }
+        
+        return {
+          id: flow.id,
+          time: flow.time,
+          title: flow.title,
+          eventImageKey: flow.id,
+          eventImageDefault: flow.image,
+          wardrobeImageKey: flow.commercialWardrobe ? `${flow.id}-wardrobe` : null,
+          wardrobeImageDefault: flow.commercialWardrobe || null,
+          wardrobeExtras: extras,
+        };
+      });
       
       days.push({
         dayNumber: dayPage.day,
@@ -165,6 +184,9 @@ function DaySection({ day, getImageUrl, hasCustomImage }: DaySectionProps) {
               ? getImageUrl(flow.wardrobeImageKey, flow.wardrobeImageDefault)
               : flow.wardrobeImageDefault)
             : null;
+          
+          const hasAccessories = flow.wardrobeExtras.some(extra => hasCustomImage(extra.imageKey));
+          const hasWardrobeContent = wardrobeImage || hasAccessories;
 
           return (
             <div key={flow.id} className="space-y-6">
@@ -175,16 +197,38 @@ function DaySection({ day, getImageUrl, hasCustomImage }: DaySectionProps) {
                 <h3 className="font-serif text-xl md:text-2xl mt-1">{flow.title}</h3>
               </div>
               
-              <div className={`grid gap-6 ${wardrobeImage ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}>
+              <div className={`grid gap-6 ${hasWardrobeContent ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}>
                 <ImageCard 
                   imageUrl={eventImage} 
                   aspectRatio="aspect-[4/5]"
                 />
-                {wardrobeImage && (
-                  <ImageCard 
-                    imageUrl={wardrobeImage} 
-                    aspectRatio="aspect-[4/5]"
-                  />
+                {hasWardrobeContent && (
+                  <div className="space-y-4">
+                    {wardrobeImage && (
+                      <ImageCard 
+                        imageUrl={wardrobeImage} 
+                        aspectRatio="aspect-[4/5]"
+                      />
+                    )}
+                    {/* Accessory items - show if any have custom images */}
+                    {hasAccessories && (
+                      <div className="grid grid-cols-4 gap-2">
+                        {flow.wardrobeExtras.map((extra, idx) => {
+                          if (!hasCustomImage(extra.imageKey)) return null;
+                          const extraImage = getImageUrl(extra.imageKey, extra.imageDefault);
+                          return (
+                            <div key={idx} className="aspect-square overflow-hidden rounded-sm bg-muted">
+                              <img 
+                                src={extraImage}
+                                alt={`Accessory ${idx + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
@@ -203,6 +247,7 @@ function DaySection({ day, getImageUrl, hasCustomImage }: DaySectionProps) {
 }
 
 export default function Editorial() {
+  const [, setLocation] = useLocation();
   const { getImageUrl, hasCustomImage, isLoading } = useCustomImages();
   const editorialData = extractEditorialData();
 
@@ -242,6 +287,33 @@ export default function Editorial() {
             hasCustomImage={hasCustomImage}
           />
         ))}
+      </div>
+
+      {/* Navigation Footer */}
+      <div className="max-w-5xl mx-auto px-4 md:px-6">
+        <footer className="mt-32 border-t border-border pt-16 flex items-center justify-between gap-4">
+          <Button 
+            onClick={() => setLocation('/?page=1')}
+            variant="ghost"
+            className="flex items-center gap-2 md:gap-4 text-[12px] font-bold uppercase tracking-[0.5em] transition-all"
+            data-testid="button-prev"
+          >
+            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" /> 
+            <span className="hidden sm:inline">PREV</span>
+          </Button>
+          <div className="text-[11px] font-bold tracking-[0.8em] text-muted-foreground uppercase">
+            OVERVIEW
+          </div>
+          <Button 
+            onClick={() => setLocation('/?page=2')}
+            variant="ghost"
+            className="flex items-center gap-2 md:gap-4 text-[12px] font-bold uppercase tracking-[0.5em] transition-all"
+            data-testid="button-next"
+          >
+            <span className="hidden sm:inline">NEXT</span> 
+            <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+          </Button>
+        </footer>
       </div>
 
       {/* Footer CTA */}

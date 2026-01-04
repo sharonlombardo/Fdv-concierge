@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useLocation } from 'wouter';
 import fdvLogo from '@assets/LOGO_1767219658929.png';
 import { 
   ChevronRight, 
@@ -788,10 +789,28 @@ interface PackingListItem {
 }
 
 export default function Home() {
+  const [, setLocation] = useLocation();
   const [pageIndex, setPageIndex] = useState(() => {
+    // Check for page query param first (from editorial navigation)
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageParam = urlParams.get('page');
+    if (pageParam) {
+      const pageNum = parseInt(pageParam, 10);
+      if (!isNaN(pageNum) && pageNum >= 0 && pageNum < ITINERARY_DATA.length) {
+        return pageNum;
+      }
+    }
     const saved = localStorage.getItem('fdv_page_index');
     return saved ? parseInt(saved, 10) : 0;
   });
+  
+  // Clean up query param after reading it (in useEffect to avoid render-time side effects)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('page')) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<FlowItem | null>(null);
   const [isShareMode, setIsShareMode] = useState(false);
@@ -871,8 +890,23 @@ export default function Home() {
     };
   };
 
-  const nextPage = () => pageIndex < ITINERARY_DATA.length - 1 && setPageIndex(pageIndex + 1);
-  const prevPage = () => pageIndex > 0 && setPageIndex(pageIndex - 1);
+  // Navigation: Overview (editorial) page sits between Intro (index 1) and Travel Notes (index 2)
+  const nextPage = () => {
+    if (pageIndex === 1) {
+      // From Intro, go to Editorial
+      setLocation('/editorial');
+    } else if (pageIndex < ITINERARY_DATA.length - 1) {
+      setPageIndex(pageIndex + 1);
+    }
+  };
+  const prevPage = () => {
+    if (pageIndex === 2) {
+      // From Travel Notes, go to Editorial
+      setLocation('/editorial');
+    } else if (pageIndex > 0) {
+      setPageIndex(pageIndex - 1);
+    }
+  };
   const currentPage = ITINERARY_DATA[pageIndex];
 
   const getPageTitle = (page: ItineraryPage): string => {
