@@ -1347,7 +1347,7 @@ export default function Home() {
                                   </div>
                                   <div className="mt-2 text-center">
                                     <p className="text-[10px] font-medium text-muted-foreground truncate">
-                                      {accessory?.extraName || ['Footwear', 'Bag', 'Jewelry', 'Accessory'][idx]}
+                                      {accessory?.extraName || `Extra ${idx + 1}`}
                                     </p>
                                   </div>
                                 </div>
