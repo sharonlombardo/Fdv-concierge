@@ -456,14 +456,14 @@ function ItemDetailDrawer({
                               <img 
                                 src={getImageUrl(extraKey, extra?.image || '')} 
                                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
-                                alt={extra?.name || `Extra ${index + 1}`}
+                                alt={extra?.name || ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][index]}
                               />
                             </a>
                           ) : (
                             <img 
                               src={getImageUrl(extraKey, extra?.image || '')} 
                               className="w-full h-full object-cover" 
-                              alt={extra?.name || `Extra ${index + 1}`}
+                              alt={extra?.name || ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][index]}
                             />
                           )
                         ) : (
@@ -474,7 +474,7 @@ function ItemDetailDrawer({
                       </div>
                       {(extra?.name || customImageUrl) && (
                         <p className="text-[9px] font-medium uppercase tracking-wider text-center truncate opacity-60">
-                          {extra?.name || `Extra ${index + 1}`}
+                          {extra?.name || ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][index]}
                         </p>
                       )}
                     </div>
@@ -1211,7 +1211,7 @@ export default function Home() {
                             time: item.time,
                             suggestedImage: extra?.image || '',
                             isExtra: true,
-                            extraName: extra?.name || `Extra ${idx + 1}`,
+                            extraName: extra?.name || ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][idx],
                           });
                         }
                       }
@@ -1316,7 +1316,7 @@ export default function Home() {
                                       <img 
                                         src={accDisplayUrl} 
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                                        alt={accessory?.extraName || `Extra ${idx + 1}`}
+                                        alt={accessory?.extraName || ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][idx]}
                                       />
                                     ) : (
                                       <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
@@ -1347,7 +1347,7 @@ export default function Home() {
                                   </div>
                                   <div className="mt-2 text-center">
                                     <p className="text-[10px] font-medium text-muted-foreground truncate">
-                                      {accessory?.extraName || `Extra ${idx + 1}`}
+                                      {accessory?.extraName || ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][idx]}
                                     </p>
                                   </div>
                                 </div>
