@@ -474,7 +474,7 @@ function ItemDetailDrawer({
                       </div>
                       {(extra?.name || customImageUrl) && (
                         <p className="text-[9px] font-medium uppercase tracking-wider text-center truncate opacity-60">
-                          {extra?.name || `Item ${index + 1}`}
+                          {extra?.name || `Extra ${index + 1}`}
                         </p>
                       )}
                     </div>
@@ -1211,7 +1211,7 @@ export default function Home() {
                             time: item.time,
                             suggestedImage: extra?.image || '',
                             isExtra: true,
-                            extraName: extra?.name || `Item ${idx + 1}`,
+                            extraName: extra?.name || `Extra ${idx + 1}`,
                           });
                         }
                       }
@@ -1316,7 +1316,7 @@ export default function Home() {
                                       <img 
                                         src={accDisplayUrl} 
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                                        alt={accessory?.extraName || `Item ${idx + 1}`}
+                                        alt={accessory?.extraName || `Extra ${idx + 1}`}
                                       />
                                     ) : (
                                       <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
