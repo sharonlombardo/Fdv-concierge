@@ -156,9 +156,10 @@ interface ItemCardProps {
   onOpenModal: () => void;
   getImageUrl: (key: string, defaultUrl: string) => string;
   hasCustomImage: (key: string) => boolean;
+  isLarge?: boolean;
 }
 
-function ItemCard({ item, isPacked, onTogglePack, onOpenModal, getImageUrl, hasCustomImage }: ItemCardProps) {
+function ItemCard({ item, isPacked, onTogglePack, onOpenModal, getImageUrl, hasCustomImage, isLarge }: ItemCardProps) {
   const hasCustom = hasCustomImage(item.imageKey);
   const displayImage = (hasCustom || item.image) ? getImageUrl(item.imageKey, item.image) : '';
   
@@ -173,7 +174,7 @@ function ItemCard({ item, isPacked, onTogglePack, onOpenModal, getImageUrl, hasC
       onClick={onOpenModal}
       data-testid={`card-item-${item.id}`}
     >
-      <div className="relative w-full aspect-square bg-card rounded-md mb-2 overflow-hidden">
+      <div className={`relative w-full ${isLarge ? 'aspect-[3/4]' : 'aspect-square'} bg-card rounded-md mb-2 overflow-hidden`}>
         {displayImage ? (
           <img 
             src={displayImage}
@@ -204,7 +205,7 @@ function ItemCard({ item, isPacked, onTogglePack, onOpenModal, getImageUrl, hasC
           {isPacked ? <Check className="w-3 h-3" /> : item.isLook ? <Eye className="w-3 h-3" /> : <Check className="w-3 h-3" />}
         </div>
       </div>
-      <p className="text-xs text-center text-muted-foreground leading-tight font-light">
+      <p className={`${isLarge ? 'text-sm' : 'text-xs'} text-center text-muted-foreground leading-tight font-light`}>
         {item.name}
       </p>
     </div>
@@ -272,69 +273,126 @@ function DaySection({
           {dayData.morning.length > 0 && (
             <div className="mb-8">
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-normal">Morning</p>
-              {dayData.morning.map((row) => (
-                <div key={row.flowId} className="mb-4">
-                  <div className="grid grid-cols-5 gap-4">
-                    {row.items.map((item) => (
-                      <ItemCard
-                        key={item.id}
-                        item={item}
-                        isPacked={packedItems.has(item.id)}
-                        onTogglePack={() => onTogglePack(item.id)}
-                        onOpenModal={() => onOpenModal(item)}
-                        getImageUrl={getImageUrl}
-                        hasCustomImage={hasCustomImage}
-                      />
-                    ))}
+              {dayData.morning.map((row) => {
+                const lookItem = row.items.find(item => item.isLook);
+                const accessories = row.items.filter(item => !item.isLook);
+                return (
+                  <div key={row.flowId} className="mb-6">
+                    <div className="flex gap-4">
+                      {lookItem && (
+                        <div className="w-1/3 min-w-[120px]">
+                          <ItemCard
+                            item={lookItem}
+                            isPacked={packedItems.has(lookItem.id)}
+                            onTogglePack={() => onTogglePack(lookItem.id)}
+                            onOpenModal={() => onOpenModal(lookItem)}
+                            getImageUrl={getImageUrl}
+                            hasCustomImage={hasCustomImage}
+                            isLarge
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1 grid grid-cols-4 gap-2">
+                        {accessories.map((item) => (
+                          <ItemCard
+                            key={item.id}
+                            item={item}
+                            isPacked={packedItems.has(item.id)}
+                            onTogglePack={() => onTogglePack(item.id)}
+                            onOpenModal={() => onOpenModal(item)}
+                            getImageUrl={getImageUrl}
+                            hasCustomImage={hasCustomImage}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
           {dayData.afternoon.length > 0 && (
             <div className="mb-8">
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-normal">Afternoon</p>
-              {dayData.afternoon.map((row) => (
-                <div key={row.flowId} className="mb-4">
-                  <div className="grid grid-cols-5 gap-4">
-                    {row.items.map((item) => (
-                      <ItemCard
-                        key={item.id}
-                        item={item}
-                        isPacked={packedItems.has(item.id)}
-                        onTogglePack={() => onTogglePack(item.id)}
-                        onOpenModal={() => onOpenModal(item)}
-                        getImageUrl={getImageUrl}
-                        hasCustomImage={hasCustomImage}
-                      />
-                    ))}
+              {dayData.afternoon.map((row) => {
+                const lookItem = row.items.find(item => item.isLook);
+                const accessories = row.items.filter(item => !item.isLook);
+                return (
+                  <div key={row.flowId} className="mb-6">
+                    <div className="flex gap-4">
+                      {lookItem && (
+                        <div className="w-1/3 min-w-[120px]">
+                          <ItemCard
+                            item={lookItem}
+                            isPacked={packedItems.has(lookItem.id)}
+                            onTogglePack={() => onTogglePack(lookItem.id)}
+                            onOpenModal={() => onOpenModal(lookItem)}
+                            getImageUrl={getImageUrl}
+                            hasCustomImage={hasCustomImage}
+                            isLarge
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1 grid grid-cols-4 gap-2">
+                        {accessories.map((item) => (
+                          <ItemCard
+                            key={item.id}
+                            item={item}
+                            isPacked={packedItems.has(item.id)}
+                            onTogglePack={() => onTogglePack(item.id)}
+                            onOpenModal={() => onOpenModal(item)}
+                            getImageUrl={getImageUrl}
+                            hasCustomImage={hasCustomImage}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
           {dayData.evening.length > 0 && (
             <div>
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-normal">Evening</p>
-              {dayData.evening.map((row) => (
-                <div key={row.flowId} className="mb-4">
-                  <div className="grid grid-cols-5 gap-4">
-                    {row.items.map((item) => (
-                      <ItemCard
-                        key={item.id}
-                        item={item}
-                        isPacked={packedItems.has(item.id)}
-                        onTogglePack={() => onTogglePack(item.id)}
-                        onOpenModal={() => onOpenModal(item)}
-                        getImageUrl={getImageUrl}
-                        hasCustomImage={hasCustomImage}
-                      />
-                    ))}
+              {dayData.evening.map((row) => {
+                const lookItem = row.items.find(item => item.isLook);
+                const accessories = row.items.filter(item => !item.isLook);
+                return (
+                  <div key={row.flowId} className="mb-6">
+                    <div className="flex gap-4">
+                      {lookItem && (
+                        <div className="w-1/3 min-w-[120px]">
+                          <ItemCard
+                            item={lookItem}
+                            isPacked={packedItems.has(lookItem.id)}
+                            onTogglePack={() => onTogglePack(lookItem.id)}
+                            onOpenModal={() => onOpenModal(lookItem)}
+                            getImageUrl={getImageUrl}
+                            hasCustomImage={hasCustomImage}
+                            isLarge
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1 grid grid-cols-4 gap-2">
+                        {accessories.map((item) => (
+                          <ItemCard
+                            key={item.id}
+                            item={item}
+                            isPacked={packedItems.has(item.id)}
+                            onTogglePack={() => onTogglePack(item.id)}
+                            onOpenModal={() => onOpenModal(item)}
+                            getImageUrl={getImageUrl}
+                            hasCustomImage={hasCustomImage}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
