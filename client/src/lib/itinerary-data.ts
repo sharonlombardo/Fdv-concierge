@@ -843,7 +843,7 @@ export const ITINERARY_DATA: ItineraryPage[] = [
   },
   { 
     type: 'journal', 
-    title: 'THE LOG', 
+    title: 'TRAVEL DIARY', 
     subtitle: 'COLLECTED MEMORIES' 
   },
   { 
