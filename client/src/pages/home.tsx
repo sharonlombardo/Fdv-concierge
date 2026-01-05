@@ -821,7 +821,7 @@ export default function Home() {
   });
 
   const { entries: journalEntries, saveEntry, status: saveStatus } = useJournal();
-  const { getImageUrl, hasCustomImage } = useCustomImages();
+  const { getImageUrl, hasCustomImage, isLoading: isLoadingImages } = useCustomImages();
 
   const updatePackingItem = (key: string, updates: Partial<PackingListItem>) => {
     setPackingListItems(prev => {
@@ -966,14 +966,20 @@ export default function Home() {
               {currentPage.subtitle}
             </p>
             <div className="w-full max-w-4xl aspect-[4/5] md:aspect-[21/9] relative overflow-hidden mt-12 grayscale shadow-2xl transition-all duration-1000 hover:grayscale-0 rounded-md">
-              <img 
-                src={getImageUrl('cover-main', currentPage.image, { imageType: 'cover' })} 
-                className="w-full h-full object-cover scale-110" 
-                alt={currentPage.title}
-                onError={(e) => { 
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200'; 
-                }}
-              />
+              {(() => {
+                const coverUrl = getImageUrl('cover-main', currentPage.image, { imageType: 'cover' });
+                return (
+                  <img 
+                    key={coverUrl}
+                    src={coverUrl} 
+                    className="w-full h-full object-cover scale-110" 
+                    alt={currentPage.title}
+                    onError={(e) => { 
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200'; 
+                    }}
+                  />
+                );
+              })()}
             </div>
             <Button 
               onClick={nextPage} 

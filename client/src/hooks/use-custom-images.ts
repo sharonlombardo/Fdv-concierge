@@ -36,14 +36,20 @@ function normalizeTimeToCategory(timeStr: string): string[] {
 export function useCustomImages() {
   const { data: customImages = [], isLoading: isLoadingCustom } = useQuery<CustomImage[]>({
     queryKey: ['/api/images'],
+    staleTime: 0, // Always refetch to prevent stale cached images
+    refetchOnMount: 'always',
   });
 
   const { data: libraryImages = [], isLoading: isLoadingLibrary } = useQuery<ImageLibraryItem[]>({
     queryKey: ['/api/library'],
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   const { data: rules = [], isLoading: isLoadingRules } = useQuery<ImageRule[]>({
     queryKey: ['/api/rules'],
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   const isLoading = isLoadingCustom || isLoadingLibrary || isLoadingRules;
