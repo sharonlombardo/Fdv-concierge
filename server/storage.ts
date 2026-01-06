@@ -3,7 +3,8 @@ import {
   type CustomImage, customImages,
   type ImageLibraryItem, type InsertImageLibrary, imageLibrary,
   type ImageRule, type InsertImageRule, imageRules,
-  type SelfieImage, type InsertSelfieImage, selfieImages
+  type SelfieImage, type InsertSelfieImage, selfieImages,
+  type Save, type InsertSave, saves
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -39,6 +40,12 @@ export interface IStorage {
   addSelfieImage(data: InsertSelfieImage): Promise<SelfieImage>;
   updateSelfieImage(id: number, data: Partial<InsertSelfieImage>): Promise<SelfieImage | undefined>;
   deleteSelfieImage(id: number): Promise<void>;
+  
+  // Saves
+  getSaves(): Promise<Save[]>;
+  getSaveByItemId(itemId: string): Promise<Save | undefined>;
+  addSave(data: InsertSave): Promise<Save>;
+  deleteSaveByItemId(itemId: string): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -209,6 +216,28 @@ export class MemStorage implements IStorage {
 
   async deleteSelfieImage(id: number): Promise<void> {
     await db.delete(selfieImages).where(eq(selfieImages.id, id));
+  }
+
+  // Saves methods
+  async getSaves(): Promise<Save[]> {
+    return await db.select().from(saves).orderBy(desc(saves.savedAt));
+  }
+
+  async getSaveByItemId(itemId: string): Promise<Save | undefined> {
+    const [save] = await db.select().from(saves).where(eq(saves.itemId, itemId));
+    return save;
+  }
+
+  async addSave(data: InsertSave): Promise<Save> {
+    const [created] = await db
+      .insert(saves)
+      .values(data)
+      .returning();
+    return created;
+  }
+
+  async deleteSaveByItemId(itemId: string): Promise<void> {
+    await db.delete(saves).where(eq(saves.itemId, itemId));
   }
 }
 

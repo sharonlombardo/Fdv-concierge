@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { saveJournalEntrySchema, journalEntrySchema, customImageSchema, imageLibraryItemSchema, imageRuleSchema, selfieImageSchema } from "@shared/schema";
+import { saveJournalEntrySchema, journalEntrySchema, customImageSchema, imageLibraryItemSchema, imageRuleSchema, selfieImageSchema, saveSchema } from "@shared/schema";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -313,6 +313,72 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error deleting selfie:", error);
       res.status(500).json({ error: "Failed to delete selfie" });
+    }
+  });
+
+  // Saves/Pin API
+  app.get("/api/saves", async (req, res) => {
+    try {
+      const allSaves = await storage.getSaves();
+      res.json(allSaves);
+    } catch (error) {
+      console.error("Error fetching saves:", error);
+      res.status(500).json({ error: "Failed to fetch saves" });
+    }
+  });
+
+  app.get("/api/saves/check/:itemId", async (req, res) => {
+    try {
+      const { itemId } = req.params;
+      const saved = await storage.getSaveByItemId(itemId);
+      res.json({ isPinned: !!saved });
+    } catch (error) {
+      console.error("Error checking save:", error);
+      res.status(500).json({ error: "Failed to check save status" });
+    }
+  });
+
+  app.post("/api/saves", async (req, res) => {
+    try {
+      const validationResult = saveSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          error: "Invalid save data", 
+          details: validationResult.error.errors 
+        });
+      }
+
+      const data = validationResult.data;
+      
+      const existing = await storage.getSaveByItemId(data.itemId);
+      if (existing) {
+        return res.status(400).json({ error: "Already pinned" });
+      }
+
+      const newSave = await storage.addSave({
+        itemType: data.itemType,
+        itemId: data.itemId,
+        sourceContext: data.sourceContext || null,
+        aestheticTags: data.aestheticTags || null,
+        savedAt: data.savedAt || Date.now(),
+        metadata: data.metadata || null,
+      });
+      res.json(newSave);
+    } catch (error) {
+      console.error("Error creating save:", error);
+      res.status(500).json({ error: "Failed to create save" });
+    }
+  });
+
+  app.delete("/api/saves/:itemId", async (req, res) => {
+    try {
+      const { itemId } = req.params;
+      await storage.deleteSaveByItemId(itemId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting save:", error);
+      res.status(500).json({ error: "Failed to delete save" });
     }
   });
 

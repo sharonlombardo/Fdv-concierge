@@ -1,0 +1,181 @@
+I need to create a universal Pin button component that can be used throughout the app to save items.
+Context:
+
+This app is currently single-user demo mode (no auth needed)
+Pin icon should be a round "lollipop" style map pin (we'll use Lucide's MapPin icon)
+Component should work on any content type: images, articles, products, quotes, etc.
+
+Create a new component: client/src/components/pin-button.tsx
+tsximport { MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+interface PinButtonProps {
+  itemType: string; // 'image', 'product', 'article', 'quote', 'place', 'look'
+  itemId: string; // unique identifier for the item
+  itemData: {
+    title?: string;
+    imageUrl?: string;
+    description?: string;
+    [key: string]: any; // flexible metadata
+  };
+  sourceContext: string; // where it's being pinned from: 'current_feed', 'morocco_itinerary', etc.
+  aestheticTags?: string[]; // optional tags: ['minimal', 'linen', 'desert']
+  className?: string;
+  size?: "sm" | "md" | "lg";
+}
+
+export function PinButton({
+  itemType,
+  itemId,
+  itemData,
+  sourceContext,
+  aestheticTags = [],
+  className,
+  size = "md"
+}: PinButtonProps) {
+  const queryClient = useQueryClient();
+  
+  // Check if this item is already pinned
+  const { data: isPinned } = useQuery({
+    queryKey: ['/api/saves/check', itemId],
+    queryFn: async () => {
+      const res = await fetch(`/api/saves/check/${itemId}`);
+      if (!res.ok) return false;
+      const data = await res.json();
+      return data.isPinned;
+    }
+  });
+
+  // Pin/unpin mutation
+  const pinMutation = useMutation({
+    mutationFn: async () => {
+      if (isPinned) {
+        // Unpin
+        const res = await fetch(`/api/saves/${itemId}`, {
+          method: 'DELETE'
+        });
+        if (!res.ok) throw new Error('Failed to unpin');
+        return { action: 'unpinned' };
+      } else {
+        // Pin
+        const res = await fetch('/api/saves', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            itemType,
+            itemId,
+            sourceContext,
+            aestheticTags,
+            metadata: itemData
+          })
+        });
+        if (!res.ok) throw new Error('Failed to pin');
+        return { action: 'pinned' };
+      }
+    },
+    onSuccess: (data) => {
+      // Invalidate queries to refresh UI
+      queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/saves/check', itemId] });
+      
+      // Show toast notification (you have useToast hook)
+      const { toast } = useToast();
+      toast({
+        description: data.action === 'pinned' ? '📍 Saved to your Suitcase' : 'Removed from Suitcase',
+        duration: 2000
+      });
+    }
+  });
+
+  const sizeClasses = {
+    sm: "h-6 w-6",
+    md: "h-8 w-8",
+    lg: "h-10 w-10"
+  };
+
+  const iconSizes = {
+    sm: 14,
+    md: 18,
+    lg: 22
+  };
+
+  return (
+    <button
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        pinMutation.mutate();
+      }}
+      className={cn(
+        "rounded-full bg-white/90 backdrop-blur-sm shadow-sm",
+        "hover:bg-white hover:scale-110 transition-all duration-200",
+        "flex items-center justify-center",
+        isPinned ? "text-amber-600" : "text-gray-400",
+        sizeClasses[size],
+        className
+      )}
+      disabled={pinMutation.isPending}
+    >
+      <MapPin 
+        size={iconSizes[size]} 
+        fill={isPinned ? "currentColor" : "none"}
+        strokeWidth={2}
+      />
+    </button>
+  );
+}
+Also create the API routes:
+1. Create server/routes.ts additions (or new file if routes are separate):
+Add these endpoints:
+typescript// Check if item is pinned
+app.get("/api/saves/check/:itemId", async (req, res) => {
+  const { itemId } = req.params;
+  const saved = await db.query.saves.findFirst({
+    where: eq(saves.itemId, itemId)
+  });
+  res.json({ isPinned: !!saved });
+});
+
+// Get all saves
+app.get("/api/saves", async (req, res) => {
+  const allSaves = await db.query.saves.findMany({
+    orderBy: (saves, { desc }) => [desc(saves.savedAt)]
+  });
+  res.json(allSaves);
+});
+
+// Create new save
+app.post("/api/saves", async (req, res) => {
+  const { itemType, itemId, sourceContext, aestheticTags, metadata } = req.body;
+  
+  // Check if already exists
+  const existing = await db.query.saves.findFirst({
+    where: eq(saves.itemId, itemId)
+  });
+  
+  if (existing) {
+    return res.status(400).json({ error: "Already pinned" });
+  }
+  
+  const newSave = await db.insert(saves).values({
+    itemType,
+    itemId,
+    sourceContext,
+    aestheticTags,
+    metadata,
+    savedAt: Date.now()
+  }).returning();
+  
+  res.json(newSave[0]);
+});
+
+// Delete save
+app.delete("/api/saves/:itemId", async (req, res) => {
+  const { itemId } = req.params;
+  await db.delete(saves).where(eq(saves.itemId, itemId));
+  res.json({ success: true });
+});
+Import the toast hook at the top of pin-button.tsx:
+typescriptimport { useToast } from "@/hooks/use-toast";
+Test by adding a PinButton to the Morocco itinerary page to see if it works.
