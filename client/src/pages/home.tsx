@@ -486,6 +486,23 @@ function ItemDetailDrawer({
                       size="md"
                     />
                   </div>
+                  <div className="absolute bottom-3 right-3">
+                    <SuitcaseButton
+                      itemId={`${item.id}-look`}
+                      itemData={{
+                        title: `${item.title} - The Look`,
+                        description: item.wardrobe,
+                        imageUrl: getImageUrl(
+                          `${item.id}-wardrobe`,
+                          item.commercialWardrobe || "",
+                          { imageType: 'wardrobe', title: item.title }
+                        )
+                      }}
+                      sourceContext="morocco_itinerary"
+                      aestheticTags={['look', 'outfit', 'style']}
+                      size="md"
+                    />
+                  </div>
                 </div>
                 <div className="flex justify-between items-center max-w-md mx-auto">
                   <p className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic">FDV Recommendation</p>
