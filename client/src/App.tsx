@@ -17,6 +17,7 @@ import TestSaves from "@/pages/test-saves";
 import CurrentFeed from "@/pages/current";
 import SuitcasePage from "@/pages/suitcase";
 import CapsuleDetail from "@/pages/capsule-detail";
+import ImageControl from "@/pages/image-control";
 
 function Router() {
   return (
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/current" component={CurrentFeed} />
       <Route path="/suitcase" component={SuitcasePage} />
       <Route path="/suitcase/capsules/:slug" component={CapsuleDetail} />
+      <Route path="/image-control" component={ImageControl} />
       <Route path="/test-saves" component={TestSaves} />
       <Route component={NotFound} />
     </Switch>
