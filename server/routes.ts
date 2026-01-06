@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { saveJournalEntrySchema, journalEntrySchema, customImageSchema, imageLibraryItemSchema, imageRuleSchema } from "@shared/schema";
+import { saveJournalEntrySchema, journalEntrySchema, customImageSchema, imageLibraryItemSchema, imageRuleSchema, selfieImageSchema } from "@shared/schema";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -244,6 +244,75 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error deleting rule:", error);
       res.status(500).json({ error: "Failed to delete rule" });
+    }
+  });
+
+  // Selfie Images API
+  app.get("/api/selfies", async (req, res) => {
+    try {
+      const selfies = await storage.getSelfieImages();
+      res.json(selfies);
+    } catch (error) {
+      console.error("Error fetching selfies:", error);
+      res.status(500).json({ error: "Failed to fetch selfies" });
+    }
+  });
+
+  app.post("/api/selfies", async (req, res) => {
+    try {
+      const validationResult = selfieImageSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          error: "Invalid selfie data", 
+          details: validationResult.error.errors 
+        });
+      }
+
+      const data = validationResult.data;
+      const selfie = await storage.addSelfieImage({
+        name: data.name,
+        originalUrl: data.originalUrl,
+        processedUrl: data.processedUrl,
+      });
+      res.json(selfie);
+    } catch (error) {
+      console.error("Error adding selfie:", error);
+      res.status(500).json({ error: "Failed to add selfie" });
+    }
+  });
+
+  app.patch("/api/selfies/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validationResult = selfieImageSchema.partial().safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          error: "Invalid selfie data", 
+          details: validationResult.error.errors 
+        });
+      }
+
+      const selfie = await storage.updateSelfieImage(id, validationResult.data);
+      if (!selfie) {
+        return res.status(404).json({ error: "Selfie not found" });
+      }
+      res.json(selfie);
+    } catch (error) {
+      console.error("Error updating selfie:", error);
+      res.status(500).json({ error: "Failed to update selfie" });
+    }
+  });
+
+  app.delete("/api/selfies/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteSelfieImage(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting selfie:", error);
+      res.status(500).json({ error: "Failed to delete selfie" });
     }
   });
 

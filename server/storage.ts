@@ -2,7 +2,8 @@ import {
   type User, type InsertUser, type JournalEntry, type JournalEntries, 
   type CustomImage, customImages,
   type ImageLibraryItem, type InsertImageLibrary, imageLibrary,
-  type ImageRule, type InsertImageRule, imageRules
+  type ImageRule, type InsertImageRule, imageRules,
+  type SelfieImage, type InsertSelfieImage, selfieImages
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -32,6 +33,12 @@ export interface IStorage {
   addImageRule(data: InsertImageRule): Promise<ImageRule>;
   updateImageRule(id: number, data: Partial<InsertImageRule>): Promise<ImageRule | undefined>;
   deleteImageRule(id: number): Promise<void>;
+  
+  // Selfie Images
+  getSelfieImages(): Promise<SelfieImage[]>;
+  addSelfieImage(data: InsertSelfieImage): Promise<SelfieImage>;
+  updateSelfieImage(id: number, data: Partial<InsertSelfieImage>): Promise<SelfieImage | undefined>;
+  deleteSelfieImage(id: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -173,6 +180,35 @@ export class MemStorage implements IStorage {
 
   async deleteImageRule(id: number): Promise<void> {
     await db.delete(imageRules).where(eq(imageRules.id, id));
+  }
+
+  // Selfie Image methods
+  async getSelfieImages(): Promise<SelfieImage[]> {
+    return await db.select().from(selfieImages).orderBy(desc(selfieImages.createdAt));
+  }
+
+  async addSelfieImage(data: InsertSelfieImage): Promise<SelfieImage> {
+    const [created] = await db
+      .insert(selfieImages)
+      .values({
+        ...data,
+        createdAt: Date.now(),
+      })
+      .returning();
+    return created;
+  }
+
+  async updateSelfieImage(id: number, data: Partial<InsertSelfieImage>): Promise<SelfieImage | undefined> {
+    const [updated] = await db
+      .update(selfieImages)
+      .set(data)
+      .where(eq(selfieImages.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteSelfieImage(id: number): Promise<void> {
+    await db.delete(selfieImages).where(eq(selfieImages.id, id));
   }
 }
 

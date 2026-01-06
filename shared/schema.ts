@@ -108,6 +108,31 @@ export const insertImageRuleSchema = createInsertSchema(imageRules).omit({
 export type InsertImageRule = z.infer<typeof insertImageRuleSchema>;
 export type ImageRule = typeof imageRules.$inferSelect;
 
+// Selfie images table for user uploaded photos with background removal
+export const selfieImages = pgTable("selfie_images", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  originalUrl: text("original_url").notNull(), // Original image before processing
+  processedUrl: text("processed_url").notNull(), // Image with background removed
+  createdAt: bigint("created_at", { mode: "number" }),
+});
+
+export const insertSelfieImageSchema = createInsertSchema(selfieImages).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertSelfieImage = z.infer<typeof insertSelfieImageSchema>;
+export type SelfieImage = typeof selfieImages.$inferSelect;
+
+export const selfieImageSchema = z.object({
+  id: z.number().optional(),
+  name: z.string(),
+  originalUrl: z.string(),
+  processedUrl: z.string(),
+  createdAt: z.number().optional(),
+});
+
 // Zod schemas for API validation
 export const imageLibraryItemSchema = z.object({
   id: z.number().optional(),

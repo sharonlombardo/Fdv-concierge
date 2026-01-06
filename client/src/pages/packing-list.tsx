@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react';
-import { ArrowLeft, Check, ChevronDown, X, Eye } from 'lucide-react';
+import { ArrowLeft, Check, ChevronDown, X, Eye, Camera } from 'lucide-react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useCustomImages } from '@/hooks/use-custom-images';
+import { SelfieUpload } from '@/components/selfie-upload';
 import { 
   ITINERARY_DATA, 
   type DayPage,
@@ -497,6 +498,7 @@ function ItemModal({ item, onClose, isPacked, onTogglePack, getImageUrl, hasCust
 export default function PackingList() {
   const { getImageUrl, hasCustomImage, isLoading } = useCustomImages();
   const [viewMode, setViewMode] = useState<'organize' | 'pack'>('organize');
+  const [showSelfieSection, setShowSelfieSection] = useState(false);
   const [expandedDays, setExpandedDays] = useState<Set<number>>(new Set());
   const [packedItems, setPackedItems] = useState<Set<string>>(() => {
     const saved = localStorage.getItem('fdv_packed_items');
@@ -553,7 +555,7 @@ export default function PackingList() {
         </div>
       </header>
 
-      <div className="bg-card border-b border-border px-5 py-4 flex justify-center">
+      <div className="bg-card border-b border-border px-5 py-4 flex justify-center gap-3 flex-wrap">
         <div className="inline-flex">
           <button
             className={`px-6 py-2.5 text-sm font-normal border transition-colors ${
@@ -578,7 +580,25 @@ export default function PackingList() {
             Pack View
           </button>
         </div>
+        <Button
+          variant={showSelfieSection ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setShowSelfieSection(!showSelfieSection)}
+          className="gap-2"
+          data-testid="button-toggle-photos"
+        >
+          <Camera className="w-4 h-4" />
+          My Photos
+        </Button>
       </div>
+
+      {showSelfieSection && (
+        <div className="bg-card border-b border-border p-5">
+          <div className="max-w-lg mx-auto">
+            <SelfieUpload />
+          </div>
+        </div>
+      )}
 
       <div className="max-w-lg mx-auto">
         {isLoading ? (

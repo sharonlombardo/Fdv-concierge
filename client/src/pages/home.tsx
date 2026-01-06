@@ -35,6 +35,10 @@ import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useJournal, type JournalEntry } from '@/hooks/use-journal';
 import { useCustomImages } from '@/hooks/use-custom-images';
+import { SelfiePickerModal } from '@/components/selfie-picker-modal';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
+import type { SelfieImage } from '@shared/schema';
 import { 
   ITINERARY_DATA, 
   type ItineraryPage, 
@@ -191,6 +195,7 @@ interface ItemDetailDrawerProps {
   onImageUpload: (id: string, file: File, field: string) => void;
   onImagesUpdate: (id: string, images: LocalLogImage[]) => void;
   onShare: () => void;
+  onApplySelfie: (imageKey: string, selfie: SelfieImage) => void;
 }
 
 interface LocalLogImage {
@@ -210,8 +215,25 @@ function ItemDetailDrawer({
   hasCustomImage,
   onImageUpload,
   onImagesUpdate,
-  onShare 
+  onShare,
+  onApplySelfie
 }: ItemDetailDrawerProps) {
+  const [selfiePickerOpen, setSelfiePickerOpen] = useState(false);
+  const [selfiePickerTarget, setSelfiePickerTarget] = useState<string | null>(null);
+
+  const handleOpenSelfiePicker = (imageKey: string) => {
+    setSelfiePickerTarget(imageKey);
+    setSelfiePickerOpen(true);
+  };
+
+  const handleSelectSelfie = (selfie: SelfieImage) => {
+    if (selfiePickerTarget) {
+      onApplySelfie(selfiePickerTarget, selfie);
+    }
+    setSelfiePickerOpen(false);
+    setSelfiePickerTarget(null);
+  };
+
   const getExistingImages = (): LocalLogImage[] => {
     const entry = entries[item.id];
     if (entry?.logImages && entry.logImages.length > 0) {
@@ -441,42 +463,55 @@ function ItemDetailDrawer({
                   const extraKey = `${item.id}-extra-${index}`;
                   const customImageUrl = hasCustomImage(extraKey) ? getImageUrl(extraKey, '') : null;
                   const hasImage = customImageUrl || extra?.image;
+                  const placeholderName = ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][index];
                   
                   return (
                     <div key={index} className="space-y-2">
-                      <div className="aspect-square bg-card border border-border rounded-md overflow-hidden">
+                      <div className="aspect-square bg-card border border-border rounded-md overflow-hidden relative group">
                         {hasImage ? (
-                          extra?.shopLink ? (
-                            <a 
-                              href={extra.shopLink} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="block w-full h-full"
-                            >
+                          <>
+                            {extra?.shopLink ? (
+                              <a 
+                                href={extra.shopLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="block w-full h-full"
+                              >
+                                <img 
+                                  src={getImageUrl(extraKey, extra?.image || '')} 
+                                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
+                                  alt={extra?.name || placeholderName}
+                                />
+                              </a>
+                            ) : (
                               <img 
                                 src={getImageUrl(extraKey, extra?.image || '')} 
-                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
-                                alt={extra?.name || ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][index]}
+                                className="w-full h-full object-cover" 
+                                alt={extra?.name || placeholderName}
                               />
-                            </a>
-                          ) : (
-                            <img 
-                              src={getImageUrl(extraKey, extra?.image || '')} 
-                              className="w-full h-full object-cover" 
-                              alt={extra?.name || ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][index]}
-                            />
-                          )
+                            )}
+                            <button
+                              onClick={() => handleOpenSelfiePicker(extraKey)}
+                              className="absolute bottom-1 right-1 p-1.5 bg-background/90 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              data-testid={`button-selfie-${index}`}
+                            >
+                              <Camera className="w-3 h-3" />
+                            </button>
+                          </>
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center opacity-20">
-                            <ShoppingBag className="w-4 h-4" />
-                          </div>
+                          <button
+                            onClick={() => handleOpenSelfiePicker(extraKey)}
+                            className="w-full h-full flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+                            data-testid={`button-add-selfie-${index}`}
+                          >
+                            <Camera className="w-4 h-4" />
+                            <span className="text-[8px] font-medium">ADD</span>
+                          </button>
                         )}
                       </div>
-                      {(extra?.name || customImageUrl) && (
-                        <p className="text-[9px] font-medium uppercase tracking-wider text-center truncate opacity-60">
-                          {extra?.name || ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][index]}
-                        </p>
-                      )}
+                      <p className="text-[9px] font-medium uppercase tracking-wider text-center truncate opacity-60">
+                        {extra?.name || placeholderName}
+                      </p>
                     </div>
                   );
                 })}
@@ -556,6 +591,16 @@ function ItemDetailDrawer({
           </div>
         </div>
       </div>
+
+      <SelfiePickerModal
+        isOpen={selfiePickerOpen}
+        onClose={() => {
+          setSelfiePickerOpen(false);
+          setSelfiePickerTarget(null);
+        }}
+        onSelectSelfie={handleSelectSelfie}
+        title="Use Your Photo"
+      />
     </div>
   );
 }
@@ -822,6 +867,24 @@ export default function Home() {
 
   const { entries: journalEntries, saveEntry, status: saveStatus } = useJournal();
   const { getImageUrl, hasCustomImage, isLoading: isLoadingImages } = useCustomImages();
+  const queryClient = useQueryClient();
+
+  const saveCustomImageMutation = useMutation({
+    mutationFn: async ({ imageKey, selfie }: { imageKey: string; selfie: SelfieImage }) => {
+      const res = await apiRequest('POST', `/api/images/${imageKey}`, {
+        customUrl: selfie.processedUrl,
+        label: selfie.name,
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/images'] });
+    },
+  });
+
+  const handleApplySelfie = (imageKey: string, selfie: SelfieImage) => {
+    saveCustomImageMutation.mutate({ imageKey, selfie });
+  };
 
   const updatePackingItem = (key: string, updates: Partial<PackingListItem>) => {
     setPackingListItems(prev => {
@@ -1497,6 +1560,7 @@ export default function Home() {
           onImageUpload={processImage}
           onImagesUpdate={handleImagesUpdate}
           onShare={() => setIsShareMode(true)}
+          onApplySelfie={handleApplySelfie}
         />
       )}
 
