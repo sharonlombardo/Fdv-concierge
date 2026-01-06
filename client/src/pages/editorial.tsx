@@ -332,6 +332,14 @@ export default function Editorial() {
           </Link>
           <Link href="/packing">
             <button 
+              className="px-8 py-3 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors rounded-md text-sm font-medium tracking-wide"
+              data-testid="button-view-packing-list"
+            >
+              View Packing List
+            </button>
+          </Link>
+          <Link href="/suitcase">
+            <button 
               className="px-8 py-3 bg-foreground text-background hover:bg-foreground/90 transition-colors rounded-md text-sm font-medium tracking-wide"
               data-testid="button-view-suitcase"
             >
