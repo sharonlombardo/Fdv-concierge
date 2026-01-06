@@ -1,93 +1,116 @@
 import { PinButton } from "@/components/pin-button";
+import { useImageSlot } from "@/hooks/use-image-slot";
 
-const currentFeedContent = [
-  {
-    id: "current-1",
-    type: "feature",
-    title: "Hotel Weekend",
-    subtitle: "On the Beachside",
-    imageUrl: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1200",
-    tags: ["travel", "coastal", "escape"],
-    size: "large"
-  },
-  {
-    id: "current-2", 
-    type: "feature",
-    title: "Welcome to Spain",
-    subtitle: "A Journey Through Light",
-    imageUrl: "https://images.unsplash.com/photo-1509840841025-9088ba78a826?auto=format&fit=crop&q=80&w=1200",
-    tags: ["travel", "spain", "architecture"],
-    size: "large"
-  },
-  {
-    id: "current-3",
-    type: "style",
-    title: "The New Neutrals",
-    subtitle: "Effortless layers for any journey",
-    imageUrl: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=800",
-    tags: ["style", "minimal", "neutral"],
-    size: "medium"
-  },
-  {
-    id: "current-4",
-    type: "scene",
-    title: "Morning Light",
-    imageUrl: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&q=80&w=600",
-    tags: ["scene", "texture", "minimal"],
-    size: "small"
-  },
-  {
-    id: "current-5",
-    type: "scene", 
-    title: "Dried Botanicals",
-    imageUrl: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&q=80&w=800",
-    tags: ["scene", "natural", "texture"],
-    size: "medium"
-  },
-  {
-    id: "current-6",
-    type: "scene",
-    title: "Desert Architecture",
-    imageUrl: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80&w=1200",
-    tags: ["scene", "architecture", "desert"],
-    size: "large"
-  },
-  {
-    id: "current-7",
-    type: "quote",
-    title: "Travel is not about the destination, but how you feel when you arrive.",
-    tags: ["inspiration", "travel"],
-    size: "medium"
-  },
-  {
-    id: "current-8",
-    type: "style",
-    title: "Linen Layers",
-    subtitle: "From coast to city",
-    imageUrl: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&q=80&w=800",
-    tags: ["style", "linen", "summer"],
-    size: "medium"
-  },
-  {
-    id: "current-9",
-    type: "scene",
-    title: "Garden Terrace",
-    imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=600",
-    tags: ["scene", "outdoor", "calm"],
-    size: "small"
-  },
-  {
-    id: "current-10",
-    type: "feature",
-    title: "The Art of Slow Travel",
-    subtitle: "Why presence matters more than planning",
-    imageUrl: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=1200",
-    tags: ["travel", "philosophy", "slow"],
-    size: "large"
-  }
-];
+type FeedItem = {
+  id: string;
+  type: string;
+  title: string;
+  subtitle?: string;
+  imageUrl?: string;
+  tags: string[];
+  size: string;
+};
 
-function FeatureCard({ item }: { item: typeof currentFeedContent[0] }) {
+function useCurrentFeedContent(): FeedItem[] {
+  const article1 = useImageSlot("current-article-1");
+  const article2 = useImageSlot("current-article-2");
+  const style1 = useImageSlot("current-style-1");
+  const scene1 = useImageSlot("current-scene-1");
+  const quote1 = useImageSlot("current-quote-1");
+  const article3 = useImageSlot("current-article-3");
+  const style2 = useImageSlot("current-style-2");
+  const scene2 = useImageSlot("current-scene-2");
+  const article4 = useImageSlot("current-article-4");
+
+  return [
+    {
+      id: "current-1",
+      type: "feature",
+      title: "Hotel Weekend",
+      subtitle: "On the Beachside",
+      imageUrl: article1,
+      tags: ["travel", "coastal", "escape"],
+      size: "large"
+    },
+    {
+      id: "current-2", 
+      type: "feature",
+      title: "Welcome to Spain",
+      subtitle: "A Journey Through Light",
+      imageUrl: article2,
+      tags: ["travel", "spain", "architecture"],
+      size: "large"
+    },
+    {
+      id: "current-3",
+      type: "style",
+      title: "The New Neutrals",
+      subtitle: "Effortless layers for any journey",
+      imageUrl: style1,
+      tags: ["style", "minimal", "neutral"],
+      size: "medium"
+    },
+    {
+      id: "current-4",
+      type: "scene",
+      title: "Morning Light",
+      imageUrl: scene1,
+      tags: ["scene", "texture", "minimal"],
+      size: "small"
+    },
+    {
+      id: "current-5",
+      type: "scene", 
+      title: "Dried Botanicals",
+      imageUrl: quote1,
+      tags: ["scene", "natural", "texture"],
+      size: "medium"
+    },
+    {
+      id: "current-6",
+      type: "scene",
+      title: "Desert Architecture",
+      imageUrl: article3,
+      tags: ["scene", "architecture", "desert"],
+      size: "large"
+    },
+    {
+      id: "current-7",
+      type: "quote",
+      title: "Travel is not about the destination, but how you feel when you arrive.",
+      tags: ["inspiration", "travel"],
+      size: "medium"
+    },
+    {
+      id: "current-8",
+      type: "style",
+      title: "Linen Layers",
+      subtitle: "From coast to city",
+      imageUrl: style2,
+      tags: ["style", "linen", "summer"],
+      size: "medium"
+    },
+    {
+      id: "current-9",
+      type: "scene",
+      title: "Garden Terrace",
+      imageUrl: scene2,
+      tags: ["scene", "outdoor", "calm"],
+      size: "small"
+    },
+    {
+      id: "current-10",
+      type: "feature",
+      title: "The Art of Slow Travel",
+      subtitle: "Why presence matters more than planning",
+      imageUrl: article4,
+      tags: ["travel", "philosophy", "slow"],
+      size: "large"
+    }
+  ];
+}
+
+function FeatureCard({ item }: { item: FeedItem }) {
   return (
     <div className="col-span-2 row-span-2 relative group overflow-hidden rounded-md" data-testid={`card-feature-${item.id}`}>
       <img 
@@ -118,7 +141,7 @@ function FeatureCard({ item }: { item: typeof currentFeedContent[0] }) {
   );
 }
 
-function StyleCard({ item }: { item: typeof currentFeedContent[0] }) {
+function StyleCard({ item }: { item: FeedItem }) {
   return (
     <div className="col-span-1 relative group" data-testid={`card-style-${item.id}`}>
       <div className="aspect-[3/4] overflow-hidden rounded-md mb-3">
@@ -150,7 +173,7 @@ function StyleCard({ item }: { item: typeof currentFeedContent[0] }) {
   );
 }
 
-function SceneCard({ item }: { item: typeof currentFeedContent[0] }) {
+function SceneCard({ item }: { item: FeedItem }) {
   const isSmall = item.size === "small";
   return (
     <div 
@@ -184,7 +207,7 @@ function SceneCard({ item }: { item: typeof currentFeedContent[0] }) {
   );
 }
 
-function QuoteCard({ item }: { item: typeof currentFeedContent[0] }) {
+function QuoteCard({ item }: { item: FeedItem }) {
   return (
     <div 
       className="col-span-1 relative bg-[#f5f1ed] dark:bg-[#2a2825] rounded-md p-8 flex items-center justify-center min-h-[200px]"
@@ -210,6 +233,7 @@ function QuoteCard({ item }: { item: typeof currentFeedContent[0] }) {
 }
 
 export default function CurrentFeed() {
+  const currentFeedContent = useCurrentFeedContent();
   const features = currentFeedContent.filter(item => item.type === "feature");
   const styles = currentFeedContent.filter(item => item.type === "style");
   const scenes = currentFeedContent.filter(item => item.type === "scene");

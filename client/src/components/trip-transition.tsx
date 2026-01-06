@@ -1,37 +1,37 @@
 import { useState, useEffect } from "react";
+import { useImageSlot } from "@/hooks/use-image-slot";
 
 interface TripTransitionProps {
   isActive: boolean;
   onComplete: () => void;
 }
 
-const frames = [
-  { 
-    image: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1200",
-    text: "Remembering what resonated..." 
-  },
-  { 
-    image: "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&q=80&w=1200",
-    text: "Building your aesthetic..." 
-  },
-  { 
-    image: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&q=80&w=1200",
-    text: "Finding the places..." 
-  },
-  { 
-    image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=1200",
-    text: "Curating your experience..." 
-  },
-  { 
-    image: "https://images.unsplash.com/photo-1507400492013-162706c8c05e?auto=format&fit=crop&q=80&w=1200",
-    text: "Creating your journey..." 
-  },
+const frameTexts = [
+  "Remembering what resonated...",
+  "Building your aesthetic...",
+  "Finding the places...",
+  "Curating your experience...",
+  "Creating your journey...",
 ];
 
 export function TripTransition({ isActive, onComplete }: TripTransitionProps) {
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
+
+  const frame1 = useImageSlot("transition-frame-1");
+  const frame2 = useImageSlot("transition-frame-2");
+  const frame3 = useImageSlot("transition-frame-3");
+  const frame4 = useImageSlot("transition-frame-4");
+  const frame5 = useImageSlot("transition-frame-5");
+
+  const frames = [
+    { image: frame1, text: frameTexts[0] },
+    { image: frame2, text: frameTexts[1] },
+    { image: frame3, text: frameTexts[2] },
+    { image: frame4, text: frameTexts[3] },
+    { image: frame5, text: frameTexts[4] },
+  ];
 
   useEffect(() => {
     if (!isActive) {
@@ -61,8 +61,6 @@ export function TripTransition({ isActive, onComplete }: TripTransitionProps) {
   }, [isActive, onComplete]);
 
   if (!isActive && !isVisible) return null;
-
-  const currentFrame = frames[currentFrameIndex];
 
   return (
     <div 
