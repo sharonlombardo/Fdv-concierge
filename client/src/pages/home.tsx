@@ -1618,6 +1618,13 @@ export default function Home() {
               >
                 Manual Overrides
               </a>
+              <a 
+                href="/test-saves"
+                className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all text-amber-500"
+                data-testid="link-debug-saves"
+              >
+                Debug: View Saves
+              </a>
             </div>
           </div>
         </div>

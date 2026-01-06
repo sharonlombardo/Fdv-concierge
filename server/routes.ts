@@ -398,5 +398,30 @@ export async function registerRoutes(
     }
   });
 
+  // Debug: Get all saves with count (temporary - for testing)
+  app.get("/api/saves/debug", async (req, res) => {
+    try {
+      const allSaves = await storage.getSaves();
+      res.json({
+        count: allSaves.length,
+        saves: allSaves
+      });
+    } catch (error) {
+      console.error("Error fetching debug saves:", error);
+      res.status(500).json({ error: "Failed to fetch saves" });
+    }
+  });
+
+  // Debug: Clear all saves (temporary - for testing)
+  app.delete("/api/saves/all", async (req, res) => {
+    try {
+      await storage.clearAllSaves();
+      res.json({ success: true, message: "All saves cleared" });
+    } catch (error) {
+      console.error("Error clearing saves:", error);
+      res.status(500).json({ error: "Failed to clear saves" });
+    }
+  });
+
   return httpServer;
 }

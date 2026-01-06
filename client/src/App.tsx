@@ -13,6 +13,7 @@ import ImageLibrary from "@/pages/image-library";
 import ImageRules from "@/pages/image-rules";
 import Editorial from "@/pages/editorial";
 import PackingList from "@/pages/packing-list";
+import TestSaves from "@/pages/test-saves";
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/rules" component={ImageRules} />
       <Route path="/editorial" component={Editorial} />
       <Route path="/packing" component={PackingList} />
+      <Route path="/test-saves" component={TestSaves} />
       <Route component={NotFound} />
     </Switch>
   );

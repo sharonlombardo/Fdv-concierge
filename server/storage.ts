@@ -47,6 +47,7 @@ export interface IStorage {
   addSave(data: InsertSave): Promise<Save>;
   updateSaveByItemId(itemId: string, data: { metadata?: any }): Promise<Save | undefined>;
   deleteSaveByItemId(itemId: string): Promise<void>;
+  clearAllSaves(): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -256,6 +257,10 @@ export class MemStorage implements IStorage {
 
   async deleteSaveByItemId(itemId: string): Promise<void> {
     await db.delete(saves).where(eq(saves.itemId, itemId));
+  }
+
+  async clearAllSaves(): Promise<void> {
+    await db.delete(saves);
   }
 }
 
