@@ -1,0 +1,105 @@
+Perfect. Let's build the Suitcase.
+
+PROMPT 4: The Suitcase Page
+Send this to Replit Agent:
+
+PROMPT START
+I need to create the Suitcase page - this is where all the user's pinned/saved items are organized and displayed beautifully. This is the "taste map" - a visual representation of everything they've saved.
+Create a new page: client/src/pages/suitcase.tsx
+Page Structure:
+
+Header
+
+Title: "YOUR SUITCASE" (Playfair Display)
+Subtitle: "Everything you've saved" (Inter)
+Stats line: "X saves • X items to shop • X memories"
+
+
+Tab Navigation
+
+Horizontal tabs below header:
+[ All ] [ Your Style ] [ Memories ] [ Places ] [ Items ] [ Inspiration ] [ Capsules ]
+Active tab has underline or highlight
+Tabs filter the content below
+
+
+Content Grid
+
+Display saved items in a clean grid (3 columns on desktop, 2 on mobile)
+Each saved item shows as a card with:
+
+Image (from metadata.imageUrl)
+Title (from metadata.title)
+Type badge (small pill showing "Look" / "Product" / "Scene" etc.)
+Source context badge (subtle: "from Morocco" or "from The Current")
+If purchaseIntent: true, show small suitcase icon or "To Buy" badge
+PinButton in corner (filled, since it's already saved - clicking removes it)
+
+
+
+
+
+Tab Filtering Logic:
+
+All: Show everything
+Your Style: Filter where itemType is "look" or items tagged with style-related aestheticTags
+Memories: Filter where sourceContext is "morocco_itinerary" (trip-related saves)
+Places: Filter where itemType is "place" or "feature" (travel guides, destinations)
+Items: Filter where itemType is "product" (shoppable products)
+Inspiration: Filter where itemType is "scene", "quote", or "image"
+Capsules: This tab shows generated capsules (for now, can be empty or show placeholder "No capsules yet - keep saving!")
+
+Fetch saves from API:
+typescriptconst { data: saves } = useQuery({
+  queryKey: ['/api/saves'],
+  queryFn: async () => {
+    const res = await fetch('/api/saves');
+    return res.json();
+  }
+});
+Empty States:
+
+If no saves at all: "Your suitcase is empty. Start exploring The Current or browse the Morocco itinerary to save things you love."
+If a specific tab is empty: "No [category] saved yet."
+
+Card Component for Saved Items:
+tsxinterface SavedItemCardProps {
+  save: {
+    id: number;
+    itemType: string;
+    itemId: string;
+    sourceContext: string;
+    aestheticTags: string[];
+    metadata: {
+      title?: string;
+      imageUrl?: string;
+      purchaseIntent?: boolean;
+      [key: string]: any;
+    };
+    savedAt: number;
+  };
+  onRemove: () => void;
+}
+Each card should:
+
+Show the image (or a placeholder gradient if no image)
+Display title
+Show type as a small badge
+Have a small X or unpin button to remove
+If purchaseIntent is true, show "🧳 To Buy" badge
+Be clickable (for future: could open detail modal)
+
+Add route:
+tsx<Route path="/suitcase" component={SuitcasePage} />
+Update navigation:
+
+In hamburger menu, make sure "Suitcase" links to /suitcase
+In bottom nav (if there is one), Suitcase icon should go to /suitcase
+
+Styling:
+
+Background: warm off-white (#fafaf9)
+Cards: white background, subtle shadow on hover
+Typography: Playfair Display for headers, Inter for body
+Tabs: clean, minimal, underline style for active state
+Luxury editorial feel - not cluttered

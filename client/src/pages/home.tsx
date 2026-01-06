@@ -1614,11 +1614,18 @@ export default function Home() {
               The Current
             </a>
             <a 
-              href="/packing"
+              href="/suitcase"
               className="block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] opacity-25 hover:opacity-100 transition-all transform hover:scale-105 font-serif mt-4"
               data-testid="link-suitcase"
             >
               Suitcase
+            </a>
+            <a 
+              href="/packing"
+              className="block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] opacity-25 hover:opacity-100 transition-all transform hover:scale-105 font-serif mt-4"
+              data-testid="link-packing"
+            >
+              Packing List
             </a>
             <div className="pt-12 border-t border-current/20 mt-12 space-y-4">
               <a 
