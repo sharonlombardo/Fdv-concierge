@@ -1,8 +1,10 @@
-import { Link, useRoute } from "wouter";
+import { useState } from "react";
+import { Link, useRoute, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { SuitcaseButton } from "@/components/suitcase-button";
+import { TripTransition } from "@/components/trip-transition";
 
 type CapsuleItem = {
   id: string;
@@ -128,6 +130,8 @@ function CapsuleItemCard({ item, capsuleId }: { item: CapsuleItem; capsuleId: st
 
 export default function CapsuleDetail() {
   const [, params] = useRoute("/suitcase/capsules/:slug");
+  const [, setLocation] = useLocation();
+  const [showTransition, setShowTransition] = useState(false);
   const slug = params?.slug || "desert-neutrals";
   const capsule = capsules[slug];
 
@@ -207,22 +211,26 @@ export default function CapsuleDetail() {
         ))}
 
         <div className="mt-20 mb-12">
-          <Link href="/editorial">
-            <button
-              className="w-full max-w-lg mx-auto block py-6 px-8 rounded-md bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white transition-all shadow-lg hover:shadow-xl"
-              data-testid="button-turn-into-trip"
-            >
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Sparkles className="w-5 h-5" />
-                <span className="font-serif text-xl font-medium">Turn into Trip</span>
-              </div>
-              <p className="text-sm text-white/80">
-                Transform this capsule into a complete Morocco journey
-              </p>
-            </button>
-          </Link>
+          <button
+            onClick={() => setShowTransition(true)}
+            className="w-full max-w-lg mx-auto block py-6 px-8 rounded-md bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white transition-all shadow-lg hover:shadow-xl"
+            data-testid="button-turn-into-trip"
+          >
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Sparkles className="w-5 h-5" />
+              <span className="font-serif text-xl font-medium">Turn into Trip</span>
+            </div>
+            <p className="text-sm text-white/80">
+              Transform this capsule into a complete Morocco journey
+            </p>
+          </button>
         </div>
       </div>
+
+      <TripTransition 
+        isActive={showTransition} 
+        onComplete={() => setLocation('/editorial')} 
+      />
     </div>
   );
 }

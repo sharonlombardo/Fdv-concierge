@@ -1,0 +1,101 @@
+I need to create a transition animation that plays when the user clicks "Turn into Trip" in the Desert Neutrals Capsule. This is the "magic moment" - memory becoming reality.
+Create a TripTransition component: client/src/components/trip-transition.tsx
+What it does:
+When triggered, it shows a full-screen overlay with a sequence of images and text that crossfade, then navigates to the Overview page.
+The Sequence (3-4 seconds total):
+5 frames, each showing for about 600-700ms:
+
+Frame 1: Desert/Morocco architecture image
+
+Text: "Remembering what resonated..."
+
+
+Frame 2: Linen clothing/fabric image
+
+Text: "Building your aesthetic..."
+
+
+Frame 3: Kasbah or boutique hotel exterior
+
+Text: "Finding the places..."
+
+
+Frame 4: Styled outfit/look image
+
+Text: "Curating your experience..."
+
+
+Frame 5: Golden desert sunset
+
+Text: "Creating your journey..."
+
+
+
+Then fade to white/cream and navigate to /editorial (Overview page)
+Visual Design:
+tsx// Full-screen overlay
+<div className="fixed inset-0 z-[9999] bg-stone-900">
+  
+  {/* Background image - crossfades between frames */}
+  <div className="absolute inset-0">
+    <img 
+      src={currentFrame.image} 
+      className="w-full h-full object-cover opacity-60 transition-opacity duration-500"
+    />
+  </div>
+  
+  {/* Warm gradient overlay */}
+  <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
+  
+  {/* Centered text */}
+  <div className="absolute inset-0 flex items-center justify-center">
+    <p className="text-white text-2xl md:text-3xl font-serif italic tracking-wide text-center px-8 transition-opacity duration-300">
+      {currentFrame.text}
+    </p>
+  </div>
+  
+</div>
+Animation Logic:
+tsxinterface TripTransitionProps {
+  isActive: boolean;
+  onComplete: () => void;
+}
+
+const frames = [
+  { image: "/path/to/desert-architecture.jpg", text: "Remembering what resonated..." },
+  { image: "/path/to/linen-fabric.jpg", text: "Building your aesthetic..." },
+  { image: "/path/to/kasbah-exterior.jpg", text: "Finding the places..." },
+  { image: "/path/to/styled-outfit.jpg", text: "Curating your experience..." },
+  { image: "/path/to/desert-sunset.jpg", text: "Creating your journey..." },
+];
+
+// Use useState for currentFrameIndex
+// Use useEffect with setInterval to advance frames
+// When sequence completes, call onComplete() which navigates to /editorial
+Integration with Capsule Page:
+In the Desert Neutrals Capsule page (capsule-detail.tsx or wherever the "Turn into Trip" button is):
+
+Add state: const [showTransition, setShowTransition] = useState(false)
+Change the button's onClick to: onClick={() => setShowTransition(true)}
+Add the component:
+
+tsx<TripTransition 
+  isActive={showTransition} 
+  onComplete={() => navigate('/editorial')} 
+/>
+Styling Details:
+
+Font for text: Playfair Display or similar serif, italic
+Text color: white with subtle text-shadow for readability
+Images should be slightly desaturated/muted (opacity or filter)
+Transitions should be smooth crossfades, not hard cuts
+Overall feel: dreamy, cinematic, emotional
+Total duration: 3-4 seconds (not longer - keep it impactful)
+
+For images: Use placeholder images for now from the existing /attached_assets/ folder or use Unsplash URLs. We can replace with better images later. Example placeholders:
+
+Desert architecture: any Morocco/desert building image
+Linen: any neutral fabric/clothing image
+Kasbah: hotel or traditional building
+Styled outfit: fashion/outfit image
+Sunset: desert or warm sunset
