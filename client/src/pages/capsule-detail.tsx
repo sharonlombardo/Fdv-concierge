@@ -207,7 +207,7 @@ export default function CapsuleDetail() {
         ))}
 
         <div className="mt-20 mb-12">
-          <Link href="/">
+          <Link href="/editorial">
             <button
               className="w-full max-w-lg mx-auto block py-6 px-8 rounded-md bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white transition-all shadow-lg hover:shadow-xl"
               data-testid="button-turn-into-trip"
