@@ -458,17 +458,17 @@ function ItemDetailDrawer({
             
             <div className="space-y-6">
               <div className="space-y-4">
-                <div className="aspect-[3/4] w-full max-w-md mx-auto bg-muted overflow-hidden rounded-md relative">
+                <div className="aspect-[3/4] w-full max-w-md mx-auto bg-muted rounded-md relative">
                   <img 
                     src={getImageUrl(
                       `${item.id}-wardrobe`,
                       item.commercialWardrobe || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800",
                       { imageType: 'wardrobe', title: item.title }
                     )} 
-                    className="w-full h-full object-cover" 
+                    className="w-full h-full object-cover rounded-md" 
                     alt="Style recommendation"
                   />
-                  <div className="absolute top-3 right-3">
+                  <div className="absolute top-3 right-3 z-10">
                     <PinButton
                       itemType="look"
                       itemId={`${item.id}-look`}
@@ -486,7 +486,7 @@ function ItemDetailDrawer({
                       size="md"
                     />
                   </div>
-                  <div className="absolute bottom-3 right-3">
+                  <div className="absolute bottom-3 right-3 z-10">
                     <SuitcaseButton
                       itemId={`${item.id}-look`}
                       itemData={{

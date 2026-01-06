@@ -113,6 +113,7 @@ export function SuitcaseButton({
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        console.log('SuitcaseButton clicked:', { itemId, itemData, sourceContext, aestheticTags });
         addToSuitcase.mutate();
       }}
       className={cn(
