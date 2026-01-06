@@ -154,3 +154,93 @@ export const imageRuleSchema = z.object({
   priority: z.number().optional(),
   enabled: z.number().optional(),
 });
+
+// ============================================
+// Save/Pin Feature Tables
+// ============================================
+
+// Saves table - stores user-pinned/saved items
+export const saves = pgTable("saves", {
+  id: serial("id").primaryKey(),
+  itemType: text("item_type").notNull(), // 'image', 'product', 'article', 'quote', 'place', 'look'
+  itemId: text("item_id").notNull(), // reference to the actual content (e.g., 'd1-morning' for itinerary)
+  sourceContext: text("source_context"), // where it was saved from: 'current_feed', 'morocco_itinerary', etc.
+  aestheticTags: text("aesthetic_tags").array(), // ['minimal', 'linen', 'desert', 'architectural']
+  savedAt: bigint("saved_at", { mode: "number" }).notNull(),
+  metadata: jsonb("metadata"), // flexible storage for item details (title, image url, etc.)
+});
+
+export const insertSaveSchema = createInsertSchema(saves).omit({
+  id: true,
+});
+
+export type InsertSave = z.infer<typeof insertSaveSchema>;
+export type Save = typeof saves.$inferSelect;
+
+export const saveSchema = z.object({
+  id: z.number().optional(),
+  itemType: z.string(),
+  itemId: z.string(),
+  sourceContext: z.string().optional(),
+  aestheticTags: z.array(z.string()).optional(),
+  savedAt: z.number(),
+  metadata: z.any().optional(),
+});
+
+// Capsules table - AI-generated or user-created collections based on saves
+export const capsules = pgTable("capsules", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(), // "Desert Neutrals"
+  description: text("description"), // "Based on your Morocco saves..."
+  generatedFrom: text("generated_from").array(), // array of save IDs that informed this capsule
+  aesthetic: text("aesthetic"), // "Refined Minimalism"
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+  metadata: jsonb("metadata"), // flexible storage for capsule data
+});
+
+export const insertCapsuleSchema = createInsertSchema(capsules).omit({
+  id: true,
+});
+
+export type InsertCapsule = z.infer<typeof insertCapsuleSchema>;
+export type Capsule = typeof capsules.$inferSelect;
+
+export const capsuleSchema = z.object({
+  id: z.number().optional(),
+  name: z.string(),
+  description: z.string().optional(),
+  generatedFrom: z.array(z.string()).optional(),
+  aesthetic: z.string().optional(),
+  createdAt: z.number(),
+  metadata: z.any().optional(),
+});
+
+// Current Feed Content table - editorial content for the feed
+export const currentFeedContent = pgTable("current_feed_content", {
+  id: serial("id").primaryKey(),
+  contentType: text("content_type").notNull(), // 'article', 'guide', 'image', 'carousel'
+  title: text("title"),
+  subtitle: text("subtitle"),
+  imageUrl: text("image_url"),
+  content: jsonb("content"), // flexible content structure
+  tags: text("tags").array(), // for personalization later
+  publishedAt: bigint("published_at", { mode: "number" }).notNull(),
+});
+
+export const insertCurrentFeedContentSchema = createInsertSchema(currentFeedContent).omit({
+  id: true,
+});
+
+export type InsertCurrentFeedContent = z.infer<typeof insertCurrentFeedContentSchema>;
+export type CurrentFeedContent = typeof currentFeedContent.$inferSelect;
+
+export const currentFeedContentSchema = z.object({
+  id: z.number().optional(),
+  contentType: z.string(),
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+  imageUrl: z.string().optional(),
+  content: z.any().optional(),
+  tags: z.array(z.string()).optional(),
+  publishedAt: z.number(),
+});
