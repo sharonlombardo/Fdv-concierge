@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { saveJournalEntrySchema, journalEntrySchema, customImageSchema, imageLibraryItemSchema, imageRuleSchema, selfieImageSchema, saveSchema } from "@shared/schema";
+import { IMAGE_SLOTS, getSlotsBySection } from "@shared/image-slots";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -48,6 +49,28 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error saving journal entry:", error);
       res.status(500).json({ error: "Failed to save journal entry" });
+    }
+  });
+
+  // Image Slots API - centralized image management
+  app.get("/api/image-slots", async (req, res) => {
+    try {
+      const customImages = await storage.getCustomImages();
+      const customImageMap = new Map(customImages.map(img => [img.imageKey, img.customUrl]));
+      
+      const slotsWithOverrides = IMAGE_SLOTS.map(slot => ({
+        ...slot,
+        currentUrl: customImageMap.get(slot.key) || slot.defaultUrl,
+        hasCustomImage: customImageMap.has(slot.key)
+      }));
+      
+      res.json({
+        slots: slotsWithOverrides,
+        grouped: getSlotsBySection()
+      });
+    } catch (error) {
+      console.error("Error fetching image slots:", error);
+      res.status(500).json({ error: "Failed to fetch image slots" });
     }
   });
 
