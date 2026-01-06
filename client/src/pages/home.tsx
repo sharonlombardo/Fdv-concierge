@@ -1650,6 +1650,13 @@ export default function Home() {
                 Manual Overrides
               </a>
               <a 
+                href="/image-control"
+                className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all"
+                data-testid="link-image-control"
+              >
+                Image Control
+              </a>
+              <a 
                 href="/test-saves"
                 className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all text-amber-500"
                 data-testid="link-debug-saves"
