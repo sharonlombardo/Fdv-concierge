@@ -323,7 +323,7 @@ function ItemDetailDrawer({
           <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight leading-none" data-testid="text-item-title">
             {item.title}
           </h2>
-          <div className="aspect-[16/9] w-full overflow-hidden bg-muted my-6 rounded-md">
+          <div className="aspect-[16/9] w-full overflow-hidden bg-muted my-6 rounded-md relative">
             <img 
               src={getImageUrl(item.id, item.image, { time: item.time, location, title: item.title, description: item.description, imageType: 'item' })} 
               className="w-full h-full object-cover" 
@@ -332,6 +332,22 @@ function ItemDetailDrawer({
                 (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200';
               }}
             />
+            <div className="absolute top-2 right-2">
+              <PinButton
+                itemType="activity"
+                itemId={item.id}
+                itemData={{
+                  title: item.title,
+                  description: item.description || item.body,
+                  imageUrl: getImageUrl(item.id, item.image, { time: item.time, location, title: item.title, description: item.description, imageType: 'item' }),
+                  time: item.time,
+                  location
+                }}
+                sourceContext="morocco_itinerary"
+                aestheticTags={['activity', item.time?.toLowerCase() || '']}
+                size="md"
+              />
+            </div>
           </div>
           <p className="text-lg md:text-xl text-muted-foreground leading-[1.8] font-serif italic border-l-2 border-border pl-8">
             {item.description || item.body}
@@ -442,7 +458,7 @@ function ItemDetailDrawer({
             
             <div className="space-y-6">
               <div className="space-y-4">
-                <div className="aspect-[3/4] w-full max-w-md mx-auto bg-muted overflow-hidden rounded-md">
+                <div className="aspect-[3/4] w-full max-w-md mx-auto bg-muted overflow-hidden rounded-md relative">
                   <img 
                     src={getImageUrl(
                       `${item.id}-wardrobe`,
@@ -452,6 +468,24 @@ function ItemDetailDrawer({
                     className="w-full h-full object-cover" 
                     alt="Style recommendation"
                   />
+                  <div className="absolute top-3 right-3">
+                    <PinButton
+                      itemType="look"
+                      itemId={`${item.id}-look`}
+                      itemData={{
+                        title: `${item.title} - The Look`,
+                        description: item.wardrobe,
+                        imageUrl: getImageUrl(
+                          `${item.id}-wardrobe`,
+                          item.commercialWardrobe || "",
+                          { imageType: 'wardrobe', title: item.title }
+                        )
+                      }}
+                      sourceContext="morocco_itinerary"
+                      aestheticTags={['look', 'outfit', 'style']}
+                      size="md"
+                    />
+                  </div>
                 </div>
                 <div className="flex justify-between items-center max-w-md mx-auto">
                   <p className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic">FDV Recommendation</p>
@@ -1147,7 +1181,7 @@ export default function Home() {
             </div>
 
             <div className="mb-20">
-              <div className="aspect-[21/18] w-full overflow-hidden rounded-md shadow-xl bg-muted">
+              <div className="aspect-[21/18] w-full overflow-hidden rounded-md shadow-xl bg-muted relative">
                 <img 
                   src={getImageUrl(`day-${currentPage.day}-hero`, currentPage.flow[0]?.image || '', { imageType: 'cover', title: currentPage.title, location: currentPage.location })} 
                   className="w-full h-full object-cover" 
@@ -1156,6 +1190,20 @@ export default function Home() {
                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200';
                   }}
                 />
+                <div className="absolute top-3 right-3">
+                  <PinButton
+                    itemType="image"
+                    itemId={`d${currentPage.day}-cover`}
+                    itemData={{
+                      title: `Day ${currentPage.day}: ${currentPage.title}`,
+                      location: currentPage.location,
+                      imageUrl: getImageUrl(`day-${currentPage.day}-hero`, currentPage.flow[0]?.image || '', { imageType: 'cover', title: currentPage.title, location: currentPage.location })
+                    }}
+                    sourceContext="morocco_itinerary"
+                    aestheticTags={['cover', 'day', currentPage.location?.toLowerCase() || '']}
+                    size="md"
+                  />
+                </div>
               </div>
             </div>
 
