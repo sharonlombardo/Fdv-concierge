@@ -1,0 +1,145 @@
+## PROMPT 5: Desert Neutrals Capsule
+
+Send this to Replit Agent:
+
+---
+
+**PROMPT START**
+
+I need to create the Desert Neutrals Capsule view - this appears when the user clicks on the "Capsules" tab in the Suitcase, or can be accessed directly. This is an AI-generated collection based on the user's saves.
+
+**Create a capsule detail component/page**
+
+This can either be:
+- A section that appears within the Suitcase page when "Capsules" tab is selected
+- OR a separate route like `/suitcase/capsules/desert-neutrals`
+
+**Capsule Structure:**
+
+1. **Hero Section**
+   - Large hero image (desert/Morocco landscape - use placeholder or existing image)
+   - Title overlay: "Desert Neutrals" (Playfair Display, white text)
+   - Subtitle: "A capsule collection based on your Morocco saves"
+   - Subtle gradient overlay for text readability
+
+2. **Capsule Description**
+   - Short paragraph: "The system noticed patterns in what you saved: warm earth tones, natural textures, relaxed silhouettes. This capsule brings those elements together into a cohesive collection for your journey."
+
+3. **Capsule Stats Bar**
+   - "12 pieces • 8 from your saves • 4 suggested for you"
+
+4. **Item Sections** (organized by category)
+
+   **Section: Base Layers**
+   - 3-4 items (linen dress, relaxed trousers, silk top)
+   
+   **Section: Statement Pieces**
+   - 2-3 items (woven bag, crochet cover-up, leather sandals)
+   
+   **Section: Accessories**
+   - 3-4 items (sunglasses, gold jewelry, scarf)
+   
+   **Section: Evening**
+   - 2-3 items (elegant caftan, strappy sandals, clutch)
+
+5. **Each Item Card Shows:**
+   - Product image
+   - Brand name (small, uppercase)
+   - Product name
+   - Price
+   - Badge: "From Your Saves" (amber) or "Suggested" (gray)
+   - SuitcaseButton (to add to shopping list / mark as "to buy")
+
+6. **THE MAGIC BUTTON** (Critical!)
+   At the bottom of the capsule, prominently displayed:
+   ```
+   ┌─────────────────────────────────────┐
+   │                                     │
+   │     ✨ Turn into Trip               │
+   │                                     │
+   │     Transform this capsule into     │
+   │     a complete Morocco journey      │
+   │                                     │
+   └─────────────────────────────────────┘
+   ```
+   - Large button, full-width or centered
+   - Warm background color (amber/gold gradient or warm neutral)
+   - "Turn into Trip" as main text
+   - Smaller subtitle below: "Transform this capsule into a complete Morocco journey"
+   - onClick: for now, just navigate to home page (Morocco itinerary): `navigate('/')`
+   - We'll add the transition animation later
+
+**Sample Capsule Data:**
+
+```typescript
+const desertNeutralsCapsule = {
+  id: "desert-neutrals",
+  name: "Desert Neutrals",
+  description: "The system noticed patterns in what you saved: warm earth tones, natural textures, relaxed silhouettes. This capsule brings those elements together into a cohesive collection for your journey.",
+  heroImage: "/path/to/desert-landscape.jpg",
+  stats: {
+    totalPieces: 12,
+    fromSaves: 8,
+    suggested: 4
+  },
+  sections: [
+    {
+      name: "Base Layers",
+      items: [
+        { id: "cap-1", brand: "Fil de Vie", name: "Linen Wrap Dress", price: "$285", imageUrl: "...", fromSaves: true },
+        { id: "cap-2", brand: "Mara Hoffman", name: "Relaxed Linen Trousers", price: "$320", imageUrl: "...", fromSaves: true },
+        { id: "cap-3", brand: "Esse", name: "Silk Cami", price: "$195", imageUrl: "...", fromSaves: false },
+      ]
+    },
+    {
+      name: "Statement Pieces", 
+      items: [
+        { id: "cap-4", brand: "Loewe", name: "Woven Basket Bag", price: "$890", imageUrl: "...", fromSaves: true },
+        { id: "cap-5", brand: "Cult Gaia", name: "Crochet Cover-Up", price: "$348", imageUrl: "...", fromSaves: false },
+      ]
+    },
+    {
+      name: "Accessories",
+      items: [
+        { id: "cap-6", brand: "Celine", name: "Triomphe Sunglasses", price: "$450", imageUrl: "...", fromSaves: true },
+        { id: "cap-7", brand: "Agmes", name: "Gold Hoops", price: "$380", imageUrl: "...", fromSaves: true },
+        { id: "cap-8", brand: "Johanna Ortiz", name: "Silk Scarf", price: "$225", imageUrl: "...", fromSaves: false },
+      ]
+    },
+    {
+      name: "Evening",
+      items: [
+        { id: "cap-9", brand: "Fil de Vie", name: "Evening Caftan", price: "$425", imageUrl: "...", fromSaves: true },
+        { id: "cap-10", brand: "Aquazzura", name: "Strappy Sandals", price: "$695", imageUrl: "...", fromSaves: true },
+      ]
+    }
+  ]
+};
+```
+
+**Capsules Tab in Suitcase:**
+
+When user clicks "Capsules" tab:
+- If capsules exist, show capsule cards (like "Desert Neutrals") that link to the full capsule view
+- Each capsule card shows: hero image, name, piece count, "View Capsule" button
+- For demo, we just need the one "Desert Neutrals" capsule
+
+**Styling:**
+- Elegant, editorial feel
+- Hero image should be impactful
+- Sections clearly delineated with headers
+- Item cards in a grid (2-3 per row on desktop)
+- "Turn into Trip" button should feel special - this is THE moment
+- Warm color palette (sand, terracotta, cream, amber)
+
+**PROMPT END**
+
+---
+
+Once this is built, you'll have the complete flow:
+
+**The Current** → pin stuff → **Suitcase** → see all saves → **Capsules tab** → see "Desert Neutrals" → click **"Turn into Trip"** → **Morocco Itinerary**
+
+Then we just need to add the transition animation between clicking the button and landing on the itinerary.
+
+Let me know what the agent builds! 🚀✨

@@ -2,9 +2,20 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { X, Briefcase, ArrowLeft } from "lucide-react";
+import { X, Briefcase, ArrowLeft, Sparkles } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
+
+const capsulesList = [
+  {
+    id: "desert-neutrals",
+    name: "Desert Neutrals",
+    description: "Warm earth tones and natural textures for your Morocco journey",
+    heroImage: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=800",
+    pieceCount: 12,
+    status: "ready"
+  }
+];
 
 type SavedItem = {
   id: number;
@@ -174,6 +185,54 @@ function SavedItemCard({ save, onRemove }: { save: SavedItem; onRemove: () => vo
   );
 }
 
+function CapsulesTabContent() {
+  if (capsulesList.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <Sparkles className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
+        <h3 className="font-serif text-xl mb-2">No capsules yet</h3>
+        <p className="text-muted-foreground max-w-md mx-auto">
+          Keep saving items you love - we'll help you build capsule collections based on your taste.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {capsulesList.map((capsule) => (
+        <Link key={capsule.id} href={`/suitcase/capsules/${capsule.id}`}>
+          <div 
+            className="group relative aspect-[16/10] rounded-md overflow-hidden cursor-pointer"
+            data-testid={`card-capsule-${capsule.id}`}
+          >
+            <img
+              src={capsule.heroImage}
+              alt={capsule.name}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="w-4 h-4 text-amber-400" />
+                <span className="text-amber-400 text-xs uppercase tracking-widest">AI Generated</span>
+              </div>
+              <h3 className="font-serif text-2xl text-white font-medium mb-1">{capsule.name}</h3>
+              <p className="text-white/70 text-sm mb-3">{capsule.description}</p>
+              <div className="flex items-center gap-4">
+                <span className="text-white/80 text-sm">{capsule.pieceCount} pieces</span>
+                <Button variant="outline" size="sm" className="text-white border-white/30 hover:bg-white/20">
+                  View Capsule
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 export default function SuitcasePage() {
   const [activeTab, setActiveTab] = useState("all");
 
@@ -269,12 +328,7 @@ export default function SuitcasePage() {
                 </div>
               </>
             ) : activeTab === "capsules" ? (
-              <>
-                <h3 className="font-serif text-xl mb-2">No capsules yet</h3>
-                <p className="text-muted-foreground">
-                  Keep saving - we'll help you build capsule collections soon!
-                </p>
-              </>
+              <CapsulesTabContent />
             ) : (
               <>
                 <h3 className="font-serif text-xl mb-2">No {tabs.find((t) => t.id === activeTab)?.label.toLowerCase()} saved yet</h3>
