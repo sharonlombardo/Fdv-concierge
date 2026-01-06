@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { SuitcaseButton } from "@/components/suitcase-button";
 import { TripTransition } from "@/components/trip-transition";
+import { useImageSlot } from "@/hooks/use-image-slot";
 
 type CapsuleItem = {
   id: string;
@@ -33,55 +34,74 @@ type Capsule = {
   sections: CapsuleSection[];
 };
 
-const desertNeutralsCapsule: Capsule = {
-  id: "desert-neutrals",
-  name: "Desert Neutrals",
-  description: "The system noticed patterns in what you saved: warm earth tones, natural textures, relaxed silhouettes. This capsule brings those elements together into a cohesive collection for your journey.",
-  heroImage: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1600",
-  stats: {
-    totalPieces: 12,
-    fromSaves: 8,
-    suggested: 4
-  },
-  sections: [
-    {
-      name: "Base Layers",
-      items: [
-        { id: "cap-1", brand: "Fil de Vie", name: "Linen Wrap Dress", price: "$285", imageUrl: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600", fromSaves: true },
-        { id: "cap-2", brand: "Mara Hoffman", name: "Relaxed Linen Trousers", price: "$320", imageUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=600", fromSaves: true },
-        { id: "cap-3", brand: "Esse", name: "Silk Cami", price: "$195", imageUrl: "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&q=80&w=600", fromSaves: false },
-        { id: "cap-11", brand: "Totême", name: "Cotton Poplin Shirt", price: "$240", imageUrl: "https://images.unsplash.com/photo-1598554747436-c9293d6a588f?auto=format&fit=crop&q=80&w=600", fromSaves: true },
-      ]
-    },
-    {
-      name: "Statement Pieces", 
-      items: [
-        { id: "cap-4", brand: "Loewe", name: "Woven Basket Bag", price: "$890", imageUrl: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&q=80&w=600", fromSaves: true },
-        { id: "cap-5", brand: "Cult Gaia", name: "Crochet Cover-Up", price: "$348", imageUrl: "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?auto=format&fit=crop&q=80&w=600", fromSaves: false },
-        { id: "cap-12", brand: "Jacquemus", name: "Le Chiquito Long", price: "$620", imageUrl: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=600", fromSaves: true },
-      ]
-    },
-    {
-      name: "Accessories",
-      items: [
-        { id: "cap-6", brand: "Celine", name: "Triomphe Sunglasses", price: "$450", imageUrl: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=600", fromSaves: true },
-        { id: "cap-7", brand: "Agmes", name: "Gold Hoops", price: "$380", imageUrl: "https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&q=80&w=600", fromSaves: true },
-        { id: "cap-8", brand: "Johanna Ortiz", name: "Silk Scarf", price: "$225", imageUrl: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=600", fromSaves: false },
-      ]
-    },
-    {
-      name: "Evening",
-      items: [
-        { id: "cap-9", brand: "Fil de Vie", name: "Evening Caftan", price: "$425", imageUrl: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&q=80&w=600", fromSaves: true },
-        { id: "cap-10", brand: "Aquazzura", name: "Strappy Sandals", price: "$695", imageUrl: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=600", fromSaves: true },
-      ]
-    }
-  ]
-};
+function useDesertNeutralsCapsule(): Capsule {
+  const heroImage = useImageSlot("capsule-hero");
+  const item1 = useImageSlot("capsule-item-1");
+  const item2 = useImageSlot("capsule-item-2");
+  const item3 = useImageSlot("capsule-item-3");
+  const item4 = useImageSlot("capsule-item-4");
+  const item5 = useImageSlot("capsule-item-5");
+  const item6 = useImageSlot("capsule-item-6");
+  const item7 = useImageSlot("capsule-item-7");
+  const item8 = useImageSlot("capsule-item-8");
+  const item9 = useImageSlot("capsule-item-9");
+  const item10 = useImageSlot("capsule-item-10");
+  const item11 = useImageSlot("capsule-item-11");
+  const item12 = useImageSlot("capsule-item-12");
 
-const capsules: Record<string, Capsule> = {
-  "desert-neutrals": desertNeutralsCapsule,
-};
+  return {
+    id: "desert-neutrals",
+    name: "Desert Neutrals",
+    description: "The system noticed patterns in what you saved: warm earth tones, natural textures, relaxed silhouettes. This capsule brings those elements together into a cohesive collection for your journey.",
+    heroImage,
+    stats: {
+      totalPieces: 12,
+      fromSaves: 8,
+      suggested: 4
+    },
+    sections: [
+      {
+        name: "Base Layers",
+        items: [
+          { id: "cap-1", brand: "Fil de Vie", name: "Linen Wrap Dress", price: "$285", imageUrl: item1, fromSaves: true },
+          { id: "cap-2", brand: "Mara Hoffman", name: "Relaxed Linen Trousers", price: "$320", imageUrl: item2, fromSaves: true },
+          { id: "cap-3", brand: "Esse", name: "Silk Cami", price: "$195", imageUrl: item3, fromSaves: false },
+          { id: "cap-11", brand: "Totême", name: "Cotton Poplin Shirt", price: "$240", imageUrl: item4, fromSaves: true },
+        ]
+      },
+      {
+        name: "Statement Pieces", 
+        items: [
+          { id: "cap-4", brand: "Loewe", name: "Woven Basket Bag", price: "$890", imageUrl: item5, fromSaves: true },
+          { id: "cap-5", brand: "Cult Gaia", name: "Crochet Cover-Up", price: "$348", imageUrl: item6, fromSaves: false },
+          { id: "cap-12", brand: "Jacquemus", name: "Le Chiquito Long", price: "$620", imageUrl: item7, fromSaves: true },
+        ]
+      },
+      {
+        name: "Accessories",
+        items: [
+          { id: "cap-6", brand: "Celine", name: "Triomphe Sunglasses", price: "$450", imageUrl: item8, fromSaves: true },
+          { id: "cap-7", brand: "Agmes", name: "Gold Hoops", price: "$380", imageUrl: item9, fromSaves: true },
+          { id: "cap-8", brand: "Johanna Ortiz", name: "Silk Scarf", price: "$225", imageUrl: item10, fromSaves: false },
+        ]
+      },
+      {
+        name: "Evening",
+        items: [
+          { id: "cap-9", brand: "Fil de Vie", name: "Evening Caftan", price: "$425", imageUrl: item11, fromSaves: true },
+          { id: "cap-10", brand: "Aquazzura", name: "Strappy Sandals", price: "$695", imageUrl: item12, fromSaves: true },
+        ]
+      }
+    ]
+  };
+}
+
+function useCapsules(): Record<string, Capsule> {
+  const desertNeutrals = useDesertNeutralsCapsule();
+  return {
+    "desert-neutrals": desertNeutrals,
+  };
+}
 
 function CapsuleItemCard({ item, capsuleId }: { item: CapsuleItem; capsuleId: string }) {
   return (
@@ -132,6 +152,7 @@ export default function CapsuleDetail() {
   const [, params] = useRoute("/suitcase/capsules/:slug");
   const [, setLocation] = useLocation();
   const [showTransition, setShowTransition] = useState(false);
+  const capsules = useCapsules();
   const slug = params?.slug || "desert-neutrals";
   const capsule = capsules[slug];
 
