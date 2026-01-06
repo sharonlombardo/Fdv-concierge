@@ -1607,6 +1607,13 @@ export default function Home() {
               );
             })}
             <a 
+              href="/current"
+              className="block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] opacity-25 hover:opacity-100 transition-all transform hover:scale-105 font-serif mt-4"
+              data-testid="link-current"
+            >
+              The Current
+            </a>
+            <a 
               href="/packing"
               className="block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] opacity-25 hover:opacity-100 transition-all transform hover:scale-105 font-serif mt-4"
               data-testid="link-suitcase"

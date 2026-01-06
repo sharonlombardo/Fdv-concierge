@@ -1,0 +1,159 @@
+I need to create "The Current" - an editorial discovery feed page. This is a magazine-style page where users browse curated content (travel guides, style inspiration, scenes, objects) and can pin anything that resonates with them.
+Create a new page: client/src/pages/current.tsx
+Page Structure:
+
+Header
+
+Title: "THE CURRENT" (elegant serif font - Playfair Display)
+Subtitle: "Discover what resonates" (smaller, Inter font)
+
+
+Content Grid
+
+Magazine-style masonry or varied-size grid layout
+Mix of large feature cards and smaller image cards
+Each card is pinnable (PinButton in top-right corner, always visible)
+
+
+Content Types to Display:
+
+Feature Articles (large cards): Travel guides, destination features
+Style Cards (medium): Fashion looks, outfit inspiration
+Scene Images (various sizes): Beautiful photography - architecture, landscapes, textures, objects
+Quote Cards (small/medium): Inspirational text on minimal background
+
+
+
+For the demo, seed with this sample content:
+typescriptconst currentFeedContent = [
+  {
+    id: "current-1",
+    type: "feature",
+    title: "Hotel Weekend",
+    subtitle: "On the Beachside",
+    imageUrl: "/path/to/coastal-hotel.jpg", // use placeholder or existing image
+    tags: ["travel", "coastal", "escape"],
+    size: "large"
+  },
+  {
+    id: "current-2", 
+    type: "feature",
+    title: "Welcome to Spain",
+    subtitle: "A Journey Through Light",
+    imageUrl: "/path/to/spain-architecture.jpg",
+    tags: ["travel", "spain", "architecture"],
+    size: "large"
+  },
+  {
+    id: "current-3",
+    type: "style",
+    title: "The New Neutrals",
+    subtitle: "Effortless layers for any journey",
+    imageUrl: "/path/to/neutral-outfit.jpg",
+    tags: ["style", "minimal", "neutral"],
+    size: "medium"
+  },
+  {
+    id: "current-4",
+    type: "scene",
+    title: "Morning Light",
+    imageUrl: "/path/to/glassware.jpg",
+    tags: ["scene", "texture", "minimal"],
+    size: "small"
+  },
+  {
+    id: "current-5",
+    type: "scene", 
+    title: "Dried Botanicals",
+    imageUrl: "/path/to/dried-flowers.jpg",
+    tags: ["scene", "natural", "texture"],
+    size: "medium"
+  },
+  {
+    id: "current-6",
+    type: "scene",
+    title: "Desert Architecture",
+    imageUrl: "/path/to/desert-building.jpg",
+    tags: ["scene", "architecture", "desert"],
+    size: "large"
+  },
+  {
+    id: "current-7",
+    type: "quote",
+    title: "Travel is not about the destination, but how you feel when you arrive.",
+    tags: ["inspiration", "travel"],
+    size: "medium"
+  },
+  {
+    id: "current-8",
+    type: "style",
+    title: "Linen Layers",
+    subtitle: "From coast to city",
+    imageUrl: "/path/to/linen-outfit.jpg",
+    tags: ["style", "linen", "summer"],
+    size: "medium"
+  },
+  {
+    id: "current-9",
+    type: "scene",
+    title: "Garden Terrace",
+    imageUrl: "/path/to/outdoor-furniture.jpg",
+    tags: ["scene", "outdoor", "calm"],
+    size: "small"
+  },
+  {
+    id: "current-10",
+    type: "feature",
+    title: "The Art of Slow Travel",
+    subtitle: "Why presence matters more than planning",
+    imageUrl: "/path/to/slow-travel.jpg",
+    tags: ["travel", "philosophy", "slow"],
+    size: "large"
+  }
+];
+Card Component Design:
+For Feature/Large cards:
+
+Full-width or half-width image
+Title overlaid on image (white text, subtle shadow)
+PinButton top-right
+Subtle gradient at bottom for text readability
+
+For Style cards:
+
+Product/outfit image
+Title below image
+PinButton top-right
+
+For Scene cards:
+
+Image focused (minimal or no text)
+PinButton top-right
+Caption on hover or below
+
+For Quote cards:
+
+Warm neutral background (#f5f1ed)
+Elegant serif text centered
+PinButton top-right
+
+Each card's PinButton should use:
+
+itemType: matches card type ("feature", "style", "scene", "quote")
+itemId: the content id ("current-1", "current-2", etc.)
+sourceContext: "current_feed"
+aestheticTags: the tags array from the content
+itemData: { title, subtitle, imageUrl }
+
+Add route to the app router:
+tsx<Route path="/current" component={CurrentFeed} />
+Add navigation link in the hamburger menu: "The Current" (place it prominently, not at bottom with debug)
+Styling:
+
+Background: warm off-white (#fafaf9 or similar)
+Typography: Playfair Display for titles, Inter for body
+Generous whitespace
+Cards have subtle shadows on hover
+Luxury editorial magazine feel (think: Kinfolk, Cereal Magazine)
+
+For images: Use placeholder images for now, or grab from the existing /attached_assets/ folder if there are suitable images. We'll replace with final images later.
