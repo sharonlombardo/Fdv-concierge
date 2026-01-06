@@ -45,6 +45,7 @@ export interface IStorage {
   getSaves(): Promise<Save[]>;
   getSaveByItemId(itemId: string): Promise<Save | undefined>;
   addSave(data: InsertSave): Promise<Save>;
+  updateSaveByItemId(itemId: string, data: { metadata?: any }): Promise<Save | undefined>;
   deleteSaveByItemId(itemId: string): Promise<void>;
 }
 
@@ -234,6 +235,23 @@ export class MemStorage implements IStorage {
       .values(data)
       .returning();
     return created;
+  }
+
+  async updateSaveByItemId(itemId: string, data: { metadata?: any }): Promise<Save | undefined> {
+    const existing = await this.getSaveByItemId(itemId);
+    if (!existing) return undefined;
+    
+    const updatedMetadata = {
+      ...(existing.metadata || {}),
+      ...data.metadata
+    };
+    
+    const [updated] = await db
+      .update(saves)
+      .set({ metadata: updatedMetadata })
+      .where(eq(saves.itemId, itemId))
+      .returning();
+    return updated;
   }
 
   async deleteSaveByItemId(itemId: string): Promise<void> {

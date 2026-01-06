@@ -36,6 +36,8 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { useJournal, type JournalEntry } from '@/hooks/use-journal';
 import { useCustomImages } from '@/hooks/use-custom-images';
 import { SelfiePickerModal } from '@/components/selfie-picker-modal';
+import { PinButton } from '@/components/pin-button';
+import { SuitcaseButton } from '@/components/suitcase-button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import type { SelfieImage } from '@shared/schema';
@@ -490,13 +492,40 @@ function ItemDetailDrawer({
                                 alt={extra?.name || placeholderName}
                               />
                             )}
-                            <button
-                              onClick={() => handleOpenSelfiePicker(extraKey)}
-                              className="absolute bottom-1 right-1 p-1.5 bg-background/90 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                              data-testid={`button-selfie-${index}`}
-                            >
-                              <Camera className="w-3 h-3" />
-                            </button>
+                            <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <PinButton
+                                itemType="product"
+                                itemId={extraKey}
+                                itemData={{
+                                  title: extra?.name || placeholderName,
+                                  imageUrl: getImageUrl(extraKey, extra?.image || ''),
+                                  shopLink: extra?.shopLink
+                                }}
+                                sourceContext="morocco_itinerary"
+                                aestheticTags={['accessory', placeholderName.toLowerCase()]}
+                                size="sm"
+                              />
+                            </div>
+                            <div className="absolute bottom-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <SuitcaseButton
+                                itemId={extraKey}
+                                itemData={{
+                                  title: extra?.name || placeholderName,
+                                  imageUrl: getImageUrl(extraKey, extra?.image || ''),
+                                  shopLink: extra?.shopLink
+                                }}
+                                sourceContext="morocco_itinerary"
+                                aestheticTags={['accessory', placeholderName.toLowerCase()]}
+                                size="sm"
+                              />
+                              <button
+                                onClick={() => handleOpenSelfiePicker(extraKey)}
+                                className="p-1.5 bg-background/90 rounded-full h-6 w-6 flex items-center justify-center"
+                                data-testid={`button-selfie-${index}`}
+                              >
+                                <Camera className="w-3 h-3" />
+                              </button>
+                            </div>
                           </>
                         ) : (
                           <button

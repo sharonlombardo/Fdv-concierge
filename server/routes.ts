@@ -371,6 +371,22 @@ export async function registerRoutes(
     }
   });
 
+  app.patch("/api/saves/:itemId", async (req, res) => {
+    try {
+      const { itemId } = req.params;
+      const { metadata } = req.body;
+      
+      const updated = await storage.updateSaveByItemId(itemId, { metadata });
+      if (!updated) {
+        return res.status(404).json({ error: "Save not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating save:", error);
+      res.status(500).json({ error: "Failed to update save" });
+    }
+  });
+
   app.delete("/api/saves/:itemId", async (req, res) => {
     try {
       const { itemId } = req.params;

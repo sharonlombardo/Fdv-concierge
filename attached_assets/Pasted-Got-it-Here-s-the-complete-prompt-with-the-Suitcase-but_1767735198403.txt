@@ -1,0 +1,183 @@
+Got it! Here's the complete prompt with the Suitcase button logic:
+
+PROMPT START
+Now I need to create a SuitcaseButton component for purchase intent.
+Context:
+The app already has a PinButton for saving/pinning items. The SuitcaseButton is different - it's for when someone wants to buy something.
+Key behavior: When SuitcaseButton is clicked, it should automatically also save to pins with a purchaseIntent: true flag. This way every purchase intent is also captured as a taste signal.
+Create a new component: client/src/components/suitcase-button.tsx
+tsximport { Briefcase } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+
+interface SuitcaseButtonProps {
+  itemId: string;
+  itemData: {
+    title?: string;
+    brand?: string;
+    price?: string;
+    imageUrl?: string;
+    [key: string]: any;
+  };
+  sourceContext: string;
+  aestheticTags?: string[];
+  className?: string;
+  size?: "sm" | "md" | "lg";
+  onAddToCart?: () => void; // optional callback for additional cart logic
+}
+
+export function SuitcaseButton({
+  itemId,
+  itemData,
+  sourceContext,
+  aestheticTags = [],
+  className,
+  size = "md",
+  onAddToCart
+}: SuitcaseButtonProps) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const addToSuitcase = useMutation({
+    mutationFn: async () => {
+      // Save to pins with purchaseIntent flag
+      const res = await fetch('/api/saves', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemType: 'product',
+          itemId,
+          sourceContext,
+          aestheticTags,
+          metadata: {
+            ...itemData,
+            purchaseIntent: true,
+            addedToCartAt: Date.now()
+          }
+        })
+      });
+      
+      // If already saved (status 400), that's fine - just means they pinned before buying
+      // In that case, we should UPDATE the existing save to add purchaseIntent
+      if (res.status === 400) {
+        // Item already pinned - update it to add purchase intent
+        const updateRes = await fetch(`/api/saves/${itemId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            metadata: {
+              ...itemData,
+              purchaseIntent: true,
+              addedToCartAt: Date.now()
+            }
+          })
+        });
+        if (!updateRes.ok) {
+          throw new Error('Failed to update save with purchase intent');
+        }
+        return { success: true, updated: true };
+      }
+      
+      if (!res.ok) {
+        throw new Error('Failed to add to suitcase');
+      }
+      
+      return { success: true, updated: false };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/saves/check', itemId] });
+      
+      toast({
+        description: "🧳 Added to your Suitcase",
+        duration: 2000
+      });
+      
+      // Call optional callback for additional cart logic
+      if (onAddToCart) {
+        onAddToCart();
+      }
+    },
+    onError: () => {
+      toast({
+        description: "Failed to add to Suitcase",
+        variant: "destructive",
+        duration: 2000
+      });
+    }
+  });
+
+  const sizeClasses = {
+    sm: "h-6 w-6",
+    md: "h-8 w-8", 
+    lg: "h-10 w-10"
+  };
+
+  const iconSizes = {
+    sm: 14,
+    md: 18,
+    lg: 22
+  };
+
+  return (
+    <button
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        addToSuitcase.mutate();
+      }}
+      className={cn(
+        "rounded-full bg-white/90 backdrop-blur-sm shadow-sm",
+        "hover:bg-white hover:scale-110 transition-all duration-200",
+        "flex items-center justify-center",
+        "text-gray-600 hover:text-gray-900",
+        sizeClasses[size],
+        className
+      )}
+      disabled={addToSuitcase.isPending}
+      title="Add to Suitcase"
+    >
+      <Briefcase 
+        size={iconSizes[size]}
+        strokeWidth={2}
+      />
+    </button>
+  );
+}
+Also add a PATCH endpoint to the API in server/routes.ts to update existing saves:
+typescript// Update existing save (e.g., to add purchaseIntent)
+app.patch("/api/saves/:itemId", async (req, res) => {
+  const { itemId } = req.params;
+  const { metadata } = req.body;
+  
+  const existing = await storage.getSaveByItemId(itemId);
+  if (!existing) {
+    return res.status(404).json({ error: "Save not found" });
+  }
+  
+  // Merge new metadata with existing
+  const updatedMetadata = {
+    ...(existing.metadata || {}),
+    ...metadata
+  };
+  
+  const updated = await db.update(saves)
+    .set({ metadata: updatedMetadata })
+    .where(eq(saves.itemId, itemId))
+    .returning();
+    
+  res.json(updated[0]);
+});
+Add the corresponding storage method to server/storage.ts if needed.
+Finally, add SuitcaseButton to product items in the Morocco itinerary:
+
+Individual accessory products should have BOTH buttons:
+
+PinButton in top-right corner
+SuitcaseButton in bottom-right corner
+
+
+The "Shop Look" buttons for full outfits could also use SuitcaseButton
+
+Look for the accessory/product grids in the itinerary pages (the 4 small boxes showing Footwear, Handbag, Jewelry, Accessory) and add both buttons to those cards.
