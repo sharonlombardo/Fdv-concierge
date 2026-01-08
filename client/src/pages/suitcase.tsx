@@ -50,11 +50,44 @@ type SavedItem = {
 const tabs = [
   { id: "all", label: "All" },
   { id: "style", label: "Your Style" },
-  { id: "memories", label: "Memories" },
+  { id: "state-of-mind", label: "State of Mind" },
   { id: "places", label: "Places" },
   { id: "items", label: "Items" },
   { id: "inspiration", label: "Inspiration" },
   { id: "capsules", label: "Capsules" },
+];
+
+const CURATED_QUOTES = [
+  {
+    id: "quote-1",
+    text: "Travel is not about the destination, but how you feel when you arrive.",
+    source: "The Current"
+  },
+  {
+    id: "quote-2", 
+    text: "The best journeys answer questions that in the beginning you didn't even think to ask.",
+    source: "The Current"
+  },
+  {
+    id: "quote-3",
+    text: "Collect moments, not things. But beautiful things help you remember the moments.",
+    source: "The Current"
+  },
+  {
+    id: "quote-4",
+    text: "Slow down. The view is better when you're not rushing past it.",
+    source: "The Current"
+  },
+  {
+    id: "quote-5",
+    text: "Every journey begins with a single step into the unknown.",
+    source: "The Current"
+  },
+  {
+    id: "quote-6",
+    text: "The real voyage of discovery consists not in seeking new landscapes, but in having new eyes.",
+    source: "The Current"
+  }
 ];
 
 function getTypeLabel(itemType: string): string {
@@ -100,14 +133,8 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
             ["style", "fashion", "outfit", "minimal", "neutral", "linen"].includes(t.toLowerCase())
           )
       );
-    case "memories":
-      return saves.filter(
-        (s) =>
-          s.sourceContext?.includes("morocco") ||
-          s.sourceContext?.includes("itinerary") ||
-          s.itemType === "activity" ||
-          s.itemType === "cover"
-      );
+    case "state-of-mind":
+      return [];
     case "places":
       return saves.filter(
         (s) => s.itemType === "place" || s.itemType === "feature"
@@ -128,6 +155,33 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
     default:
       return saves;
   }
+}
+
+function StateOfMindContent() {
+  return (
+    <div className="space-y-6">
+      <div className="text-center mb-8">
+        <p className="text-muted-foreground text-sm uppercase tracking-widest mb-2">From The Current</p>
+        <h2 className="font-serif text-2xl">Words to Travel By</h2>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {CURATED_QUOTES.map((quote) => (
+          <div 
+            key={quote.id}
+            className="bg-[#f5f1ed] dark:bg-[#2a2825] rounded-md p-8 flex flex-col justify-between min-h-[180px]"
+            data-testid={`card-quote-${quote.id}`}
+          >
+            <p className="font-serif text-lg leading-relaxed text-foreground/80 italic">
+              "{quote.text}"
+            </p>
+            <p className="text-xs text-muted-foreground mt-4 tracking-widest uppercase">
+              {quote.source}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function SavedItemCard({ save, onRemove }: { save: SavedItem; onRemove: () => void }) {
@@ -268,9 +322,6 @@ export default function SuitcasePage() {
   const filteredSaves = filterSaves(saves, activeTab);
 
   const itemsToShop = saves.filter((s) => s.metadata?.purchaseIntent).length;
-  const memories = saves.filter(
-    (s) => s.sourceContext?.includes("morocco") || s.sourceContext?.includes("itinerary")
-  ).length;
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
@@ -292,7 +343,7 @@ export default function SuitcasePage() {
             Everything you've saved
           </p>
           <p className="text-sm text-muted-foreground" data-testid="text-suitcase-stats">
-            {saves.length} saves • {itemsToShop} items to shop • {memories} memories
+            {saves.length} saves • {itemsToShop} items to shop • {CURATED_QUOTES.length} quotes
           </p>
         </header>
 
@@ -321,6 +372,10 @@ export default function SuitcasePage() {
               <div key={i} className="aspect-[3/4] bg-stone-200 dark:bg-stone-800 rounded-md animate-pulse" />
             ))}
           </div>
+        ) : activeTab === "state-of-mind" ? (
+          <StateOfMindContent />
+        ) : activeTab === "capsules" ? (
+          <CapsulesTabContent />
         ) : filteredSaves.length === 0 ? (
           <div className="text-center py-20">
             {saves.length === 0 ? (
@@ -343,8 +398,6 @@ export default function SuitcasePage() {
                   </Link>
                 </div>
               </>
-            ) : activeTab === "capsules" ? (
-              <CapsulesTabContent />
             ) : (
               <>
                 <h3 className="font-serif text-xl mb-2">No {tabs.find((t) => t.id === activeTab)?.label.toLowerCase()} saved yet</h3>
