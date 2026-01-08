@@ -1,0 +1,89 @@
+PROMPT START
+The Current page is missing the full paragraph text for each story block. Please add the complete text content to each section:
+
+STORY 1: MOROCCO
+StyleMoment - Add title "Dressing into the scene" and paragraph:
+"Morocco asks you to dress with confidence. Not loudly — deliberately.
+Silhouettes that move when you walk. Fabrics that catch air on a staircase. Pieces that look right against tile, brass, and candlelight.
+You dress to belong in the room — and then let the room do the rest."
+TextureMoment - Add title "The visual pleasure" and paragraph:
+"Every surface has something to say. Tiles repeat. Textiles soften. Glass refracts.
+You don't need to choose one thing. You let the composition hold.
+This is where pattern becomes mood."
+ObjectMoment - Add title "What travels well here" and paragraph:
+"Choose objects that feel intentional, not precious. Things that look better at night than they did in daylight.
+A sandal you can walk up stairs in. A bag that disappears on your body. Jewelry that catches light and then lets it go."
+ExperienceMoment - Add title "Evenings done properly" and paragraph:
+"Evenings unfold slowly here. A drink on the roof. A long table. Shared plates. Warm air.
+Nothing rushed. Nothing hidden. The city performs beautifully if you give it time."
+RitualMoment - Add title "Between places" and paragraph:
+"Afternoons are for pause. Shade. Water. A return to yourself.
+This is how the night stays beautiful."
+
+STORY 2: HYDRA
+StyleMoment - Add title "Dressing for stillness" and paragraph:
+"Hydra favors restraint. Clean lines. Bare ankles. Nothing that competes with light.
+You dress once here and repeat it with confidence. The discipline is the luxury."
+TextureMoment - Add title "Stone, water, skin" and paragraph:
+"Everything important is elemental. Stone underfoot. Salt on skin. Light moving slowly across a wall.
+There is no decoration here. Only composition."
+ObjectMoment - Add title "What belongs" and paragraph:
+"Bring objects that disappear when worn. A sandal you forget you're wearing. A bag that holds only what's necessary.
+Hydra edits for you if you let it."
+RitualMoment - Add title "The daily cadence" and paragraph:
+"Morning is for water. Midday belongs to shade and conversation. Evening arrives without ceremony.
+You do less. You feel more."
+
+STORY 3: SLOW TRAVEL
+CultureMoment - Add title "Editing as intelligence" and paragraph:
+"Slow travel is cultural fluency. Knowing when to sit. When to stay. When to repeat a ritual rather than replace it.
+It's choosing one museum room instead of ten. The same café twice. The same walk every morning.
+Repetition becomes familiarity. Familiarity becomes belonging."
+StyleMoment - Add title "Repetition with intention" and paragraph:
+"The most confident travelers repeat themselves. The same silhouette, refined. The same palette, trusted.
+Packing less doesn't limit you. It frees you.
+When you stop performing variety, you arrive composed."
+ObjectMoment - Add title "What earns space" and paragraph:
+"In slow travel, objects earn their place. They travel well. They work hard. They feel right in more than one moment.
+Nothing disposable. Nothing excess.
+Everything chosen."
+RitualMoment - Add title "The daily anchor" and paragraph:
+"A morning walk. The same seat. The same order.
+Ritual is what makes time feel generous."
+
+STORY 4: RITUAL RETREAT
+RitualMoment - Add title "Movement as calibration" and paragraph:
+"Movement here is not performance. It is preparation.
+Stretching, walking, breathing — done without mirrors or urgency. Enough to wake the body. Never enough to exhaust it.
+The point is not intensity. It is clarity."
+PlaceMoment - Add title "Architecture that supports practice" and paragraph:
+"The best retreats are designed to get out of your way. Rooms feel held, not styled. Paths invite walking, not wandering.
+Silence is built into the walls."
+ObjectMoment - Add title "What belongs in practice" and paragraph:
+"Everything here serves a purpose. A wrap for warmth. Oil for skin. Shoes you step out of easily.
+Nothing distracts. Nothing performs."
+StyleMoment - Add title "Dressing after movement" and paragraph:
+"After practice, dressing becomes instinctive. Soft layers. Neutral tones. Shapes that don't interrupt the body.
+You are not dressing to be seen. You are dressing to stay in the state you've entered."
+
+STORY 5: NEW YORK
+StyleMoment - Add title "Dressing for the city's pace" and paragraph:
+"New York dressing is about stamina. Clothes that hold their shape at midnight. Shoes you can stand in. A coat that finishes the sentence.
+Black works here. So does bone, charcoal, deep brown.
+Nothing precious. Everything intentional."
+CultureMoment - Add title "Choosing where to look" and paragraph:
+"You don't rush culture in this city. You let it meet you.
+One exhibition. One room you stay in longer than planned. A moment where time loosens its grip.
+New York gives generously — if you don't ask for everything."
+ExperienceMoment - Add title "Evenings done well" and paragraph:
+"The best nights are edited. A bar that understands lighting. A table that doesn't turn. A meal that unfolds slowly.
+You don't need to know everyone. You just need to be exactly where you are."
+ObjectMoment - Add title "What carries the weekend" and paragraph:
+"A bag that stays close. Sunglasses for the morning after. One piece of jewelry that works everywhere.
+New York asks for objects that keep up — not slow you down."
+RitualMoment - Add title "Sunday containment" and paragraph:
+"Sunday is for walking. No destination. No performance.
+Coffee in hand. Coat open. The city exhales with you.
+This is how you stay."
+
+Each of these blocks should have an image placeholder and a pin icon in the top-right corner that saves to the appropriate bucket.

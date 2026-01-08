@@ -53,6 +53,16 @@ type ClosingLineProps = {
   id: string;
 };
 
+type MomentBlockProps = {
+  title: string;
+  paragraphs: string[];
+  assetKey: string;
+  bucket: string;
+  pinType: string;
+  sourceStory: string;
+  imagePosition?: "left" | "right";
+};
+
 const NAV_ITEMS = [
   { id: "morocco", label: "Morocco" },
   { id: "hydra", label: "Hydra" },
@@ -147,6 +157,58 @@ function QuoteCard({ quote, id }: QuoteCardProps) {
       <p className="font-serif text-2xl md:text-3xl lg:text-4xl italic leading-relaxed text-foreground/90">
         "{quote}"
       </p>
+    </div>
+  );
+}
+
+function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory, imagePosition = "left" }: MomentBlockProps) {
+  const imageBlock = (
+    <div className="relative aspect-[4/5] md:aspect-square bg-stone-200 dark:bg-stone-800 rounded-md flex items-center justify-center">
+      <span className="text-muted-foreground text-xs uppercase tracking-widest">Image Placeholder</span>
+      <div className="absolute top-3 right-3 z-10">
+        <PinButton
+          itemType={pinType as any}
+          itemId={assetKey}
+          itemData={{ 
+            title, 
+            bucket,
+            sourceStory,
+            issueNumber: 1
+          }}
+          sourceContext="the_current_issue_1"
+          aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), sourceStory.toLowerCase()]}
+          size="md"
+        />
+      </div>
+    </div>
+  );
+
+  const textBlock = (
+    <div className="flex flex-col justify-center">
+      <h3 className="font-serif text-xl md:text-2xl font-medium mb-4">{title}</h3>
+      <div className="space-y-4">
+        {paragraphs.map((para, idx) => (
+          <p key={idx} className="text-muted-foreground leading-relaxed">{para}</p>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="py-12 md:py-16 px-4 max-w-5xl mx-auto" data-testid={`moment-${assetKey}`}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+        {imagePosition === "left" ? (
+          <>
+            {imageBlock}
+            {textBlock}
+          </>
+        ) : (
+          <>
+            {textBlock}
+            {imageBlock}
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -340,6 +402,7 @@ export default function CurrentFeed() {
 
       <StoryDivider />
 
+      {/* MOROCCO */}
       <section id="morocco">
         <PageTurnHero
           title="Morocco, In Full Color"
@@ -351,6 +414,34 @@ export default function CurrentFeed() {
         />
 
         <QuoteCard quote="Beauty doesn't whisper here. It invites." id="morocco-quote-1" />
+
+        <MomentBlock
+          title="Dressing into the scene"
+          paragraphs={[
+            "Morocco asks you to dress with confidence. Not loudly — deliberately.",
+            "Silhouettes that move when you walk. Fabrics that catch air on a staircase. Pieces that look right against tile, brass, and candlelight.",
+            "You dress to belong in the room — and then let the room do the rest."
+          ]}
+          assetKey="morocco-style-1"
+          bucket="Your Style"
+          pinType="look"
+          sourceStory="Morocco"
+          imagePosition="left"
+        />
+
+        <MomentBlock
+          title="The visual pleasure"
+          paragraphs={[
+            "Every surface has something to say. Tiles repeat. Textiles soften. Glass refracts.",
+            "You don't need to choose one thing. You let the composition hold.",
+            "This is where pattern becomes mood."
+          ]}
+          assetKey="morocco-texture-1"
+          bucket="Inspiration"
+          pinType="texture"
+          sourceStory="Morocco"
+          imagePosition="right"
+        />
 
         <PinGrid
           title="Pattern and Pleasure"
@@ -365,6 +456,32 @@ export default function CurrentFeed() {
           ]}
         />
 
+        <MomentBlock
+          title="What travels well here"
+          paragraphs={[
+            "Choose objects that feel intentional, not precious. Things that look better at night than they did in daylight.",
+            "A sandal you can walk up stairs in. A bag that disappears on your body. Jewelry that catches light and then lets it go."
+          ]}
+          assetKey="morocco-object-1"
+          bucket="Objects of Desire"
+          pinType="object"
+          sourceStory="Morocco"
+          imagePosition="left"
+        />
+
+        <MomentBlock
+          title="Evenings done properly"
+          paragraphs={[
+            "Evenings unfold slowly here. A drink on the roof. A long table. Shared plates. Warm air.",
+            "Nothing rushed. Nothing hidden. The city performs beautifully if you give it time."
+          ]}
+          assetKey="morocco-experience-1"
+          bucket="Travel & Experiences"
+          pinType="experience"
+          sourceStory="Morocco"
+          imagePosition="right"
+        />
+
         <MotionLoopBlock
           overlayText="Pattern moving in heat"
           bucket="Inspiration"
@@ -373,11 +490,25 @@ export default function CurrentFeed() {
           sourceStory="Morocco"
         />
 
+        <MomentBlock
+          title="Between places"
+          paragraphs={[
+            "Afternoons are for pause. Shade. Water. A return to yourself.",
+            "This is how the night stays beautiful."
+          ]}
+          assetKey="morocco-ritual-1"
+          bucket="Daily Rituals"
+          pinType="ritual"
+          sourceStory="Morocco"
+          imagePosition="left"
+        />
+
         <ClosingLine text="Save what delights you. You'll want to see it again." id="morocco-closing" />
       </section>
 
       <StoryDivider />
 
+      {/* HYDRA */}
       <section id="hydra">
         <PageTurnHero
           title="The Art of Arrival"
@@ -389,6 +520,32 @@ export default function CurrentFeed() {
         />
 
         <QuoteCard quote="Arrive composed. Let the place do the rest." id="hydra-quote-1" />
+
+        <MomentBlock
+          title="Dressing for stillness"
+          paragraphs={[
+            "Hydra favors restraint. Clean lines. Bare ankles. Nothing that competes with light.",
+            "You dress once here and repeat it with confidence. The discipline is the luxury."
+          ]}
+          assetKey="hydra-style-1"
+          bucket="Your Style"
+          pinType="look"
+          sourceStory="Hydra"
+          imagePosition="left"
+        />
+
+        <MomentBlock
+          title="Stone, water, skin"
+          paragraphs={[
+            "Everything important is elemental. Stone underfoot. Salt on skin. Light moving slowly across a wall.",
+            "There is no decoration here. Only composition."
+          ]}
+          assetKey="hydra-texture-1"
+          bucket="Inspiration"
+          pinType="texture"
+          sourceStory="Hydra"
+          imagePosition="right"
+        />
 
         <PinGrid
           title="Essentials Only"
@@ -403,6 +560,19 @@ export default function CurrentFeed() {
           ]}
         />
 
+        <MomentBlock
+          title="What belongs"
+          paragraphs={[
+            "Bring objects that disappear when worn. A sandal you forget you're wearing. A bag that holds only what's necessary.",
+            "Hydra edits for you if you let it."
+          ]}
+          assetKey="hydra-object-1"
+          bucket="Objects of Desire"
+          pinType="object"
+          sourceStory="Hydra"
+          imagePosition="left"
+        />
+
         <TwoUpFeature
           title="Light and Water"
           image1={{ assetKey: "hydra-light-1", caption: "Morning", bucket: "Inspiration", pinType: "mood" }}
@@ -410,11 +580,25 @@ export default function CurrentFeed() {
           sourceStory="Hydra"
         />
 
+        <MomentBlock
+          title="The daily cadence"
+          paragraphs={[
+            "Morning is for water. Midday belongs to shade and conversation. Evening arrives without ceremony.",
+            "You do less. You feel more."
+          ]}
+          assetKey="hydra-ritual-1"
+          bucket="Daily Rituals"
+          pinType="ritual"
+          sourceStory="Hydra"
+          imagePosition="right"
+        />
+
         <ClosingLine text="Save what steadies you. Return when you need it." id="hydra-closing" />
       </section>
 
       <StoryDivider />
 
+      {/* SLOW TRAVEL */}
       <section id="slow-travel">
         <PageTurnHero
           title="Less, But Longer"
@@ -427,11 +611,39 @@ export default function CurrentFeed() {
 
         <QuoteCard quote="The point isn't to see more. It's to stay longer with what feels right." id="slow-travel-quote-1" />
 
+        <MomentBlock
+          title="Editing as intelligence"
+          paragraphs={[
+            "Slow travel is cultural fluency. Knowing when to sit. When to stay. When to repeat a ritual rather than replace it.",
+            "It's choosing one museum room instead of ten. The same café twice. The same walk every morning.",
+            "Repetition becomes familiarity. Familiarity becomes belonging."
+          ]}
+          assetKey="slow-culture-1"
+          bucket="Culture"
+          pinType="culture"
+          sourceStory="Slow Travel"
+          imagePosition="left"
+        />
+
         <TwoUpFeature
           title="Editing is Intelligence"
           image1={{ assetKey: "slow-lunch", caption: "Long lunch", bucket: "Culture", pinType: "culture" }}
           image2={{ assetKey: "slow-museum", caption: "Museum stair", bucket: "Culture", pinType: "place" }}
           sourceStory="Slow Travel"
+        />
+
+        <MomentBlock
+          title="Repetition with intention"
+          paragraphs={[
+            "The most confident travelers repeat themselves. The same silhouette, refined. The same palette, trusted.",
+            "Packing less doesn't limit you. It frees you.",
+            "When you stop performing variety, you arrive composed."
+          ]}
+          assetKey="slow-style-1"
+          bucket="Your Style"
+          pinType="look"
+          sourceStory="Slow Travel"
+          imagePosition="right"
         />
 
         <PinGrid
@@ -447,11 +659,39 @@ export default function CurrentFeed() {
           ]}
         />
 
+        <MomentBlock
+          title="What earns space"
+          paragraphs={[
+            "In slow travel, objects earn their place. They travel well. They work hard. They feel right in more than one moment.",
+            "Nothing disposable. Nothing excess.",
+            "Everything chosen."
+          ]}
+          assetKey="slow-object-1"
+          bucket="Objects of Desire"
+          pinType="object"
+          sourceStory="Slow Travel"
+          imagePosition="left"
+        />
+
+        <MomentBlock
+          title="The daily anchor"
+          paragraphs={[
+            "A morning walk. The same seat. The same order.",
+            "Ritual is what makes time feel generous."
+          ]}
+          assetKey="slow-ritual-1"
+          bucket="Daily Rituals"
+          pinType="ritual"
+          sourceStory="Slow Travel"
+          imagePosition="right"
+        />
+
         <ClosingLine text="Save what you want to stay with. Let go of the rest." id="slow-travel-closing" />
       </section>
 
       <StoryDivider />
 
+      {/* RETREAT */}
       <section id="retreat">
         <PageTurnHero
           title="Movement, Then Stillness"
@@ -464,12 +704,39 @@ export default function CurrentFeed() {
 
         <QuoteCard quote="Move the body. Then listen." id="retreat-quote-1" />
 
+        <MomentBlock
+          title="Movement as calibration"
+          paragraphs={[
+            "Movement here is not performance. It is preparation.",
+            "Stretching, walking, breathing — done without mirrors or urgency. Enough to wake the body. Never enough to exhaust it.",
+            "The point is not intensity. It is clarity."
+          ]}
+          assetKey="retreat-ritual-1"
+          bucket="Daily Rituals"
+          pinType="ritual"
+          sourceStory="Retreat"
+          imagePosition="left"
+        />
+
         <MotionLoopBlock
           overlayText="Breath. Water. Walking."
           bucket="Daily Rituals"
           pinType="ritual"
           id="retreat-motion-1"
           sourceStory="Retreat"
+        />
+
+        <MomentBlock
+          title="Architecture that supports practice"
+          paragraphs={[
+            "The best retreats are designed to get out of your way. Rooms feel held, not styled. Paths invite walking, not wandering.",
+            "Silence is built into the walls."
+          ]}
+          assetKey="retreat-place-1"
+          bucket="Travel & Experiences"
+          pinType="place"
+          sourceStory="Retreat"
+          imagePosition="right"
         />
 
         <PinGrid
@@ -485,11 +752,38 @@ export default function CurrentFeed() {
           ]}
         />
 
+        <MomentBlock
+          title="What belongs in practice"
+          paragraphs={[
+            "Everything here serves a purpose. A wrap for warmth. Oil for skin. Shoes you step out of easily.",
+            "Nothing distracts. Nothing performs."
+          ]}
+          assetKey="retreat-object-1"
+          bucket="Objects of Desire"
+          pinType="object"
+          sourceStory="Retreat"
+          imagePosition="left"
+        />
+
+        <MomentBlock
+          title="Dressing after movement"
+          paragraphs={[
+            "After practice, dressing becomes instinctive. Soft layers. Neutral tones. Shapes that don't interrupt the body.",
+            "You are not dressing to be seen. You are dressing to stay in the state you've entered."
+          ]}
+          assetKey="retreat-style-1"
+          bucket="Your Style"
+          pinType="look"
+          sourceStory="Retreat"
+          imagePosition="right"
+        />
+
         <ClosingLine text="Begin with movement. End with stillness. Remember how it feels." id="retreat-closing" />
       </section>
 
       <StoryDivider />
 
+      {/* NEW YORK */}
       <section id="new-york">
         <PageTurnHero
           title="The Weekend That Holds"
@@ -501,6 +795,34 @@ export default function CurrentFeed() {
         />
 
         <QuoteCard quote="New York isn't conquered. It's edited." id="newyork-quote-1" />
+
+        <MomentBlock
+          title="Dressing for the city's pace"
+          paragraphs={[
+            "New York dressing is about stamina. Clothes that hold their shape at midnight. Shoes you can stand in. A coat that finishes the sentence.",
+            "Black works here. So does bone, charcoal, deep brown.",
+            "Nothing precious. Everything intentional."
+          ]}
+          assetKey="newyork-style-1"
+          bucket="Your Style"
+          pinType="look"
+          sourceStory="New York"
+          imagePosition="left"
+        />
+
+        <MomentBlock
+          title="Choosing where to look"
+          paragraphs={[
+            "You don't rush culture in this city. You let it meet you.",
+            "One exhibition. One room you stay in longer than planned. A moment where time loosens its grip.",
+            "New York gives generously — if you don't ask for everything."
+          ]}
+          assetKey="newyork-culture-1"
+          bucket="Culture"
+          pinType="culture"
+          sourceStory="New York"
+          imagePosition="right"
+        />
 
         <PinGrid
           title="Night Plan"
@@ -515,11 +837,37 @@ export default function CurrentFeed() {
           ]}
         />
 
+        <MomentBlock
+          title="Evenings done well"
+          paragraphs={[
+            "The best nights are edited. A bar that understands lighting. A table that doesn't turn. A meal that unfolds slowly.",
+            "You don't need to know everyone. You just need to be exactly where you are."
+          ]}
+          assetKey="newyork-experience-1"
+          bucket="Travel & Experiences"
+          pinType="experience"
+          sourceStory="New York"
+          imagePosition="left"
+        />
+
         <TwoUpFeature
           title="Culture Hour"
           image1={{ assetKey: "ny-culture-1", caption: "Museum stair", bucket: "Culture", pinType: "place" }}
           image2={{ assetKey: "ny-culture-2", caption: "Gallery quiet room", bucket: "Culture", pinType: "place" }}
           sourceStory="New York"
+        />
+
+        <MomentBlock
+          title="What carries the weekend"
+          paragraphs={[
+            "A bag that stays close. Sunglasses for the morning after. One piece of jewelry that works everywhere.",
+            "New York asks for objects that keep up — not slow you down."
+          ]}
+          assetKey="newyork-object-1"
+          bucket="Objects of Desire"
+          pinType="object"
+          sourceStory="New York"
+          imagePosition="right"
         />
 
         <PinGrid
@@ -531,6 +879,20 @@ export default function CurrentFeed() {
             { id: "ny-reset-3", assetKey: "ny-reset-3", caption: "Sunglasses", bucket: "Objects of Desire", pinType: "item" },
             { id: "ny-reset-4", assetKey: "ny-reset-4", caption: "Empty street morning", bucket: "Inspiration", pinType: "mood" },
           ]}
+        />
+
+        <MomentBlock
+          title="Sunday containment"
+          paragraphs={[
+            "Sunday is for walking. No destination. No performance.",
+            "Coffee in hand. Coat open. The city exhales with you.",
+            "This is how you stay."
+          ]}
+          assetKey="newyork-ritual-1"
+          bucket="Daily Rituals"
+          pinType="ritual"
+          sourceStory="New York"
+          imagePosition="left"
         />
 
         <ClosingLine text="Save what sustains you. You'll need it again next week." id="newyork-closing" />
