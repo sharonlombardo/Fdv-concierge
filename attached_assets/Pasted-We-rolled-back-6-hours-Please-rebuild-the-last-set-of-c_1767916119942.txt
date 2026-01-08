@@ -1,0 +1,150 @@
+We rolled back ~6 hours. Please rebuild the last set of changes based on this authoritative spec. Do not improvise or add extra features. Implement in this order.
+
+1) HOME / THRESHOLD page
+
+Goal: Home is a luxury editorial threshold that scrolls directly into The Current (Edition 1). No separate page load.
+
+Home content (exact copy):
+
+Title: FIL DE VIE CONCIERGE
+
+Line 1: Discover the world of FIL DE VIE.
+
+Line 2: Places, objects, and experiences worth returning to.
+
+Paragraph: A collection of places to enter, objects to live with, and moments to come back to.
+
+Behavior:
+
+Home should scroll directly into The Current — Edition 1 cover section below.
+
+Add subtle top nav visible on Home: The Current | Suitcase | Concierge | Menu (hamburger).
+
+Do not explain features, AI, pinning, or Suitcase on Home.
+
+No buttons required; scrolling is the action.
+
+2) THE CURRENT as EDITIONS (Editorial layer)
+
+Goal: /current is ‘The Current — Edition 1’ magazine with scroll choreography.
+
+Add a cover section for Edition 1 at the top of /current (hero image placeholder + text).
+
+Add a ‘Today’s Edit’ grid (5 tiles) immediately after cover.
+
+Add story sections in this order: Morocco, Hydra, Slow Travel, Retreat, New York.
+
+Each story uses the component pattern: Hero → Quote → PinGrid → (optional Motion) → Closing line.
+
+Leave IMAGE PLACEHOLDER and VIDEO PLACEHOLDER boxes instead of real imagery. Use elegant neutral placeholders with labels.
+
+Add sticky mini-nav anchors within /current: Morocco | Hydra | Slow Travel | Retreat | New York.
+
+3) CLICK + SAVE architecture for The Current
+
+Goal: The Current is a magazine, not a bucket directory. Everything is savable. Buckets are browsed in Suitcase.
+
+Implement:
+
+Every block supports: (a) OPEN detail drawer on click, (b) PIN/save, (c) optional “View in Suitcase” link from detail.
+
+Quote cards: pin only, no navigation.
+
+Ensure each save includes metadata:
+
+saveType: place|experience|look|object|item|quote|ritual|inspiration
+
+storyTag: morocco|hydra|slow-travel|retreat|new-york
+
+editionTag: current-edition-1
+
+editTag: morocco-edit|hydra-edit|slow-travel-edit|retreat-edit|new-york-edit
+
+title/caption
+
+assetKey (string) + assetUrl (placeholder for now)
+
+Default mapping:
+
+architecture/landscape/hotel exterior → place
+
+restaurant/hammam/museum/bar → experience
+
+full outfit image → look
+
+single object/product still → object or item
+
+quote text → quote
+
+pattern/material/light/shadow → inspiration
+
+morning walk/swim/breath/reset → ritual
+
+4) SUITCASE: add ‘By Edit’ view
+
+Goal: Users can view saves by Category (current) OR by Edit (new).
+
+In Suitcase page, add a toggle: By Category | By Edit
+
+Default stays By Category.
+
+By Edit shows a list of Edit cards generated from saves grouped by editTag:
+
+Morocco Edit
+
+Hydra Edit
+
+Slow Travel Edit
+
+Retreat Edit
+
+New York Edit
+Each card shows counts: total saves + counts per saveType if possible.
+
+Clicking an Edit opens an Edit Detail view (can be a new route or a modal) that filters saves by editTag.
+
+Inside Edit Detail, provide filter tabs: All | Looks | Experiences | Objects | Rituals | Inspiration
+
+Add a Packing List view/button inside Edit Detail that filters to Looks + Items + Objects for that editTag (checkboxes optional, can be later).
+
+5) GLOBAL NAV + Hamburger
+
+Goal: A hamburger menu exists on every page (including Home and Current) so I can reach all sections.
+
+Create a shared navigation component with hamburger menu.
+
+Menu links: Home, The Current, Suitcase, Concierge, Itinerary, Packing, Shop, Image Control (if present).
+
+Keep styling minimal and consistent.
+
+6) IMAGE CONTROL page (if it existed pre-rollback)
+
+Goal: A central image slot manager for all The Current placeholders.
+
+Create or restore /image-control (or /image-control) that lists image slots grouped by:
+Opening cover + Today’s Edit tiles
+Morocco blocks + grids
+Hydra blocks + grids
+Slow Travel blocks + grids
+Retreat blocks + grids
+New York blocks + grids
+
+Each slot should show the label and recommended aspect ratio and allow upload to replace placeholder.
+
+Use assetKey names that match what /current uses.
+
+Acceptance Criteria:
+
+Home scrolls into Current Edition 1.
+
+/current reads like a magazine with the 5 stories in order.
+
+Any block can be saved and appears in Suitcase.
+
+Suitcase has By Category and By Edit.
+
+By Edit shows Morocco Edit, Hydra Edit, Slow Travel Edit, Retreat Edit, New York Edit.
+
+Hamburger menu works on all pages.
+
+Do not add extra features like currency converters or weather. Focus only on the above.”**

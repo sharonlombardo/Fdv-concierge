@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { X, Briefcase, ArrowLeft, Sparkles } from "lucide-react";
+import { X, Briefcase, Sparkles } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { useImageSlot } from "@/hooks/use-image-slot";
+import { GlobalNav } from "@/components/global-nav";
 
 type EditData = {
   id: string;
@@ -47,7 +48,12 @@ type SavedItem = {
   savedAt: number;
 };
 
-const tabs = [
+const VIEW_MODES = [
+  { id: "category", label: "By Category" },
+  { id: "edit", label: "By Edit" },
+];
+
+const CATEGORY_TABS = [
   { id: "all", label: "All" },
   { id: "style", label: "Your Style" },
   { id: "state-of-mind", label: "State of Mind" },
@@ -57,6 +63,14 @@ const tabs = [
   { id: "items", label: "Objects of Desire" },
   { id: "inspiration", label: "Inspiration" },
   { id: "todays-edit", label: "Today's Edit" },
+];
+
+const EDIT_CARDS = [
+  { id: "morocco-edit", name: "Morocco Edit", storyTag: "morocco", color: "bg-amber-100 dark:bg-amber-900/30" },
+  { id: "hydra-edit", name: "Hydra Edit", storyTag: "hydra", color: "bg-blue-100 dark:bg-blue-900/30" },
+  { id: "slow-travel-edit", name: "Slow Travel Edit", storyTag: "slow-travel", color: "bg-stone-100 dark:bg-stone-800/50" },
+  { id: "retreat-edit", name: "Retreat Edit", storyTag: "retreat", color: "bg-green-100 dark:bg-green-900/30" },
+  { id: "new-york-edit", name: "New York Edit", storyTag: "new-york", color: "bg-slate-100 dark:bg-slate-800/50" },
 ];
 
 const CURATED_QUOTES = [
@@ -310,7 +324,59 @@ function TodaysEditTabContent() {
   );
 }
 
+function ByEditView({ saves }: { saves: SavedItem[] }) {
+  const getEditSaves = (storyTag: string) => {
+    return saves.filter(s => 
+      s.metadata?.sourceStory?.toLowerCase().includes(storyTag) ||
+      s.aestheticTags?.some(tag => tag.toLowerCase().includes(storyTag))
+    );
+  };
+
+  const getTypeCounts = (editSaves: SavedItem[]) => {
+    const counts: Record<string, number> = {};
+    editSaves.forEach(s => {
+      const type = s.itemType || 'other';
+      counts[type] = (counts[type] || 0) + 1;
+    });
+    return counts;
+  };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {EDIT_CARDS.map((edit) => {
+        const editSaves = getEditSaves(edit.storyTag);
+        const typeCounts = getTypeCounts(editSaves);
+        
+        return (
+          <Link key={edit.id} href={`/suitcase/edit/${edit.id}`}>
+            <div 
+              className={`${edit.color} rounded-md p-6 min-h-[180px] flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow`}
+              data-testid={`card-${edit.id}`}
+            >
+              <div>
+                <h3 className="font-serif text-xl font-medium mb-2">{edit.name}</h3>
+                <p className="text-2xl font-bold">{editSaves.length}</p>
+                <p className="text-sm text-muted-foreground">saved items</p>
+              </div>
+              {Object.keys(typeCounts).length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {Object.entries(typeCounts).slice(0, 4).map(([type, count]) => (
+                    <Badge key={type} variant="outline" className="text-xs">
+                      {count} {type}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function SuitcasePage() {
+  const [viewMode, setViewMode] = useState("category");
   const [activeTab, setActiveTab] = useState("all");
 
   const { data: saves = [], isLoading } = useQuery<SavedItem[]>({
@@ -332,16 +398,8 @@ export default function SuitcasePage() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
+      <GlobalNav />
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="mb-6">
-          <Link href="/">
-            <Button variant="ghost" size="sm" className="gap-2" data-testid="button-back-home">
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-          </Link>
-        </div>
-
         <header className="text-center mb-10">
           <h1 className="font-serif text-3xl md:text-4xl font-medium tracking-tight mb-2" data-testid="text-suitcase-title">
             YOUR SUITCASE
@@ -354,76 +412,96 @@ export default function SuitcasePage() {
           </p>
         </header>
 
-        <div className="border-b border-border mb-8">
-          <nav className="flex gap-1 overflow-x-auto pb-px -mb-px" data-testid="nav-suitcase-tabs">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
-                  activeTab === tab.id
-                    ? "border-foreground text-foreground"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-                data-testid={`tab-${tab.id}`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </nav>
+        <div className="flex justify-center gap-2 mb-6">
+          {VIEW_MODES.map((mode) => (
+            <Button
+              key={mode.id}
+              variant={viewMode === mode.id ? "default" : "outline"}
+              size="sm"
+              onClick={() => setViewMode(mode.id)}
+              data-testid={`button-view-${mode.id}`}
+            >
+              {mode.label}
+            </Button>
+          ))}
         </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="aspect-[3/4] bg-stone-200 dark:bg-stone-800 rounded-md animate-pulse" />
-            ))}
-          </div>
-        ) : activeTab === "state-of-mind" ? (
-          <StateOfMindContent />
-        ) : activeTab === "todays-edit" ? (
-          <TodaysEditTabContent />
-        ) : filteredSaves.length === 0 ? (
-          <div className="text-center py-20">
-            {saves.length === 0 ? (
-              <>
-                <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="font-serif text-xl mb-2">Your suitcase is empty</h3>
-                <p className="text-muted-foreground max-w-md mx-auto">
-                  Start exploring The Current or browse the Morocco itinerary to save things you love.
-                </p>
-                <div className="flex gap-4 justify-center mt-6">
-                  <Link href="/current">
-                    <Button variant="outline" data-testid="button-explore-current">
-                      Explore The Current
-                    </Button>
-                  </Link>
-                  <Link href="/">
-                    <Button data-testid="button-browse-itinerary">
-                      Browse Itinerary
-                    </Button>
-                  </Link>
-                </div>
-              </>
-            ) : (
-              <>
-                <h3 className="font-serif text-xl mb-2">No {tabs.find((t) => t.id === activeTab)?.label.toLowerCase()} saved yet</h3>
-                <p className="text-muted-foreground">
-                  Explore and save items to see them here.
-                </p>
-              </>
-            )}
-          </div>
+        {viewMode === "edit" ? (
+          <ByEditView saves={saves} />
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {filteredSaves.map((save) => (
-              <SavedItemCard
-                key={save.id}
-                save={save}
-                onRemove={() => removeMutation.mutate(save.itemId)}
-              />
-            ))}
-          </div>
+          <>
+            <div className="border-b border-border mb-8">
+              <nav className="flex gap-1 overflow-x-auto pb-px -mb-px" data-testid="nav-suitcase-tabs">
+                {CATEGORY_TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                      activeTab === tab.id
+                        ? "border-foreground text-foreground"
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                    data-testid={`tab-${tab.id}`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            {isLoading ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="aspect-[3/4] bg-stone-200 dark:bg-stone-800 rounded-md animate-pulse" />
+                ))}
+              </div>
+            ) : activeTab === "state-of-mind" ? (
+              <StateOfMindContent />
+            ) : activeTab === "todays-edit" ? (
+              <TodaysEditTabContent />
+            ) : filteredSaves.length === 0 ? (
+              <div className="text-center py-20">
+                {saves.length === 0 ? (
+                  <>
+                    <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="font-serif text-xl mb-2">Your suitcase is empty</h3>
+                    <p className="text-muted-foreground max-w-md mx-auto">
+                      Start exploring The Current or browse the Morocco itinerary to save things you love.
+                    </p>
+                    <div className="flex gap-4 justify-center mt-6">
+                      <Link href="/current">
+                        <Button variant="outline" data-testid="button-explore-current">
+                          Explore The Current
+                        </Button>
+                      </Link>
+                      <Link href="/">
+                        <Button data-testid="button-browse-itinerary">
+                          Browse Itinerary
+                        </Button>
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="font-serif text-xl mb-2">No {CATEGORY_TABS.find((t) => t.id === activeTab)?.label.toLowerCase()} saved yet</h3>
+                    <p className="text-muted-foreground">
+                      Explore and save items to see them here.
+                    </p>
+                  </>
+                )}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {filteredSaves.map((save) => (
+                  <SavedItemCard
+                    key={save.id}
+                    save={save}
+                    onRemove={() => removeMutation.mutate(save.itemId)}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

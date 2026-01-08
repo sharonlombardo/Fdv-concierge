@@ -7,7 +7,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { Briefcase } from "lucide-react";
 import NotFound from "@/pages/not-found";
-import Home from "@/pages/home";
+import Threshold from "@/pages/threshold";
+import Concierge from "@/pages/home";
 import ImageManagement from "@/pages/image-management";
 import ImageLibrary from "@/pages/image-library";
 import ImageRules from "@/pages/image-rules";
@@ -22,13 +23,14 @@ import ImageControl from "@/pages/image-control";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      <Route path="/" component={Threshold} />
+      <Route path="/concierge" component={Concierge} />
       <Route path="/images" component={ImageManagement} />
       <Route path="/library" component={ImageLibrary} />
       <Route path="/rules" component={ImageRules} />
       <Route path="/editorial" component={Editorial} />
       <Route path="/packing" component={PackingList} />
-      <Route path="/current" component={CurrentFeed} />
+      <Route path="/current">{() => <CurrentFeed />}</Route>
       <Route path="/suitcase" component={SuitcasePage} />
       <Route path="/suitcase/todays-edit/:slug" component={TodaysEditDetail} />
       <Route path="/image-control" component={ImageControl} />

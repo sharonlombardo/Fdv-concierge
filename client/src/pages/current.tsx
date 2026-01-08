@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PinButton } from "@/components/pin-button";
+import { GlobalNav } from "@/components/global-nav";
 
 type PinTile = {
   id: string;
@@ -110,6 +111,7 @@ function StickyNav({ activeSection }: { activeSection: string }) {
 }
 
 function PageTurnHero({ title, stateOfMind, paragraph, assetKey, bucket, pinType, isOpening, subhead }: PageTurnHeroProps) {
+  const storyTag = assetKey.split('-')[0];
   return (
     <div className="relative w-full min-h-[70vh] md:min-h-[80vh] flex items-end" data-testid={`hero-${assetKey}`}>
       <div className="absolute inset-0 bg-stone-200 dark:bg-stone-800 flex items-center justify-center">
@@ -120,9 +122,21 @@ function PageTurnHero({ title, stateOfMind, paragraph, assetKey, bucket, pinType
         <PinButton
           itemType={pinType as any}
           itemId={assetKey}
-          itemData={{ title, subtitle: stateOfMind, bucket, sourceStory: title, issueNumber: 1 }}
+          itemData={{ 
+            title, 
+            subtitle: stateOfMind, 
+            bucket, 
+            sourceStory: title, 
+            issueNumber: 1,
+            saveType: pinType,
+            storyTag,
+            editionTag: "current-edition-1",
+            editTag: `${storyTag}-edit`,
+            assetKey,
+            assetUrl: ""
+          }}
           sourceContext="the_current_issue_1"
-          aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase()]}
+          aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
           size="md"
         />
       </div>
@@ -145,15 +159,25 @@ function PageTurnHero({ title, stateOfMind, paragraph, assetKey, bucket, pinType
 }
 
 function QuoteCard({ quote, id, sourceStory }: QuoteCardProps & { sourceStory?: string }) {
+  const storyTag = sourceStory?.toLowerCase().replace(/\s+/g, '-') || 'opening';
   return (
     <div className="relative py-16 md:py-24 px-8 md:px-16 max-w-3xl mx-auto text-center" data-testid={`quote-${id}`}>
       <div className="absolute top-4 right-4 z-10">
         <PinButton
           itemType="quote"
           itemId={id}
-          itemData={{ title: quote, bucket: "State of Mind", sourceStory: sourceStory || "The Current", issueNumber: 1 }}
+          itemData={{ 
+            title: quote, 
+            bucket: "State of Mind", 
+            sourceStory: sourceStory || "The Current", 
+            issueNumber: 1,
+            saveType: "quote",
+            storyTag,
+            editionTag: "current-edition-1",
+            editTag: `${storyTag}-edit`
+          }}
           sourceContext="the_current_issue_1"
-          aestheticTags={["quote", "state-of-mind"]}
+          aestheticTags={["quote", "state-of-mind", storyTag]}
           size="md"
         />
       </div>
@@ -165,6 +189,7 @@ function QuoteCard({ quote, id, sourceStory }: QuoteCardProps & { sourceStory?: 
 }
 
 function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory, imagePosition = "left" }: MomentBlockProps) {
+  const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
   const imageBlock = (
     <div className="relative aspect-[4/5] md:aspect-square bg-stone-200 dark:bg-stone-800 rounded-md flex items-center justify-center">
       <span className="text-muted-foreground text-xs uppercase tracking-widest">Image Placeholder</span>
@@ -176,10 +201,16 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
             title, 
             bucket,
             sourceStory,
-            issueNumber: 1
+            issueNumber: 1,
+            saveType: pinType,
+            storyTag,
+            editionTag: "current-edition-1",
+            editTag: `${storyTag}-edit`,
+            assetKey,
+            assetUrl: ""
           }}
           sourceContext="the_current_issue_1"
-          aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), sourceStory.toLowerCase()]}
+          aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
           size="md"
         />
       </div>
@@ -217,6 +248,7 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
 }
 
 function PinGrid({ title, tiles, sourceStory }: PinGridProps) {
+  const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
   return (
     <div className="py-12 md:py-16 px-4 max-w-5xl mx-auto">
       <h3 className="text-xs tracking-widest uppercase text-muted-foreground mb-8 text-center">{title}</h3>
@@ -236,10 +268,16 @@ function PinGrid({ title, tiles, sourceStory }: PinGridProps) {
                   title: tile.caption, 
                   bucket: tile.bucket,
                   sourceStory,
-                  issueNumber: 1
+                  issueNumber: 1,
+                  saveType: tile.pinType,
+                  storyTag,
+                  editionTag: "current-edition-1",
+                  editTag: `${storyTag}-edit`,
+                  assetKey: tile.assetKey,
+                  assetUrl: ""
                 }}
                 sourceContext="the_current_issue_1"
-                aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), sourceStory.toLowerCase()]}
+                aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), storyTag]}
                 size="sm"
               />
             </div>
@@ -252,6 +290,7 @@ function PinGrid({ title, tiles, sourceStory }: PinGridProps) {
 }
 
 function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps) {
+  const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
   return (
     <div className="py-12 md:py-16 px-4 max-w-5xl mx-auto">
       <h3 className="text-xs tracking-widest uppercase text-muted-foreground mb-8 text-center">{title}</h3>
@@ -264,9 +303,20 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
             <PinButton
               itemType={image1.pinType as any}
               itemId={image1.assetKey}
-              itemData={{ title: image1.caption, bucket: image1.bucket, sourceStory, issueNumber: 1 }}
+              itemData={{ 
+                title: image1.caption, 
+                bucket: image1.bucket, 
+                sourceStory, 
+                issueNumber: 1,
+                saveType: image1.pinType,
+                storyTag,
+                editionTag: "current-edition-1",
+                editTag: `${storyTag}-edit`,
+                assetKey: image1.assetKey,
+                assetUrl: ""
+              }}
               sourceContext="the_current_issue_1"
-              aestheticTags={[image1.bucket.toLowerCase(), image1.pinType.toLowerCase()]}
+              aestheticTags={[image1.bucket.toLowerCase(), image1.pinType.toLowerCase(), storyTag]}
               size="sm"
             />
           </div>
@@ -280,9 +330,20 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
             <PinButton
               itemType={image2.pinType as any}
               itemId={image2.assetKey}
-              itemData={{ title: image2.caption, bucket: image2.bucket, sourceStory, issueNumber: 1 }}
+              itemData={{ 
+                title: image2.caption, 
+                bucket: image2.bucket, 
+                sourceStory, 
+                issueNumber: 1,
+                saveType: image2.pinType,
+                storyTag,
+                editionTag: "current-edition-1",
+                editTag: `${storyTag}-edit`,
+                assetKey: image2.assetKey,
+                assetUrl: ""
+              }}
               sourceContext="the_current_issue_1"
-              aestheticTags={[image2.bucket.toLowerCase(), image2.pinType.toLowerCase()]}
+              aestheticTags={[image2.bucket.toLowerCase(), image2.pinType.toLowerCase(), storyTag]}
               size="sm"
             />
           </div>
@@ -294,6 +355,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
 }
 
 function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: MotionLoopBlockProps) {
+  const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
   return (
     <div className="py-12 md:py-16 px-4 max-w-4xl mx-auto">
       <div className="relative aspect-video bg-stone-300 dark:bg-stone-700 rounded-md flex items-center justify-center" data-testid={`motion-${id}`}>
@@ -307,9 +369,20 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: Moti
           <PinButton
             itemType={pinType as any}
             itemId={id}
-            itemData={{ title: overlayText, bucket, sourceStory, issueNumber: 1 }}
+            itemData={{ 
+              title: overlayText, 
+              bucket, 
+              sourceStory, 
+              issueNumber: 1,
+              saveType: pinType,
+              storyTag,
+              editionTag: "current-edition-1",
+              editTag: `${storyTag}-edit`,
+              assetKey: id,
+              assetUrl: ""
+            }}
             sourceContext="the_current_issue_1"
-            aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase()]}
+            aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
             size="md"
           />
         </div>
@@ -319,15 +392,25 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: Moti
 }
 
 function ClosingLine({ text, id, sourceStory }: ClosingLineProps & { sourceStory?: string }) {
+  const storyTag = sourceStory?.toLowerCase().replace(/\s+/g, '-') || 'opening';
   return (
     <div className="relative py-12 md:py-16 px-8 max-w-2xl mx-auto text-center" data-testid={`closing-${id}`}>
       <div className="absolute top-0 right-0 z-10">
         <PinButton
           itemType="quote"
           itemId={id}
-          itemData={{ title: text, bucket: "State of Mind", sourceStory: sourceStory || "The Current", issueNumber: 1 }}
+          itemData={{ 
+            title: text, 
+            bucket: "State of Mind", 
+            sourceStory: sourceStory || "The Current", 
+            issueNumber: 1,
+            saveType: "quote",
+            storyTag,
+            editionTag: "current-edition-1",
+            editTag: `${storyTag}-edit`
+          }}
           sourceContext="the_current_issue_1"
-          aestheticTags={["quote", "closing", "state-of-mind"]}
+          aestheticTags={["quote", "closing", "state-of-mind", storyTag]}
           size="sm"
         />
       </div>
@@ -340,7 +423,7 @@ function StoryDivider() {
   return <div className="h-px bg-border/50 max-w-xs mx-auto my-8" />;
 }
 
-export default function CurrentFeed() {
+export default function CurrentFeed({ embedded = false }: { embedded?: boolean }) {
   const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
@@ -366,26 +449,23 @@ export default function CurrentFeed() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
-      <div className="p-4">
-        <Link href="/">
-          <Button variant="ghost" size="sm" data-testid="button-back-home">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-        </Link>
-      </div>
-      <header className="text-center py-8 md:py-12 px-4">
-        <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-2" data-testid="text-current-title">
-          THE CURRENT
-        </h1>
-        <p className="text-lg md:text-xl text-muted-foreground mb-1" data-testid="text-current-issue">
-          Issue 1
-        </p>
-        <p className="text-sm text-muted-foreground tracking-widest uppercase">
-          Discover what resonates
-        </p>
-      </header>
+    <div className={embedded ? "" : "min-h-screen bg-[#fafaf9] dark:bg-background"}>
+      {!embedded && (
+        <>
+          <GlobalNav />
+          <header className="text-center py-8 md:py-12 px-4">
+            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-2" data-testid="text-current-title">
+              THE CURRENT
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground mb-1" data-testid="text-current-issue">
+              Issue 1
+            </p>
+            <p className="text-sm text-muted-foreground tracking-widest uppercase">
+              Discover what resonates
+            </p>
+          </header>
+        </>
+      )}
 
       <StickyNav activeSection={activeSection} />
 
