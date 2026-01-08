@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { PinButton } from "@/components/pin-button";
 
 type PinTile = {
@@ -364,7 +367,15 @@ export default function CurrentFeed() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
-      <header className="text-center py-12 md:py-16 px-4">
+      <div className="p-4">
+        <Link href="/">
+          <Button variant="ghost" size="sm" data-testid="button-back-home">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
+        </Link>
+      </div>
+      <header className="text-center py-8 md:py-12 px-4">
         <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-2" data-testid="text-current-title">
           THE CURRENT
         </h1>
