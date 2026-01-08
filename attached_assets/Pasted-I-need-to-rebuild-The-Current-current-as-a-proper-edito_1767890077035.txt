@@ -1,0 +1,222 @@
+I need to rebuild The Current (/current) as a proper editorial magazine experience. I'm attaching the complete specification for Issue 1.
+Please replace the existing Current page with this new structure:
+Global Architecture:
+
+Header:
+
+Title: "THE CURRENT"
+Subhead: "Issue 1"
+Small line: "Discover what resonates"
+
+
+Sticky micro-nav (not tabs):
+
+Morocco | Hydra | Slow Travel | Retreat | New York
+Tapping jumps to anchors with smooth scroll
+Stays visible as user scrolls
+
+
+Reusable Block Components (build these first):
+
+PageTurnHero - Full width tall image, title overlay, state of mind line, short paragraph, pin icon top-right. Props: title, stateOfMind, paragraph, imageUrl, bucket, pinType
+QuoteCard - Centered text, generous margins, pin icon. Props: quote, bucket (always "State of Mind"), pinType (always "Quote")
+PinGrid - 2 columns mobile, 3 columns desktop. Each tile: image placeholder, caption, pin icon. Props: tiles array with {imageUrl, caption, bucket, pinType}
+TwoUpFeature - Two images side by side (or stacked on mobile), captions below. Props: image1, caption1, image2, caption2, bucket, pinType
+MotionLoopBlock - Video placeholder box with "VIDEO PLACEHOLDER" label, overlay text, pin icon. Props: overlayText, bucket, pinType
+ClosingLine - One line centered text, pin icon. Props: text, bucket (always "State of Mind")
+The Stories (in order):
+
+OPENING COVER
+Block 0: PageTurnHero
+
+Title: "THE CURRENT"
+Subhead: "Issue 1"
+State of mind: "A magazine of taste, memory, and places"
+Image: placeholder
+
+Block 1: PinGrid "Today's Edit" (5 tiles)
+
+Mixed buckets, immediate pin opportunity
+
+
+STORY 1: MOROCCO (anchor id: "morocco")
+PageTurnHero
+
+Title: "Morocco, In Full Color"
+State of mind: "Pattern, pleasure, heat, and intention."
+Paragraph: "Morocco rewards those who look closely. Color layered on color. Texture against texture. Nothing accidental, nothing apologetic..."
+Bucket: Travel & Experiences, pinType: Place
+
+QuoteCard
+
+"Beauty doesn't whisper here. It invites."
+Bucket: State of Mind
+
+PinGrid "Pattern and Pleasure" (6 tiles)
+
+Tile 1: Tile close-up, Bucket: Inspiration, pinType: Texture
+Tile 2: Rooftop dinner, Bucket: Travel & Experiences, pinType: Experience
+Tile 3: Linen look, Bucket: Your Style, pinType: Look
+Tile 4: Brass detail, Bucket: Objects of Desire, pinType: Object
+Tile 5: Morning courtyard, Bucket: Daily Rituals, pinType: Ritual
+Tile 6: Market color, Bucket: Inspiration, pinType: Inspiration
+
+MotionLoopBlock
+
+Overlay: "Pattern moving in heat"
+Bucket: Inspiration, pinType: Mood
+
+ClosingLine
+
+"Save what delights you. You'll want to see it again."
+
+
+STORY 2: HYDRA (anchor id: "hydra")
+PageTurnHero
+
+Title: "The Art of Arrival"
+State of mind: "White stone. Salt water. Nothing extra."
+Paragraph: "Hydra does not rush you. There are no cars waiting. No urgency on arrival..."
+Bucket: Travel & Experiences, pinType: Place
+
+QuoteCard
+
+"Arrive composed. Let the place do the rest."
+
+PinGrid "Essentials Only" (6 tiles)
+
+Stone wall, Inspiration, Texture
+Swim morning, Daily Rituals, Ritual
+White linen look, Your Style, Look
+Leather sandal, Objects of Desire, Item
+Woven bag, Objects of Desire, Object
+Late lunch table, Travel & Experiences, Experience
+
+TwoUpFeature "Light and Water"
+
+Image 1: Waterline, caption "Morning"
+Image 2: Shadowed corridor, caption "Afternoon"
+Bucket: Inspiration
+
+ClosingLine
+
+"Save what steadies you. Return when you need it."
+
+
+STORY 3: SLOW TRAVEL (anchor id: "slow-travel")
+PageTurnHero
+
+Title: "Less, But Longer"
+State of mind: "Stay with what's good."
+Paragraph: "Slow travel is not about moving less. It's about staying longer with what matters..."
+Bucket: State of Mind, pinType: Mood
+
+QuoteCard
+
+"The point isn't to see more. It's to stay longer with what feels right."
+
+TwoUpFeature "Editing is Intelligence"
+
+Image 1: Long lunch, Bucket: Culture, pinType: Culture
+Image 2: Museum stair, Bucket: Culture, pinType: Place
+
+PinGrid "Repeat With Intention" (6 tiles)
+
+Same outfit day to night, Your Style, Look
+Folded garment stack, Objects of Desire, Object
+Notebook, Objects of Desire, Object
+Café table, Daily Rituals, Ritual
+Walking shot, Daily Rituals, Ritual
+Light on wall, Inspiration, Inspiration
+
+ClosingLine
+
+"Save what you want to stay with. Let go of the rest."
+
+
+STORY 4: RITUAL RETREAT (anchor id: "retreat")
+PageTurnHero
+
+Title: "Movement, Then Stillness"
+State of mind: "Begin in the body. End in quiet."
+Paragraph: "A ritual retreat is not an escape. It is a return to sequence..."
+Bucket: Travel & Experiences, pinType: Place
+
+QuoteCard
+
+"Move the body. Then listen."
+
+MotionLoopBlock
+
+Overlay: "Breath. Water. Walking."
+Bucket: Daily Rituals, pinType: Ritual
+
+PinGrid "What Belongs" (6 tiles)
+
+Wrap, Objects of Desire, Item
+Oil, Objects of Desire, Object
+Sandal, Objects of Desire, Item
+Mat, Daily Rituals, Ritual
+Quiet corridor, Travel & Experiences, Place
+Post-practice look, Your Style, Look
+
+ClosingLine
+
+"Begin with movement. End with stillness. Remember how it feels."
+
+
+STORY 5: NEW YORK (anchor id: "new-york")
+PageTurnHero
+
+Title: "The Weekend That Holds"
+State of mind: "Containment, appetite, and momentum."
+Paragraph: "New York doesn't slow down for you. You learn how to move inside it..."
+Bucket: Culture, pinType: Place
+
+QuoteCard
+
+"New York isn't conquered. It's edited."
+
+PinGrid "Night Plan" (6 tiles)
+
+Bar interior, Travel & Experiences, Experience
+Dinner table, Travel & Experiences, Experience
+Gallery wall, Culture, Place
+Coat look, Your Style, Look
+Boot or flat, Objects of Desire, Item
+Subway platform, Inspiration, Inspiration
+
+TwoUpFeature "Culture Hour"
+
+Museum stair, Culture
+Gallery quiet room, Culture
+
+PinGrid "Sunday Reset" (4 tiles)
+
+Coffee walk, Daily Rituals, Ritual
+Notebook, Objects of Desire, Object
+Sunglasses, Objects of Desire, Item
+Empty street morning, Inspiration, Mood
+
+ClosingLine
+
+"Save what sustains you. You'll need it again next week."
+
+
+Pin Behavior:
+Every block has a pin icon in top-right. On tap:
+
+Show toast: "Saved to Suitcase"
+Save payload includes: title, caption, bucket, pinType, sourceStory (Morocco/Hydra/etc), issueNumber (1), imageUrl
+
+The bucket should map to the Suitcase tabs we already have.
+Image Placeholders:
+For now, use neutral placeholder boxes with labels like "IMAGE PLACEHOLDER" or use existing placeholder images. Include an assetKey field in the data so I can map real images later.
+Styling:
+
+Editorial magazine feel (Kinfolk, Cereal aesthetic)
+Generous whitespace
+Playfair Display for titles
+Inter for body text
+Warm neutral background (#fafaf9)
+Slow → quick → slow rhythm between blocks
