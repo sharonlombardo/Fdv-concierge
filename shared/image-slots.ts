@@ -159,75 +159,75 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   // The Current Feed
   {
     key: "current-article-1",
-    label: "Article: Riads of Marrakech",
+    label: "Hotel Weekend",
     section: "The Current Feed",
     defaultUrl: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Editorial feature article"
+    description: "On the Beachside - Large feature card"
   },
   {
     key: "current-article-2",
-    label: "Article: Desert Light",
+    label: "Welcome to Spain",
     section: "The Current Feed",
     defaultUrl: "https://images.unsplash.com/photo-1509840841025-9088ba78a826?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Editorial feature article"
+    description: "A Journey Through Light - Large feature card"
   },
   {
     key: "current-style-1",
-    label: "Style: Earth Tones",
+    label: "The New Neutrals",
     section: "The Current Feed",
     defaultUrl: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=800",
     aspectRatio: "3:4",
-    description: "Style card"
+    description: "Effortless layers for any journey - Style card"
   },
   {
     key: "current-scene-1",
-    label: "Scene: Morning Courtyard",
+    label: "Morning Light",
     section: "The Current Feed",
     defaultUrl: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "1:1",
-    description: "Scene mood image"
+    description: "Scene mood image - Small card"
   },
   {
     key: "current-quote-1",
-    label: "Quote Background",
+    label: "Dried Botanicals",
     section: "The Current Feed",
     defaultUrl: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&q=80&w=800",
     aspectRatio: "16:9",
-    description: "Quote card background"
+    description: "Scene card with natural textures"
   },
   {
     key: "current-article-3",
-    label: "Article: Coastal Essaouira",
+    label: "Desert Architecture",
     section: "The Current Feed",
     defaultUrl: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Editorial feature article"
+    description: "Large scene feature card"
   },
   {
     key: "current-style-2",
-    label: "Style: Layered Look",
+    label: "Linen Layers",
     section: "The Current Feed",
     defaultUrl: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&q=80&w=800",
     aspectRatio: "3:4",
-    description: "Style card"
+    description: "From coast to city - Style card"
   },
   {
     key: "current-scene-2",
-    label: "Scene: Evening Terrace",
+    label: "Garden Terrace",
     section: "The Current Feed",
     defaultUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "1:1",
-    description: "Scene mood image"
+    description: "Scene mood image - Small card"
   },
   {
     key: "current-article-4",
-    label: "Article: Atlas Adventure",
+    label: "The Art of Slow Travel",
     section: "The Current Feed",
     defaultUrl: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Editorial feature article"
+    description: "Why presence matters more than planning - Large feature"
   },
 
   // Suitcase Capsule Card
