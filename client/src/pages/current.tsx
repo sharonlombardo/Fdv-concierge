@@ -24,6 +24,9 @@ function useCurrentFeedContent(): FeedItem[] {
   const inspire1 = useImageSlot("current-inspire-1");
   const inspire2 = useImageSlot("current-inspire-2");
   const inspire3 = useImageSlot("current-inspire-3");
+  const culture1 = useImageSlot("current-culture-1");
+  const culture2 = useImageSlot("current-culture-2");
+  const culture3 = useImageSlot("current-culture-3");
 
   return [
     {
@@ -132,6 +135,30 @@ function useCurrentFeedContent(): FeedItem[] {
       title: "Inspire",
       imageUrl: inspire3,
       tags: ["inspire", "mood", "visual"],
+      size: "small"
+    },
+    {
+      id: "current-culture-1",
+      type: "culture",
+      title: "Culture",
+      imageUrl: culture1,
+      tags: ["culture", "art", "local"],
+      size: "small"
+    },
+    {
+      id: "current-culture-2",
+      type: "culture",
+      title: "Culture",
+      imageUrl: culture2,
+      tags: ["culture", "tradition", "craft"],
+      size: "small"
+    },
+    {
+      id: "current-culture-3",
+      type: "culture",
+      title: "Culture",
+      imageUrl: culture3,
+      tags: ["culture", "heritage", "discovery"],
       size: "small"
     }
   ];
@@ -292,6 +319,39 @@ function InspireCard({ item }: { item: FeedItem }) {
   );
 }
 
+function CultureCard({ item }: { item: FeedItem }) {
+  return (
+    <div 
+      className="col-span-1 relative group"
+      data-testid={`card-culture-${item.id}`}
+    >
+      <div className="aspect-square overflow-hidden rounded-md relative">
+        <img 
+          src={item.imageUrl} 
+          alt={item.title}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute top-3 right-3 z-10">
+          <PinButton
+            itemType="culture"
+            itemId={item.id}
+            itemData={{
+              title: item.title,
+              imageUrl: item.imageUrl
+            }}
+            sourceContext="current_feed"
+            aestheticTags={item.tags}
+            size="md"
+          />
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+          <p className="text-white text-xs uppercase tracking-widest">{item.title}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function CurrentFeed() {
   const currentFeedContent = useCurrentFeedContent();
   const features = currentFeedContent.filter(item => item.type === "feature");
@@ -299,6 +359,7 @@ export default function CurrentFeed() {
   const scenes = currentFeedContent.filter(item => item.type === "scene");
   const quotes = currentFeedContent.filter(item => item.type === "quote");
   const inspires = currentFeedContent.filter(item => item.type === "inspire");
+  const cultures = currentFeedContent.filter(item => item.type === "culture");
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
@@ -321,6 +382,8 @@ export default function CurrentFeed() {
           
           {inspires[0] && <InspireCard item={inspires[0]} />}
           
+          {cultures[0] && <CultureCard item={cultures[0]} />}
+          
           {scenes[1] && <SceneCard item={scenes[1]} />}
           
           {quotes[0] && <QuoteCard item={quotes[0]} />}
@@ -331,6 +394,8 @@ export default function CurrentFeed() {
           
           {inspires[1] && <InspireCard item={inspires[1]} />}
           
+          {cultures[1] && <CultureCard item={cultures[1]} />}
+          
           {scenes[2] && <SceneCard item={scenes[2]} />}
           
           {scenes[3] && <SceneCard item={scenes[3]} />}
@@ -340,6 +405,8 @@ export default function CurrentFeed() {
           {features[3] && <FeatureCard item={features[3]} />}
           
           {inspires[2] && <InspireCard item={inspires[2]} />}
+          
+          {cultures[2] && <CultureCard item={cultures[2]} />}
         </div>
 
         <div className="mt-20 text-center">
