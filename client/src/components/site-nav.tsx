@@ -5,22 +5,22 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const MAIN_NAV = [
-  { id: "cover", label: "Cover", href: "/#cover" },
+  { id: "cover", label: "Cover", href: "/itinerary#cover" },
   { id: "current", label: "The Current", href: "/current" },
-  { id: "rhythm", label: "The Rhythm", href: "/#rhythm" },
-  { id: "overview", label: "Overview", href: "/#overview" },
-  { id: "travel-notes", label: "Travel Notes", href: "/#travel-notes" },
+  { id: "rhythm", label: "The Rhythm", href: "/itinerary#rhythm" },
+  { id: "overview", label: "Overview", href: "/itinerary#overview" },
+  { id: "travel-notes", label: "Travel Notes", href: "/itinerary#travel-notes" },
 ];
 
 const DAY_NAV = [
-  { id: "day-1", label: "Day 1: Arrival", href: "/#day-1" },
-  { id: "day-2", label: "Day 2: Atlas", href: "/#day-2" },
-  { id: "day-3", label: "Day 3: Marrakech", href: "/#day-3" },
-  { id: "day-4", label: "Day 4: Culture", href: "/#day-4" },
-  { id: "day-5", label: "Day 5: Essaouira", href: "/#day-5" },
-  { id: "day-6", label: "Day 6: Food", href: "/#day-6" },
-  { id: "day-7", label: "Day 7: Desert", href: "/#day-7" },
-  { id: "day-8", label: "Day 8: Return", href: "/#day-8" },
+  { id: "day-1", label: "Day 1: Arrival", href: "/itinerary#day-1" },
+  { id: "day-2", label: "Day 2: Atlas", href: "/itinerary#day-2" },
+  { id: "day-3", label: "Day 3: Marrakech", href: "/itinerary#day-3" },
+  { id: "day-4", label: "Day 4: Culture", href: "/itinerary#day-4" },
+  { id: "day-5", label: "Day 5: Essaouira", href: "/itinerary#day-5" },
+  { id: "day-6", label: "Day 6: Food", href: "/itinerary#day-6" },
+  { id: "day-7", label: "Day 7: Desert", href: "/itinerary#day-7" },
+  { id: "day-8", label: "Day 8: Return", href: "/itinerary#day-8" },
 ];
 
 const USER_NAV = [
