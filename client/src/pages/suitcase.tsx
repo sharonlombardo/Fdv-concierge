@@ -53,7 +53,7 @@ const tabs = [
   { id: "state-of-mind", label: "State of Mind" },
   { id: "culture", label: "Culture" },
   { id: "places", label: "Places" },
-  { id: "items", label: "Items" },
+  { id: "items", label: "Objects of Desire" },
   { id: "inspiration", label: "Inspiration" },
   { id: "capsules", label: "Capsules" },
 ];
