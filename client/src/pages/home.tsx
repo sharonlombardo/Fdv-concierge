@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { SiteNav } from "@/components/site-nav";
 import { PinButton } from "@/components/pin-button";
 import { useImageSlot } from "@/hooks/use-image-slot";
 
@@ -61,14 +61,6 @@ type MomentBlockProps = {
   imagePosition?: "left" | "right";
 };
 
-const NAV_ITEMS = [
-  { id: "current", label: "The Current", href: "#current-section" },
-  { id: "suitcase", label: "Suitcase", href: "/suitcase" },
-  { id: "concierge", label: "Concierge", href: "/concierge" },
-  { id: "experiences", label: "Experiences", href: "/experiences" },
-  { id: "shop", label: "Shop", href: "/shop" },
-];
-
 const STORY_NAV = [
   { id: "morocco", label: "Morocco" },
   { id: "hydra", label: "Hydra" },
@@ -76,45 +68,6 @@ const STORY_NAV = [
   { id: "retreat", label: "Retreat" },
   { id: "new-york", label: "New York" },
 ];
-
-function TopNav() {
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent">
-      <div className="max-w-6xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            {NAV_ITEMS.map((item) => (
-              item.href.startsWith("/") ? (
-                <Link key={item.id} href={item.href}>
-                  <span className="text-[11px] tracking-[0.2em] uppercase text-white/80 hover:text-white transition-colors cursor-pointer" data-testid={`nav-${item.id}`}>
-                    {item.label}
-                  </span>
-                </Link>
-              ) : (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  className="text-[11px] tracking-[0.2em] uppercase text-white/80 hover:text-white transition-colors"
-                  data-testid={`nav-${item.id}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const element = document.getElementById("current-section");
-                    if (element) {
-                      element.scrollIntoView({ behavior: "smooth" });
-                    }
-                  }}
-                >
-                  {item.label}
-                </a>
-              )
-            ))}
-          </div>
-          <ThemeToggle />
-        </div>
-      </div>
-    </nav>
-  );
-}
 
 function StickyStoryNav({ activeSection }: { activeSection: string }) {
   const scrollToSection = (id: string) => {
@@ -421,7 +374,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
-      <TopNav />
+      <SiteNav variant="light" />
 
       {/* Full-bleed Hero */}
       <section className="relative h-screen">
