@@ -5,17 +5,31 @@ import { Button } from "@/components/ui/button";
 import { X, Briefcase, ArrowLeft, Sparkles } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
+import { useImageSlot } from "@/hooks/use-image-slot";
 
-const capsulesList = [
-  {
-    id: "desert-neutrals",
-    name: "Desert Neutrals",
-    description: "Warm earth tones and natural textures for your Morocco journey",
-    heroImage: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=800",
-    pieceCount: 12,
-    status: "ready"
-  }
-];
+type CapsuleData = {
+  id: string;
+  name: string;
+  description: string;
+  heroImage: string;
+  pieceCount: number;
+  status: string;
+};
+
+function useCapsulesList(): CapsuleData[] {
+  const capsuleCardImage = useImageSlot("suitcase-capsule-card");
+  
+  return [
+    {
+      id: "desert-neutrals",
+      name: "Desert Neutrals",
+      description: "Warm earth tones and natural textures for your Morocco journey",
+      heroImage: capsuleCardImage,
+      pieceCount: 12,
+      status: "ready"
+    }
+  ];
+}
 
 type SavedItem = {
   id: number;
@@ -186,6 +200,8 @@ function SavedItemCard({ save, onRemove }: { save: SavedItem; onRemove: () => vo
 }
 
 function CapsulesTabContent() {
+  const capsulesList = useCapsulesList();
+  
   if (capsulesList.length === 0) {
     return (
       <div className="text-center py-12">
@@ -200,7 +216,7 @@ function CapsulesTabContent() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {capsulesList.map((capsule) => (
+      {capsulesList.map((capsule: CapsuleData) => (
         <Link key={capsule.id} href={`/suitcase/capsules/${capsule.id}`}>
           <div 
             className="group relative aspect-[16/10] rounded-md overflow-hidden cursor-pointer"
