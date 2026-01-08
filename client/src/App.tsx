@@ -18,6 +18,7 @@ import CurrentFeed from "@/pages/current";
 import SuitcasePage from "@/pages/suitcase";
 import TodaysEditDetail from "@/pages/todays-edit-detail";
 import ImageControl from "@/pages/image-control";
+import TravelDiary from "@/pages/travel-diary";
 
 function Router() {
   return (
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/suitcase" component={SuitcasePage} />
       <Route path="/suitcase/todays-edit/:slug" component={TodaysEditDetail} />
       <Route path="/image-control" component={ImageControl} />
+      <Route path="/diary" component={TravelDiary} />
       <Route path="/test-saves" component={TestSaves} />
       <Route component={NotFound} />
     </Switch>

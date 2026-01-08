@@ -6,8 +6,9 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 const NAV_ITEMS = [
   { id: "home", label: "Home", href: "/" },
-  { id: "current", label: "The Current", href: "/current" },
+  { id: "diary", label: "Travel Diary", href: "/diary" },
   { id: "packing", label: "Packing List", href: "/packing" },
+  { id: "current", label: "The Current", href: "/current" },
   { id: "suitcase", label: "Suitcase", href: "/suitcase" },
   { id: "editorial", label: "Editorial", href: "/editorial" },
   { id: "image-control", label: "Image Control", href: "/image-control" },
