@@ -146,7 +146,7 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
       );
     case "items":
       return saves.filter(
-        (s) => s.itemType === "product" || s.itemType === "accessory"
+        (s) => s.itemType === "product" || s.itemType === "clothing" || s.itemType === "wardrobe"
       );
     case "inspiration":
       return saves.filter(
