@@ -230,6 +230,32 @@ export const IMAGE_SLOTS: ImageSlot[] = [
     description: "Why presence matters more than planning - Large feature"
   },
 
+  // Inspire Cards (for Suitcase Inspiration section)
+  {
+    key: "current-inspire-1",
+    label: "Inspire 1",
+    section: "The Current Feed",
+    defaultUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=600",
+    aspectRatio: "1:1",
+    description: "Inspiration image - square format"
+  },
+  {
+    key: "current-inspire-2",
+    label: "Inspire 2",
+    section: "The Current Feed",
+    defaultUrl: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=600",
+    aspectRatio: "1:1",
+    description: "Inspiration image - square format"
+  },
+  {
+    key: "current-inspire-3",
+    label: "Inspire 3",
+    section: "The Current Feed",
+    defaultUrl: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&q=80&w=600",
+    aspectRatio: "1:1",
+    description: "Inspiration image - square format"
+  },
+
   // Suitcase Capsule Card
   {
     key: "suitcase-capsule-card",

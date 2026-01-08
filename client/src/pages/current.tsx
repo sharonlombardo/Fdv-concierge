@@ -21,6 +21,9 @@ function useCurrentFeedContent(): FeedItem[] {
   const style2 = useImageSlot("current-style-2");
   const scene2 = useImageSlot("current-scene-2");
   const article4 = useImageSlot("current-article-4");
+  const inspire1 = useImageSlot("current-inspire-1");
+  const inspire2 = useImageSlot("current-inspire-2");
+  const inspire3 = useImageSlot("current-inspire-3");
 
   return [
     {
@@ -59,6 +62,14 @@ function useCurrentFeedContent(): FeedItem[] {
       size: "small"
     },
     {
+      id: "current-inspire-1",
+      type: "inspire",
+      title: "Inspire",
+      imageUrl: inspire1,
+      tags: ["inspire", "mood", "visual"],
+      size: "small"
+    },
+    {
       id: "current-5",
       type: "scene", 
       title: "Dried Botanicals",
@@ -91,6 +102,14 @@ function useCurrentFeedContent(): FeedItem[] {
       size: "medium"
     },
     {
+      id: "current-inspire-2",
+      type: "inspire",
+      title: "Inspire",
+      imageUrl: inspire2,
+      tags: ["inspire", "mood", "visual"],
+      size: "small"
+    },
+    {
       id: "current-9",
       type: "scene",
       title: "Garden Terrace",
@@ -106,6 +125,14 @@ function useCurrentFeedContent(): FeedItem[] {
       imageUrl: article4,
       tags: ["travel", "philosophy", "slow"],
       size: "large"
+    },
+    {
+      id: "current-inspire-3",
+      type: "inspire",
+      title: "Inspire",
+      imageUrl: inspire3,
+      tags: ["inspire", "mood", "visual"],
+      size: "small"
     }
   ];
 }
@@ -232,12 +259,46 @@ function QuoteCard({ item }: { item: FeedItem }) {
   );
 }
 
+function InspireCard({ item }: { item: FeedItem }) {
+  return (
+    <div 
+      className="col-span-1 relative group"
+      data-testid={`card-inspire-${item.id}`}
+    >
+      <div className="aspect-square overflow-hidden rounded-md relative">
+        <img 
+          src={item.imageUrl} 
+          alt={item.title}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute top-3 right-3 z-10">
+          <PinButton
+            itemType="inspire"
+            itemId={item.id}
+            itemData={{
+              title: item.title,
+              imageUrl: item.imageUrl
+            }}
+            sourceContext="current_feed"
+            aestheticTags={item.tags}
+            size="md"
+          />
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+          <p className="text-white text-xs uppercase tracking-widest">{item.title}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function CurrentFeed() {
   const currentFeedContent = useCurrentFeedContent();
   const features = currentFeedContent.filter(item => item.type === "feature");
   const styles = currentFeedContent.filter(item => item.type === "style");
   const scenes = currentFeedContent.filter(item => item.type === "scene");
   const quotes = currentFeedContent.filter(item => item.type === "quote");
+  const inspires = currentFeedContent.filter(item => item.type === "inspire");
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
@@ -258,6 +319,8 @@ export default function CurrentFeed() {
           
           {scenes[0] && <SceneCard item={scenes[0]} />}
           
+          {inspires[0] && <InspireCard item={inspires[0]} />}
+          
           {scenes[1] && <SceneCard item={scenes[1]} />}
           
           {quotes[0] && <QuoteCard item={quotes[0]} />}
@@ -266,6 +329,8 @@ export default function CurrentFeed() {
           
           {styles[1] && <StyleCard item={styles[1]} />}
           
+          {inspires[1] && <InspireCard item={inspires[1]} />}
+          
           {scenes[2] && <SceneCard item={scenes[2]} />}
           
           {scenes[3] && <SceneCard item={scenes[3]} />}
@@ -273,6 +338,8 @@ export default function CurrentFeed() {
           {features[2] && <FeatureCard item={features[2]} />}
           
           {features[3] && <FeatureCard item={features[3]} />}
+          
+          {inspires[2] && <InspireCard item={inspires[2]} />}
         </div>
 
         <div className="mt-20 text-center">

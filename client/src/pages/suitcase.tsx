@@ -145,10 +145,7 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
       );
     case "inspiration":
       return saves.filter(
-        (s) =>
-          s.itemType === "scene" ||
-          s.itemType === "quote" ||
-          s.itemType === "image"
+        (s) => s.itemType === "inspire"
       );
     case "capsules":
       return [];
