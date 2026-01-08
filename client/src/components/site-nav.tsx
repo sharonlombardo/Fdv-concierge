@@ -6,11 +6,14 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 const NAV_ITEMS = [
   { id: "home", label: "Home", href: "/" },
-  { id: "suitcase", label: "Suitcase", href: "/suitcase" },
-  { id: "itinerary", label: "Itinerary", href: "/itinerary" },
-  { id: "diary", label: "Travel Diary", href: "/diary" },
+  { id: "current", label: "The Current", href: "/current" },
   { id: "packing", label: "Packing List", href: "/packing" },
+  { id: "suitcase", label: "Suitcase", href: "/suitcase" },
+  { id: "editorial", label: "Editorial", href: "/editorial" },
   { id: "image-control", label: "Image Control", href: "/image-control" },
+  { id: "image-management", label: "Image Management", href: "/images" },
+  { id: "image-library", label: "Image Library", href: "/library" },
+  { id: "image-rules", label: "Image Rules", href: "/rules" },
 ];
 
 interface SiteNavProps {
