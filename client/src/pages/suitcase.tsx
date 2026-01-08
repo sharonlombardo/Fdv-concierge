@@ -129,9 +129,9 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
         (s) =>
           s.itemType === "look" ||
           s.itemType === "style" ||
-          s.aestheticTags?.some((t) =>
-            ["style", "fashion", "outfit", "minimal", "neutral", "linen"].includes(t.toLowerCase())
-          )
+          s.itemType === "product" ||
+          s.itemType === "accessory" ||
+          s.itemType === "wardrobe"
       );
     case "state-of-mind":
       return [];
