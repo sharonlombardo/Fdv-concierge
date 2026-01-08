@@ -16,7 +16,7 @@ import PackingList from "@/pages/packing-list";
 import TestSaves from "@/pages/test-saves";
 import CurrentFeed from "@/pages/current";
 import SuitcasePage from "@/pages/suitcase";
-import CapsuleDetail from "@/pages/capsule-detail";
+import TodaysEditDetail from "@/pages/todays-edit-detail";
 import ImageControl from "@/pages/image-control";
 
 function Router() {
@@ -30,7 +30,7 @@ function Router() {
       <Route path="/packing" component={PackingList} />
       <Route path="/current" component={CurrentFeed} />
       <Route path="/suitcase" component={SuitcasePage} />
-      <Route path="/suitcase/capsules/:slug" component={CapsuleDetail} />
+      <Route path="/suitcase/todays-edit/:slug" component={TodaysEditDetail} />
       <Route path="/image-control" component={ImageControl} />
       <Route path="/test-saves" component={TestSaves} />
       <Route component={NotFound} />

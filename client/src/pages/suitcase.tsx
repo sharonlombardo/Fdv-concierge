@@ -7,7 +7,7 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { useImageSlot } from "@/hooks/use-image-slot";
 
-type CapsuleData = {
+type EditData = {
   id: string;
   name: string;
   description: string;
@@ -16,15 +16,15 @@ type CapsuleData = {
   status: string;
 };
 
-function useCapsulesList(): CapsuleData[] {
-  const capsuleCardImage = useImageSlot("suitcase-capsule-card");
+function useTodaysEditList(): EditData[] {
+  const editCardImage = useImageSlot("suitcase-capsule-card");
   
   return [
     {
       id: "desert-neutrals",
       name: "Desert Neutrals",
       description: "Warm earth tones and natural textures for your Morocco journey",
-      heroImage: capsuleCardImage,
+      heroImage: editCardImage,
       pieceCount: 12,
       status: "ready"
     }
@@ -56,7 +56,7 @@ const tabs = [
   { id: "places", label: "Travel & Experiences" },
   { id: "items", label: "Objects of Desire" },
   { id: "inspiration", label: "Inspiration" },
-  { id: "capsules", label: "Capsules" },
+  { id: "todays-edit", label: "Today's Edit" },
 ];
 
 const CURATED_QUOTES = [
@@ -157,7 +157,7 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
       return saves.filter(
         (s) => s.itemType === "inspire"
       );
-    case "capsules":
+    case "todays-edit":
       return [];
     default:
       return saves;
@@ -260,16 +260,16 @@ function SavedItemCard({ save, onRemove }: { save: SavedItem; onRemove: () => vo
   );
 }
 
-function CapsulesTabContent() {
-  const capsulesList = useCapsulesList();
+function TodaysEditTabContent() {
+  const editsList = useTodaysEditList();
   
-  if (capsulesList.length === 0) {
+  if (editsList.length === 0) {
     return (
       <div className="text-center py-12">
         <Sparkles className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
-        <h3 className="font-serif text-xl mb-2">No capsules yet</h3>
+        <h3 className="font-serif text-xl mb-2">No edits yet</h3>
         <p className="text-muted-foreground max-w-md mx-auto">
-          Keep saving items you love - we'll help you build capsule collections based on your taste.
+          Keep saving items you love - we'll help you build curated edits based on your taste.
         </p>
       </div>
     );
@@ -277,15 +277,15 @@ function CapsulesTabContent() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {capsulesList.map((capsule: CapsuleData) => (
-        <Link key={capsule.id} href={`/suitcase/capsules/${capsule.id}`}>
+      {editsList.map((edit: EditData) => (
+        <Link key={edit.id} href={`/suitcase/todays-edit/${edit.id}`}>
           <div 
             className="group relative aspect-[16/10] rounded-md overflow-hidden cursor-pointer"
-            data-testid={`card-capsule-${capsule.id}`}
+            data-testid={`card-edit-${edit.id}`}
           >
             <img
-              src={capsule.heroImage}
-              alt={capsule.name}
+              src={edit.heroImage}
+              alt={edit.name}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
@@ -294,12 +294,12 @@ function CapsulesTabContent() {
                 <Sparkles className="w-4 h-4 text-amber-400" />
                 <span className="text-amber-400 text-xs uppercase tracking-widest">AI Generated</span>
               </div>
-              <h3 className="font-serif text-2xl text-white font-medium mb-1">{capsule.name}</h3>
-              <p className="text-white/70 text-sm mb-3">{capsule.description}</p>
+              <h3 className="font-serif text-2xl text-white font-medium mb-1">{edit.name}</h3>
+              <p className="text-white/70 text-sm mb-3">{edit.description}</p>
               <div className="flex items-center gap-4">
-                <span className="text-white/80 text-sm">{capsule.pieceCount} pieces</span>
+                <span className="text-white/80 text-sm">{edit.pieceCount} pieces</span>
                 <Button variant="outline" size="sm" className="text-white border-white/30 hover:bg-white/20">
-                  View Capsule
+                  View Edit
                 </Button>
               </div>
             </div>
@@ -381,8 +381,8 @@ export default function SuitcasePage() {
           </div>
         ) : activeTab === "state-of-mind" ? (
           <StateOfMindContent />
-        ) : activeTab === "capsules" ? (
-          <CapsulesTabContent />
+        ) : activeTab === "todays-edit" ? (
+          <TodaysEditTabContent />
         ) : filteredSaves.length === 0 ? (
           <div className="text-center py-20">
             {saves.length === 0 ? (

@@ -7,7 +7,7 @@ import { SuitcaseButton } from "@/components/suitcase-button";
 import { TripTransition } from "@/components/trip-transition";
 import { useImageSlot } from "@/hooks/use-image-slot";
 
-type CapsuleItem = {
+type EditItem = {
   id: string;
   brand: string;
   name: string;
@@ -16,12 +16,12 @@ type CapsuleItem = {
   fromSaves: boolean;
 };
 
-type CapsuleSection = {
+type EditSection = {
   name: string;
-  items: CapsuleItem[];
+  items: EditItem[];
 };
 
-type Capsule = {
+type TodaysEdit = {
   id: string;
   name: string;
   description: string;
@@ -31,10 +31,10 @@ type Capsule = {
     fromSaves: number;
     suggested: number;
   };
-  sections: CapsuleSection[];
+  sections: EditSection[];
 };
 
-function useDesertNeutralsCapsule(): Capsule {
+function useDesertNeutralsEdit(): TodaysEdit {
   const heroImage = useImageSlot("capsule-hero");
   const item1 = useImageSlot("capsule-item-1");
   const item2 = useImageSlot("capsule-item-2");
@@ -52,7 +52,7 @@ function useDesertNeutralsCapsule(): Capsule {
   return {
     id: "desert-neutrals",
     name: "Desert Neutrals",
-    description: "The system noticed patterns in what you saved: warm earth tones, natural textures, relaxed silhouettes. This capsule brings those elements together into a cohesive collection for your journey.",
+    description: "The system noticed patterns in what you saved: warm earth tones, natural textures, relaxed silhouettes. Today's edit brings those elements together into a cohesive collection for your journey.",
     heroImage,
     stats: {
       totalPieces: 12,
@@ -96,18 +96,18 @@ function useDesertNeutralsCapsule(): Capsule {
   };
 }
 
-function useCapsules(): Record<string, Capsule> {
-  const desertNeutrals = useDesertNeutralsCapsule();
+function useEdits(): Record<string, TodaysEdit> {
+  const desertNeutrals = useDesertNeutralsEdit();
   return {
     "desert-neutrals": desertNeutrals,
   };
 }
 
-function CapsuleItemCard({ item, capsuleId }: { item: CapsuleItem; capsuleId: string }) {
+function EditItemCard({ item, editId }: { item: EditItem; editId: string }) {
   return (
     <div 
       className="group relative bg-white dark:bg-card rounded-md overflow-visible"
-      data-testid={`card-capsule-item-${item.id}`}
+      data-testid={`card-edit-item-${item.id}`}
     >
       <div className="aspect-[3/4] relative overflow-hidden rounded-md">
         <img
@@ -127,14 +127,14 @@ function CapsuleItemCard({ item, capsuleId }: { item: CapsuleItem; capsuleId: st
         </div>
         <div className="absolute bottom-2 right-2 z-10">
           <SuitcaseButton
-            itemId={`${capsuleId}-${item.id}`}
+            itemId={`${editId}-${item.id}`}
             itemData={{
               title: item.name,
               brand: item.brand,
               imageUrl: item.imageUrl,
               price: item.price,
             }}
-            sourceContext={`capsule_${capsuleId}`}
+            sourceContext={`edit_${editId}`}
             size="md"
           />
         </div>
@@ -148,19 +148,19 @@ function CapsuleItemCard({ item, capsuleId }: { item: CapsuleItem; capsuleId: st
   );
 }
 
-export default function CapsuleDetail() {
-  const [, params] = useRoute("/suitcase/capsules/:slug");
+export default function TodaysEditDetail() {
+  const [, params] = useRoute("/suitcase/todays-edit/:slug");
   const [, setLocation] = useLocation();
   const [showTransition, setShowTransition] = useState(false);
-  const capsules = useCapsules();
+  const edits = useEdits();
   const slug = params?.slug || "desert-neutrals";
-  const capsule = capsules[slug];
+  const edit = edits[slug];
 
-  if (!capsule) {
+  if (!edit) {
     return (
       <div className="min-h-screen bg-[#fafaf9] dark:bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 className="font-serif text-2xl mb-4">Capsule not found</h2>
+          <h2 className="font-serif text-2xl mb-4">Edit not found</h2>
           <Link href="/suitcase">
             <Button variant="outline">Back to Suitcase</Button>
           </Link>
@@ -173,8 +173,8 @@ export default function CapsuleDetail() {
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
       <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
         <img
-          src={capsule.heroImage}
-          alt={capsule.name}
+          src={edit.heroImage}
+          alt={edit.name}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
@@ -189,43 +189,43 @@ export default function CapsuleDetail() {
         </div>
         
         <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
-          <p className="text-white/70 text-sm uppercase tracking-widest mb-2">Capsule Collection</p>
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white font-medium mb-4" data-testid="text-capsule-title">
-            {capsule.name}
+          <p className="text-white/70 text-sm uppercase tracking-widest mb-2">Today's Edit</p>
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white font-medium mb-4" data-testid="text-edit-title">
+            {edit.name}
           </h1>
           <p className="text-white/80 text-sm md:text-base">
-            A capsule collection based on your Morocco saves
+            A curated edit based on your Morocco saves
           </p>
         </div>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 py-12">
-        <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl mb-8" data-testid="text-capsule-description">
-          {capsule.description}
+        <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl mb-8" data-testid="text-edit-description">
+          {edit.description}
         </p>
 
-        <div className="flex items-center gap-6 py-4 border-y border-border mb-12" data-testid="stats-capsule">
+        <div className="flex items-center gap-6 py-4 border-y border-border mb-12" data-testid="stats-edit">
           <span className="text-sm">
-            <span className="font-semibold">{capsule.stats.totalPieces}</span> pieces
+            <span className="font-semibold">{edit.stats.totalPieces}</span> pieces
           </span>
           <span className="text-muted-foreground">•</span>
           <span className="text-sm">
-            <span className="font-semibold">{capsule.stats.fromSaves}</span> from your saves
+            <span className="font-semibold">{edit.stats.fromSaves}</span> from your saves
           </span>
           <span className="text-muted-foreground">•</span>
           <span className="text-sm">
-            <span className="font-semibold">{capsule.stats.suggested}</span> suggested for you
+            <span className="font-semibold">{edit.stats.suggested}</span> suggested for you
           </span>
         </div>
 
-        {capsule.sections.map((section) => (
+        {edit.sections.map((section) => (
           <section key={section.name} className="mb-16">
             <h2 className="font-serif text-2xl font-medium mb-6" data-testid={`section-${section.name.toLowerCase().replace(/\s+/g, '-')}`}>
               {section.name}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
               {section.items.map((item) => (
-                <CapsuleItemCard key={item.id} item={item} capsuleId={capsule.id} />
+                <EditItemCard key={item.id} item={item} editId={edit.id} />
               ))}
             </div>
           </section>
@@ -242,7 +242,7 @@ export default function CapsuleDetail() {
               <span className="font-serif text-xl font-medium">Turn into Trip</span>
             </div>
             <p className="text-sm text-white/80">
-              Transform this capsule into a complete Morocco journey
+              Transform this edit into a complete Morocco journey
             </p>
           </button>
         </div>

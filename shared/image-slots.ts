@@ -50,19 +50,19 @@ export const IMAGE_SLOTS: ImageSlot[] = [
     description: "Creating your journey..."
   },
 
-  // Desert Neutrals Capsule
+  // Desert Neutrals Edit
   {
     key: "capsule-hero",
-    label: "Capsule Hero Image",
-    section: "Desert Neutrals Capsule",
+    label: "Edit Hero Image",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1600",
     aspectRatio: "16:9",
-    description: "Main hero for the capsule collection"
+    description: "Main hero for today's edit collection"
   },
   {
     key: "capsule-item-1",
     label: "Linen Wrap Dress",
-    section: "Desert Neutrals Capsule",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "3:4",
     description: "Fil de Vie - Base Layer"
@@ -70,7 +70,7 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   {
     key: "capsule-item-2",
     label: "Relaxed Linen Trousers",
-    section: "Desert Neutrals Capsule",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "3:4",
     description: "Mara Hoffman - Base Layer"
@@ -78,7 +78,7 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   {
     key: "capsule-item-3",
     label: "Silk Cami",
-    section: "Desert Neutrals Capsule",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "3:4",
     description: "Esse - Base Layer"
@@ -86,7 +86,7 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   {
     key: "capsule-item-4",
     label: "Cotton Poplin Shirt",
-    section: "Desert Neutrals Capsule",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1598554747436-c9293d6a588f?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "3:4",
     description: "Totême - Base Layer"
@@ -94,7 +94,7 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   {
     key: "capsule-item-5",
     label: "Woven Basket Bag",
-    section: "Desert Neutrals Capsule",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "3:4",
     description: "Loewe - Statement Piece"
@@ -102,7 +102,7 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   {
     key: "capsule-item-6",
     label: "Crochet Cover-Up",
-    section: "Desert Neutrals Capsule",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "3:4",
     description: "Cult Gaia - Statement Piece"
@@ -110,7 +110,7 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   {
     key: "capsule-item-7",
     label: "Le Chiquito Long",
-    section: "Desert Neutrals Capsule",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "3:4",
     description: "Jacquemus - Statement Piece"
@@ -118,7 +118,7 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   {
     key: "capsule-item-8",
     label: "Triomphe Sunglasses",
-    section: "Desert Neutrals Capsule",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "3:4",
     description: "Celine - Accessory"
@@ -126,7 +126,7 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   {
     key: "capsule-item-9",
     label: "Gold Hoops",
-    section: "Desert Neutrals Capsule",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "3:4",
     description: "Agmes - Accessory"
@@ -134,7 +134,7 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   {
     key: "capsule-item-10",
     label: "Silk Scarf",
-    section: "Desert Neutrals Capsule",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "3:4",
     description: "Johanna Ortiz - Accessory"
@@ -142,7 +142,7 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   {
     key: "capsule-item-11",
     label: "Evening Caftan",
-    section: "Desert Neutrals Capsule",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "3:4",
     description: "Fil de Vie - Evening"
@@ -150,7 +150,7 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   {
     key: "capsule-item-12",
     label: "Strappy Sandals",
-    section: "Desert Neutrals Capsule",
+    section: "Desert Neutrals Edit",
     defaultUrl: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=600",
     aspectRatio: "3:4",
     description: "Aquazzura - Evening"
@@ -308,14 +308,14 @@ export const IMAGE_SLOTS: ImageSlot[] = [
     description: "Inspiration image - square format"
   },
 
-  // Suitcase Capsule Card
+  // Suitcase Edit Card
   {
     key: "suitcase-capsule-card",
-    label: "Capsule Card Preview",
+    label: "Edit Card Preview",
     section: "Suitcase",
     defaultUrl: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=800",
     aspectRatio: "16:10",
-    description: "Desert Neutrals card in Capsules tab"
+    description: "Desert Neutrals card in Today's Edit tab"
   }
 ];
 
