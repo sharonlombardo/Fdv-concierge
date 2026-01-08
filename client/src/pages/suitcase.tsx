@@ -2,11 +2,10 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { X, Briefcase, Sparkles } from "lucide-react";
+import { X, Briefcase, ArrowLeft, Sparkles } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { useImageSlot } from "@/hooks/use-image-slot";
-import { SiteNav } from "@/components/site-nav";
 
 type EditData = {
   id: string;
@@ -333,8 +332,16 @@ export default function SuitcasePage() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
-      <SiteNav />
-      <div className="max-w-6xl mx-auto px-4 py-8 pt-20">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Link href="/">
+            <Button variant="ghost" size="sm" className="gap-2" data-testid="button-back-home">
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          </Link>
+        </div>
+
         <header className="text-center mb-10">
           <h1 className="font-serif text-3xl md:text-4xl font-medium tracking-tight mb-2" data-testid="text-suitcase-title">
             YOUR SUITCASE

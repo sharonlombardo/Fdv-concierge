@@ -2,10 +2,10 @@ import { useState, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Upload, RotateCcw, Check, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Upload, RotateCcw, Check, Image as ImageIcon } from "lucide-react";
+import { Link } from "wouter";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { SiteNav } from "@/components/site-nav";
 
 interface ImageSlotData {
   key: string;
@@ -172,9 +172,15 @@ export default function ImageControlPage() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
-      <SiteNav />
-      <div className="max-w-6xl mx-auto px-4 py-8 pt-20">
+      <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
+          <Link href="/">
+            <Button variant="ghost" size="sm" className="gap-2 mb-4" data-testid="button-back-home">
+              <ArrowLeft className="w-4 h-4" />
+              Back to Itinerary
+            </Button>
+          </Link>
+          
           <div className="flex items-center gap-3 mb-2">
             <ImageIcon className="w-8 h-8 text-amber-600" />
             <h1 className="font-serif text-3xl md:text-4xl font-medium" data-testid="text-page-title">
