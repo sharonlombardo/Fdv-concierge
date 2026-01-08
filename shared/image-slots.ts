@@ -230,6 +230,32 @@ export const IMAGE_SLOTS: ImageSlot[] = [
     description: "Why presence matters more than planning - Large feature"
   },
 
+  // Daily Rituals Cards (for Suitcase Daily Rituals section)
+  {
+    key: "current-ritual-1",
+    label: "Daily Ritual 1",
+    section: "The Current Feed",
+    defaultUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600",
+    aspectRatio: "1:1",
+    description: "Daily ritual image - square format"
+  },
+  {
+    key: "current-ritual-2",
+    label: "Daily Ritual 2",
+    section: "The Current Feed",
+    defaultUrl: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=600",
+    aspectRatio: "1:1",
+    description: "Daily ritual image - square format"
+  },
+  {
+    key: "current-ritual-3",
+    label: "Daily Ritual 3",
+    section: "The Current Feed",
+    defaultUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=600",
+    aspectRatio: "1:1",
+    description: "Daily ritual image - square format"
+  },
+
   // Culture Cards (for Suitcase Culture section)
   {
     key: "current-culture-1",

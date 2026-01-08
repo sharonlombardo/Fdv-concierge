@@ -52,6 +52,7 @@ const tabs = [
   { id: "style", label: "Your Style" },
   { id: "state-of-mind", label: "State of Mind" },
   { id: "culture", label: "Culture" },
+  { id: "daily-rituals", label: "Daily Rituals" },
   { id: "places", label: "Places" },
   { id: "items", label: "Objects of Desire" },
   { id: "inspiration", label: "Inspiration" },
@@ -139,6 +140,10 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
     case "culture":
       return saves.filter(
         (s) => s.itemType === "culture"
+      );
+    case "daily-rituals":
+      return saves.filter(
+        (s) => s.itemType === "ritual"
       );
     case "places":
       return saves.filter(

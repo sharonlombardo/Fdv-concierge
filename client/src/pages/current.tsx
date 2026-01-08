@@ -27,6 +27,9 @@ function useCurrentFeedContent(): FeedItem[] {
   const culture1 = useImageSlot("current-culture-1");
   const culture2 = useImageSlot("current-culture-2");
   const culture3 = useImageSlot("current-culture-3");
+  const ritual1 = useImageSlot("current-ritual-1");
+  const ritual2 = useImageSlot("current-ritual-2");
+  const ritual3 = useImageSlot("current-ritual-3");
 
   return [
     {
@@ -159,6 +162,30 @@ function useCurrentFeedContent(): FeedItem[] {
       title: "Culture",
       imageUrl: culture3,
       tags: ["culture", "heritage", "discovery"],
+      size: "small"
+    },
+    {
+      id: "current-ritual-1",
+      type: "ritual",
+      title: "Daily Ritual",
+      imageUrl: ritual1,
+      tags: ["ritual", "wellness", "morning"],
+      size: "small"
+    },
+    {
+      id: "current-ritual-2",
+      type: "ritual",
+      title: "Daily Ritual",
+      imageUrl: ritual2,
+      tags: ["ritual", "self-care", "routine"],
+      size: "small"
+    },
+    {
+      id: "current-ritual-3",
+      type: "ritual",
+      title: "Daily Ritual",
+      imageUrl: ritual3,
+      tags: ["ritual", "mindfulness", "evening"],
       size: "small"
     }
   ];
@@ -352,6 +379,39 @@ function CultureCard({ item }: { item: FeedItem }) {
   );
 }
 
+function RitualCard({ item }: { item: FeedItem }) {
+  return (
+    <div 
+      className="col-span-1 relative group"
+      data-testid={`card-ritual-${item.id}`}
+    >
+      <div className="aspect-square overflow-hidden rounded-md relative">
+        <img 
+          src={item.imageUrl} 
+          alt={item.title}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute top-3 right-3 z-10">
+          <PinButton
+            itemType="ritual"
+            itemId={item.id}
+            itemData={{
+              title: item.title,
+              imageUrl: item.imageUrl
+            }}
+            sourceContext="current_feed"
+            aestheticTags={item.tags}
+            size="md"
+          />
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+          <p className="text-white text-xs uppercase tracking-widest">{item.title}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function CurrentFeed() {
   const currentFeedContent = useCurrentFeedContent();
   const features = currentFeedContent.filter(item => item.type === "feature");
@@ -360,6 +420,7 @@ export default function CurrentFeed() {
   const quotes = currentFeedContent.filter(item => item.type === "quote");
   const inspires = currentFeedContent.filter(item => item.type === "inspire");
   const cultures = currentFeedContent.filter(item => item.type === "culture");
+  const rituals = currentFeedContent.filter(item => item.type === "ritual");
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
@@ -407,6 +468,12 @@ export default function CurrentFeed() {
           {inspires[2] && <InspireCard item={inspires[2]} />}
           
           {cultures[2] && <CultureCard item={cultures[2]} />}
+          
+          {rituals[0] && <RitualCard item={rituals[0]} />}
+          
+          {rituals[1] && <RitualCard item={rituals[1]} />}
+          
+          {rituals[2] && <RitualCard item={rituals[2]} />}
         </div>
 
         <div className="mt-20 text-center">
