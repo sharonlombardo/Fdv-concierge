@@ -117,7 +117,7 @@ function PageTurnHero({ title, stateOfMind, paragraph, assetKey, bucket, pinType
         <PinButton
           itemType={pinType as any}
           itemId={assetKey}
-          itemData={{ title, subtitle: stateOfMind, bucket }}
+          itemData={{ title, subtitle: stateOfMind, bucket, sourceStory: title, issueNumber: 1 }}
           sourceContext="the_current_issue_1"
           aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase()]}
           size="md"
@@ -141,14 +141,14 @@ function PageTurnHero({ title, stateOfMind, paragraph, assetKey, bucket, pinType
   );
 }
 
-function QuoteCard({ quote, id }: QuoteCardProps) {
+function QuoteCard({ quote, id, sourceStory }: QuoteCardProps & { sourceStory?: string }) {
   return (
     <div className="relative py-16 md:py-24 px-8 md:px-16 max-w-3xl mx-auto text-center" data-testid={`quote-${id}`}>
       <div className="absolute top-4 right-4 z-10">
         <PinButton
           itemType="quote"
           itemId={id}
-          itemData={{ title: quote, bucket: "State of Mind" }}
+          itemData={{ title: quote, bucket: "State of Mind", sourceStory: sourceStory || "The Current", issueNumber: 1 }}
           sourceContext="the_current_issue_1"
           aestheticTags={["quote", "state-of-mind"]}
           size="md"
@@ -261,7 +261,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
             <PinButton
               itemType={image1.pinType as any}
               itemId={image1.assetKey}
-              itemData={{ title: image1.caption, bucket: image1.bucket, sourceStory }}
+              itemData={{ title: image1.caption, bucket: image1.bucket, sourceStory, issueNumber: 1 }}
               sourceContext="the_current_issue_1"
               aestheticTags={[image1.bucket.toLowerCase(), image1.pinType.toLowerCase()]}
               size="sm"
@@ -277,7 +277,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
             <PinButton
               itemType={image2.pinType as any}
               itemId={image2.assetKey}
-              itemData={{ title: image2.caption, bucket: image2.bucket, sourceStory }}
+              itemData={{ title: image2.caption, bucket: image2.bucket, sourceStory, issueNumber: 1 }}
               sourceContext="the_current_issue_1"
               aestheticTags={[image2.bucket.toLowerCase(), image2.pinType.toLowerCase()]}
               size="sm"
@@ -304,7 +304,7 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: Moti
           <PinButton
             itemType={pinType as any}
             itemId={id}
-            itemData={{ title: overlayText, bucket, sourceStory }}
+            itemData={{ title: overlayText, bucket, sourceStory, issueNumber: 1 }}
             sourceContext="the_current_issue_1"
             aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase()]}
             size="md"
@@ -315,14 +315,14 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: Moti
   );
 }
 
-function ClosingLine({ text, id }: ClosingLineProps) {
+function ClosingLine({ text, id, sourceStory }: ClosingLineProps & { sourceStory?: string }) {
   return (
     <div className="relative py-12 md:py-16 px-8 max-w-2xl mx-auto text-center" data-testid={`closing-${id}`}>
       <div className="absolute top-0 right-0 z-10">
         <PinButton
           itemType="quote"
           itemId={id}
-          itemData={{ title: text, bucket: "State of Mind" }}
+          itemData={{ title: text, bucket: "State of Mind", sourceStory: sourceStory || "The Current", issueNumber: 1 }}
           sourceContext="the_current_issue_1"
           aestheticTags={["quote", "closing", "state-of-mind"]}
           size="sm"
@@ -407,13 +407,13 @@ export default function CurrentFeed() {
         <PageTurnHero
           title="Morocco, In Full Color"
           stateOfMind="Pattern, pleasure, heat, and intention."
-          paragraph="Morocco rewards those who look closely. Color layered on color. Texture against texture. Nothing accidental, nothing apologetic..."
+          paragraph="Morocco rewards those who look closely. Color layered on color. Texture against texture. Nothing accidental, nothing apologetic. This is a place that asks you to notice, to respond, to be seen noticing."
           assetKey="morocco-hero"
           bucket="Travel & Experiences"
           pinType="place"
         />
 
-        <QuoteCard quote="Beauty doesn't whisper here. It invites." id="morocco-quote-1" />
+        <QuoteCard quote="Beauty doesn't whisper here. It invites." id="morocco-quote-1" sourceStory="Morocco" />
 
         <MomentBlock
           title="Dressing into the scene"
@@ -503,7 +503,7 @@ export default function CurrentFeed() {
           imagePosition="left"
         />
 
-        <ClosingLine text="Save what delights you. You'll want to see it again." id="morocco-closing" />
+        <ClosingLine text="Save what delights you. You'll want to see it again." id="morocco-closing" sourceStory="Morocco" />
       </section>
 
       <StoryDivider />
@@ -513,13 +513,13 @@ export default function CurrentFeed() {
         <PageTurnHero
           title="The Art of Arrival"
           stateOfMind="White stone. Salt water. Nothing extra."
-          paragraph="Hydra does not rush you. There are no cars waiting. No urgency on arrival..."
+          paragraph="Hydra does not rush you. There are no cars waiting. No urgency on arrival. You step off the ferry into stillness. The island asks only that you slow down."
           assetKey="hydra-hero"
           bucket="Travel & Experiences"
           pinType="place"
         />
 
-        <QuoteCard quote="Arrive composed. Let the place do the rest." id="hydra-quote-1" />
+        <QuoteCard quote="Arrive composed. Let the place do the rest." id="hydra-quote-1" sourceStory="Hydra" />
 
         <MomentBlock
           title="Dressing for stillness"
@@ -593,7 +593,7 @@ export default function CurrentFeed() {
           imagePosition="right"
         />
 
-        <ClosingLine text="Save what steadies you. Return when you need it." id="hydra-closing" />
+        <ClosingLine text="Save what steadies you. Return when you need it." id="hydra-closing" sourceStory="Hydra" />
       </section>
 
       <StoryDivider />
@@ -603,13 +603,13 @@ export default function CurrentFeed() {
         <PageTurnHero
           title="Less, But Longer"
           stateOfMind="Stay with what's good."
-          paragraph="Slow travel is not about moving less. It's about staying longer with what matters..."
+          paragraph="Slow travel is not about moving less. It's about staying longer with what matters. The same walk every morning. The same table. Familiarity becomes belonging."
           assetKey="slow-travel-hero"
           bucket="State of Mind"
           pinType="mood"
         />
 
-        <QuoteCard quote="The point isn't to see more. It's to stay longer with what feels right." id="slow-travel-quote-1" />
+        <QuoteCard quote="The point isn't to see more. It's to stay longer with what feels right." id="slow-travel-quote-1" sourceStory="Slow Travel" />
 
         <MomentBlock
           title="Editing as intelligence"
@@ -686,7 +686,7 @@ export default function CurrentFeed() {
           imagePosition="right"
         />
 
-        <ClosingLine text="Save what you want to stay with. Let go of the rest." id="slow-travel-closing" />
+        <ClosingLine text="Save what you want to stay with. Let go of the rest." id="slow-travel-closing" sourceStory="Slow Travel" />
       </section>
 
       <StoryDivider />
@@ -696,13 +696,13 @@ export default function CurrentFeed() {
         <PageTurnHero
           title="Movement, Then Stillness"
           stateOfMind="Begin in the body. End in quiet."
-          paragraph="A ritual retreat is not an escape. It is a return to sequence..."
+          paragraph="A ritual retreat is not an escape. It is a return to sequence. Movement, then stillness. Effort, then rest. The body leads. The mind follows."
           assetKey="retreat-hero"
           bucket="Travel & Experiences"
           pinType="place"
         />
 
-        <QuoteCard quote="Move the body. Then listen." id="retreat-quote-1" />
+        <QuoteCard quote="Move the body. Then listen." id="retreat-quote-1" sourceStory="Retreat" />
 
         <MomentBlock
           title="Movement as calibration"
@@ -778,7 +778,7 @@ export default function CurrentFeed() {
           imagePosition="right"
         />
 
-        <ClosingLine text="Begin with movement. End with stillness. Remember how it feels." id="retreat-closing" />
+        <ClosingLine text="Begin with movement. End with stillness. Remember how it feels." id="retreat-closing" sourceStory="Retreat" />
       </section>
 
       <StoryDivider />
@@ -788,13 +788,13 @@ export default function CurrentFeed() {
         <PageTurnHero
           title="The Weekend That Holds"
           stateOfMind="Containment, appetite, and momentum."
-          paragraph="New York doesn't slow down for you. You learn how to move inside it..."
+          paragraph="New York doesn't slow down for you. You learn how to move inside it. The rhythm is relentless, but it holds you if you let it. This is how the weekend sustains."
           assetKey="newyork-hero"
           bucket="Culture"
           pinType="place"
         />
 
-        <QuoteCard quote="New York isn't conquered. It's edited." id="newyork-quote-1" />
+        <QuoteCard quote="New York isn't conquered. It's edited." id="newyork-quote-1" sourceStory="New York" />
 
         <MomentBlock
           title="Dressing for the city's pace"
@@ -895,7 +895,7 @@ export default function CurrentFeed() {
           imagePosition="left"
         />
 
-        <ClosingLine text="Save what sustains you. You'll need it again next week." id="newyork-closing" />
+        <ClosingLine text="Save what sustains you. You'll need it again next week." id="newyork-closing" sourceStory="New York" />
       </section>
 
       <div className="py-20 text-center">
