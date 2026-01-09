@@ -1,0 +1,52 @@
+We have a data wiring regression after the routing refactor.
+
+Symptoms:
+- /suitcase/edit/morocco-edit shows 0 saved items, but Packing page has content.
+- “My Edits” shows placeholder edit cards even when nothing is actually saved under them.
+- Morocco items appear under Suitcase “All” partially, but not inside Morocco Edit.
+
+This indicates editTag/storyTag tagging mismatch and/or Edit list is hard-coded rather than derived.
+
+Please do an audit and fix in this order (no UI redesign):
+
+1) ROUTE + DATA AUDIT (report back in a table)
+- Print/log the shape of Save records currently stored (example 5 records) including fields:
+  itemType/itemId, storyTag, editTag, editionTag, purchaseStatus, metadata keys
+- Confirm exactly what field name is used for grouping:
+  is it `editTag` or `edit_tag` or something else?
+- Confirm what value is stored on Morocco saves:
+  "morocco", "morocco-edit", "Morocco Edit", etc.
+
+2) FIX “MY EDITS” LIST GENERATION
+- “My Edits” must only show edits that exist in Save records.
+- Do NOT render a static list of edit cards.
+- Generate edit cards by grouping saves where editTag is present.
+- If no saves exist for an editTag, that edit should not appear (except optionally Today’s Edit if it is system-generated and actually seeded).
+
+3) BACKFILL / NORMALIZE EXISTING MOROCCO SAVES
+We need Morocco Edit to populate immediately for the demo.
+- If existing saves have storyTag="morocco" but missing editTag, then on app start (or on first load of Suitcase) run a one-time normalization:
+  if storyTag == "morocco" and editTag is null/empty → set editTag = "morocco-edit"
+- Also normalize any "morocco" editTag values to "morocco-edit".
+- Do the same for Hydra/New York/etc only if those saves exist, otherwise leave them.
+
+4) EDIT DETAIL FILTERING
+- Ensure /suitcase/edit/:editTag filters by the same exact key/value used in saves.
+- Add a debug count at the top (temporary):
+  “Found X items for editTag=___”
+so we can verify quickly.
+
+5) PACKING LIST CONSISTENCY
+- Confirm whether /packing is derived from saves or from static itinerary data.
+- If static, that’s OK for now, but Edit Detail → Packing List must use the same underlying dataset as Suitcase (preferably saves).
+- For the pilot, make Morocco Edit → Packing List show the same items that appear on /packing, even if you need to temporarily map them via storyTag/editTag.
+
+Deliverables:
+- A short report: what was wrong (tag mismatch vs hard-coded edit list vs different data source)
+- The exact files changed
+- The routes to test:
+  /suitcase (All)
+  /suitcase (My Edits)
+  /suitcase/edit/morocco-edit (should show items)
+  /packing (reference)
+Do not add new features; just make the data wiring consistent.
