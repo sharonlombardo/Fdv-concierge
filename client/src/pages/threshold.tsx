@@ -1,4 +1,4 @@
-import { TopNav } from "@/components/global-nav";
+import { GlobalNav } from "@/components/global-nav";
 import CurrentFeed from "./current";
 import { Link } from "wouter";
 import { MapPin, Sparkles, Heart, Globe, Bell, ChevronRight } from "lucide-react";
@@ -74,7 +74,7 @@ export default function Threshold() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
-      <TopNav variant="overlay" />
+      <GlobalNav variant="overlay" />
       
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center">
         <div className="absolute inset-0 bg-stone-100 dark:bg-stone-900" />

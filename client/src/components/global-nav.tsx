@@ -23,6 +23,15 @@ export function GlobalNav({ variant = "default" }: { variant?: "default" | "over
   return (
     <>
       <nav className={`flex items-center justify-between px-6 py-4 ${isOverlay ? "absolute top-0 left-0 right-0 z-50" : "bg-background border-b border-border"}`}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsOpen(true)}
+          className={isOverlay ? "text-white hover:bg-white/10" : ""}
+          data-testid="button-menu"
+        >
+          <Menu className="w-5 h-5" />
+        </Button>
         <div className="flex items-center gap-8">
           <Link href="/">
             <span className={`font-serif text-lg tracking-tight ${textColor}`} data-testid="nav-logo">
@@ -47,15 +56,7 @@ export function GlobalNav({ variant = "default" }: { variant?: "default" | "over
             </Link>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsOpen(true)}
-          className={isOverlay ? "text-white hover:bg-white/10" : ""}
-          data-testid="button-menu"
-        >
-          <Menu className="w-5 h-5" />
-        </Button>
+        <div className="w-9" />
       </nav>
 
       {isOpen && (
