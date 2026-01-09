@@ -42,6 +42,11 @@ export function SuitcaseButton({
           sourceContext,
           aestheticTags,
           savedAt: Date.now(),
+          purchaseStatus: 'in_cart',
+          editTag: itemData.editTag,
+          storyTag: itemData.storyTag,
+          title: itemData.title,
+          assetUrl: itemData.imageUrl,
           metadata: {
             ...itemData,
             purchaseIntent: true,
@@ -55,6 +60,7 @@ export function SuitcaseButton({
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            purchaseStatus: 'in_cart',
             metadata: {
               ...itemData,
               purchaseIntent: true,

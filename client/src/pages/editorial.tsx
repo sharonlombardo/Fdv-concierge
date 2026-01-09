@@ -339,12 +339,16 @@ export default function Editorial() {
           savedAt: Date.now()
         })
       });
+      if (res.status === 400) {
+        return { success: true, alreadySaved: true };
+      }
       if (!res.ok) throw new Error('Failed to save edit');
       return res.json();
     },
     onSuccess: () => {
       setEditStatus(prev => ({ ...prev, saved: true }));
       queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/saves/check', 'morocco-edit-container'] });
       toast({ description: 'Edit saved to your Suitcase' });
     }
   });
@@ -370,12 +374,28 @@ export default function Editorial() {
           savedAt: Date.now()
         })
       });
+      if (res.status === 400) {
+        const updateRes = await fetch(`/api/saves/morocco-edit-container`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            metadata: {
+              editStatus: 'acquired',
+              dates: 'April 3–10, 2026',
+              destination: 'Morocco'
+            }
+          })
+        });
+        if (!updateRes.ok) throw new Error('Failed to update edit status');
+        return { success: true, updated: true };
+      }
       if (!res.ok) throw new Error('Failed to acquire edit');
       return res.json();
     },
     onSuccess: () => {
       setEditStatus({ saved: true, acquired: true });
       queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/saves/check', 'morocco-edit-container'] });
       toast({ description: 'Edit acquired! Full itinerary unlocked.' });
     }
   });
