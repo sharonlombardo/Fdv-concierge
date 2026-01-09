@@ -46,6 +46,12 @@ type SavedItem = {
     [key: string]: any;
   };
   savedAt: number;
+  editionTag?: string;
+  storyTag?: string;
+  editTag?: string;
+  purchaseStatus?: string;
+  title?: string;
+  assetUrl?: string;
 };
 
 const VIEW_MODES = [
@@ -136,45 +142,37 @@ function getSourceLabel(sourceContext: string): string {
   return "";
 }
 
+const SAVE_TYPE_TO_CATEGORY: Record<string, string> = {
+  'look': 'style',
+  'style': 'style',
+  'accessory': 'style',
+  'wardrobe': 'style',
+  'image': 'inspiration',
+  'inspire': 'inspiration',
+  'scene': 'inspiration',
+  'cover': 'inspiration',
+  'quote': 'state-of-mind',
+  'experience': 'places',
+  'place': 'places',
+  'feature': 'places',
+  'product': 'items',
+  'object': 'items',
+  'item': 'items',
+  'article': 'culture',
+  'culture': 'culture',
+  'ritual': 'daily-rituals',
+};
+
 function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
   switch (tab) {
     case "all":
       return saves;
-    case "style":
-      return saves.filter(
-        (s) =>
-          s.itemType === "look" ||
-          s.itemType === "style" ||
-          s.itemType === "product" ||
-          s.itemType === "accessory" ||
-          s.itemType === "wardrobe"
-      );
     case "state-of-mind":
-      return [];
-    case "culture":
-      return saves.filter(
-        (s) => s.itemType === "culture"
-      );
-    case "daily-rituals":
-      return saves.filter(
-        (s) => s.itemType === "ritual"
-      );
-    case "places":
-      return saves.filter(
-        (s) => s.itemType === "place" || s.itemType === "feature"
-      );
-    case "items":
-      return saves.filter(
-        (s) => s.itemType === "product" || s.itemType === "clothing" || s.itemType === "wardrobe"
-      );
-    case "inspiration":
-      return saves.filter(
-        (s) => s.itemType === "inspire"
-      );
+      return saves.filter(s => s.itemType === "quote");
     case "todays-edit":
       return [];
     default:
-      return saves;
+      return saves.filter(s => SAVE_TYPE_TO_CATEGORY[s.itemType] === tab);
   }
 }
 
@@ -325,11 +323,10 @@ function TodaysEditTabContent() {
 }
 
 function ByEditView({ saves }: { saves: SavedItem[] }) {
-  const getEditSaves = (storyTag: string) => {
-    return saves.filter(s => 
-      s.metadata?.sourceStory?.toLowerCase().includes(storyTag) ||
-      s.aestheticTags?.some(tag => tag.toLowerCase().includes(storyTag))
-    );
+  const uniqueEditTags = Array.from(new Set(saves.map(s => s.editTag).filter(Boolean))) as string[];
+  
+  const getEditSaves = (editTag: string) => {
+    return saves.filter(s => s.editTag === editTag);
   };
 
   const getTypeCounts = (editSaves: SavedItem[]) => {
@@ -341,20 +338,33 @@ function ByEditView({ saves }: { saves: SavedItem[] }) {
     return counts;
   };
 
+  const getEditDisplayName = (editTag: string) => {
+    const found = EDIT_CARDS.find(e => e.id === editTag);
+    if (found) return found.name;
+    return editTag.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  };
+
+  const getEditColor = (editTag: string) => {
+    const found = EDIT_CARDS.find(e => e.id === editTag);
+    return found?.color || "bg-stone-100 dark:bg-stone-800/50";
+  };
+
+  const allEditTags = Array.from(new Set([...EDIT_CARDS.map(e => e.id), ...uniqueEditTags]));
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {EDIT_CARDS.map((edit) => {
-        const editSaves = getEditSaves(edit.storyTag);
+      {allEditTags.map((editTag) => {
+        const editSaves = getEditSaves(editTag);
         const typeCounts = getTypeCounts(editSaves);
         
         return (
-          <Link key={edit.id} href={`/suitcase/edit/${edit.id}`}>
+          <Link key={editTag} href={`/suitcase/edit/${editTag}`}>
             <div 
-              className={`${edit.color} rounded-md p-6 min-h-[180px] flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow`}
-              data-testid={`card-${edit.id}`}
+              className={`${getEditColor(editTag)} rounded-md p-6 min-h-[180px] flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow`}
+              data-testid={`card-${editTag}`}
             >
               <div>
-                <h3 className="font-serif text-xl font-medium mb-2">{edit.name}</h3>
+                <h3 className="font-serif text-xl font-medium mb-2">{getEditDisplayName(editTag)}</h3>
                 <p className="text-2xl font-bold">{editSaves.length}</p>
                 <p className="text-sm text-muted-foreground">saved items</p>
               </div>
@@ -371,6 +381,11 @@ function ByEditView({ saves }: { saves: SavedItem[] }) {
           </Link>
         );
       })}
+      {allEditTags.length === 0 && (
+        <div className="col-span-full text-center py-12">
+          <p className="text-muted-foreground">No edits yet. Save items from The Current to create edits.</p>
+        </div>
+      )}
     </div>
   );
 }

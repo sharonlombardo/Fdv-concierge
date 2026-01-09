@@ -19,6 +19,7 @@ import CurrentFeed from "@/pages/current";
 import SuitcasePage from "@/pages/suitcase";
 import TodaysEditDetail from "@/pages/todays-edit-detail";
 import ImageControl from "@/pages/image-control";
+import EditDetail from "@/pages/edit-detail";
 
 function Router() {
   return (
@@ -33,6 +34,7 @@ function Router() {
       <Route path="/current">{() => <CurrentFeed />}</Route>
       <Route path="/suitcase" component={SuitcasePage} />
       <Route path="/suitcase/todays-edit/:slug" component={TodaysEditDetail} />
+      <Route path="/suitcase/edit/:editTag" component={EditDetail} />
       <Route path="/image-control" component={ImageControl} />
       <Route path="/test-saves" component={TestSaves} />
       <Route component={NotFound} />
