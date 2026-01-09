@@ -108,7 +108,7 @@ export default function TodaysEdit() {
 
         <footer className="text-center py-12 border-t border-border">
           <p className="text-xs tracking-widest uppercase text-muted-foreground">
-            Curated for Morocco 2026
+            Curated for you
           </p>
         </footer>
       </div>
