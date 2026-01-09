@@ -30,8 +30,8 @@ function TodaysEditCard({ getImageUrl }: { getImageUrl: (key: string) => string 
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
           <p className="text-xs font-medium tracking-[0.2em] uppercase opacity-80 mb-2">Today's Edit</p>
-          <h3 className="font-serif text-2xl md:text-3xl font-medium mb-2">Morocco 2026</h3>
-          <p className="text-sm opacity-80 mb-4">A curated journey through Marrakech, the Atlas Mountains, and Essaouira</p>
+          <h3 className="font-serif text-2xl md:text-3xl font-medium mb-2">Desert Neutrals</h3>
+          <p className="text-sm opacity-80 mb-4">A curated selection of mood, looks, and pieces</p>
           <div className="flex items-center gap-2 text-xs font-medium tracking-wide opacity-70 group-hover:opacity-100 transition-opacity">
             <span>View Edit</span>
             <ChevronRight className="w-4 h-4" />
