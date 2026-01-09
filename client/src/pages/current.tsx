@@ -1,10 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PinButton } from "@/components/pin-button";
 import { GlobalNav } from "@/components/global-nav";
 import { EditorialDetailDrawer, type EditorialItem } from "@/components/editorial-detail-drawer";
+import { useImageSlots } from "@/hooks/use-image-slot";
+import { IMAGE_SLOTS } from "@shared/image-slots";
+
+type GetImageUrlFn = (assetKey: string) => string;
+const ImageContext = createContext<GetImageUrlFn>((key) => "");
+
+function useGetImageUrl() {
+  return useContext(ImageContext);
+}
 
 type PinTile = {
   id: string;
@@ -114,10 +123,23 @@ function StickyNav({ activeSection }: { activeSection: string }) {
 
 function PageTurnHero({ title, stateOfMind, paragraph, assetKey, bucket, pinType, isOpening, subhead }: PageTurnHeroProps) {
   const storyTag = assetKey.split('-')[0];
+  const getImageUrl = useGetImageUrl();
+  const imageUrl = getImageUrl(assetKey);
+  
   return (
     <div className="relative w-full min-h-[70vh] md:min-h-[80vh] flex items-end" data-testid={`hero-${assetKey}`}>
-      <div className="absolute inset-0 bg-stone-200 dark:bg-stone-800 flex items-center justify-center">
-        <span className="text-muted-foreground text-sm uppercase tracking-widest">Image Placeholder</span>
+      <div className="absolute inset-0 bg-stone-200 dark:bg-stone-800">
+        {imageUrl ? (
+          <img 
+            src={imageUrl} 
+            alt={title}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-muted-foreground text-sm uppercase tracking-widest">Image Placeholder</span>
+          </div>
+        )}
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
       <div className="absolute top-4 right-4 z-10">
@@ -192,9 +214,22 @@ function QuoteCard({ quote, id, sourceStory }: QuoteCardProps & { sourceStory?: 
 
 function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory, imagePosition = "left" }: MomentBlockProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
+  const getImageUrl = useGetImageUrl();
+  const imageUrl = getImageUrl(assetKey);
+  
   const imageBlock = (
-    <div className="relative aspect-[4/5] md:aspect-square bg-stone-200 dark:bg-stone-800 rounded-md flex items-center justify-center">
-      <span className="text-muted-foreground text-xs uppercase tracking-widest">Image Placeholder</span>
+    <div className="relative aspect-[4/5] md:aspect-square bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden">
+      {imageUrl ? (
+        <img 
+          src={imageUrl} 
+          alt={title}
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center">
+          <span className="text-muted-foreground text-xs uppercase tracking-widest">Image Placeholder</span>
+        </div>
+      )}
       <div className="absolute top-3 right-3 z-10">
         <PinButton
           itemType={pinType as any}
@@ -251,8 +286,10 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
 
 function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
+  const getImageUrl = useGetImageUrl();
   
   const handleTileClick = (tile: PinTile) => {
+    const imageUrl = getImageUrl(tile.assetKey);
     if (onOpenDetail) {
       onOpenDetail({
         id: tile.id,
@@ -261,7 +298,7 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
         pinType: tile.pinType,
         assetKey: tile.assetKey,
         storyTag,
-        imageUrl: tile.imageUrl
+        imageUrl
       });
     }
   };
@@ -270,18 +307,30 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
     <div className="py-12 md:py-16 px-4 max-w-5xl mx-auto">
       <h3 className="text-xs tracking-widest uppercase text-muted-foreground mb-8 text-center">{title}</h3>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-        {tiles.map((tile) => (
-          <div 
-            key={tile.id} 
-            className="relative group cursor-pointer" 
-            data-testid={`tile-${tile.id}`}
-            onClick={() => handleTileClick(tile)}
-          >
-            <div className="aspect-square bg-stone-200 dark:bg-stone-800 rounded-md flex items-center justify-center overflow-hidden transition-transform group-hover:scale-[1.02]">
-              <span className="text-muted-foreground text-xs uppercase tracking-widest text-center px-2">
-                {tile.caption}
-              </span>
-            </div>
+        {tiles.map((tile) => {
+          const imageUrl = getImageUrl(tile.assetKey);
+          return (
+            <div 
+              key={tile.id} 
+              className="relative group cursor-pointer" 
+              data-testid={`tile-${tile.id}`}
+              onClick={() => handleTileClick(tile)}
+            >
+              <div className="aspect-square bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden transition-transform group-hover:scale-[1.02]">
+                {imageUrl ? (
+                  <img 
+                    src={imageUrl} 
+                    alt={tile.caption}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-muted-foreground text-xs uppercase tracking-widest text-center px-2">
+                      {tile.caption}
+                    </span>
+                  </div>
+                )}
+              </div>
             <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
               <PinButton
                 itemType={tile.pinType as any}
@@ -305,7 +354,8 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
             </div>
             <p className="text-xs text-muted-foreground mt-2 text-center">{tile.caption}</p>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -313,13 +363,23 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
 
 function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
+  const getImageUrl = useGetImageUrl();
+  const image1Url = getImageUrl(image1.assetKey);
+  const image2Url = getImageUrl(image2.assetKey);
+  
   return (
     <div className="py-12 md:py-16 px-4 max-w-5xl mx-auto">
       <h3 className="text-xs tracking-widest uppercase text-muted-foreground mb-8 text-center">{title}</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="relative group" data-testid={`two-up-${image1.assetKey}`}>
-          <div className="aspect-[4/5] bg-stone-200 dark:bg-stone-800 rounded-md flex items-center justify-center">
-            <span className="text-muted-foreground text-xs uppercase tracking-widest">{image1.caption}</span>
+          <div className="aspect-[4/5] bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden">
+            {image1Url ? (
+              <img src={image1Url} alt={image1.caption} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="text-muted-foreground text-xs uppercase tracking-widest">{image1.caption}</span>
+              </div>
+            )}
           </div>
           <div className="absolute top-2 right-2 z-10">
             <PinButton
@@ -345,8 +405,14 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
           <p className="text-sm text-center mt-3 text-muted-foreground">{image1.caption}</p>
         </div>
         <div className="relative group" data-testid={`two-up-${image2.assetKey}`}>
-          <div className="aspect-[4/5] bg-stone-200 dark:bg-stone-800 rounded-md flex items-center justify-center">
-            <span className="text-muted-foreground text-xs uppercase tracking-widest">{image2.caption}</span>
+          <div className="aspect-[4/5] bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden">
+            {image2Url ? (
+              <img src={image2Url} alt={image2.caption} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="text-muted-foreground text-xs uppercase tracking-widest">{image2.caption}</span>
+              </div>
+            )}
           </div>
           <div className="absolute top-2 right-2 z-10">
             <PinButton
@@ -378,12 +444,19 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
 
 function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: MotionLoopBlockProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
+  const getImageUrl = useGetImageUrl();
+  const imageUrl = getImageUrl(id);
+  
   return (
     <div className="py-12 md:py-16 px-4 max-w-4xl mx-auto">
-      <div className="relative aspect-video bg-stone-300 dark:bg-stone-700 rounded-md flex items-center justify-center" data-testid={`motion-${id}`}>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-muted-foreground text-sm uppercase tracking-widest">Video Placeholder</span>
-        </div>
+      <div className="relative aspect-video bg-stone-300 dark:bg-stone-700 rounded-md overflow-hidden" data-testid={`motion-${id}`}>
+        {imageUrl ? (
+          <img src={imageUrl} alt={overlayText} className="w-full h-full object-cover" />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-muted-foreground text-sm uppercase tracking-widest">Video Placeholder</span>
+          </div>
+        )}
         <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
           <p className="font-serif text-2xl md:text-3xl text-white italic text-center px-8">{overlayText}</p>
         </div>
@@ -449,6 +522,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
   const [activeSection, setActiveSection] = useState("");
   const [selectedItem, setSelectedItem] = useState<EditorialItem | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  
+  const { data: imageSlotsData } = useImageSlots();
 
   const handleOpenDetail = (item: EditorialItem) => {
     setSelectedItem(item);
@@ -477,7 +552,19 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const getImageUrl = (assetKey: string): string => {
+    if (imageSlotsData?.slots) {
+      const slot = imageSlotsData.slots.find(s => s.key === assetKey);
+      if (slot?.currentUrl) {
+        return slot.currentUrl;
+      }
+    }
+    const defaultSlot = IMAGE_SLOTS.find(s => s.key === assetKey);
+    return defaultSlot?.defaultUrl || "";
+  };
+
   return (
+    <ImageContext.Provider value={getImageUrl}>
     <div className={embedded ? "" : "min-h-screen bg-[#fafaf9] dark:bg-background"}>
       <EditorialDetailDrawer
         item={selectedItem}
@@ -1034,5 +1121,6 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <p className="text-xs tracking-widest uppercase text-muted-foreground">End of Issue 1</p>
       </div>
     </div>
+    </ImageContext.Provider>
   );
 }
