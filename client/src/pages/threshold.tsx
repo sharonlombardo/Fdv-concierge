@@ -16,7 +16,7 @@ const EXPLORE_CATEGORIES = [
 function TodaysEditCard({ getImageUrl }: { getImageUrl: (key: string) => string }) {
   const cardImage = getImageUrl("todays-edit-card");
   return (
-    <Link href="/suitcase/edit/morocco-edit">
+    <Link href="/todays-edit">
       <div 
         className="group relative overflow-hidden rounded-lg aspect-[4/5] md:aspect-[16/9] cursor-pointer"
         data-testid="card-todays-edit"

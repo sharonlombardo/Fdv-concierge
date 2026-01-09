@@ -685,6 +685,90 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   },
 
   // ========================================
+  // TODAY'S EDIT (DESERT NEUTRALS)
+  // ========================================
+  {
+    key: "todays-edit-mood-1",
+    label: "Mood 1 (Large)",
+    section: "Today's Edit",
+    defaultUrl: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Large mood/inspiration image 1"
+  },
+  {
+    key: "todays-edit-mood-2",
+    label: "Mood 2 (Large)",
+    section: "Today's Edit",
+    defaultUrl: "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Large mood/inspiration image 2"
+  },
+  {
+    key: "todays-edit-mood-3",
+    label: "Mood 3 (Large)",
+    section: "Today's Edit",
+    defaultUrl: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Large mood/inspiration image 3"
+  },
+  {
+    key: "todays-edit-mood-4",
+    label: "Mood 4 (Large)",
+    section: "Today's Edit",
+    defaultUrl: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Large mood/inspiration image 4"
+  },
+  {
+    key: "todays-edit-look-1",
+    label: "Look/Product 1",
+    section: "Today's Edit",
+    defaultUrl: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600",
+    aspectRatio: "1:1",
+    description: "Smaller look or product image 1"
+  },
+  {
+    key: "todays-edit-look-2",
+    label: "Look/Product 2",
+    section: "Today's Edit",
+    defaultUrl: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=600",
+    aspectRatio: "1:1",
+    description: "Smaller look or product image 2"
+  },
+  {
+    key: "todays-edit-look-3",
+    label: "Look/Product 3",
+    section: "Today's Edit",
+    defaultUrl: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=600",
+    aspectRatio: "1:1",
+    description: "Smaller look or product image 3"
+  },
+  {
+    key: "todays-edit-look-4",
+    label: "Look/Product 4",
+    section: "Today's Edit",
+    defaultUrl: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=600",
+    aspectRatio: "1:1",
+    description: "Smaller look or product image 4"
+  },
+  {
+    key: "todays-edit-look-5",
+    label: "Look/Product 5",
+    section: "Today's Edit",
+    defaultUrl: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&q=80&w=600",
+    aspectRatio: "1:1",
+    description: "Smaller look or product image 5"
+  },
+  {
+    key: "todays-edit-look-6",
+    label: "Look/Product 6",
+    section: "Today's Edit",
+    defaultUrl: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=600",
+    aspectRatio: "1:1",
+    description: "Smaller look or product image 6"
+  },
+
+  // ========================================
   // LANDING PAGE (THRESHOLD)
   // ========================================
   {
