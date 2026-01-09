@@ -162,12 +162,18 @@ export const imageRuleSchema = z.object({
 // Saves table - stores user-pinned/saved items
 export const saves = pgTable("saves", {
   id: serial("id").primaryKey(),
-  itemType: text("item_type").notNull(), // 'image', 'product', 'article', 'quote', 'place', 'look'
-  itemId: text("item_id").notNull(), // reference to the actual content (e.g., 'd1-morning' for itinerary)
-  sourceContext: text("source_context"), // where it was saved from: 'current_feed', 'morocco_itinerary', etc.
+  itemType: text("item_type").notNull(), // 'image', 'product', 'article', 'quote', 'place', 'look', 'experience', 'ritual'
+  itemId: text("item_id").notNull(), // reference to the actual content (assetKey)
+  sourceContext: text("source_context"), // where it was saved from: 'the_current_issue_1', 'morocco_itinerary', etc.
   aestheticTags: text("aesthetic_tags").array(), // ['minimal', 'linen', 'desert', 'architectural']
   savedAt: bigint("saved_at", { mode: "number" }).notNull(),
   metadata: jsonb("metadata"), // flexible storage for item details (title, image url, etc.)
+  editionTag: text("edition_tag"), // e.g., 'current-edition-1'
+  storyTag: text("story_tag"), // e.g., 'morocco', 'hydra', 'slow-travel'
+  editTag: text("edit_tag"), // e.g., 'morocco-edit', 'hydra-edit'
+  purchaseStatus: text("purchase_status"), // 'in_cart', 'purchased', null
+  title: text("title"), // display title
+  assetUrl: text("asset_url"), // image/asset URL
 });
 
 export const insertSaveSchema = createInsertSchema(saves).omit({
@@ -185,7 +191,26 @@ export const saveSchema = z.object({
   aestheticTags: z.array(z.string()).optional(),
   savedAt: z.number(),
   metadata: z.any().optional(),
+  editionTag: z.string().optional(),
+  storyTag: z.string().optional(),
+  editTag: z.string().optional(),
+  purchaseStatus: z.string().optional(),
+  title: z.string().optional(),
+  assetUrl: z.string().optional(),
 });
+
+// SaveType mapping to category tabs
+export const SAVE_TYPE_TO_CATEGORY: Record<string, string> = {
+  'look': 'style',
+  'image': 'inspiration',
+  'quote': 'state-of-mind',
+  'experience': 'places',
+  'place': 'places',
+  'product': 'items',
+  'article': 'culture',
+  'ritual': 'daily-rituals',
+  'object': 'items',
+};
 
 // Capsules table - AI-generated or user-created collections based on saves
 export const capsules = pgTable("capsules", {

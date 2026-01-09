@@ -10,6 +10,11 @@ interface PinButtonProps {
     title?: string;
     imageUrl?: string;
     description?: string;
+    editionTag?: string;
+    storyTag?: string;
+    editTag?: string;
+    assetKey?: string;
+    assetUrl?: string;
     [key: string]: any;
   };
   sourceContext: string;
@@ -58,7 +63,12 @@ export function PinButton({
             sourceContext,
             aestheticTags,
             metadata: itemData,
-            savedAt: Date.now()
+            savedAt: Date.now(),
+            editionTag: itemData.editionTag,
+            storyTag: itemData.storyTag,
+            editTag: itemData.editTag,
+            title: itemData.title,
+            assetUrl: itemData.assetUrl || itemData.imageUrl
           })
         });
         if (!res.ok) throw new Error('Failed to pin');

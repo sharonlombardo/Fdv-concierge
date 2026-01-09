@@ -386,6 +386,12 @@ export async function registerRoutes(
         aestheticTags: data.aestheticTags || null,
         savedAt: data.savedAt || Date.now(),
         metadata: data.metadata || null,
+        editionTag: data.editionTag || data.metadata?.editionTag || null,
+        storyTag: data.storyTag || data.metadata?.storyTag || null,
+        editTag: data.editTag || data.metadata?.editTag || null,
+        purchaseStatus: data.purchaseStatus || null,
+        title: data.title || data.metadata?.title || null,
+        assetUrl: data.assetUrl || data.metadata?.assetUrl || null,
       });
       res.json(newSave);
     } catch (error) {
