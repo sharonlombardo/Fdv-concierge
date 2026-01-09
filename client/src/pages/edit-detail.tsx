@@ -79,6 +79,49 @@ function filterByTab(saves: SavedItem[], tab: string): SavedItem[] {
   }
 }
 
+function deriveEditTag(save: SavedItem): string | null {
+  if (save.editTag) return save.editTag;
+  
+  if (save.storyTag) {
+    const storyToEdit: Record<string, string> = {
+      'morocco': 'morocco-edit',
+      'hydra': 'hydra-edit',
+      'slow-travel': 'slow-travel-edit',
+      'retreat': 'retreat-edit',
+      'new-york': 'new-york-edit',
+      'opening': 'opening-edit',
+    };
+    return storyToEdit[save.storyTag] || null;
+  }
+  
+  if (save.sourceContext) {
+    if (save.sourceContext.includes('morocco')) return 'morocco-edit';
+    if (save.sourceContext.includes('hydra')) return 'hydra-edit';
+  }
+  
+  if (save.itemId) {
+    if (save.itemId.startsWith('morocco-') || save.itemId.startsWith('d1-') || save.itemId.startsWith('d2-')) return 'morocco-edit';
+    if (save.itemId.startsWith('hydra-')) return 'hydra-edit';
+    if (save.itemId.startsWith('slow-') || save.itemId.startsWith('slow-travel-')) return 'slow-travel-edit';
+    if (save.itemId.startsWith('retreat-')) return 'retreat-edit';
+    if (save.itemId.startsWith('ny-') || save.itemId.startsWith('newyork-')) return 'new-york-edit';
+    if (save.itemId.startsWith('opening-')) return 'opening-edit';
+  }
+  
+  if (save.metadata?.sourceStory) {
+    const storyMap: Record<string, string> = {
+      'Morocco': 'morocco-edit',
+      'Hydra': 'hydra-edit',
+      'Slow Travel': 'slow-travel-edit',
+      'Retreat': 'retreat-edit',
+      'New York': 'new-york-edit',
+    };
+    return storyMap[save.metadata.sourceStory] || null;
+  }
+  
+  return null;
+}
+
 function getEditDisplayName(editTag: string): string {
   const nameMap: Record<string, string> = {
     'morocco-edit': 'Morocco Edit',
@@ -178,9 +221,20 @@ export default function EditDetailPage() {
     setDrawerOpen(true);
   };
 
-  const editSaves = allSaves.filter(s => s.editTag === editTag);
+  const editSaves = allSaves.filter(s => deriveEditTag(s) === editTag);
   const filteredSaves = filterByTab(editSaves, activeTab);
   const editColor = EDIT_COLORS[editTag] || 'bg-stone-100 dark:bg-stone-800/50';
+  
+  console.log(`[EditDetail] Found ${editSaves.length} items for editTag="${editTag}"`);
+  if (editSaves.length === 0 && allSaves.length > 0) {
+    console.log('[EditDetail] Sample saves for debugging:', allSaves.slice(0, 3).map(s => ({
+      itemId: s.itemId,
+      editTag: s.editTag,
+      storyTag: s.storyTag,
+      sourceContext: s.sourceContext,
+      derived: deriveEditTag(s)
+    })));
+  }
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">

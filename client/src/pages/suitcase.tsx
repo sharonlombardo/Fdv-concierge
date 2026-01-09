@@ -256,14 +256,62 @@ function SavedItemCard({ save, onRemove, onClick }: { save: SavedItem; onRemove:
   );
 }
 
+function deriveEditTag(save: SavedItem): string | null {
+  if (save.editTag) return save.editTag;
+  
+  if (save.storyTag) {
+    const storyToEdit: Record<string, string> = {
+      'morocco': 'morocco-edit',
+      'hydra': 'hydra-edit',
+      'slow-travel': 'slow-travel-edit',
+      'retreat': 'retreat-edit',
+      'new-york': 'new-york-edit',
+      'opening': 'opening-edit',
+    };
+    return storyToEdit[save.storyTag] || null;
+  }
+  
+  if (save.sourceContext) {
+    if (save.sourceContext.includes('morocco')) return 'morocco-edit';
+    if (save.sourceContext.includes('hydra')) return 'hydra-edit';
+  }
+  
+  if (save.itemId) {
+    if (save.itemId.startsWith('morocco-') || save.itemId.startsWith('d1-') || save.itemId.startsWith('d2-')) return 'morocco-edit';
+    if (save.itemId.startsWith('hydra-')) return 'hydra-edit';
+    if (save.itemId.startsWith('slow-') || save.itemId.startsWith('slow-travel-')) return 'slow-travel-edit';
+    if (save.itemId.startsWith('retreat-')) return 'retreat-edit';
+    if (save.itemId.startsWith('ny-') || save.itemId.startsWith('newyork-')) return 'new-york-edit';
+    if (save.itemId.startsWith('opening-')) return 'opening-edit';
+  }
+  
+  if (save.metadata?.sourceStory) {
+    const storyMap: Record<string, string> = {
+      'Morocco': 'morocco-edit',
+      'Hydra': 'hydra-edit',
+      'Slow Travel': 'slow-travel-edit',
+      'Retreat': 'retreat-edit',
+      'New York': 'new-york-edit',
+    };
+    return storyMap[save.metadata.sourceStory] || null;
+  }
+  
+  return null;
+}
+
 function ByEditView({ saves }: { saves: SavedItem[] }) {
-  const uniqueEditTags = Array.from(new Set(saves.map(s => s.editTag).filter(Boolean))) as string[];
+  const savesWithEditTag = saves.map(s => ({
+    ...s,
+    derivedEditTag: deriveEditTag(s)
+  }));
+  
+  const uniqueEditTags = Array.from(new Set(savesWithEditTag.map(s => s.derivedEditTag).filter(Boolean))) as string[];
   
   const getEditSaves = (editTag: string) => {
-    return saves.filter(s => s.editTag === editTag);
+    return savesWithEditTag.filter(s => s.derivedEditTag === editTag);
   };
 
-  const getTypeCounts = (editSaves: SavedItem[]) => {
+  const getTypeCounts = (editSaves: typeof savesWithEditTag) => {
     const counts: Record<string, number> = {};
     editSaves.forEach(s => {
       const type = s.itemType || 'other';
@@ -283,11 +331,11 @@ function ByEditView({ saves }: { saves: SavedItem[] }) {
     return found?.color || "bg-stone-100 dark:bg-stone-800/50";
   };
 
-  const allEditTags = Array.from(new Set([...EDIT_CARDS.map(e => e.id), ...uniqueEditTags]));
+  const editsWithSaves = uniqueEditTags.filter(tag => getEditSaves(tag).length > 0);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {allEditTags.map((editTag) => {
+      {editsWithSaves.map((editTag) => {
         const editSaves = getEditSaves(editTag);
         const typeCounts = getTypeCounts(editSaves);
         
@@ -315,7 +363,7 @@ function ByEditView({ saves }: { saves: SavedItem[] }) {
           </Link>
         );
       })}
-      {allEditTags.length === 0 && (
+      {editsWithSaves.length === 0 && (
         <div className="col-span-full text-center py-12">
           <p className="text-muted-foreground">No edits yet. Save items from The Current to create edits.</p>
         </div>
