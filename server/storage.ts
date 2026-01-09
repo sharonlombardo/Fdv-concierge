@@ -45,7 +45,7 @@ export interface IStorage {
   getSaves(): Promise<Save[]>;
   getSaveByItemId(itemId: string): Promise<Save | undefined>;
   addSave(data: InsertSave): Promise<Save>;
-  updateSaveByItemId(itemId: string, data: { metadata?: any }): Promise<Save | undefined>;
+  updateSaveByItemId(itemId: string, data: { metadata?: any; purchaseStatus?: string }): Promise<Save | undefined>;
   deleteSaveByItemId(itemId: string): Promise<void>;
   clearAllSaves(): Promise<void>;
 }
@@ -238,18 +238,26 @@ export class MemStorage implements IStorage {
     return created;
   }
 
-  async updateSaveByItemId(itemId: string, data: { metadata?: any }): Promise<Save | undefined> {
+  async updateSaveByItemId(itemId: string, data: { metadata?: any; purchaseStatus?: string }): Promise<Save | undefined> {
     const existing = await this.getSaveByItemId(itemId);
     if (!existing) return undefined;
     
-    const updatedMetadata = {
-      ...(existing.metadata || {}),
-      ...data.metadata
-    };
+    const updateData: any = {};
+    
+    if (data.metadata) {
+      updateData.metadata = {
+        ...(existing.metadata || {}),
+        ...data.metadata
+      };
+    }
+    
+    if (data.purchaseStatus !== undefined) {
+      updateData.purchaseStatus = data.purchaseStatus || null;
+    }
     
     const [updated] = await db
       .update(saves)
-      .set({ metadata: updatedMetadata })
+      .set(updateData)
       .where(eq(saves.itemId, itemId))
       .returning();
     return updated;

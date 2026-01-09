@@ -403,9 +403,9 @@ export async function registerRoutes(
   app.patch("/api/saves/:itemId", async (req, res) => {
     try {
       const { itemId } = req.params;
-      const { metadata } = req.body;
+      const { metadata, purchaseStatus } = req.body;
       
-      const updated = await storage.updateSaveByItemId(itemId, { metadata });
+      const updated = await storage.updateSaveByItemId(itemId, { metadata, purchaseStatus });
       if (!updated) {
         return res.status(404).json({ error: "Save not found" });
       }

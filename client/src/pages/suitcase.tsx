@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { X, Briefcase, Sparkles } from "lucide-react";
+import { X, Briefcase, Sparkles, Package } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { useImageSlot } from "@/hooks/use-image-slot";
 import { GlobalNav } from "@/components/global-nav";
+import { DetailDrawer } from "@/components/detail-drawer";
 
 type EditData = {
   id: string;
@@ -203,20 +204,22 @@ function StateOfMindContent() {
   );
 }
 
-function SavedItemCard({ save, onRemove }: { save: SavedItem; onRemove: () => void }) {
-  const hasImage = save.metadata?.imageUrl;
-  const hasPurchaseIntent = save.metadata?.purchaseIntent === true;
+function SavedItemCard({ save, onRemove, onClick }: { save: SavedItem; onRemove: () => void; onClick: () => void }) {
+  const imageUrl = save.assetUrl || save.metadata?.imageUrl;
+  const isOwned = save.purchaseStatus === 'purchased';
+  const isWanted = save.purchaseStatus === 'want';
 
   return (
     <div
-      className="group relative bg-white dark:bg-card rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+      className="group relative bg-white dark:bg-card rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
       data-testid={`card-saved-${save.id}`}
+      onClick={onClick}
     >
       <div className="aspect-[3/4] relative">
-        {hasImage ? (
+        {imageUrl ? (
           <img
-            src={save.metadata.imageUrl}
-            alt={save.metadata.title || "Saved item"}
+            src={imageUrl}
+            alt={save.title || save.metadata?.title || "Saved item"}
             className="w-full h-full object-cover"
           />
         ) : (
@@ -238,11 +241,19 @@ function SavedItemCard({ save, onRemove }: { save: SavedItem; onRemove: () => vo
           <X className="w-4 h-4" />
         </Button>
 
-        {hasPurchaseIntent && (
+        {isOwned && (
+          <div className="absolute bottom-2 left-2">
+            <Badge variant="secondary" className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 text-xs">
+              <Package className="w-3 h-3 mr-1" />
+              Owned
+            </Badge>
+          </div>
+        )}
+        {isWanted && !isOwned && (
           <div className="absolute bottom-2 left-2">
             <Badge variant="secondary" className="bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-100 text-xs">
               <Briefcase className="w-3 h-3 mr-1" />
-              To Buy
+              Want
             </Badge>
           </div>
         )}
@@ -260,7 +271,7 @@ function SavedItemCard({ save, onRemove }: { save: SavedItem; onRemove: () => vo
           )}
         </div>
         <h3 className="font-medium text-sm leading-tight line-clamp-2">
-          {save.metadata?.title || save.itemId}
+          {save.title || save.metadata?.title || save.itemId}
         </h3>
         {save.metadata?.subtitle && (
           <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
@@ -393,6 +404,8 @@ function ByEditView({ saves }: { saves: SavedItem[] }) {
 export default function SuitcasePage() {
   const [viewMode, setViewMode] = useState("category");
   const [activeTab, setActiveTab] = useState("all");
+  const [selectedItem, setSelectedItem] = useState<SavedItem | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const { data: saves = [], isLoading } = useQuery<SavedItem[]>({
     queryKey: ["/api/saves"],
@@ -407,9 +420,14 @@ export default function SuitcasePage() {
     },
   });
 
+  const handleItemClick = (save: SavedItem) => {
+    setSelectedItem(save);
+    setDrawerOpen(true);
+  };
+
   const filteredSaves = filterSaves(saves, activeTab);
 
-  const itemsToShop = saves.filter((s) => s.metadata?.purchaseIntent).length;
+  const itemsToShop = saves.filter((s) => s.purchaseStatus === 'want').length;
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
@@ -512,6 +530,7 @@ export default function SuitcasePage() {
                     key={save.id}
                     save={save}
                     onRemove={() => removeMutation.mutate(save.itemId)}
+                    onClick={() => handleItemClick(save)}
                   />
                 ))}
               </div>
@@ -519,6 +538,11 @@ export default function SuitcasePage() {
           </>
         )}
       </div>
+      <DetailDrawer
+        item={selectedItem}
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+      />
     </div>
   );
 }

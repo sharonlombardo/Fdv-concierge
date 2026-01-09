@@ -3,9 +3,10 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, X, Package } from "lucide-react";
+import { ArrowLeft, X, Package, Briefcase } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { GlobalNav } from "@/components/global-nav";
+import { DetailDrawer } from "@/components/detail-drawer";
 
 type SavedItem = {
   id: number;
@@ -88,15 +89,17 @@ function getEditDisplayName(editTag: string): string {
   return nameMap[editTag] || editTag.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
-function SavedItemCard({ save, onRemove }: { save: SavedItem; onRemove: () => void }) {
+function SavedItemCard({ save, onRemove, onClick }: { save: SavedItem; onRemove: () => void; onClick: () => void }) {
   const imageUrl = save.assetUrl || save.metadata?.imageUrl;
   const displayTitle = save.title || save.metadata?.title || save.itemId;
   const isOwned = save.purchaseStatus === 'purchased';
+  const isWanted = save.purchaseStatus === 'want';
 
   return (
     <div
-      className="group relative bg-white dark:bg-card rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+      className="group relative bg-white dark:bg-card rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
       data-testid={`card-saved-${save.id}`}
+      onClick={onClick}
     >
       <div className="aspect-[3/4] relative">
         {imageUrl ? (
@@ -113,15 +116,23 @@ function SavedItemCard({ save, onRemove }: { save: SavedItem; onRemove: () => vo
           </div>
         )}
         {isOwned && (
-          <div className="absolute top-2 left-2">
+          <div className="absolute bottom-2 left-2">
             <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
               <Package className="w-3 h-3 mr-1" />
               Owned
             </Badge>
           </div>
         )}
+        {isWanted && !isOwned && (
+          <div className="absolute bottom-2 left-2">
+            <Badge variant="secondary" className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100">
+              <Briefcase className="w-3 h-3 mr-1" />
+              Want
+            </Badge>
+          </div>
+        )}
         <button
-          onClick={onRemove}
+          onClick={(e) => { e.stopPropagation(); onRemove(); }}
           className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 dark:bg-black/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
           data-testid={`button-remove-${save.id}`}
         >
@@ -144,6 +155,8 @@ export default function EditDetailPage() {
   const params = useParams();
   const editTag = params.editTag || '';
   const [activeTab, setActiveTab] = useState("all");
+  const [selectedItem, setSelectedItem] = useState<SavedItem | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const { data: allSaves = [], isLoading } = useQuery<SavedItem[]>({
     queryKey: ["/api/saves"],
@@ -157,6 +170,11 @@ export default function EditDetailPage() {
       queryClient.invalidateQueries({ queryKey: ["/api/saves"] });
     },
   });
+
+  const handleItemClick = (save: SavedItem) => {
+    setSelectedItem(save);
+    setDrawerOpen(true);
+  };
 
   const editSaves = allSaves.filter(s => s.editTag === editTag);
   const filteredSaves = filterByTab(editSaves, activeTab);
@@ -225,11 +243,17 @@ export default function EditDetailPage() {
                 key={save.id}
                 save={save}
                 onRemove={() => removeMutation.mutate(save.itemId)}
+                onClick={() => handleItemClick(save)}
               />
             ))}
           </div>
         )}
       </div>
+      <DetailDrawer
+        item={selectedItem}
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+      />
     </div>
   );
 }
