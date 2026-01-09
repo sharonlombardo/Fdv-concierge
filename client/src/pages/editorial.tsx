@@ -132,24 +132,29 @@ function HeroSection({ isSaved, isAcquired, onSave, onAcquire, isPending }: Hero
             )}
           </Button>
           
-          <Button
-            onClick={onAcquire}
-            disabled={isPending || isAcquired}
-            className="bg-white text-black hover:bg-white/90 px-8 py-6 text-xs tracking-[0.2em] uppercase"
-            data-testid="button-acquire-edit"
-          >
-            {isAcquired ? (
-              <>
-                <Check className="w-4 h-4 mr-2" />
-                Edit Acquired
-              </>
-            ) : (
-              <>
-                <Unlock className="w-4 h-4 mr-2" />
-                Acquire this Edit
-              </>
-            )}
-          </Button>
+          <div className="flex flex-col items-center gap-2">
+            <Button
+              onClick={onAcquire}
+              disabled={isPending || isAcquired}
+              className="bg-white text-black hover:bg-white/90 px-8 py-6 text-xs tracking-[0.2em] uppercase"
+              data-testid="button-acquire-edit"
+            >
+              {isAcquired ? (
+                <>
+                  <Check className="w-4 h-4 mr-2" />
+                  Edit Acquired
+                </>
+              ) : (
+                <>
+                  <Unlock className="w-4 h-4 mr-2" />
+                  Acquire this Edit
+                </>
+              )}
+            </Button>
+            <p className="text-xs text-white/60 text-center max-w-xs">
+              Unlock the complete itinerary and preparation logic for this Edit.
+            </p>
+          </div>
         </div>
       </div>
       

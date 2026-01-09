@@ -1,0 +1,47 @@
+Attached file
+Pasted-We-are-in-polish-demo-stability-mode-Please-implement-O_1767928285125.txt
+We are in polish + demo-stability mode. Please implement ONLY the items below, in this order, and tell me exactly what routes/files to test after each step. Do not add new features beyond this spec.
+
+PRIORITY 1 — HOME / THRESHOLD (make it the real front door)
+1) Update the Home page (/) to be a luxury editorial threshold:
+   - Full-bleed hero image placeholder at top.
+   - Use this exact copy (centered):
+     FIL DE VIE CONCIERGE
+     Discover the world of FIL DE VIE.
+     Places, objects, and experiences worth returning to.
+     A collection of places to enter, objects to live with, and moments to come back to.
+   - Add a small “Explore” row (quiet, not dominant) with links:
+     Travel Destinations, Experiences, Rituals, Culture, Concierge
+   - Add a “Today’s Edit” card under the Explore row (single card). Clicking it should open the Edit Detail view for a system-generated editTag like `todays-edit` (or whatever you already use).
+   - The Home page should scroll directly into The Current (Edition 1) content below (like an Aman-style homepage). No extra click required.
+
+PRIORITY 2 — THE CURRENT tile interactions (stability + spell)
+2) Ensure every tile/block in /current behaves like an editorial magazine:
+   - Clicking a tile opens a detail drawer/modal in-place (NO route change).
+   - Closing the drawer returns to the exact same scroll position.
+   - Drawer always includes Pin (save). If purchaseable, also include Suitcase (add to cart) and a “View Product” link.
+   - Do NOT add category browsing, filters, or directory navigation inside The Current.
+
+PRIORITY 3 — EDIT DETAIL clarity (Acquire + Packing List)
+3) In Edit Detail (/suitcase/edit/:editTag):
+   - Add a small, tasteful helper line under “Acquire this Edit” (no marketing):
+     “Unlock the complete itinerary and preparation logic for this Edit.”
+   - Ensure Acquire sets `editStatus = acquired` and unlocks deeper itinerary (for demo).
+   - Packing List tab must remain a derived view (Looks + Items + Objects) and show Owned / In Cart / Want states clearly.
+
+PRIORITY 4 — COMMERCE COUPLING (buy implies save)
+4) Confirm/implement that any “Add to cart” action automatically creates or updates a Save record and sets purchaseStatus accordingly.
+   - Purchased/owned items must show an Owned badge in Suitcase and appear in Packing List.
+   - If an item is purchased from within an Edit context, tag it to that editTag.
+
+PRIORITY 5 — NO NEW NAV / NO NEW LOGIC
+5) Do not introduce new navigation structures or logic beyond:
+   Home threshold → Current → Suitcase → Edit Detail → Itinerary.
+   Keep The Current editorial.
+
+After finishing, provide:
+- A checklist of what you changed
+- The exact routes to test
+- Any new/updated schema fields (if any)
+- Any files touched (key ones only)
+If the agent pushes back on “Home scrolls into Current,” tell it: implement the Home page as a single scroll page where the Current Edition 1 component renders below the threshold section, rather than requiring a route change.
