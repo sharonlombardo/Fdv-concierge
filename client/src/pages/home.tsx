@@ -334,17 +334,19 @@ function ItemDetailDrawer({
             />
             <div className="absolute top-2 right-2">
               <PinButton
-                itemType="activity"
+                itemType="experience"
                 itemId={item.id}
                 itemData={{
                   title: item.title,
                   description: item.description || item.body,
                   imageUrl: getImageUrl(item.id, item.image, { time: item.time, location, title: item.title, description: item.description, imageType: 'item' }),
                   time: item.time,
-                  location
+                  location,
+                  editTag: 'morocco-edit',
+                  storyTag: 'morocco'
                 }}
                 sourceContext="morocco_itinerary"
-                aestheticTags={['activity', item.time?.toLowerCase() || '']}
+                aestheticTags={['experience', item.time?.toLowerCase() || '']}
                 size="md"
               />
             </div>
@@ -479,7 +481,9 @@ function ItemDetailDrawer({
                           `${item.id}-wardrobe`,
                           item.commercialWardrobe || "",
                           { imageType: 'wardrobe', title: item.title }
-                        )
+                        ),
+                        editTag: 'morocco-edit',
+                        storyTag: 'morocco'
                       }}
                       sourceContext="morocco_itinerary"
                       aestheticTags={['look', 'outfit', 'style']}
@@ -550,7 +554,9 @@ function ItemDetailDrawer({
                                 itemData={{
                                   title: extra?.name || placeholderName,
                                   imageUrl: getImageUrl(extraKey, extra?.image || ''),
-                                  shopLink: extra?.shopLink
+                                  shopLink: extra?.shopLink,
+                                  editTag: 'morocco-edit',
+                                  storyTag: 'morocco'
                                 }}
                                 sourceContext="morocco_itinerary"
                                 aestheticTags={['accessory', placeholderName.toLowerCase()]}
@@ -1214,7 +1220,9 @@ export default function Home() {
                     itemData={{
                       title: `Day ${currentPage.day}: ${currentPage.title}`,
                       location: currentPage.location,
-                      imageUrl: getImageUrl(`day-${currentPage.day}-hero`, currentPage.flow[0]?.image || '', { imageType: 'cover', title: currentPage.title, location: currentPage.location })
+                      imageUrl: getImageUrl(`day-${currentPage.day}-hero`, currentPage.flow[0]?.image || '', { imageType: 'cover', title: currentPage.title, location: currentPage.location }),
+                      editTag: 'morocco-edit',
+                      storyTag: 'morocco'
                     }}
                     sourceContext="morocco_itinerary"
                     aestheticTags={['cover', 'day', currentPage.location?.toLowerCase() || '']}
