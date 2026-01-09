@@ -685,6 +685,26 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   },
 
   // ========================================
+  // LANDING PAGE (THRESHOLD)
+  // ========================================
+  {
+    key: "landing-hero",
+    label: "Landing Page Hero",
+    section: "Landing Page",
+    defaultUrl: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1600",
+    aspectRatio: "16:9",
+    description: "Main background image for FIL DE VIE CONCIERGE landing"
+  },
+  {
+    key: "todays-edit-card",
+    label: "Today's Edit Card",
+    section: "Landing Page",
+    defaultUrl: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Morocco 2026 card background"
+  },
+
+  // ========================================
   // HOME PAGE - ITINERARY
   // ========================================
   {

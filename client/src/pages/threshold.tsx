@@ -2,6 +2,8 @@ import { GlobalNav } from "@/components/global-nav";
 import CurrentFeed from "./current";
 import { Link } from "wouter";
 import { MapPin, Sparkles, Heart, Globe, Bell, ChevronRight } from "lucide-react";
+import { useImageSlots } from "@/hooks/use-image-slot";
+import { IMAGE_SLOTS } from "@shared/image-slots";
 
 const EXPLORE_CATEGORIES = [
   { id: "destinations", label: "Travel Destinations", icon: MapPin, href: "/current" },
@@ -11,7 +13,8 @@ const EXPLORE_CATEGORIES = [
   { id: "concierge", label: "Concierge", icon: Bell, href: "/concierge" },
 ];
 
-function TodaysEditCard() {
+function TodaysEditCard({ getImageUrl }: { getImageUrl: (key: string) => string }) {
+  const cardImage = getImageUrl("todays-edit-card");
   return (
     <Link href="/suitcase/edit/morocco-edit">
       <div 
@@ -21,7 +24,7 @@ function TodaysEditCard() {
         <div 
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1200')`
+            backgroundImage: `url('${cardImage}')`
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -65,6 +68,21 @@ function ExploreRow() {
 }
 
 export default function Threshold() {
+  const { data: imageSlotsData } = useImageSlots();
+
+  const getImageUrl = (assetKey: string): string => {
+    if (imageSlotsData?.slots) {
+      const slot = imageSlotsData.slots.find(s => s.key === assetKey);
+      if (slot?.currentUrl) {
+        return slot.currentUrl;
+      }
+    }
+    const defaultSlot = IMAGE_SLOTS.find(s => s.key === assetKey);
+    return defaultSlot?.defaultUrl || "";
+  };
+
+  const heroImage = getImageUrl("landing-hero");
+
   const handleScrollToContent = () => {
     const contentSection = document.getElementById('current-content');
     if (contentSection) {
@@ -80,7 +98,7 @@ export default function Threshold() {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1600')`
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)), url('${heroImage}')`
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
@@ -127,7 +145,7 @@ export default function Threshold() {
         
         <section className="px-6 pb-12 md:pb-16">
           <div className="max-w-4xl mx-auto">
-            <TodaysEditCard />
+            <TodaysEditCard getImageUrl={getImageUrl} />
           </div>
         </section>
 
