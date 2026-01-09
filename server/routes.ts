@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { saveJournalEntrySchema, journalEntrySchema, customImageSchema, imageLibraryItemSchema, imageRuleSchema, selfieImageSchema, saveSchema } from "@shared/schema";
 import { IMAGE_SLOTS, getSlotsBySection } from "@shared/image-slots";
+import { generateMoroccoSeedItems, MOROCCO_SEED_ITEM_COUNT } from "@shared/morocco-seed-data";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -449,6 +450,83 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error clearing saves:", error);
       res.status(500).json({ error: "Failed to clear saves" });
+    }
+  });
+
+  // Seed endpoint for Morocco Edit - uses server-generated canonical data
+  app.post("/api/saves/seed/morocco-edit", async (req, res) => {
+    try {
+      const THRESHOLD = MOROCCO_SEED_ITEM_COUNT - 10;
+
+      // Check existing morocco-edit saves count
+      const allSaves = await storage.getSaves();
+      const moroccoSaves = allSaves.filter(s => 
+        s.editTag === 'morocco-edit' || 
+        s.storyTag === 'morocco' || 
+        s.sourceContext?.includes('morocco')
+      );
+
+      if (moroccoSaves.length >= THRESHOLD) {
+        return res.json({ 
+          seeded: false, 
+          reason: 'threshold_met',
+          existingCount: moroccoSaves.length,
+          threshold: THRESHOLD,
+          expectedCount: MOROCCO_SEED_ITEM_COUNT
+        });
+      }
+
+      // Generate canonical seed items from server-side data
+      const canonicalItems = generateMoroccoSeedItems();
+      
+      // Get existing item IDs to avoid duplicates
+      const existingIds = new Set(allSaves.map(s => s.itemId));
+      
+      let insertedCount = 0;
+      const now = Date.now();
+
+      for (const item of canonicalItems) {
+        if (existingIds.has(item.itemId)) {
+          continue;
+        }
+
+        await storage.addSave({
+          itemType: item.itemType,
+          itemId: item.itemId,
+          sourceContext: 'morocco_itinerary',
+          aestheticTags: ['morocco', item.time.toLowerCase()],
+          savedAt: now,
+          metadata: {
+            seeded: true,
+            day: item.day,
+            time: item.time,
+            flowTitle: item.flowTitle,
+            isPlaceholder: item.isPlaceholder || false,
+            description: item.description,
+            shopLink: item.shopLink,
+          },
+          editionTag: 'morocco-2026',
+          storyTag: 'morocco',
+          editTag: 'morocco-edit',
+          purchaseStatus: null,
+          title: item.title,
+          assetUrl: item.assetUrl,
+        });
+        
+        existingIds.add(item.itemId);
+        insertedCount++;
+      }
+
+      res.json({ 
+        seeded: true, 
+        insertedCount,
+        totalCanonicalItems: canonicalItems.length,
+        previousCount: moroccoSaves.length,
+        newCount: moroccoSaves.length + insertedCount
+      });
+    } catch (error) {
+      console.error("Error seeding morocco-edit:", error);
+      res.status(500).json({ error: "Failed to seed morocco-edit" });
     }
   });
 

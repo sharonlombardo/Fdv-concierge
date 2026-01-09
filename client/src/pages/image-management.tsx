@@ -11,7 +11,7 @@ import {
   type ItineraryPage, 
   type DayPage,
   type CoverPage 
-} from '@/lib/itinerary-data';
+} from '@shared/itinerary-data';
 import type { CustomImage } from '@shared/schema';
 
 interface ImageItem {

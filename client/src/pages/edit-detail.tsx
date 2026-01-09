@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, X, Package, Briefcase, Map } from "lucide-react";
+import { ArrowLeft, X, Package, Briefcase, Map, Loader2 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { GlobalNav } from "@/components/global-nav";
 import { DetailDrawer } from "@/components/detail-drawer";
@@ -160,10 +160,48 @@ export default function EditDetailPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [selectedItem, setSelectedItem] = useState<SavedItem | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
+  const seedAttempted = useRef(false);
 
   const { data: allSaves = [], isLoading } = useQuery<SavedItem[]>({
     queryKey: ["/api/saves"],
   });
+
+  const MOROCCO_SEED_THRESHOLD = 80;
+  
+  const seedMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/saves/seed/morocco-edit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      if (!res.ok) throw new Error('Failed to seed');
+      return res.json();
+    },
+    onSuccess: (data) => {
+      if (data.seeded && data.insertedCount > 0) {
+        queryClient.invalidateQueries({ queryKey: ["/api/saves"] });
+      }
+    },
+    onError: () => {
+      seedAttempted.current = false;
+    },
+    onSettled: () => {
+      setIsSeeding(false);
+    }
+  });
+
+  useEffect(() => {
+    if (editTag === 'morocco-edit' && !seedAttempted.current && !isLoading && !seedMutation.isPending) {
+      const moroccoSaves = allSaves.filter(s => deriveEditTag(s) === 'morocco-edit');
+      if (moroccoSaves.length < MOROCCO_SEED_THRESHOLD) {
+        seedAttempted.current = true;
+        setIsSeeding(true);
+        seedMutation.mutate();
+      }
+    }
+  }, [editTag, isLoading, allSaves, seedMutation.isPending]);
 
   const removeMutation = useMutation({
     mutationFn: async (itemId: string) => {
@@ -201,7 +239,14 @@ export default function EditDetailPage() {
             {getEditDisplayName(editTag)}
           </h1>
           <p className="text-muted-foreground mb-4" data-testid="text-edit-count">
-            {editSaves.length} saved items
+            {isSeeding ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Loading packing list...
+              </span>
+            ) : (
+              `${editSaves.length} saved items`
+            )}
           </p>
           {editTag === 'morocco-edit' && (
             <Link href="/itinerary/morocco">

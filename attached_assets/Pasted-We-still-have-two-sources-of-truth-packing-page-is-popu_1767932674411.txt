@@ -1,0 +1,44 @@
+We still have two sources of truth:
+- /packing page is populated from static ITINERARY_DATA (Morocco packing list ~82 items)
+- Edit Detail → Packing List tab is populated only from user saves (currently only 9 exist)
+Also: Daily Flow itinerary currently does not allow pin or buy actions.
+
+We need the pilot Morocco Edit to appear fully formed and we must restore pin/buy in itinerary.
+
+Please implement the following, in order:
+
+1) RESTORE PIN + SUITCASE ACTIONS IN DAILY FLOW + OVERVIEW
+- On itinerary pages (daily flow and itinerary overview), ensure all products/looks/objects/experiences that should be saveable have PinButton wired.
+- For purchaseable items, ensure SuitcaseButton (add to cart) is wired.
+- Every save from itinerary must include:
+  editTag = "morocco-edit"
+  storyTag = "morocco"
+  sourceContext = "morocco_itinerary"
+  saveType set correctly
+- Confirm by testing: pin 1 item in daily flow → it appears immediately in /suitcase/edit/morocco-edit.
+
+2) MAKE EDIT DETAIL PACKING LIST MATCH /PACKING (PILOT CONSISTENCY)
+Right now Edit Detail packing list is derived from saves, which will always be smaller than /packing unless the user pins everything.
+
+For the pilot, implement a seeded behavior for Morocco Edit:
+- When user opens /suitcase/edit/morocco-edit:
+  if saved item count for morocco-edit is below a threshold (ex: < 30),
+  then auto-seed saves from the Morocco packing list items in ITINERARY_DATA:
+    - create saves for each packing item (or at least a large subset)
+    - set editTag="morocco-edit", storyTag="morocco", sourceContext="morocco_itinerary"
+    - set saveType = item/object/look appropriately
+    - mark metadata.seeded=true so we know these were preloaded
+- After seeding, Morocco Edit should show a count close to the /packing page count.
+
+3) FIX EDIT DETAIL “PACKING LIST” TAB SOURCE
+- The Packing List tab inside Edit Detail should show:
+  Looks + Items + Objects for that editTag
+- After seeding, it should match /packing closely for Morocco.
+
+4) VERIFY ROUTES
+Please confirm the counts:
+- /packing shows ~82 items (static)
+- /suitcase/edit/morocco-edit shows similar count after seeding
+- pinning from daily flow increases count further
+
+Do not redesign UI. This is strictly data wiring + seeding for the pilot + restoring pin/buy actions.

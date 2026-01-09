@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight, Bookmark, Unlock, Check } from "lucide-react";
 import { useCustomImages } from "@/hooks/use-custom-images";
-import { ITINERARY_DATA, DayPage, FlowItem } from "@/lib/itinerary-data";
+import { ITINERARY_DATA, DayPage, FlowItem } from "@shared/itinerary-data";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";

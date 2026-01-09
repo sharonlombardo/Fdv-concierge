@@ -51,7 +51,7 @@ import {
   type FieldNotesPage,
   type JournalPage as JournalPageType,
   type PackingListPage
-} from '@/lib/itinerary-data';
+} from '@shared/itinerary-data';
 
 function isDayPage(page: ItineraryPage): page is DayPage {
   return 'day' in page;

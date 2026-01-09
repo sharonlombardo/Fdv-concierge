@@ -9,7 +9,7 @@ import {
   type DayPage,
   type FlowItem,
   type WardrobeExtra
-} from '@/lib/itinerary-data';
+} from '@shared/itinerary-data';
 import logoImage from '@assets/LOGO_1767219658929.png';
 
 interface PackingItem {
