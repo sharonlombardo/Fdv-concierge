@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PinButton } from "@/components/pin-button";
 import { GlobalNav } from "@/components/global-nav";
+import { EditorialDetailDrawer, type EditorialItem } from "@/components/editorial-detail-drawer";
 
 type PinTile = {
   id: string;
@@ -35,6 +36,7 @@ type PinGridProps = {
   title: string;
   tiles: PinTile[];
   sourceStory: string;
+  onOpenDetail?: (item: EditorialItem) => void;
 };
 
 type TwoUpFeatureProps = {
@@ -247,20 +249,40 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
   );
 }
 
-function PinGrid({ title, tiles, sourceStory }: PinGridProps) {
+function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
+  
+  const handleTileClick = (tile: PinTile) => {
+    if (onOpenDetail) {
+      onOpenDetail({
+        id: tile.id,
+        title: tile.caption,
+        bucket: tile.bucket,
+        pinType: tile.pinType,
+        assetKey: tile.assetKey,
+        storyTag,
+        imageUrl: tile.imageUrl
+      });
+    }
+  };
+
   return (
     <div className="py-12 md:py-16 px-4 max-w-5xl mx-auto">
       <h3 className="text-xs tracking-widest uppercase text-muted-foreground mb-8 text-center">{title}</h3>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
         {tiles.map((tile) => (
-          <div key={tile.id} className="relative group" data-testid={`tile-${tile.id}`}>
-            <div className="aspect-square bg-stone-200 dark:bg-stone-800 rounded-md flex items-center justify-center overflow-hidden">
+          <div 
+            key={tile.id} 
+            className="relative group cursor-pointer" 
+            data-testid={`tile-${tile.id}`}
+            onClick={() => handleTileClick(tile)}
+          >
+            <div className="aspect-square bg-stone-200 dark:bg-stone-800 rounded-md flex items-center justify-center overflow-hidden transition-transform group-hover:scale-[1.02]">
               <span className="text-muted-foreground text-xs uppercase tracking-widest text-center px-2">
                 {tile.caption}
               </span>
             </div>
-            <div className="absolute top-2 right-2 z-10">
+            <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
               <PinButton
                 itemType={tile.pinType as any}
                 itemId={tile.id}
@@ -425,6 +447,13 @@ function StoryDivider() {
 
 export default function CurrentFeed({ embedded = false }: { embedded?: boolean }) {
   const [activeSection, setActiveSection] = useState("");
+  const [selectedItem, setSelectedItem] = useState<EditorialItem | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleOpenDetail = (item: EditorialItem) => {
+    setSelectedItem(item);
+    setDrawerOpen(true);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -450,6 +479,11 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
   return (
     <div className={embedded ? "" : "min-h-screen bg-[#fafaf9] dark:bg-background"}>
+      <EditorialDetailDrawer
+        item={selectedItem}
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+      />
       {!embedded && (
         <>
           <GlobalNav />
@@ -489,6 +523,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           { id: "opening-4", assetKey: "opening-edit-4", caption: "Woven Bag", bucket: "Objects of Desire", pinType: "object" },
           { id: "opening-5", assetKey: "opening-edit-5", caption: "Desert Vista", bucket: "Travel & Experiences", pinType: "place" },
         ]}
+        onOpenDetail={handleOpenDetail}
       />
 
       <StoryDivider />
@@ -545,6 +580,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
             { id: "morocco-5", assetKey: "morocco-tile-5", caption: "Morning courtyard", bucket: "Daily Rituals", pinType: "ritual" },
             { id: "morocco-6", assetKey: "morocco-tile-6", caption: "Market color", bucket: "Inspiration", pinType: "inspiration" },
           ]}
+          onOpenDetail={handleOpenDetail}
         />
 
         <MomentBlock
@@ -649,6 +685,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
             { id: "hydra-5", assetKey: "hydra-tile-5", caption: "Woven bag", bucket: "Objects of Desire", pinType: "object" },
             { id: "hydra-6", assetKey: "hydra-tile-6", caption: "Late lunch table", bucket: "Travel & Experiences", pinType: "experience" },
           ]}
+          onOpenDetail={handleOpenDetail}
         />
 
         <MomentBlock
@@ -748,6 +785,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
             { id: "slow-5", assetKey: "slow-tile-5", caption: "Walking shot", bucket: "Daily Rituals", pinType: "ritual" },
             { id: "slow-6", assetKey: "slow-tile-6", caption: "Light on wall", bucket: "Inspiration", pinType: "inspiration" },
           ]}
+          onOpenDetail={handleOpenDetail}
         />
 
         <MomentBlock
@@ -841,6 +879,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
             { id: "retreat-5", assetKey: "retreat-tile-5", caption: "Quiet corridor", bucket: "Travel & Experiences", pinType: "place" },
             { id: "retreat-6", assetKey: "retreat-tile-6", caption: "Post-practice look", bucket: "Your Style", pinType: "look" },
           ]}
+          onOpenDetail={handleOpenDetail}
         />
 
         <MomentBlock
@@ -926,6 +965,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
             { id: "ny-5", assetKey: "ny-tile-5", caption: "Boot or flat", bucket: "Objects of Desire", pinType: "item" },
             { id: "ny-6", assetKey: "ny-tile-6", caption: "Subway platform", bucket: "Inspiration", pinType: "inspiration" },
           ]}
+          onOpenDetail={handleOpenDetail}
         />
 
         <MomentBlock
@@ -970,6 +1010,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
             { id: "ny-reset-3", assetKey: "ny-reset-3", caption: "Sunglasses", bucket: "Objects of Desire", pinType: "item" },
             { id: "ny-reset-4", assetKey: "ny-reset-4", caption: "Empty street morning", bucket: "Inspiration", pinType: "mood" },
           ]}
+          onOpenDetail={handleOpenDetail}
         />
 
         <MomentBlock

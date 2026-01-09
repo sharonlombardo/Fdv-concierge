@@ -77,24 +77,30 @@ export default function Threshold() {
       <GlobalNav variant="overlay" />
       
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center">
-        <div className="absolute inset-0 bg-stone-100 dark:bg-stone-900" />
-        <div className="relative z-10 max-w-2xl mx-auto space-y-8">
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1600')`
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
+        <div className="relative z-10 max-w-2xl mx-auto space-y-8 text-white">
           <h1 
-            className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight"
+            className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight drop-shadow-lg"
             data-testid="text-threshold-title"
           >
-            FIL DE VIE
+            FIL DE VIE CONCIERGE
           </h1>
           <div className="space-y-4">
-            <p className="text-lg md:text-xl text-muted-foreground" data-testid="text-threshold-line1">
-              A life worth living, curated.
+            <p className="text-lg md:text-xl opacity-90" data-testid="text-threshold-line1">
+              Discover the world of FIL DE VIE.
             </p>
-            <p className="text-lg md:text-xl text-muted-foreground" data-testid="text-threshold-line2">
-              Places to enter. Objects to live with. Moments to return to.
+            <p className="text-lg md:text-xl opacity-90" data-testid="text-threshold-line2">
+              Places, objects, and experiences worth returning to.
             </p>
           </div>
-          <p className="text-base text-muted-foreground/80 max-w-lg mx-auto leading-relaxed" data-testid="text-threshold-paragraph">
-            The Concierge collects what matters. Destinations, rituals, and the quiet details that shape how we travel and how we live.
+          <p className="text-base opacity-80 max-w-lg mx-auto leading-relaxed" data-testid="text-threshold-paragraph">
+            A collection of places to enter, objects to live with, and moments to come back to.
           </p>
           <div className="pt-8">
             <button
