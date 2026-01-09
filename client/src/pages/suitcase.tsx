@@ -7,6 +7,7 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { GlobalNav } from "@/components/global-nav";
 import { DetailDrawer } from "@/components/detail-drawer";
+import { deriveEditTag } from "@/lib/derive-edit-tag";
 
 type SavedItem = {
   id: number;
@@ -254,49 +255,6 @@ function SavedItemCard({ save, onRemove, onClick }: { save: SavedItem; onRemove:
       </div>
     </div>
   );
-}
-
-function deriveEditTag(save: SavedItem): string | null {
-  if (save.editTag) return save.editTag;
-  
-  if (save.storyTag) {
-    const storyToEdit: Record<string, string> = {
-      'morocco': 'morocco-edit',
-      'hydra': 'hydra-edit',
-      'slow-travel': 'slow-travel-edit',
-      'retreat': 'retreat-edit',
-      'new-york': 'new-york-edit',
-      'opening': 'opening-edit',
-    };
-    return storyToEdit[save.storyTag] || null;
-  }
-  
-  if (save.sourceContext) {
-    if (save.sourceContext.includes('morocco')) return 'morocco-edit';
-    if (save.sourceContext.includes('hydra')) return 'hydra-edit';
-  }
-  
-  if (save.itemId) {
-    if (save.itemId.startsWith('morocco-') || save.itemId.startsWith('d1-') || save.itemId.startsWith('d2-')) return 'morocco-edit';
-    if (save.itemId.startsWith('hydra-')) return 'hydra-edit';
-    if (save.itemId.startsWith('slow-') || save.itemId.startsWith('slow-travel-')) return 'slow-travel-edit';
-    if (save.itemId.startsWith('retreat-')) return 'retreat-edit';
-    if (save.itemId.startsWith('ny-') || save.itemId.startsWith('newyork-')) return 'new-york-edit';
-    if (save.itemId.startsWith('opening-')) return 'opening-edit';
-  }
-  
-  if (save.metadata?.sourceStory) {
-    const storyMap: Record<string, string> = {
-      'Morocco': 'morocco-edit',
-      'Hydra': 'hydra-edit',
-      'Slow Travel': 'slow-travel-edit',
-      'Retreat': 'retreat-edit',
-      'New York': 'new-york-edit',
-    };
-    return storyMap[save.metadata.sourceStory] || null;
-  }
-  
-  return null;
 }
 
 function ByEditView({ saves }: { saves: SavedItem[] }) {
