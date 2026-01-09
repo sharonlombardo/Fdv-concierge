@@ -49,16 +49,15 @@ function ExploreRow() {
         <h2 className="text-xs font-medium tracking-[0.3em] uppercase text-muted-foreground mb-8 text-center">
           Explore
         </h2>
-        <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+        <div className="flex flex-wrap justify-center gap-6 md:gap-8">
           {EXPLORE_CATEGORIES.map((category) => (
             <Link key={category.id} href={category.href}>
-              <button
-                className="flex items-center gap-2 px-5 py-3 rounded-full border border-border bg-background hover:bg-accent hover:border-accent-foreground/20 transition-all text-sm font-medium tracking-wide"
-                data-testid={`button-explore-${category.id}`}
+              <span
+                className="text-sm font-medium tracking-wide text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                data-testid={`link-explore-${category.id}`}
               >
-                <category.icon className="w-4 h-4 text-muted-foreground" />
                 {category.label}
-              </button>
+              </span>
             </Link>
           ))}
         </div>
