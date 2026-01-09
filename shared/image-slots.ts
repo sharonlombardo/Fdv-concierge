@@ -682,6 +682,82 @@ export const IMAGE_SLOTS: ImageSlot[] = [
     defaultUrl: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=800",
     aspectRatio: "16:10",
     description: "Desert Neutrals card in Today's Edit tab"
+  },
+
+  // ========================================
+  // HOME PAGE - ITINERARY
+  // ========================================
+  {
+    key: "cover-main",
+    label: "Main Cover Hero",
+    section: "Home: Cover",
+    defaultUrl: "https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "21:9",
+    description: "Morocco trip cover hero image"
+  },
+  {
+    key: "day-1-hero",
+    label: "Day 1 Hero",
+    section: "Home: Day Heroes",
+    defaultUrl: "https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "21:18",
+    description: "Day 1: Arrival / Atlas Mountains"
+  },
+  {
+    key: "day-2-hero",
+    label: "Day 2 Hero",
+    section: "Home: Day Heroes",
+    defaultUrl: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "21:18",
+    description: "Day 2: Atlas Mountains"
+  },
+  {
+    key: "day-3-hero",
+    label: "Day 3 Hero",
+    section: "Home: Day Heroes",
+    defaultUrl: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "21:18",
+    description: "Day 3: Atlas Mountains → Marrakech"
+  },
+  {
+    key: "day-4-hero",
+    label: "Day 4 Hero",
+    section: "Home: Day Heroes",
+    defaultUrl: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "21:18",
+    description: "Day 4: Marrakech"
+  },
+  {
+    key: "day-5-hero",
+    label: "Day 5 Hero",
+    section: "Home: Day Heroes",
+    defaultUrl: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "21:18",
+    description: "Day 5: Essaouira Day Trip"
+  },
+  {
+    key: "day-6-hero",
+    label: "Day 6 Hero",
+    section: "Home: Day Heroes",
+    defaultUrl: "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "21:18",
+    description: "Day 6: Marrakech Culture & Food"
+  },
+  {
+    key: "day-7-hero",
+    label: "Day 7 Hero",
+    section: "Home: Day Heroes",
+    defaultUrl: "https://images.unsplash.com/photo-1507400492013-162706c8c05e?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "21:18",
+    description: "Day 7: Marrakech & Agafay Desert"
+  },
+  {
+    key: "day-8-hero",
+    label: "Day 8 Hero",
+    section: "Home: Day Heroes",
+    defaultUrl: "https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "21:18",
+    description: "Day 8: Return"
   }
 ];
 
