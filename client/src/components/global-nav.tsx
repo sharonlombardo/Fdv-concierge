@@ -17,8 +17,8 @@ export function GlobalNav({ variant = "default" }: { variant?: "default" | "over
   const [location] = useLocation();
 
   const isOverlay = variant === "overlay";
-  const textColor = isOverlay ? "text-white" : "text-foreground";
-  const hoverColor = isOverlay ? "hover:text-white/80" : "hover:text-muted-foreground";
+  const textColor = isOverlay ? "text-foreground" : "text-foreground";
+  const hoverColor = isOverlay ? "hover:text-muted-foreground" : "hover:text-muted-foreground";
 
   return (
     <>
@@ -27,7 +27,7 @@ export function GlobalNav({ variant = "default" }: { variant?: "default" | "over
           variant="ghost"
           size="icon"
           onClick={() => setIsOpen(true)}
-          className={isOverlay ? "text-white hover:bg-white/10" : ""}
+          className="text-foreground"
           data-testid="button-menu"
         >
           <Menu className="w-5 h-5" />
