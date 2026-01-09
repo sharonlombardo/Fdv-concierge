@@ -600,19 +600,6 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         isOpening
       />
 
-      <PinGrid
-        title="Today's Edit"
-        sourceStory="Opening"
-        tiles={[
-          { id: "opening-1", assetKey: "opening-edit-1", caption: "Morning Light", bucket: "Inspiration", pinType: "mood" },
-          { id: "opening-2", assetKey: "opening-edit-2", caption: "Linen Layers", bucket: "Your Style", pinType: "look" },
-          { id: "opening-3", assetKey: "opening-edit-3", caption: "Quiet Moment", bucket: "Daily Rituals", pinType: "ritual" },
-          { id: "opening-4", assetKey: "opening-edit-4", caption: "Woven Bag", bucket: "Objects of Desire", pinType: "object" },
-          { id: "opening-5", assetKey: "opening-edit-5", caption: "Desert Vista", bucket: "Travel & Experiences", pinType: "place" },
-        ]}
-        onOpenDetail={handleOpenDetail}
-      />
-
       <StoryDivider />
 
       {/* MOROCCO */}
