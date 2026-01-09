@@ -1,8 +1,11 @@
 import { Link, useLocation } from "wouter";
-import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight, Bookmark, Unlock, Check } from "lucide-react";
 import { useCustomImages } from "@/hooks/use-custom-images";
 import { ITINERARY_DATA, DayPage, FlowItem } from "@/lib/itinerary-data";
 import { Button } from "@/components/ui/button";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 import logoImage from "@assets/LOGO_1767219658929.png";
 
 interface DayEditorial {
@@ -79,7 +82,15 @@ function extractEditorialData(): DayEditorial[] {
   return days;
 }
 
-function HeroSection() {
+interface HeroSectionProps {
+  isSaved: boolean;
+  isAcquired: boolean;
+  onSave: () => void;
+  onAcquire: () => void;
+  isPending: boolean;
+}
+
+function HeroSection({ isSaved, isAcquired, onSave, onAcquire, isPending }: HeroSectionProps) {
   return (
     <div className="h-screen relative flex items-center justify-center overflow-hidden">
       <div 
@@ -96,9 +107,50 @@ function HeroSection() {
         <h1 className="font-serif text-[clamp(3.5rem,10vw,8rem)] font-normal tracking-[0.25em] mb-6 drop-shadow-lg">
           MOROCCO
         </h1>
-        <p className="text-base md:text-lg font-light tracking-[0.15em] uppercase opacity-90">
+        <p className="text-base md:text-lg font-light tracking-[0.15em] uppercase opacity-90 mb-10">
           April 3–10, 2026
         </p>
+        
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
+          <Button
+            onClick={onSave}
+            disabled={isPending || isSaved}
+            variant="outline"
+            className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 px-8 py-6 text-xs tracking-[0.2em] uppercase"
+            data-testid="button-save-edit"
+          >
+            {isSaved ? (
+              <>
+                <Check className="w-4 h-4 mr-2" />
+                Edit Saved
+              </>
+            ) : (
+              <>
+                <Bookmark className="w-4 h-4 mr-2" />
+                Save this Edit
+              </>
+            )}
+          </Button>
+          
+          <Button
+            onClick={onAcquire}
+            disabled={isPending || isAcquired}
+            className="bg-white text-black hover:bg-white/90 px-8 py-6 text-xs tracking-[0.2em] uppercase"
+            data-testid="button-acquire-edit"
+          >
+            {isAcquired ? (
+              <>
+                <Check className="w-4 h-4 mr-2" />
+                Edit Acquired
+              </>
+            ) : (
+              <>
+                <Unlock className="w-4 h-4 mr-2" />
+                Acquire this Edit
+              </>
+            )}
+          </Button>
+        </div>
       </div>
       
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
@@ -250,6 +302,83 @@ export default function Editorial() {
   const [, setLocation] = useLocation();
   const { getImageUrl, hasCustomImage, isLoading } = useCustomImages();
   const editorialData = extractEditorialData();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [editStatus, setEditStatus] = useState<{ saved: boolean; acquired: boolean }>({ saved: false, acquired: false });
+
+  const { data: existingSave } = useQuery({
+    queryKey: ['/api/saves/check', 'morocco-edit-container'],
+    queryFn: async () => {
+      const res = await fetch(`/api/saves/check/morocco-edit-container`);
+      if (!res.ok) return null;
+      return res.json();
+    }
+  });
+
+  const isSaved = editStatus.saved || existingSave?.isPinned;
+  const isAcquired = editStatus.acquired || existingSave?.metadata?.editStatus === 'acquired';
+
+  const saveEditMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/saves', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemType: 'edit',
+          itemId: 'morocco-edit-container',
+          sourceContext: 'editorial_overview',
+          editTag: 'morocco-edit',
+          storyTag: 'morocco',
+          title: 'Morocco 2026',
+          assetUrl: 'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1600',
+          metadata: {
+            editStatus: 'saved',
+            dates: 'April 3–10, 2026',
+            destination: 'Morocco'
+          },
+          savedAt: Date.now()
+        })
+      });
+      if (!res.ok) throw new Error('Failed to save edit');
+      return res.json();
+    },
+    onSuccess: () => {
+      setEditStatus(prev => ({ ...prev, saved: true }));
+      queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+      toast({ description: 'Edit saved to your Suitcase' });
+    }
+  });
+
+  const acquireEditMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/saves', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemType: 'edit',
+          itemId: 'morocco-edit-container',
+          sourceContext: 'editorial_overview',
+          editTag: 'morocco-edit',
+          storyTag: 'morocco',
+          title: 'Morocco 2026',
+          assetUrl: 'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1600',
+          metadata: {
+            editStatus: 'acquired',
+            dates: 'April 3–10, 2026',
+            destination: 'Morocco'
+          },
+          savedAt: Date.now()
+        })
+      });
+      if (!res.ok) throw new Error('Failed to acquire edit');
+      return res.json();
+    },
+    onSuccess: () => {
+      setEditStatus({ saved: true, acquired: true });
+      queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+      toast({ description: 'Edit acquired! Full itinerary unlocked.' });
+    }
+  });
 
   if (isLoading) {
     return (
@@ -275,7 +404,13 @@ export default function Editorial() {
       </header>
 
       {/* Hero */}
-      <HeroSection />
+      <HeroSection 
+        isSaved={isSaved}
+        isAcquired={isAcquired}
+        onSave={() => saveEditMutation.mutate()}
+        onAcquire={() => acquireEditMutation.mutate()}
+        isPending={saveEditMutation.isPending || acquireEditMutation.isPending}
+      />
 
       {/* Day Sections */}
       <div className="max-w-5xl mx-auto px-4 md:px-6">
