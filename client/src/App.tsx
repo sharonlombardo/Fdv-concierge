@@ -17,7 +17,6 @@ import PackingList from "@/pages/packing-list";
 import TestSaves from "@/pages/test-saves";
 import CurrentFeed from "@/pages/current";
 import SuitcasePage from "@/pages/suitcase";
-import TodaysEditDetail from "@/pages/todays-edit-detail";
 import ImageControl from "@/pages/image-control";
 import EditDetail from "@/pages/edit-detail";
 
@@ -26,6 +25,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Threshold} />
       <Route path="/concierge" component={Concierge} />
+      <Route path="/itinerary/morocco" component={Concierge} />
       <Route path="/images" component={ImageManagement} />
       <Route path="/library" component={ImageLibrary} />
       <Route path="/rules" component={ImageRules} />
@@ -33,7 +33,6 @@ function Router() {
       <Route path="/packing" component={PackingList} />
       <Route path="/current">{() => <CurrentFeed />}</Route>
       <Route path="/suitcase" component={SuitcasePage} />
-      <Route path="/suitcase/todays-edit/:slug" component={TodaysEditDetail} />
       <Route path="/suitcase/edit/:editTag" component={EditDetail} />
       <Route path="/image-control" component={ImageControl} />
       <Route path="/test-saves" component={TestSaves} />

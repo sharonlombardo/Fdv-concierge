@@ -2,36 +2,11 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { X, Briefcase, Sparkles, Package } from "lucide-react";
+import { X, Briefcase, Package } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
-import { useImageSlot } from "@/hooks/use-image-slot";
 import { GlobalNav } from "@/components/global-nav";
 import { DetailDrawer } from "@/components/detail-drawer";
-
-type EditData = {
-  id: string;
-  name: string;
-  description: string;
-  heroImage: string;
-  pieceCount: number;
-  status: string;
-};
-
-function useTodaysEditList(): EditData[] {
-  const editCardImage = useImageSlot("suitcase-capsule-card");
-  
-  return [
-    {
-      id: "desert-neutrals",
-      name: "Desert Neutrals",
-      description: "Warm earth tones and natural textures for your Morocco journey",
-      heroImage: editCardImage,
-      pieceCount: 12,
-      status: "ready"
-    }
-  ];
-}
 
 type SavedItem = {
   id: number;
@@ -57,7 +32,7 @@ type SavedItem = {
 
 const VIEW_MODES = [
   { id: "category", label: "By Category" },
-  { id: "edit", label: "By Edit" },
+  { id: "edit", label: "My Edits" },
 ];
 
 const CATEGORY_TABS = [
@@ -69,7 +44,6 @@ const CATEGORY_TABS = [
   { id: "places", label: "Travel & Experiences" },
   { id: "items", label: "Objects of Desire" },
   { id: "inspiration", label: "Inspiration" },
-  { id: "todays-edit", label: "Today's Edit" },
 ];
 
 const EDIT_CARDS = [
@@ -78,6 +52,7 @@ const EDIT_CARDS = [
   { id: "slow-travel-edit", name: "Slow Travel Edit", storyTag: "slow-travel", color: "bg-stone-100 dark:bg-stone-800/50" },
   { id: "retreat-edit", name: "Retreat Edit", storyTag: "retreat", color: "bg-green-100 dark:bg-green-900/30" },
   { id: "new-york-edit", name: "New York Edit", storyTag: "new-york", color: "bg-slate-100 dark:bg-slate-800/50" },
+  { id: "opening-edit", name: "Today's Edit", storyTag: "opening", color: "bg-rose-100 dark:bg-rose-900/30" },
 ];
 
 const CURATED_QUOTES = [
@@ -170,8 +145,6 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
       return saves;
     case "state-of-mind":
       return saves.filter(s => s.itemType === "quote");
-    case "todays-edit":
-      return [];
     default:
       return saves.filter(s => SAVE_TYPE_TO_CATEGORY[s.itemType] === tab);
   }
@@ -279,56 +252,6 @@ function SavedItemCard({ save, onRemove, onClick }: { save: SavedItem; onRemove:
           </p>
         )}
       </div>
-    </div>
-  );
-}
-
-function TodaysEditTabContent() {
-  const editsList = useTodaysEditList();
-  
-  if (editsList.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <Sparkles className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
-        <h3 className="font-serif text-xl mb-2">No edits yet</h3>
-        <p className="text-muted-foreground max-w-md mx-auto">
-          Keep saving items you love - we'll help you build curated edits based on your taste.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {editsList.map((edit: EditData) => (
-        <Link key={edit.id} href={`/suitcase/todays-edit/${edit.id}`}>
-          <div 
-            className="group relative aspect-[16/10] rounded-md overflow-hidden cursor-pointer"
-            data-testid={`card-edit-${edit.id}`}
-          >
-            <img
-              src={edit.heroImage}
-              alt={edit.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                <span className="text-amber-400 text-xs uppercase tracking-widest">AI Generated</span>
-              </div>
-              <h3 className="font-serif text-2xl text-white font-medium mb-1">{edit.name}</h3>
-              <p className="text-white/70 text-sm mb-3">{edit.description}</p>
-              <div className="flex items-center gap-4">
-                <span className="text-white/80 text-sm">{edit.pieceCount} pieces</span>
-                <Button variant="outline" size="sm" className="text-white border-white/30 hover:bg-white/20">
-                  View Edit
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Link>
-      ))}
     </div>
   );
 }
@@ -490,8 +413,6 @@ export default function SuitcasePage() {
               </div>
             ) : activeTab === "state-of-mind" ? (
               <StateOfMindContent />
-            ) : activeTab === "todays-edit" ? (
-              <TodaysEditTabContent />
             ) : filteredSaves.length === 0 ? (
               <div className="text-center py-20">
                 {saves.length === 0 ? (

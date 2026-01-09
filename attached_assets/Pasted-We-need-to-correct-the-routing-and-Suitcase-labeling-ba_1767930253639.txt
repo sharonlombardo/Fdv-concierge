@@ -1,0 +1,36 @@
+We need to correct the routing and Suitcase labeling based on the locked architecture.
+
+Key clarification:
+The “old start page” is not legacy junk. It is the Morocco Edit itinerary entry flow:
+Cover → Rhythm text → Editorial Overview → Travel Notes → Daily Flow itinerary.
+Currently there is no path to reach it from the new site structure. Fix that.
+
+1) SUITCASE NAV LABEL FIX
+- In Suitcase, there is currently a tab labeled “Today’s Edit.”
+- Replace that with “My Edits” (or “Edits”).
+- Today’s Edit should not be a top-level category tab. It should appear as ONE edit card inside My Edits.
+
+2) MY EDITS VIEW (canonical entry to trips/capsules)
+- Implement Suitcase “My Edits” view as the By Edit view:
+  - List edit cards: Morocco Edit, Hydra Edit, New York Edit, Retreat Edit, Slow Travel Edit, Today’s Edit.
+  - Cards are grouped by editTag.
+- Clicking Morocco Edit must open Edit Detail route: /suitcase/edit/morocco-edit
+
+3) EDIT DETAIL MUST LINK TO ITINERARY ENTRY FLOW
+- In Edit Detail for morocco-edit, add a clear button:
+  - “Open Itinerary” (or “View Itinerary”)
+- This button must route to the Morocco itinerary entry cover page (the old start page sequence).
+- If that old start flow currently exists at some route (ex: /concierge or /start), keep it but rename/re-route it to something explicit like:
+  - /itinerary/morocco (preferred)
+  - or /edits/morocco/itinerary
+- The key is: Morocco Edit → Open Itinerary → Cover → Rhythm → Overview → Travel Notes → Daily Flow
+
+4) DO NOT LOSE THE MOROCCO ENTRY FLOW
+- Preserve the existing Cover/Rhythm/Overview/Notes/Daily pages and just make them reachable from the Morocco Edit container.
+- Update navigation labels so “Concierge” does not point to this itinerary entry flow.
+
+5) CONFIRM THE TEST PATHS
+After implementing, tell me exactly how to test:
+- /suitcase → My Edits → Morocco Edit → Open Itinerary
+- /current → save 2 Hydra items → /suitcase → My Edits → Hydra Edit exists
+- Today’s Edit appears inside My Edits as one edit card (not a suitcase tab)
