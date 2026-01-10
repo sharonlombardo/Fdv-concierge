@@ -6,7 +6,7 @@ import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
 
 const EXPLORE_CATEGORIES = [
-  { id: "destinations", label: "Travel Destinations", icon: MapPin, href: "/current" },
+  { id: "destinations", label: "Travel Destinations", icon: MapPin, href: "/destinations" },
   { id: "experiences", label: "Experiences", icon: Sparkles, href: "/current" },
   { id: "rituals", label: "Rituals", icon: Heart, href: "/current" },
   { id: "culture", label: "Culture", icon: Globe, href: "/current" },

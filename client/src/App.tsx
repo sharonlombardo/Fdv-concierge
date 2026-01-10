@@ -20,11 +20,13 @@ import SuitcasePage from "@/pages/suitcase";
 import ImageControl from "@/pages/image-control";
 import EditDetail from "@/pages/edit-detail";
 import TodaysEdit from "@/pages/todays-edit";
+import Destinations from "@/pages/destinations";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Threshold} />
+      <Route path="/destinations" component={Destinations} />
       <Route path="/concierge" component={Concierge} />
       <Route path="/itinerary/morocco" component={Concierge} />
       <Route path="/images" component={ImageManagement} />
