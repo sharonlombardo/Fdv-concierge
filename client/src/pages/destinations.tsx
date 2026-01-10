@@ -1,18 +1,28 @@
 import { GlobalNav } from "@/components/global-nav";
 import { DESTINATIONS } from "@shared/destinations";
+import { useImageSlots } from "@/hooks/use-image-slot";
+import { IMAGE_SLOTS } from "@shared/image-slots";
 import { Link } from "wouter";
 import { ChevronRight, Lock } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-function DestinationCard({ destination }: { destination: typeof DESTINATIONS[0] }) {
+function DestinationCard({ 
+  destination, 
+  getImageUrl 
+}: { 
+  destination: typeof DESTINATIONS[0];
+  getImageUrl: (key: string) => string;
+}) {
+  const imageUrl = getImageUrl(destination.imageSlotKey) || destination.defaultImage;
+  
   const content = (
     <div 
-      className={`group relative overflow-hidden rounded-lg aspect-[4/5] ${destination.available ? 'cursor-pointer' : 'cursor-default'}`}
-      data-testid={`card-destination-${destination.slug}`}
+      className={`group relative overflow-hidden rounded-lg aspect-[4/5] ${destination.available ? 'cursor-pointer' : 'cursor-default opacity-80'}`}
     >
       <div 
         className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 ${destination.available ? 'group-hover:scale-105' : ''}`}
         style={{
-          backgroundImage: `url('${destination.defaultImage}')`
+          backgroundImage: `url('${imageUrl}')`
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
@@ -44,13 +54,32 @@ function DestinationCard({ destination }: { destination: typeof DESTINATIONS[0] 
   );
 
   if (destination.available) {
-    return <Link href={destination.route}>{content}</Link>;
+    return (
+      <Link href={destination.route}>
+        <a data-testid={`link-destination-${destination.slug}`}>
+          {content}
+        </a>
+      </Link>
+    );
   }
   
-  return content;
+  return <div data-testid={`card-destination-${destination.slug}-locked`}>{content}</div>;
 }
 
 export default function Destinations() {
+  const { data: imageSlotsData, isLoading } = useImageSlots();
+
+  const getImageUrl = (assetKey: string): string => {
+    if (imageSlotsData?.slots) {
+      const slot = imageSlotsData.slots.find(s => s.key === assetKey);
+      if (slot?.currentUrl) {
+        return slot.currentUrl;
+      }
+    }
+    const defaultSlot = IMAGE_SLOTS.find(s => s.key === assetKey);
+    return defaultSlot?.defaultUrl || "";
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <GlobalNav />
@@ -72,9 +101,15 @@ export default function Destinations() {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {DESTINATIONS.map((destination) => (
-            <DestinationCard key={destination.slug} destination={destination} />
-          ))}
+          {isLoading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="aspect-[4/5] rounded-lg" />
+            ))
+          ) : (
+            DESTINATIONS.map((destination) => (
+              <DestinationCard key={destination.slug} destination={destination} getImageUrl={getImageUrl} />
+            ))
+          )}
         </div>
 
         <footer className="text-center py-16 mt-12 border-t border-border">

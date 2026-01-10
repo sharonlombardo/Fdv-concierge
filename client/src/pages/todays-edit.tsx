@@ -3,6 +3,7 @@ import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
 import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const MOOD_KEYS = [
   "todays-edit-mood-1",
@@ -21,7 +22,7 @@ const LOOK_KEYS = [
 ];
 
 export default function TodaysEdit() {
-  const { data: imageSlotsData } = useImageSlots();
+  const { data: imageSlotsData, isLoading } = useImageSlots();
 
   const getImageUrl = (assetKey: string): string => {
     if (imageSlotsData?.slots) {
@@ -69,19 +70,25 @@ export default function TodaysEdit() {
             Mood
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {MOOD_KEYS.map((key, index) => (
-              <div 
-                key={key}
-                className="aspect-[4/5] overflow-hidden rounded-lg bg-muted"
-                data-testid={`img-mood-${index + 1}`}
-              >
-                <img 
-                  src={getImageUrl(key)} 
-                  alt={`Mood ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
+            {isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="aspect-[4/5] rounded-lg" />
+              ))
+            ) : (
+              MOOD_KEYS.map((key, index) => (
+                <div 
+                  key={key}
+                  className="aspect-[4/5] overflow-hidden rounded-lg bg-muted"
+                  data-testid={`img-mood-${index + 1}`}
+                >
+                  <img 
+                    src={getImageUrl(key)} 
+                    alt={`Mood ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))
+            )}
           </div>
         </section>
 
@@ -90,19 +97,25 @@ export default function TodaysEdit() {
             Looks & Objects
           </h2>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-            {LOOK_KEYS.map((key, index) => (
-              <div 
-                key={key}
-                className="aspect-square overflow-hidden rounded-lg bg-muted"
-                data-testid={`img-look-${index + 1}`}
-              >
-                <img 
-                  src={getImageUrl(key)} 
-                  alt={`Look ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
+            {isLoading ? (
+              Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="aspect-square rounded-lg" />
+              ))
+            ) : (
+              LOOK_KEYS.map((key, index) => (
+                <div 
+                  key={key}
+                  className="aspect-square overflow-hidden rounded-lg bg-muted"
+                  data-testid={`img-look-${index + 1}`}
+                >
+                  <img 
+                    src={getImageUrl(key)} 
+                    alt={`Look ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))
+            )}
           </div>
         </section>
 

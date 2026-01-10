@@ -685,6 +685,50 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   },
 
   // ========================================
+  // DESTINATIONS OVERVIEW
+  // ========================================
+  {
+    key: "destination-morocco",
+    label: "Morocco Card",
+    section: "Destinations",
+    defaultUrl: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "4:5",
+    description: "Morocco destination card image"
+  },
+  {
+    key: "destination-hydra",
+    label: "Hydra Card",
+    section: "Destinations",
+    defaultUrl: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "4:5",
+    description: "Hydra destination card image"
+  },
+  {
+    key: "destination-slow-travel",
+    label: "Slow Travel Card",
+    section: "Destinations",
+    defaultUrl: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "4:5",
+    description: "Slow Travel destination card image"
+  },
+  {
+    key: "destination-retreat",
+    label: "Retreat Card",
+    section: "Destinations",
+    defaultUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "4:5",
+    description: "Retreat destination card image"
+  },
+  {
+    key: "destination-new-york",
+    label: "New York Card",
+    section: "Destinations",
+    defaultUrl: "https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "4:5",
+    description: "New York destination card image"
+  },
+
+  // ========================================
   // TODAY'S EDIT (DESERT NEUTRALS)
   // ========================================
   {
