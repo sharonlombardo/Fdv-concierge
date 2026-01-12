@@ -90,7 +90,7 @@ export default function TodaysEdit() {
                       alt={`Mood ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute top-1 right-1 z-10 flex flex-col items-center">
+                    <div className="absolute top-1 right-1 z-10 flex flex-col items-center -space-y-1">
                       <PinButton
                         itemType="mood"
                         itemId={key}
@@ -147,7 +147,7 @@ export default function TodaysEdit() {
                       alt={`Look ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute top-1 right-1 z-10 flex flex-col items-center">
+                    <div className="absolute top-1 right-1 z-10 flex flex-col items-center -space-y-1">
                       <PinButton
                         itemType="product"
                         itemId={key}
