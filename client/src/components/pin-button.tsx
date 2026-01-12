@@ -122,10 +122,10 @@ export function PinButton({
         pinMutation.mutate();
       }}
       className={cn(
-        "rounded-full bg-white/90 dark:bg-black/70 backdrop-blur-sm shadow-sm",
-        "hover:bg-white dark:hover:bg-black hover:scale-110 transition-all duration-200",
+        "hover:scale-110 transition-all duration-200",
         "flex items-center justify-center",
-        isPinned ? "text-amber-600" : "text-muted-foreground",
+        isPinned ? "text-amber-600" : "text-stone-800 dark:text-stone-200",
+        "drop-shadow-sm",
         sizeClasses[size],
         className
       )}
@@ -134,7 +134,7 @@ export function PinButton({
     >
       <PinIcon 
         size={iconSizes[size]} 
-        fill={isPinned ? "currentColor" : "none"}
+        fill="currentColor"
       />
     </button>
   );
