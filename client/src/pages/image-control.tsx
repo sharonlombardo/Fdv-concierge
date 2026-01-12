@@ -36,6 +36,56 @@ interface CategoryData {
   customCount: number;
 }
 
+// Mapping from slot keys to their suitcase bucket destinations
+const SLOT_BUCKET_MAP: Record<string, string> = {
+  // Morocco section
+  "morocco-tile-1": "Inspired",
+  "morocco-tile-2": "Travel & Experience",
+  "morocco-tile-3": "Style",
+  "morocco-tile-4": "Object of Desire",
+  "morocco-tile-5": "Ritual",
+  "morocco-tile-6": "Inspired",
+  // Hydra section
+  "hydra-tile-1": "Inspired",
+  "hydra-tile-2": "Ritual",
+  "hydra-tile-3": "Style",
+  "hydra-tile-4": "Object of Desire",
+  "hydra-tile-5": "Object of Desire",
+  "hydra-tile-6": "Travel & Experience",
+  "hydra-light-1": "Inspired",
+  "hydra-light-2": "Inspired",
+  // Slow Travel section
+  "slow-lunch": "Culture",
+  "slow-museum": "Culture",
+  "slow-tile-1": "Style",
+  "slow-tile-2": "Object of Desire",
+  "slow-tile-3": "Object of Desire",
+  "slow-tile-4": "Ritual",
+  "slow-tile-5": "Ritual",
+  "slow-tile-6": "Inspired",
+  // Retreat section
+  "retreat-tile-1": "Object of Desire",
+  "retreat-tile-2": "Object of Desire",
+  "retreat-tile-3": "Object of Desire",
+  "retreat-tile-4": "Ritual",
+  "retreat-tile-5": "Travel & Experience",
+  "retreat-tile-6": "Style",
+  // New York section
+  "ny-tile-1": "Travel & Experience",
+  "ny-tile-2": "Travel & Experience",
+  "ny-tile-3": "Culture",
+  "ny-tile-4": "Style",
+  "ny-tile-5": "Object of Desire",
+  "ny-tile-6": "Inspired",
+  "ny-culture-1": "Culture",
+  "ny-culture-2": "Culture",
+  "ny-reset-1": "Ritual",
+};
+
+function getSlotBucketLabel(slotKey: string): string | null {
+  return SLOT_BUCKET_MAP[slotKey] || null;
+}
+
 function ImageSlotCard({ slot, onUpload, onReset, isUploading }: {
   slot: ImageSlotData;
   onUpload: (slotKey: string, file: File) => void;
@@ -74,6 +124,9 @@ function ImageSlotCard({ slot, onUpload, onReset, isUploading }: {
       
       <div className="p-4">
         <h3 className="font-medium text-sm mb-1">{slot.label}</h3>
+        {getSlotBucketLabel(slot.key) && (
+          <p className="text-[10px] text-muted-foreground/60 italic mb-2">{getSlotBucketLabel(slot.key)}</p>
+        )}
         {slot.description && (
           <p className="text-xs text-muted-foreground mb-3">{slot.description}</p>
         )}
