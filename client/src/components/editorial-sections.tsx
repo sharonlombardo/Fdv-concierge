@@ -1,5 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { ITINERARY_DATA, DayPage, FlowItem } from "@shared/itinerary-data";
+import { PinButton } from "@/components/pin-button";
+import { SuitcaseButton } from "@/components/suitcase-button";
 
 export interface DayEditorial {
   dayNumber: number;
@@ -78,11 +80,23 @@ interface ImageCardProps {
   imageUrl: string;
   label?: string;
   aspectRatio?: string;
+  itemId?: string;
+  itemTitle?: string;
+  showPin?: boolean;
+  showSuitcase?: boolean;
 }
 
-export function ImageCard({ imageUrl, label, aspectRatio = "aspect-[3/4]" }: ImageCardProps) {
+export function ImageCard({ 
+  imageUrl, 
+  label, 
+  aspectRatio = "aspect-[3/4]",
+  itemId,
+  itemTitle,
+  showPin = false,
+  showSuitcase = false
+}: ImageCardProps) {
   return (
-    <div className="group">
+    <div className="group relative">
       <div className={`${aspectRatio} overflow-hidden rounded-md bg-muted`}>
         <img 
           src={imageUrl}
@@ -94,6 +108,45 @@ export function ImageCard({ imageUrl, label, aspectRatio = "aspect-[3/4]" }: Ima
           }}
         />
       </div>
+      {(showPin || showSuitcase) && itemId && (
+        <div className="absolute bottom-3 right-3 flex gap-2">
+          {showPin && (
+            <PinButton
+              itemType="moment"
+              itemId={itemId}
+              itemData={{
+                title: itemTitle || label || "Morocco",
+                imageUrl: imageUrl,
+                sourceStory: "morocco-2026",
+                issueNumber: 1,
+                saveType: "moment",
+                storyTag: "morocco",
+                editionTag: "morocco-2026",
+                editTag: "morocco-editorial",
+                assetKey: itemId,
+                assetUrl: imageUrl
+              }}
+              sourceContext="morocco_editorial"
+              aestheticTags={["morocco", "travel", "editorial"]}
+              size="sm"
+            />
+          )}
+          {showSuitcase && (
+            <SuitcaseButton
+              itemId={itemId}
+              itemData={{
+                title: itemTitle || label || "Look",
+                imageUrl: imageUrl,
+                storyTag: "morocco",
+                editTag: "morocco-wardrobe"
+              }}
+              sourceContext="morocco_editorial"
+              aestheticTags={["morocco", "wardrobe", "look"]}
+              size="sm"
+            />
+          )}
+        </div>
+      )}
       {label && (
         <p className="text-xs font-medium tracking-[0.1em] uppercase text-muted-foreground mt-3 text-center">
           {label}
@@ -162,13 +215,14 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
       </div>
 
       <div className="mb-16 max-w-2xl mx-auto">
-        <div className="aspect-[4/5] overflow-hidden rounded-md bg-muted">
-          <img 
-            src={heroImage}
-            alt={day.location}
-            className="w-full h-full object-cover"
-          />
-        </div>
+        <ImageCard 
+          imageUrl={heroImage}
+          itemId={day.heroImageKey}
+          itemTitle={`Day ${day.dayNumber} - ${day.location}`}
+          aspectRatio="aspect-[4/5]"
+          showPin={true}
+          showSuitcase={false}
+        />
       </div>
 
       <div className="space-y-16">
@@ -196,13 +250,21 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
                 <ImageCard 
                   imageUrl={eventImage} 
                   aspectRatio="aspect-[4/5]"
+                  itemId={flow.eventImageKey}
+                  itemTitle={flow.title}
+                  showPin={true}
+                  showSuitcase={false}
                 />
                 {hasWardrobeContent && (
                   <div className="space-y-4">
-                    {wardrobeImage && (
+                    {wardrobeImage && flow.wardrobeImageKey && (
                       <ImageCard 
                         imageUrl={wardrobeImage} 
                         aspectRatio="aspect-[4/5]"
+                        itemId={flow.wardrobeImageKey}
+                        itemTitle={`${flow.title} Look`}
+                        showPin={true}
+                        showSuitcase={true}
                       />
                     )}
                     {hasAccessories && (
@@ -211,12 +273,45 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
                           if (!hasCustomImage(extra.imageKey)) return null;
                           const extraImage = getImageUrl(extra.imageKey, extra.imageDefault);
                           return (
-                            <div key={idx} className="aspect-square overflow-hidden rounded-sm bg-muted">
+                            <div key={idx} className="aspect-square overflow-hidden rounded-sm bg-muted relative group">
                               <img 
                                 src={extraImage}
                                 alt={`Accessory ${idx + 1}`}
                                 className="w-full h-full object-cover"
                               />
+                              <div className="absolute bottom-1 right-1 flex gap-1">
+                                <PinButton
+                                  itemType="product"
+                                  itemId={extra.imageKey}
+                                  itemData={{
+                                    title: `${flow.title} Accessory ${idx + 1}`,
+                                    imageUrl: extraImage,
+                                    sourceStory: "morocco-2026",
+                                    issueNumber: 1,
+                                    saveType: "product",
+                                    storyTag: "morocco",
+                                    editionTag: "morocco-2026",
+                                    editTag: "morocco-wardrobe",
+                                    assetKey: extra.imageKey,
+                                    assetUrl: extraImage
+                                  }}
+                                  sourceContext="morocco_editorial"
+                                  aestheticTags={["morocco", "accessory", "wardrobe"]}
+                                  size="sm"
+                                />
+                                <SuitcaseButton
+                                  itemId={extra.imageKey}
+                                  itemData={{
+                                    title: `${flow.title} Accessory ${idx + 1}`,
+                                    imageUrl: extraImage,
+                                    storyTag: "morocco",
+                                    editTag: "morocco-wardrobe"
+                                  }}
+                                  sourceContext="morocco_editorial"
+                                  aestheticTags={["morocco", "accessory", "wardrobe"]}
+                                  size="sm"
+                                />
+                              </div>
                             </div>
                           );
                         })}
