@@ -71,10 +71,8 @@ function DestinationCard({
 
   if (destination.available) {
     return (
-      <Link href={destination.route}>
-        <a data-testid={`link-destination-${destination.slug}`}>
-          {content}
-        </a>
+      <Link href={destination.route} data-testid={`link-destination-${destination.slug}`}>
+        {content}
       </Link>
     );
   }
