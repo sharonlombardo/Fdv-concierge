@@ -4,6 +4,8 @@ import { IMAGE_SLOTS } from "@shared/image-slots";
 import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PinButton } from "@/components/pin-button";
+import { SuitcaseButton } from "@/components/suitcase-button";
 
 const MOOD_KEYS = [
   "todays-edit-mood-1",
@@ -75,19 +77,49 @@ export default function TodaysEdit() {
                 <Skeleton key={i} className="aspect-[4/5] rounded-lg" />
               ))
             ) : (
-              MOOD_KEYS.map((key, index) => (
-                <div 
-                  key={key}
-                  className="aspect-[4/5] overflow-hidden rounded-lg bg-muted"
-                  data-testid={`img-mood-${index + 1}`}
-                >
-                  <img 
-                    src={getImageUrl(key)} 
-                    alt={`Mood ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))
+              MOOD_KEYS.map((key, index) => {
+                const imageUrl = getImageUrl(key);
+                return (
+                  <div 
+                    key={key}
+                    className="relative aspect-[4/5] overflow-hidden rounded-lg bg-muted group"
+                    data-testid={`img-mood-${index + 1}`}
+                  >
+                    <img 
+                      src={imageUrl} 
+                      alt={`Mood ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
+                      <PinButton
+                        itemType="mood"
+                        itemId={key}
+                        itemData={{
+                          title: `Mood ${index + 1}`,
+                          imageUrl,
+                          storyTag: "todays-edit",
+                          editTag: "opening-edit"
+                        }}
+                        sourceContext="todays_edit"
+                        aestheticTags={["mood", "todays-edit"]}
+                        size="sm"
+                      />
+                      <SuitcaseButton
+                        itemId={key}
+                        itemData={{
+                          title: `Mood ${index + 1}`,
+                          imageUrl,
+                          storyTag: "todays-edit",
+                          editTag: "opening-edit"
+                        }}
+                        sourceContext="todays_edit"
+                        aestheticTags={["mood", "todays-edit"]}
+                        size="sm"
+                      />
+                    </div>
+                  </div>
+                );
+              })
             )}
           </div>
         </section>
@@ -102,19 +134,49 @@ export default function TodaysEdit() {
                 <Skeleton key={i} className="aspect-square rounded-lg" />
               ))
             ) : (
-              LOOK_KEYS.map((key, index) => (
-                <div 
-                  key={key}
-                  className="aspect-square overflow-hidden rounded-lg bg-muted"
-                  data-testid={`img-look-${index + 1}`}
-                >
-                  <img 
-                    src={getImageUrl(key)} 
-                    alt={`Look ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))
+              LOOK_KEYS.map((key, index) => {
+                const imageUrl = getImageUrl(key);
+                return (
+                  <div 
+                    key={key}
+                    className="relative aspect-square overflow-hidden rounded-lg bg-muted group"
+                    data-testid={`img-look-${index + 1}`}
+                  >
+                    <img 
+                      src={imageUrl} 
+                      alt={`Look ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
+                      <PinButton
+                        itemType="product"
+                        itemId={key}
+                        itemData={{
+                          title: `Look ${index + 1}`,
+                          imageUrl,
+                          storyTag: "todays-edit",
+                          editTag: "opening-edit"
+                        }}
+                        sourceContext="todays_edit"
+                        aestheticTags={["product", "look", "todays-edit"]}
+                        size="sm"
+                      />
+                      <SuitcaseButton
+                        itemId={key}
+                        itemData={{
+                          title: `Look ${index + 1}`,
+                          imageUrl,
+                          storyTag: "todays-edit",
+                          editTag: "opening-edit"
+                        }}
+                        sourceContext="todays_edit"
+                        aestheticTags={["product", "look", "todays-edit"]}
+                        size="sm"
+                      />
+                    </div>
+                  </div>
+                );
+              })
             )}
           </div>
         </section>
