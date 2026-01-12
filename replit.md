@@ -19,6 +19,15 @@ The main editorial scroll experience for the Morocco 2026 trip. This is a long-f
 - `itinerary-data.ts` - Complete 8-day itinerary data
 - `COMPONENT-REFERENCE.md` - All code in one downloadable reference file
 
+### landing-scroll-v1
+The landing page scroll experience at `/` (root). Includes the FIL DE VIE CONCIERGE hero, Today's Edit card, and The Current magazine-style scroll with 5 story sections (Morocco, Hydra, Slow Travel, Retreat, New York).
+
+**Backup Location:** `backups/landing-scroll-v1/`
+- `threshold.tsx` - Landing page hero + Today's Edit card + Current embed
+- `current.tsx` - "The Current" magazine scroll (5 story sections)
+- `todays-edit.tsx` - Today's Edit detail page with mood/looks grids
+- `COMPONENT-REFERENCE.md` - All code in one downloadable reference file
+
 ## System Architecture
 
 ### Frontend Architecture
