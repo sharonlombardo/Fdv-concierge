@@ -41,6 +41,19 @@ function TodaysEditCard({ getImageUrl }: { getImageUrl: (key: string) => string 
     setIsSaving(true);
     
     try {
+      const slotsResponse = await fetch('/api/image-slots');
+      const slotsData = await slotsResponse.json();
+      const slotMap = new Map<string, string>();
+      if (slotsData.slots) {
+        slotsData.slots.forEach((slot: { key: string; currentUrl: string }) => {
+          slotMap.set(slot.key, slot.currentUrl);
+        });
+      }
+      
+      const getSlotImage = (key: string): string => {
+        return slotMap.get(key) || getImageUrl(key);
+      };
+
       const saveItem = async (itemType: string, itemId: string, title: string, imageUrl: string) => {
         await fetch('/api/saves', {
           method: 'POST',
@@ -60,16 +73,16 @@ function TodaysEditCard({ getImageUrl }: { getImageUrl: (key: string) => string 
         });
       };
 
-      await saveItem('edit', 'todays-edit-desert-neutrals', "Today's Edit - Desert Neutrals", cardImage);
+      await saveItem('edit', 'todays-edit-desert-neutrals', "Today's Edit - Desert Neutrals", getSlotImage("todays-edit-card"));
       
       for (let i = 0; i < MOOD_KEYS.length; i++) {
         const key = MOOD_KEYS[i];
-        await saveItem('mood', key, `Mood ${i + 1}`, getImageUrl(key));
+        await saveItem('mood', key, `Mood ${i + 1}`, getSlotImage(key));
       }
       
       for (let i = 0; i < LOOK_KEYS.length; i++) {
         const key = LOOK_KEYS[i];
-        await saveItem('product', key, `Look ${i + 1}`, getImageUrl(key));
+        await saveItem('product', key, `Look ${i + 1}`, getSlotImage(key));
       }
       
       setIsPinned(true);
