@@ -8,6 +8,17 @@ FDV Concierge is a luxury travel companion web application designed for a Morocc
 
 Preferred communication style: Simple, everyday language.
 
+## Editorial Components
+
+### morocco-editorial-v1
+The main editorial scroll experience for the Morocco 2026 trip. This is a long-form narrative scroll with images and text, displayed as the opening sequence of /concierge before the interactive itinerary.
+
+**Backup Location:** `backups/morocco-editorial-v1/`
+- `editorial-sections.tsx` - Reusable components (EditorialOverview, EditorialHero, EditorialDaySection, ImageCard)
+- `editorial.tsx` - Standalone editorial page with Save/Acquire buttons
+- `itinerary-data.ts` - Complete 8-day itinerary data
+- `COMPONENT-REFERENCE.md` - All code in one downloadable reference file
+
 ## System Architecture
 
 ### Frontend Architecture
