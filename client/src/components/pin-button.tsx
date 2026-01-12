@@ -1,7 +1,23 @@
-import { MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+
+function PinIcon({ size = 18, fill = "none", className }: { size?: number; fill?: string; className?: string }) {
+  return (
+    <svg 
+      width={size} 
+      height={size} 
+      viewBox="0 0 24 32" 
+      fill={fill}
+      stroke="currentColor"
+      strokeWidth={fill !== "none" ? 0 : 2}
+      className={className}
+    >
+      <circle cx="12" cy="10" r="9" />
+      <polygon points="9,18 12,32 15,18" />
+    </svg>
+  );
+}
 
 interface PinButtonProps {
   itemType: string;
@@ -116,10 +132,9 @@ export function PinButton({
       disabled={pinMutation.isPending}
       data-testid={`pin-button-${itemId}`}
     >
-      <MapPin 
+      <PinIcon 
         size={iconSizes[size]} 
         fill={isPinned ? "currentColor" : "none"}
-        strokeWidth={2}
       />
     </button>
   );
