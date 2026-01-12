@@ -103,15 +103,15 @@ export function PinButton({
   });
 
   const sizeClasses = {
-    sm: "h-6 w-6",
-    md: "h-8 w-8",
-    lg: "h-10 w-10"
+    sm: "h-7 w-7",
+    md: "h-10 w-10",
+    lg: "h-12 w-12"
   };
 
   const iconSizes = {
-    sm: 14,
-    md: 18,
-    lg: 22
+    sm: 17,
+    md: 22,
+    lg: 26
   };
 
   return (
@@ -124,11 +124,11 @@ export function PinButton({
       className={cn(
         "hover:scale-110 transition-all duration-200",
         "flex items-center justify-center",
-        isPinned ? "text-amber-600" : "text-stone-800 dark:text-stone-200",
-        "drop-shadow-sm",
+        "drop-shadow-md",
         sizeClasses[size],
         className
       )}
+      style={{ color: "#C9A227" }}
       disabled={pinMutation.isPending}
       data-testid={`pin-button-${itemId}`}
     >
