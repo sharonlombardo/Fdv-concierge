@@ -69,11 +69,11 @@ export function GlobalNav({ variant = "default", showBack = true, backHref, onBa
             </Button>
           )}
         </div>
-        <Link href="/">
+        <Link href="/" className={isOverlay ? "absolute left-1/2 -translate-x-1/2" : ""}>
           <img 
             src={fdvLogo} 
             alt="FDV Concierge" 
-            className="h-6 md:h-8 w-auto dark:invert cursor-pointer" 
+            className={`h-8 md:h-11 w-auto cursor-pointer ${isOverlay ? "brightness-0 invert" : "dark:invert"}`}
             data-testid="nav-logo"
           />
         </Link>
@@ -84,7 +84,7 @@ export function GlobalNav({ variant = "default", showBack = true, backHref, onBa
         <div className="fixed inset-0 z-[9999] bg-background animate-in fade-in duration-200">
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-              <img src={fdvLogo} alt="FDV" className="h-6 w-auto dark:invert" />
+              <img src={fdvLogo} alt="FDV" className="h-8 w-auto dark:invert" />
               <Button
                 variant="ghost"
                 size="icon"
@@ -112,7 +112,7 @@ export function GlobalNav({ variant = "default", showBack = true, backHref, onBa
               </div>
             </div>
             <div className="px-8 py-6 border-t border-border">
-              <img src={fdvLogo} alt="FIL DE VIE CONCIERGE" className="h-4 w-auto dark:invert opacity-50" />
+              <img src={fdvLogo} alt="FIL DE VIE CONCIERGE" className="h-6 w-auto dark:invert opacity-50" />
             </div>
           </div>
         </div>
