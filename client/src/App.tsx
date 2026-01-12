@@ -54,7 +54,7 @@ function Router() {
 function FloatingSuitcase() {
   const [location] = useLocation();
   
-  if (location === '/packing' || location === '/editorial' || location === '/suitcase') return null;
+  if (location === '/packing' || location === '/editorial' || location === '/suitcase' || location === '/todays-edit') return null;
   
   return (
     <Link href="/suitcase">
