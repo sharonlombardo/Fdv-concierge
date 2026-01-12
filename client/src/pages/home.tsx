@@ -49,8 +49,7 @@ import {
   type CoverPage,
   type IntroPage,
   type FieldNotesPage,
-  type JournalPage as JournalPageType,
-  type PackingListPage
+  type JournalPage as JournalPageType
 } from '@shared/itinerary-data';
 
 function isDayPage(page: ItineraryPage): page is DayPage {
@@ -71,10 +70,6 @@ function isFieldNotesPage(page: ItineraryPage): page is FieldNotesPage {
 
 function isJournalPage(page: ItineraryPage): page is JournalPageType {
   return 'type' in page && page.type === 'journal';
-}
-
-function isPackingListPage(page: ItineraryPage): page is PackingListPage {
-  return 'type' in page && page.type === 'packing-list';
 }
 
 // Calendar link helpers
@@ -915,40 +910,10 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
   );
 }
 
-interface PackingListItem {
-  hidden?: boolean;
-  customImage?: string;
-}
-
 export default function Home() {
   const [, setLocation] = useLocation();
-  const [pageIndex, setPageIndex] = useState(() => {
-    // Check for page query param first (from editorial navigation)
-    const urlParams = new URLSearchParams(window.location.search);
-    const pageParam = urlParams.get('page');
-    if (pageParam) {
-      const pageNum = parseInt(pageParam, 10);
-      if (!isNaN(pageNum) && pageNum >= 0 && pageNum < ITINERARY_DATA.length) {
-        return pageNum;
-      }
-    }
-    const saved = localStorage.getItem('fdv_page_index');
-    return saved ? parseInt(saved, 10) : 0;
-  });
-  
-  // Clean up query param after reading it (in useEffect to avoid render-time side effects)
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('page')) {
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-  }, []);
   const [activeItem, setActiveItem] = useState<FlowItem | null>(null);
   const [isShareMode, setIsShareMode] = useState(false);
-  const [packingListItems, setPackingListItems] = useState<Record<string, PackingListItem>>(() => {
-    const saved = localStorage.getItem('fdv_packing_list');
-    return saved ? JSON.parse(saved) : {};
-  });
 
   const { entries: journalEntries, saveEntry, status: saveStatus } = useJournal();
   const { getImageUrl, hasCustomImage, isLoading: isLoadingImages } = useCustomImages();
@@ -970,28 +935,6 @@ export default function Home() {
   const handleApplySelfie = (imageKey: string, selfie: SelfieImage) => {
     saveCustomImageMutation.mutate({ imageKey, selfie });
   };
-
-  const updatePackingItem = (key: string, updates: Partial<PackingListItem>) => {
-    setPackingListItems(prev => {
-      const newItems = { ...prev, [key]: { ...prev[key], ...updates } };
-      localStorage.setItem('fdv_packing_list', JSON.stringify(newItems));
-      return newItems;
-    });
-  };
-
-  const handlePackingImageUpload = (key: string, file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      updatePackingItem(key, { customImage: result, hidden: false });
-    };
-    reader.readAsDataURL(file);
-  };
-  
-  useEffect(() => { 
-    localStorage.setItem('fdv_page_index', pageIndex.toString());
-    window.scrollTo({ top: 0, behavior: 'smooth' }); 
-  }, [pageIndex]);
 
   const handleJournalChange = (itemId: string, note: string) => {
     saveEntry(itemId, { note });
@@ -1039,32 +982,6 @@ export default function Home() {
     };
   };
 
-  // Navigation: Overview (editorial) page sits between Intro (index 1) and Travel Notes (index 2)
-  const nextPage = () => {
-    if (pageIndex === 1) {
-      // From Intro, go to Editorial
-      setLocation('/editorial');
-    } else if (pageIndex < ITINERARY_DATA.length - 1) {
-      setPageIndex(pageIndex + 1);
-    }
-  };
-  const prevPage = () => {
-    if (pageIndex === 2) {
-      // From Travel Notes, go to Editorial
-      setLocation('/editorial');
-    } else if (pageIndex > 0) {
-      setPageIndex(pageIndex - 1);
-    }
-  };
-  const currentPage = ITINERARY_DATA[pageIndex];
-
-  const getPageTitle = (page: ItineraryPage): string => {
-    if (isCoverPage(page)) return 'Start';
-    if (isDayPage(page)) return `Day ${page.day}: ${page.title.replace('Daily Flow: ', '')}`;
-    if ('title' in page) return page.title;
-    return '';
-  };
-
   const findItemById = (id: string): FlowItem | null => {
     for (const page of ITINERARY_DATA) {
       if (isDayPage(page)) {
@@ -1076,11 +993,7 @@ export default function Home() {
   };
 
   const handleNavBack = () => {
-    if (pageIndex > 0) {
-      prevPage();
-    } else {
-      setLocation('/destinations');
-    }
+    setLocation('/destinations');
   };
 
   return (
@@ -1092,484 +1005,181 @@ export default function Home() {
         onBack={handleNavBack}
       />
 
-      <div className="pt-20 md:pt-24 pb-48 px-6 md:px-12 max-w-5xl mx-auto min-h-screen flex flex-col">
+      <div className="pt-20 md:pt-24 pb-48 px-6 md:px-12 max-w-5xl mx-auto">
         
-        {isCoverPage(currentPage) && (
-          <div className="flex-1 flex flex-col justify-center items-center text-center px-4 animate-in fade-in slide-in-from-bottom-12 duration-1000">
-            <h1 
-              className="text-[min(16vw,180px)] font-serif font-bold tracking-tighter leading-none m-0 uppercase select-none w-full whitespace-nowrap overflow-visible"
-              data-testid="text-cover-title"
-            >
-              {currentPage.title}
-            </h1>
-            <div className="h-[2px] w-32 md:w-48 bg-foreground mt-8" />
-            <p className="text-[10px] md:text-sm tracking-[1em] font-bold uppercase text-muted-foreground mt-8">
-              {currentPage.subtitle}
-            </p>
-            <div className="w-full max-w-4xl aspect-[4/5] md:aspect-[21/9] relative overflow-hidden mt-12 grayscale shadow-2xl transition-all duration-1000 hover:grayscale-0 rounded-md">
-              {(() => {
-                const coverUrl = getImageUrl('cover-main', currentPage.image, { imageType: 'cover' });
-                return (
-                  <img 
-                    key={coverUrl}
-                    src={coverUrl} 
-                    className="w-full h-full object-cover scale-110" 
-                    alt={currentPage.title}
-                    onError={(e) => { 
-                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200'; 
-                    }}
-                  />
-                );
-              })()}
-            </div>
-            <Button 
-              onClick={nextPage} 
-              variant="outline"
-              className="mt-16 px-12 py-6 text-[11px] font-bold uppercase tracking-[0.4em] rounded-sm"
-              data-testid="button-begin"
-            >
-              BEGIN JOURNEY
-            </Button>
-          </div>
-        )}
-
-        {isIntroPage(currentPage) && (
-          <div className="flex-1 flex flex-col justify-center max-w-2xl mx-auto space-y-20 animate-in fade-in duration-1000">
-            <h2 className="text-[11px] font-bold tracking-[0.6em] uppercase text-muted-foreground">THE RHYTHM</h2>
-            <div className="space-y-16">
-              {currentPage.body.map((para, i) => (
-                <p 
-                  key={i} 
-                  className={`text-2xl md:text-3xl lg:text-4xl leading-[1.6] font-serif ${i === currentPage.body.length - 1 ? 'italic font-bold border-t-2 pt-16 border-border' : 'text-muted-foreground'}`}
+        {ITINERARY_DATA.map((page, pageIdx) => {
+          if (isCoverPage(page)) {
+            return (
+              <div key={pageIdx} className="min-h-screen flex flex-col justify-center items-center text-center px-4 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+                <h1 
+                  className="text-[min(16vw,180px)] font-serif font-bold tracking-tighter leading-none m-0 uppercase select-none w-full whitespace-nowrap overflow-visible"
+                  data-testid="text-cover-title"
                 >
-                  {para}
+                  {page.title}
+                </h1>
+                <div className="h-[2px] w-32 md:w-48 bg-foreground mt-8" />
+                <p className="text-[10px] md:text-sm tracking-[1em] font-bold uppercase text-muted-foreground mt-8">
+                  {page.subtitle}
                 </p>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {isFieldNotesPage(currentPage) && (
-          <div className="flex-1 py-12 animate-in fade-in duration-1000 uppercase">
-            <div className="mb-24 text-center">
-              <h2 className="text-5xl md:text-7xl font-serif font-bold tracking-tighter mb-6">{currentPage.title}</h2>
-              <div className="h-1.5 w-24 bg-foreground mx-auto" />
-            </div>
-            <div className="grid md:grid-cols-2 gap-x-24 gap-y-20">
-              {currentPage.notes.map((note, i) => (
-                <div key={i} className="space-y-6 border-l border-border pl-10">
-                  <h3 className="text-xs font-bold uppercase tracking-[0.4em]">{note.title}</h3>
-                  <p className="text-muted-foreground text-base md:text-lg leading-relaxed font-serif normal-case">{note.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {isDayPage(currentPage) && (
-          <div className="flex-1 animate-in fade-in duration-1000">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20 border-b border-border pb-16">
-              <div className="space-y-6">
-                <p className="text-[12px] font-bold tracking-[0.5em] uppercase text-muted-foreground">
-                  DAY {currentPage.day} — {currentPage.date}
-                </p>
-                <h2 
-                  className="text-4xl md:text-6xl lg:text-8xl font-serif font-bold tracking-tighter leading-none m-0 uppercase"
-                  data-testid="text-day-title"
-                >
-                  {currentPage.title}
-                </h2>
-                <div className="flex items-center gap-4 text-[12px] font-bold uppercase tracking-[0.4em] text-muted-foreground">
-                  <MapPin className="w-4 h-4 text-foreground" /> {currentPage.location}
+                <div className="w-full max-w-4xl aspect-[4/5] md:aspect-[21/9] relative overflow-hidden mt-12 grayscale shadow-2xl transition-all duration-1000 hover:grayscale-0 rounded-md">
+                  {(() => {
+                    const coverUrl = getImageUrl('cover-main', page.image, { imageType: 'cover' });
+                    return (
+                      <img 
+                        key={coverUrl}
+                        src={coverUrl} 
+                        className="w-full h-full object-cover scale-110" 
+                        alt={page.title}
+                        onError={(e) => { 
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200'; 
+                        }}
+                      />
+                    );
+                  })()}
                 </div>
               </div>
-              <WeatherDisplay weather={currentPage.weather} />
-            </div>
+            );
+          }
 
-            <div className="mb-20 space-y-6">
-              <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] flex items-center gap-3">
-                <Info className="w-4 h-4" /> FIELD NOTES
-              </h3>
-              <div className="text-xl md:text-2xl leading-relaxed text-muted-foreground font-serif italic border-l-2 border-border pl-10 opacity-90 whitespace-pre-wrap">
-                {currentPage.fieldNotes}
-              </div>
-            </div>
-
-            <div className="mb-20">
-              <div className="aspect-[21/18] w-full overflow-hidden rounded-md shadow-xl bg-muted relative">
-                <img 
-                  src={getImageUrl(`day-${currentPage.day}-hero`, currentPage.flow[0]?.image || '', { imageType: 'cover', title: currentPage.title, location: currentPage.location })} 
-                  className="w-full h-full object-cover" 
-                  alt={`Day ${currentPage.day}`}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200';
-                  }}
-                />
-                <div className="absolute top-3 right-3">
-                  <PinButton
-                    itemType="image"
-                    itemId={`d${currentPage.day}-cover`}
-                    itemData={{
-                      title: `Day ${currentPage.day}: ${currentPage.title}`,
-                      location: currentPage.location,
-                      imageUrl: getImageUrl(`day-${currentPage.day}-hero`, currentPage.flow[0]?.image || '', { imageType: 'cover', title: currentPage.title, location: currentPage.location }),
-                      editTag: 'morocco-edit',
-                      storyTag: 'morocco'
-                    }}
-                    sourceContext="morocco_itinerary"
-                    aestheticTags={['cover', 'day', currentPage.location?.toLowerCase() || '']}
-                    size="md"
-                  />
+          if (isIntroPage(page)) {
+            return (
+              <div key={pageIdx} className="py-32 max-w-2xl mx-auto space-y-20 animate-in fade-in duration-1000">
+                <h2 className="text-[11px] font-bold tracking-[0.6em] uppercase text-muted-foreground">THE RHYTHM</h2>
+                <div className="space-y-16">
+                  {page.body.map((para, i) => (
+                    <p 
+                      key={i} 
+                      className={`text-2xl md:text-3xl lg:text-4xl leading-[1.6] font-serif ${i === page.body.length - 1 ? 'italic font-bold border-t-2 pt-16 border-border' : 'text-muted-foreground'}`}
+                    >
+                      {para}
+                    </p>
+                  ))}
                 </div>
               </div>
-            </div>
+            );
+          }
 
-            <div className="mb-32">
-              <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] pb-4 border-b-2 border-foreground mb-16">SCHEDULE</h3>
-              <div className="space-y-6">
-                {currentPage.flow.map((item, i) => (
-                  <button 
-                    key={i} 
-                    onClick={() => setActiveItem(item)} 
-                    className="group w-full text-left p-8 md:p-10 bg-card border border-border hover:border-foreground transition-all rounded-md flex gap-6 md:gap-10 items-start active:scale-[0.99]"
-                    data-testid={`button-flow-item-${item.id}`}
-                  >
-                    <div className="text-[12px] font-bold tracking-widest text-muted-foreground/50 group-hover:text-foreground transition-colors w-20 md:w-24 pt-1 shrink-0">
-                      {item.time}
+          if (isFieldNotesPage(page)) {
+            return (
+              <div key={pageIdx} className="py-32 animate-in fade-in duration-1000 uppercase">
+                <div className="mb-24 text-center">
+                  <h2 className="text-5xl md:text-7xl font-serif font-bold tracking-tighter mb-6">{page.title}</h2>
+                  <div className="h-1.5 w-24 bg-foreground mx-auto" />
+                </div>
+                <div className="grid md:grid-cols-2 gap-x-24 gap-y-20">
+                  {page.notes.map((note, i) => (
+                    <div key={i} className="space-y-6 border-l border-border pl-10">
+                      <h3 className="text-xs font-bold uppercase tracking-[0.4em]">{note.title}</h3>
+                      <p className="text-muted-foreground text-base md:text-lg leading-relaxed font-serif normal-case">{note.text}</p>
                     </div>
-                    <div className="flex-1 space-y-4 min-w-0">
-                      <div className="text-[10px] font-bold tracking-[0.4em] uppercase text-muted-foreground group-hover:text-foreground">
-                        {item.heading}
-                      </div>
-                      <div className="flex items-center gap-4 flex-wrap">
-                        <h4 className="text-2xl md:text-3xl font-serif font-bold tracking-tight leading-none group-hover:opacity-70">
-                          {item.title}
-                        </h4>
-                        {journalEntries[item.id] && (
-                          <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-tighter bg-foreground text-background px-2 py-0.5 rounded-full">
-                            <CloudUpload className="w-2.5 h-2.5" /> Logged
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-base md:text-lg text-muted-foreground line-clamp-2 italic font-serif leading-relaxed opacity-60 group-hover:opacity-100 transition-all">
-                        {item.description || item.body}
-                      </p>
-                    </div>
-                    <ArrowRight className="w-6 h-6 text-muted-foreground/30 group-hover:text-foreground group-hover:translate-x-3 transition-all shrink-0" />
-                  </button>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            );
+          }
 
-            <div className="pt-20 border-t-2 border-border flex flex-col items-center">
-              <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] mb-12">DAILY MANTRA</h3>
-              <p className="text-xl md:text-2xl lg:text-3xl font-bold tracking-widest uppercase italic text-center max-w-2xl leading-relaxed font-serif">
-                "{currentPage.mantra}"
-              </p>
-            </div>
-          </div>
-        )}
+          if (isDayPage(page)) {
+            return (
+              <div key={pageIdx} className="py-32 animate-in fade-in duration-1000 border-t border-border first:border-t-0">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20 border-b border-border pb-16">
+                  <div className="space-y-6">
+                    <p className="text-[12px] font-bold tracking-[0.5em] uppercase text-muted-foreground">
+                      DAY {page.day} — {page.date}
+                    </p>
+                    <h2 
+                      className="text-4xl md:text-6xl lg:text-8xl font-serif font-bold tracking-tighter leading-none m-0 uppercase"
+                      data-testid={`text-day-${page.day}-title`}
+                    >
+                      {page.title}
+                    </h2>
+                    <div className="flex items-center gap-4 text-[12px] font-bold uppercase tracking-[0.4em] text-muted-foreground">
+                      <MapPin className="w-4 h-4 text-foreground" /> {page.location}
+                    </div>
+                  </div>
+                  <WeatherDisplay weather={page.weather} />
+                </div>
 
-        {isJournalPage(currentPage) && (
-          <div className="flex-1 py-12 animate-in fade-in duration-1000">
-            <div className="mb-24 text-center">
-              <h2 className="text-5xl md:text-7xl font-serif font-bold tracking-tighter mb-6 uppercase">{currentPage.title}</h2>
-              <div className="h-1.5 w-24 bg-foreground mx-auto" />
-              <p className="text-sm tracking-[0.6em] font-bold uppercase text-muted-foreground mt-12">{currentPage.subtitle}</p>
-            </div>
-            <div className="space-y-32">
-              {Object.keys(journalEntries).length > 0 ? (
-                Object.keys(journalEntries).sort().map((key) => {
-                  const entry = journalEntries[key];
-                  const rawImages = entry.logImages || [];
-                  const allImages = rawImages.map(img => typeof img === 'string' ? { src: img, caption: '' } : img);
-                  if (entry.logImage && allImages.length === 0) {
-                    allImages.push({ src: entry.logImage, caption: '' });
-                  }
-                  if (!entry.note && !entry.image && allImages.length === 0) return null;
-                  const matchingItem = findItemById(key);
-                  return (
-                    <div key={key} className="space-y-8 group">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {(allImages.length > 0 ? allImages : [{ src: entry.image || "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=800", caption: '' }]).map((img, idx) => (
-                          <div key={idx} className="space-y-2">
-                            <div className="aspect-square shadow-xl overflow-hidden bg-muted rounded-md">
-                              <img 
-                                src={img.src} 
-                                className="w-full h-full object-cover" 
-                                alt={`Memory ${idx + 1}`}
-                              />
-                            </div>
-                            {img.caption && (
-                              <p className="text-sm font-serif italic text-muted-foreground">"{img.caption}"</p>
+                <div className="mb-20 space-y-6">
+                  <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] flex items-center gap-3">
+                    <Info className="w-4 h-4" /> FIELD NOTES
+                  </h3>
+                  <div className="text-xl md:text-2xl leading-relaxed text-muted-foreground font-serif italic border-l-2 border-border pl-10 opacity-90 whitespace-pre-wrap">
+                    {page.fieldNotes}
+                  </div>
+                </div>
+
+                <div className="mb-20">
+                  <div className="aspect-[21/18] w-full overflow-hidden rounded-md shadow-xl bg-muted relative">
+                    <img 
+                      src={getImageUrl(`day-${page.day}-hero`, page.flow[0]?.image || '', { imageType: 'cover', title: page.title, location: page.location })} 
+                      className="w-full h-full object-cover" 
+                      alt={`Day ${page.day}`}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200';
+                      }}
+                    />
+                    <div className="absolute top-3 right-3">
+                      <PinButton
+                        itemType="image"
+                        itemId={`d${page.day}-cover`}
+                        itemData={{
+                          title: `Day ${page.day}: ${page.title}`,
+                          location: page.location,
+                          imageUrl: getImageUrl(`day-${page.day}-hero`, page.flow[0]?.image || '', { imageType: 'cover', title: page.title, location: page.location }),
+                          editTag: 'morocco-edit',
+                          storyTag: 'morocco'
+                        }}
+                        sourceContext="morocco_itinerary"
+                        aestheticTags={['cover', 'day', page.location?.toLowerCase() || '']}
+                        size="md"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-32">
+                  <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] pb-4 border-b-2 border-foreground mb-16">SCHEDULE</h3>
+                  <div className="space-y-6">
+                    {page.flow.map((item, i) => (
+                      <button 
+                        key={i} 
+                        onClick={() => setActiveItem(item)} 
+                        className="group w-full text-left p-8 md:p-10 bg-card border border-border hover:border-foreground transition-all rounded-md flex gap-6 md:gap-10 items-start active:scale-[0.99]"
+                        data-testid={`button-flow-item-${item.id}`}
+                      >
+                        <div className="flex-1 space-y-4 min-w-0">
+                          <div className="flex items-center gap-4 flex-wrap">
+                            <h4 className="text-2xl md:text-3xl font-serif font-bold tracking-tight leading-none group-hover:opacity-70">
+                              {item.title}
+                            </h4>
+                            {journalEntries[item.id] && (
+                              <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-tighter bg-foreground text-background px-2 py-0.5 rounded-full">
+                                <CloudUpload className="w-2.5 h-2.5" /> Logged
+                              </div>
                             )}
                           </div>
-                        ))}
-                      </div>
-                      <div className="md:col-span-5 space-y-6">
-                        <div className="text-[10px] font-bold tracking-[0.4em] uppercase opacity-30 border-b border-border pb-2">
-                          REF: {key.toUpperCase()}
+                          <p className="text-base md:text-lg text-muted-foreground line-clamp-2 italic font-serif leading-relaxed opacity-60 group-hover:opacity-100 transition-all">
+                            {item.description || item.body}
+                          </p>
                         </div>
-                        <p className="text-xl md:text-2xl lg:text-3xl leading-[1.6] font-serif italic opacity-90">
-                          "{entry.note || "A moment captured."}"
-                        </p>
-                        {matchingItem && (
-                          <Button 
-                            onClick={() => { setActiveItem(matchingItem); setIsShareMode(true); }}
-                            variant="outline"
-                            className="rounded-full"
-                            data-testid={`button-share-journal-${key}`}
-                          >
-                            <Share2 className="w-3.5 h-3.5 mr-2" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest">Share Story</span>
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="text-center py-20 border-2 border-dashed border-border rounded-md opacity-30 italic uppercase tracking-widest text-[10px]">
-                  Memories will persist here once captured.
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {isPackingListPage(currentPage) && (
-          <div className="flex-1 py-12 animate-in fade-in duration-1000">
-            <div className="mb-24 text-center">
-              <h2 className="text-5xl md:text-7xl font-serif font-bold tracking-tighter mb-6 uppercase">{currentPage.title}</h2>
-              <div className="h-1.5 w-24 bg-foreground mx-auto" />
-              <p className="text-sm tracking-[0.6em] font-bold uppercase text-muted-foreground mt-12">{currentPage.subtitle}</p>
-            </div>
-            {(() => {
-              const allItems: { key: string; dayNumber: number; itemTitle: string; time: string; suggestedImage: string; isExtra: boolean; extraName?: string }[] = [];
-              ITINERARY_DATA.forEach((page) => {
-                if (isDayPage(page)) {
-                  page.flow.forEach((item) => {
-                    if (item.commercialWardrobe) {
-                      allItems.push({
-                        key: `${item.id}-wardrobe`,
-                        dayNumber: page.day,
-                        itemTitle: item.title,
-                        time: item.time,
-                        suggestedImage: item.commercialWardrobe,
-                        isExtra: false,
-                      });
-                    }
-                    // Always add 4 extra slots for each wardrobe item
-                    if (item.commercialWardrobe) {
-                      for (let idx = 0; idx < 4; idx++) {
-                        const extra = item.wardrobeExtras?.[idx];
-                        const extraKey = `${item.id}-extra-${idx}`;
-                        const hasCustom = hasCustomImage(extraKey);
-                        // Only include if there's data or a custom image
-                        if (extra || hasCustom) {
-                          allItems.push({
-                            key: extraKey,
-                            dayNumber: page.day,
-                            itemTitle: item.title,
-                            time: item.time,
-                            suggestedImage: extra?.image || '',
-                            isExtra: true,
-                            extraName: extra?.name || ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][idx],
-                          });
-                        }
-                      }
-                    }
-                  });
-                }
-              });
-
-              // Group items by flow item ID for look + accessories layout
-              const groupedItems: { 
-                lookKey: string; 
-                dayNumber: number; 
-                itemTitle: string; 
-                time: string; 
-                suggestedImage: string;
-                accessories: typeof allItems;
-              }[] = [];
-
-              // Build grouped structure
-              allItems.forEach((item) => {
-                if (!item.isExtra && !packingListItems[item.key]?.hidden) {
-                  // This is a look - find its accessories
-                  const flowId = item.key.replace('-wardrobe', '');
-                  const accessories = allItems.filter(
-                    a => a.isExtra && a.key.startsWith(`${flowId}-extra-`) && !packingListItems[a.key]?.hidden
-                  );
-                  groupedItems.push({
-                    lookKey: item.key,
-                    dayNumber: item.dayNumber,
-                    itemTitle: item.itemTitle,
-                    time: item.time,
-                    suggestedImage: item.suggestedImage,
-                    accessories,
-                  });
-                }
-              });
-
-              return (
-                <>
-                  <h3 className="text-[11px] font-bold tracking-[0.5em] uppercase mb-8 flex items-center gap-3">
-                    <Sparkles className="w-4 h-4" /> WARDROBE
-                  </h3>
-                  <div className="space-y-8">
-                    {groupedItems.map((group) => {
-                      const packingItem = packingListItems[group.lookKey];
-                      const displayUrl = packingItem?.customImage || getImageUrl(group.lookKey, group.suggestedImage);
-
-                      return (
-                        <div key={group.lookKey} className="flex gap-4">
-                          {/* Look on the left - 1/3 width */}
-                          <div className="w-1/3 min-w-[100px] group relative">
-                            <div className="aspect-[3/4] overflow-hidden bg-muted rounded-md shadow-lg relative">
-                              <img 
-                                src={displayUrl} 
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                                alt={group.itemTitle}
-                              />
-                              <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-                                <label className="bg-background text-foreground rounded-full p-2 cursor-pointer hover:scale-110 transition-transform">
-                                  <input 
-                                    type="file" 
-                                    accept="image/*" 
-                                    className="hidden" 
-                                    onChange={(e) => e.target.files?.[0] && handlePackingImageUpload(group.lookKey, e.target.files[0])}
-                                    data-testid={`input-swap-${group.lookKey}`}
-                                  />
-                                  <Camera className="w-4 h-4" />
-                                </label>
-                                <button 
-                                  onClick={() => updatePackingItem(group.lookKey, { hidden: true })}
-                                  className="bg-background text-foreground rounded-full p-2 hover:scale-110 transition-transform"
-                                  data-testid={`button-hide-${group.lookKey}`}
-                                >
-                                  <X className="w-4 h-4" />
-                                </button>
-                              </div>
-                            </div>
-                            <div className="mt-3 space-y-1">
-                              <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40">
-                                Day {group.dayNumber} · {group.time}
-                              </p>
-                              <p className="text-sm font-serif font-medium truncate">
-                                {group.itemTitle}
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Accessories on the right - 2/3 width in grid */}
-                          <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-2">
-                            {[0, 1, 2, 3].map((idx) => {
-                              const accessory = group.accessories.find(a => a.key.endsWith(`-extra-${idx}`));
-                              const extraKey = `${group.lookKey.replace('-wardrobe', '')}-extra-${idx}`;
-                              const accPackingItem = packingListItems[extraKey];
-                              const hasCustom = hasCustomImage(extraKey);
-                              const accDisplayUrl = hasCustom 
-                                ? getImageUrl(extraKey, accessory?.suggestedImage || '')
-                                : (accPackingItem?.customImage || accessory?.suggestedImage || '');
-
-                              return (
-                                <div key={extraKey} className="group relative">
-                                  <div className="aspect-square overflow-hidden bg-muted rounded-md shadow-lg relative">
-                                    {accDisplayUrl ? (
-                                      <img 
-                                        src={accDisplayUrl} 
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                                        alt={accessory?.extraName || ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][idx]}
-                                      />
-                                    ) : (
-                                      <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
-                                        <Plus className="w-6 h-6" />
-                                      </div>
-                                    )}
-                                    <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-                                      <label className="bg-background text-foreground rounded-full p-2 cursor-pointer hover:scale-110 transition-transform">
-                                        <input 
-                                          type="file" 
-                                          accept="image/*" 
-                                          className="hidden" 
-                                          onChange={(e) => e.target.files?.[0] && handlePackingImageUpload(extraKey, e.target.files[0])}
-                                          data-testid={`input-swap-${extraKey}`}
-                                        />
-                                        <Camera className="w-4 h-4" />
-                                      </label>
-                                      {accDisplayUrl && (
-                                        <button 
-                                          onClick={() => updatePackingItem(extraKey, { hidden: true })}
-                                          className="bg-background text-foreground rounded-full p-2 hover:scale-110 transition-transform"
-                                          data-testid={`button-hide-${extraKey}`}
-                                        >
-                                          <X className="w-4 h-4" />
-                                        </button>
-                                      )}
-                                    </div>
-                                  </div>
-                                  <div className="mt-2 text-center">
-                                    <p className="text-[10px] font-medium text-muted-foreground truncate">
-                                      {accessory?.extraName || ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][idx]}
-                                    </p>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      );
-                    })}
+                        <ArrowRight className="w-6 h-6 text-muted-foreground/30 group-hover:text-foreground group-hover:translate-x-3 transition-all shrink-0" />
+                      </button>
+                    ))}
                   </div>
+                </div>
 
-                  {/* Restore hidden items button */}
-                  {groupedItems.length < allItems.filter(i => !i.isExtra).length && (
-                    <div className="mt-12 text-center">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => {
-                          setPackingListItems({});
-                          localStorage.removeItem('fdv_packing_list');
-                        }}
-                        className="text-[10px] font-bold uppercase tracking-[0.3em]"
-                        data-testid="button-restore-items"
-                      >
-                        Restore Hidden Items
-                      </Button>
-                    </div>
-                  )}
-                </>
-              );
-            })()}
-          </div>
-        )}
+                <div className="pt-20 border-t-2 border-border flex flex-col items-center">
+                  <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] mb-12">DAILY MANTRA</h3>
+                  <p className="text-xl md:text-2xl lg:text-3xl font-bold tracking-widest uppercase italic text-center max-w-2xl leading-relaxed font-serif">
+                    "{page.mantra}"
+                  </p>
+                </div>
+              </div>
+            );
+          }
 
-        <footer className="mt-32 border-t border-border pt-16 flex items-center justify-between gap-4">
-          <Button 
-            onClick={prevPage} 
-            disabled={pageIndex === 0} 
-            variant="ghost"
-            className="flex items-center gap-2 md:gap-4 text-[12px] font-bold uppercase tracking-[0.5em] disabled:opacity-0 transition-all"
-            data-testid="button-prev"
-          >
-            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" /> 
-            <span className="hidden sm:inline">PREV</span>
-          </Button>
-          <div className="text-[11px] font-bold tracking-[0.8em] text-muted-foreground uppercase">
-            {pageIndex + 1} / {ITINERARY_DATA.length}
-          </div>
-          <Button 
-            onClick={nextPage} 
-            disabled={pageIndex === ITINERARY_DATA.length - 1}
-            variant="ghost"
-            className="flex items-center gap-2 md:gap-4 text-[12px] font-bold uppercase tracking-[0.5em] disabled:opacity-0 transition-all"
-            data-testid="button-next"
-          >
-            <span className="hidden sm:inline">NEXT</span> 
-            <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
-          </Button>
-        </footer>
+          return null;
+        })}
       </div>
 
       {activeItem && !isShareMode && (
@@ -1577,8 +1187,8 @@ export default function Home() {
           item={activeItem}
           entries={journalEntries}
           status={saveStatus}
-          location={isDayPage(currentPage) ? currentPage.location : undefined}
-          date={isDayPage(currentPage) ? currentPage.date : undefined}
+          location={undefined}
+          date={undefined}
           onClose={() => setActiveItem(null)}
           onJournalChange={handleJournalChange}
           getImageUrl={getImageUrl}
