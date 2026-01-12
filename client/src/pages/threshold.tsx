@@ -1,10 +1,27 @@
 import { GlobalNav } from "@/components/global-nav";
 import CurrentFeed from "./current";
 import { Link } from "wouter";
-import { MapPin, Sparkles, Heart, Globe, Bell, ChevronRight } from "lucide-react";
+import { MapPin, Sparkles, Heart, Globe, Bell, ChevronRight, Pin } from "lucide-react";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
-import { PinButton } from "@/components/pin-button";
+import { useState } from "react";
+import { queryClient } from "@/lib/queryClient";
+
+const MOOD_KEYS = [
+  "todays-edit-mood-1",
+  "todays-edit-mood-2",
+  "todays-edit-mood-3",
+  "todays-edit-mood-4",
+];
+
+const LOOK_KEYS = [
+  "todays-edit-look-1",
+  "todays-edit-look-2",
+  "todays-edit-look-3",
+  "todays-edit-look-4",
+  "todays-edit-look-5",
+  "todays-edit-look-6",
+];
 
 const EXPLORE_CATEGORIES = [
   { id: "destinations", label: "Travel Destinations", icon: MapPin, href: "/destinations" },
@@ -16,6 +33,54 @@ const EXPLORE_CATEGORIES = [
 
 function TodaysEditCard({ getImageUrl }: { getImageUrl: (key: string) => string }) {
   const cardImage = getImageUrl("todays-edit-card");
+  const [isPinned, setIsPinned] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const saveAllItems = async () => {
+    if (isSaving) return;
+    setIsSaving(true);
+    
+    try {
+      const saveItem = async (itemType: string, itemId: string, title: string, imageUrl: string) => {
+        await fetch('/api/saves', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            itemType,
+            itemId,
+            sourceContext: 'todays_edit',
+            aestheticTags: ['todays-edit'],
+            savedAt: Date.now(),
+            storyTag: 'todays-edit',
+            editTag: 'opening-edit',
+            title,
+            assetUrl: imageUrl,
+            metadata: { title, imageUrl, storyTag: 'todays-edit', editTag: 'opening-edit' }
+          })
+        });
+      };
+
+      await saveItem('edit', 'todays-edit-desert-neutrals', "Today's Edit - Desert Neutrals", cardImage);
+      
+      for (let i = 0; i < MOOD_KEYS.length; i++) {
+        const key = MOOD_KEYS[i];
+        await saveItem('mood', key, `Mood ${i + 1}`, getImageUrl(key));
+      }
+      
+      for (let i = 0; i < LOOK_KEYS.length; i++) {
+        const key = LOOK_KEYS[i];
+        await saveItem('product', key, `Look ${i + 1}`, getImageUrl(key));
+      }
+      
+      setIsPinned(true);
+      queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+    } catch (err) {
+      console.error('Failed to save items:', err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="relative">
       <Link href="/todays-edit">
@@ -42,19 +107,22 @@ function TodaysEditCard({ getImageUrl }: { getImageUrl: (key: string) => string 
         </div>
       </Link>
       <div className="absolute top-4 right-4 z-10">
-        <PinButton
-          itemType="edit"
-          itemId="todays-edit-desert-neutrals"
-          itemData={{
-            title: "Today's Edit - Desert Neutrals",
-            imageUrl: cardImage,
-            editTag: "todays-edit",
-            description: "A curated selection of mood, looks, and pieces"
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            saveAllItems();
           }}
-          sourceContext="landing_page"
-          aestheticTags={["edit", "curated"]}
-          size="md"
-        />
+          disabled={isSaving || isPinned}
+          className={`w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-sm transition-all ${
+            isPinned 
+              ? 'bg-white text-foreground' 
+              : 'bg-black/40 hover:bg-black/60 text-white'
+          }`}
+          data-testid="button-pin-todays-edit-all"
+        >
+          <Pin className={`w-4 h-4 ${isPinned ? 'fill-current' : ''}`} />
+        </button>
       </div>
     </div>
   );
