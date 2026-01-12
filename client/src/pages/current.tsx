@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PinButton } from "@/components/pin-button";
+import { SuitcaseButton } from "@/components/suitcase-button";
 import { GlobalNav } from "@/components/global-nav";
 import { EditorialDetailDrawer, type EditorialItem } from "@/components/editorial-detail-drawer";
 import { useImageSlots } from "@/hooks/use-image-slot";
@@ -230,7 +231,7 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
           <span className="text-muted-foreground text-xs uppercase tracking-widest">Image Placeholder</span>
         </div>
       )}
-      <div className="absolute top-3 right-3 z-10">
+      <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
         <PinButton
           itemType={pinType as any}
           itemId={assetKey}
@@ -250,6 +251,20 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
           aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
           size="md"
         />
+        {(pinType === "product" || pinType === "look") && (
+          <SuitcaseButton
+            itemId={assetKey}
+            itemData={{
+              title,
+              imageUrl: "",
+              storyTag,
+              editTag: `${storyTag}-edit`
+            }}
+            sourceContext="the_current_issue_1"
+            aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
+            size="md"
+          />
+        )}
       </div>
     </div>
   );
@@ -331,7 +346,7 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
                   </div>
                 )}
               </div>
-            <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
+            <div className="absolute top-2 right-2 z-10 flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
               <PinButton
                 itemType={tile.pinType as any}
                 itemId={tile.id}
@@ -351,6 +366,20 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
                 aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), storyTag]}
                 size="sm"
               />
+              {(tile.pinType === "product" || tile.pinType === "look") && (
+                <SuitcaseButton
+                  itemId={tile.id}
+                  itemData={{
+                    title: tile.caption,
+                    imageUrl: imageUrl,
+                    storyTag,
+                    editTag: `${storyTag}-edit`
+                  }}
+                  sourceContext="the_current_issue_1"
+                  aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), storyTag]}
+                  size="sm"
+                />
+              )}
             </div>
             <p className="text-xs text-muted-foreground mt-2 text-center">{tile.caption}</p>
           </div>
@@ -381,7 +410,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
               </div>
             )}
           </div>
-          <div className="absolute top-2 right-2 z-10">
+          <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
             <PinButton
               itemType={image1.pinType as any}
               itemId={image1.assetKey}
@@ -401,6 +430,20 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
               aestheticTags={[image1.bucket.toLowerCase(), image1.pinType.toLowerCase(), storyTag]}
               size="sm"
             />
+            {(image1.pinType === "product" || image1.pinType === "look") && (
+              <SuitcaseButton
+                itemId={image1.assetKey}
+                itemData={{
+                  title: image1.caption,
+                  imageUrl: image1Url,
+                  storyTag,
+                  editTag: `${storyTag}-edit`
+                }}
+                sourceContext="the_current_issue_1"
+                aestheticTags={[image1.bucket.toLowerCase(), image1.pinType.toLowerCase(), storyTag]}
+                size="sm"
+              />
+            )}
           </div>
           <p className="text-sm text-center mt-3 text-muted-foreground">{image1.caption}</p>
         </div>
@@ -414,7 +457,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
               </div>
             )}
           </div>
-          <div className="absolute top-2 right-2 z-10">
+          <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
             <PinButton
               itemType={image2.pinType as any}
               itemId={image2.assetKey}
@@ -434,6 +477,20 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
               aestheticTags={[image2.bucket.toLowerCase(), image2.pinType.toLowerCase(), storyTag]}
               size="sm"
             />
+            {(image2.pinType === "product" || image2.pinType === "look") && (
+              <SuitcaseButton
+                itemId={image2.assetKey}
+                itemData={{
+                  title: image2.caption,
+                  imageUrl: image2Url,
+                  storyTag,
+                  editTag: `${storyTag}-edit`
+                }}
+                sourceContext="the_current_issue_1"
+                aestheticTags={[image2.bucket.toLowerCase(), image2.pinType.toLowerCase(), storyTag]}
+                size="sm"
+              />
+            )}
           </div>
           <p className="text-sm text-center mt-3 text-muted-foreground">{image2.caption}</p>
         </div>
@@ -460,7 +517,7 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: Moti
         <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
           <p className="font-serif text-2xl md:text-3xl text-white italic text-center px-8">{overlayText}</p>
         </div>
-        <div className="absolute top-4 right-4 z-10">
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
           <PinButton
             itemType={pinType as any}
             itemId={id}
@@ -480,6 +537,20 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: Moti
             aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
             size="md"
           />
+          {(pinType === "product" || pinType === "look") && (
+            <SuitcaseButton
+              itemId={id}
+              itemData={{
+                title: overlayText,
+                imageUrl: imageUrl || "",
+                storyTag,
+                editTag: `${storyTag}-edit`
+              }}
+              sourceContext="the_current_issue_1"
+              aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
+              size="md"
+            />
+          )}
         </div>
       </div>
     </div>
