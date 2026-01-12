@@ -84,6 +84,7 @@ interface ImageCardProps {
   itemTitle?: string;
   showPin?: boolean;
   showSuitcase?: boolean;
+  imageType?: 'place' | 'look' | 'accessory';
 }
 
 export function ImageCard({ 
@@ -93,8 +94,22 @@ export function ImageCard({
   itemId,
   itemTitle,
   showPin = false,
-  showSuitcase = false
+  showSuitcase = false,
+  imageType = 'place'
 }: ImageCardProps) {
+  const itemTypeMap = {
+    'place': 'place',
+    'look': 'look',
+    'accessory': 'accessory'
+  };
+  const pinItemType = itemTypeMap[imageType] || 'place';
+  const aestheticTagsMap = {
+    'place': ["morocco", "travel", "destination"],
+    'look': ["morocco", "wardrobe", "style"],
+    'accessory': ["morocco", "accessory", "style"]
+  };
+  const aestheticTags = aestheticTagsMap[imageType] || ["morocco", "travel"];
+  
   return (
     <div className="group relative">
       <div className={`${aspectRatio} overflow-hidden rounded-md bg-muted`}>
@@ -112,14 +127,14 @@ export function ImageCard({
         <div className="absolute top-3 right-3 flex flex-col gap-1">
           {showPin && (
             <PinButton
-              itemType="moment"
+              itemType={pinItemType}
               itemId={itemId}
               itemData={{
                 title: itemTitle || label || "Morocco",
                 imageUrl: imageUrl,
                 sourceStory: "morocco-2026",
                 issueNumber: 1,
-                saveType: "moment",
+                saveType: pinItemType,
                 storyTag: "morocco",
                 editionTag: "morocco-2026",
                 editTag: "morocco-editorial",
@@ -127,7 +142,7 @@ export function ImageCard({
                 assetUrl: imageUrl
               }}
               sourceContext="morocco_editorial"
-              aestheticTags={["morocco", "travel", "editorial"]}
+              aestheticTags={aestheticTags}
               size="sm"
             />
           )}
@@ -141,7 +156,7 @@ export function ImageCard({
                 editTag: "morocco-wardrobe"
               }}
               sourceContext="morocco_editorial"
-              aestheticTags={["morocco", "wardrobe", "look"]}
+              aestheticTags={["morocco", "wardrobe", "style"]}
               size="sm"
             />
           )}
@@ -222,6 +237,7 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
           aspectRatio="aspect-[4/5]"
           showPin={true}
           showSuitcase={false}
+          imageType="place"
         />
       </div>
 
@@ -254,6 +270,7 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
                   itemTitle={flow.title}
                   showPin={true}
                   showSuitcase={false}
+                  imageType="place"
                 />
                 {hasWardrobeContent && (
                   <div className="space-y-4">
@@ -265,6 +282,7 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
                         itemTitle={`${flow.title} Look`}
                         showPin={true}
                         showSuitcase={true}
+                        imageType="look"
                       />
                     )}
                     {hasAccessories && (
@@ -281,14 +299,14 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
                               />
                               <div className="absolute top-1 right-1 flex flex-col gap-0.5">
                                 <PinButton
-                                  itemType="product"
+                                  itemType="accessory"
                                   itemId={extra.imageKey}
                                   itemData={{
                                     title: `${flow.title} Accessory ${idx + 1}`,
                                     imageUrl: extraImage,
                                     sourceStory: "morocco-2026",
                                     issueNumber: 1,
-                                    saveType: "product",
+                                    saveType: "accessory",
                                     storyTag: "morocco",
                                     editionTag: "morocco-2026",
                                     editTag: "morocco-wardrobe",
@@ -296,7 +314,7 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
                                     assetUrl: extraImage
                                   }}
                                   sourceContext="morocco_editorial"
-                                  aestheticTags={["morocco", "accessory", "wardrobe"]}
+                                  aestheticTags={["morocco", "accessory", "style"]}
                                   size="sm"
                                 />
                                 <SuitcaseButton
@@ -308,7 +326,7 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
                                     editTag: "morocco-wardrobe"
                                   }}
                                   sourceContext="morocco_editorial"
-                                  aestheticTags={["morocco", "accessory", "wardrobe"]}
+                                  aestheticTags={["morocco", "accessory", "style"]}
                                   size="sm"
                                 />
                               </div>
