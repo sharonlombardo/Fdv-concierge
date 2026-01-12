@@ -1,12 +1,12 @@
 import { Link, useLocation } from "wouter";
-import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight, Bookmark, Unlock, Check } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Bookmark, Unlock, Check } from "lucide-react";
 import { useCustomImages } from "@/hooks/use-custom-images";
 import { ITINERARY_DATA, DayPage, FlowItem } from "@shared/itinerary-data";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import logoImage from "@assets/LOGO_1767219658929.png";
+import { GlobalNav } from "@/components/global-nav";
 
 interface DayEditorial {
   dayNumber: number;
@@ -415,18 +415,7 @@ export default function Editorial() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Fixed Header */}
-      <header className="fixed top-0 left-0 right-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 flex justify-between items-center">
-          <Link href="/">
-            <button className="text-white hover:opacity-70 transition-opacity p-2" data-testid="button-back">
-              <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
-            </button>
-          </Link>
-          <img src={logoImage} alt="FDV" className="h-5 md:h-6 invert" />
-          <div className="w-9 md:w-10" />
-        </div>
-      </header>
+      <GlobalNav variant="fixed" backHref="/concierge" />
 
       {/* Hero */}
       <HeroSection 

@@ -1,0 +1,101 @@
+I need to fix and polish the FDV Concierge app before a demo on Tuesday. Morocco is our living example—everything else can show "Coming Soon." Please work through these sections in order.
+
+SECTION 1: GLOBAL NAVIGATION (do this first, applies everywhere)
+1.1 Add a hamburger menu to the upper left of ALL pages. It's currently missing on some pages including the Itinerary Overview.
+1.2 Add a back button on every page.
+1.3 Fix image loading performance—new images are loading slowly and old images flash first. Make new images load reliably and quickly.
+
+SECTION 2: PIN + SUITCASE SYSTEM (global rules)
+Build consistent pin and suitcase icon behavior across the entire app:
+
+Every pinnable item needs a visible pin icon
+When pinned, items route to the correct Suitcase bucket based on content type:
+
+Mood/atmosphere/travel images → "Travel/Destinations" bucket
+Full wardrobe looks on models → "Your Style" bucket
+Products (clothing, accessories) → "Your Style" bucket
+Quotes → "State of Mind" bucket
+
+
+For purchasable items (looks, products), show BOTH a pin icon AND a suitcase icon
+Suitcase icon states (visual only for now, no transaction functionality):
+
+Black = not yet purchased (available to buy)
+Red = purchased
+
+
+Inside the Suitcase itself:
+
+Every item shows a pin icon (so user can unpin/remove)
+Purchasable items show the suitcase icon with the correct color state
+
+
+
+
+SECTION 3: SUITCASE BUCKET STRUCTURE
+Set up the Suitcase with these buckets:
+
+Travel/Destinations (active)
+Your Style (active)
+State of Mind (active)
+Objects of Desire (empty, placeholder for later)
+Daily Rituals (empty, placeholder for later)
+Culture (empty, placeholder for later)
+Experiences (empty, placeholder for later)
+My Edits (active—this is where saved Edits go)
+
+
+SECTION 4: LANDING PAGE FIXES
+4.1 Update "FIL de Vie Concierge" to display as the actual logo, not just text.
+4.2 "The Current" section: fix the layout—the beginning of "Morocco" and end of "New York" story titles are getting cut off. Make full titles visible and properly aligned.
+4.3 "Today's Edit" on landing scroll:
+
+Add a pin button to the edit card itself
+If pinned, save the whole edit to Suitcase → "My Edits"
+When opened, all images inside (mood images, looks, objects) must have pin icons
+All looks and products inside must also have suitcase icons for purchase
+
+4.4 Travel Destinations section:
+
+Morocco: clicking it should load the Itinerary Overview (this is working now)
+ALL other destinations: when clicked, show a clean "Coming Soon" page
+All destination cards should have pin icons; when pinned, save to Suitcase → "Travel/Destinations"
+
+
+SECTION 5: MOROCCO ITINERARY OVERVIEW
+5.1 Move the "Acquire this edit" CTA from the top to the END of the overview scroll.
+5.2 All components in the overview must be pinnable with visible pin icons, routing to correct Suitcase buckets.
+5.3 All looks and products in the overview must have both pin icons AND suitcase icons.
+5.4 Update the first image of the Morocco itinerary overview (I will provide the new image).
+5.5 QUESTION FOR YOU: Where in the CMS/admin are the Morocco itinerary overview image upload controls? I need to find and update these images myself.
+
+SECTION 6: THE CURRENT - EDITORIAL STORIES
+6.1 For ALL stories in The Current (Morocco, Hydra, Slow Travel, Ritual Retreat, New York):
+
+Remove the small 6-image grid layouts
+Make ALL images display as consistent full-square format (same size as the larger square images that you scroll through)
+Keep any text that appears under images, but make the associated image full-square size
+This should be a scrolling experience of full-square images, not thumbnail grids
+
+6.2 All imagery in The Current must have functioning pin icons that route to the correct Suitcase bucket based on content type (use the mapping from Section 2).
+6.3 QUESTION FOR YOU: Please provide a simple reference chart showing each image slot type in The Current, the required aspect ratio, and which CMS field controls it.
+
+SECTION 7: COMING SOON PAGES
+Create clean, styled "Coming Soon" pages for these sections (all should be clickable from landing page):
+
+Experiences
+Rituals
+Culture
+Concierge
+
+Same visual style, just show "Coming Soon" text. These will be built out after Tuesday.
+
+SECTION 8: CMS DOCUMENTATION REQUEST
+Please provide a simple reference chart listing:
+
+Each front-end image slot type (e.g., "Travel Destinations card," "Today's Edit main image," "Current story square tile")
+Required aspect ratio and any cropping rules
+Which admin/CMS field controls each one
+
+
+Work through these sections in order. Let me know if anything is unclear before starting.

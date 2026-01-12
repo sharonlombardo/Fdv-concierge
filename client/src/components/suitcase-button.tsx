@@ -17,6 +17,7 @@ interface SuitcaseButtonProps {
   className?: string;
   size?: "sm" | "md" | "lg";
   onAddToCart?: () => void;
+  purchased?: boolean;
 }
 
 export function SuitcaseButton({
@@ -26,10 +27,13 @@ export function SuitcaseButton({
   aestheticTags = [],
   className,
   size = "md",
-  onAddToCart
+  onAddToCart,
+  purchased = false
 }: SuitcaseButtonProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+
+  const isPurchased = purchased;
 
   const addToSuitcase = useMutation({
     mutationFn: async () => {
@@ -119,24 +123,26 @@ export function SuitcaseButton({
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log('SuitcaseButton clicked:', { itemId, itemData, sourceContext, aestheticTags });
-        addToSuitcase.mutate();
+        if (!isPurchased) {
+          addToSuitcase.mutate();
+        }
       }}
       className={cn(
         "rounded-full bg-white/90 dark:bg-black/70 backdrop-blur-sm shadow-sm",
         "hover:bg-white dark:hover:bg-black hover:scale-110 transition-all duration-200",
         "flex items-center justify-center",
-        "text-muted-foreground hover:text-foreground",
+        isPurchased ? "text-red-600" : "text-foreground",
         sizeClasses[size],
         className
       )}
-      disabled={addToSuitcase.isPending}
-      title="Add to Suitcase"
+      disabled={addToSuitcase.isPending || isPurchased}
+      title={isPurchased ? "Purchased" : "Add to Suitcase"}
       data-testid={`suitcase-button-${itemId}`}
     >
       <Briefcase 
         size={iconSizes[size]}
         strokeWidth={2}
+        fill={isPurchased ? "currentColor" : "none"}
       />
     </button>
   );

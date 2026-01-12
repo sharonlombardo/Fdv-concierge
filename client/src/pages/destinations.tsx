@@ -5,6 +5,7 @@ import { IMAGE_SLOTS } from "@shared/image-slots";
 import { Link } from "wouter";
 import { ChevronRight, Lock } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PinButton } from "@/components/pin-button";
 
 function DestinationCard({ 
   destination, 
@@ -27,11 +28,26 @@ function DestinationCard({
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
       
-      {!destination.available && (
-        <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full p-2">
-          <Lock className="w-4 h-4 text-white/70" />
-        </div>
-      )}
+      <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+        <PinButton
+          itemType="destination"
+          itemId={`destination-${destination.slug}`}
+          itemData={{
+            title: destination.title,
+            imageUrl: imageUrl,
+            description: destination.summary,
+            storyTag: destination.slug
+          }}
+          sourceContext="destinations_overview"
+          aestheticTags={["destination", "travel", destination.slug]}
+          size="md"
+        />
+        {!destination.available && (
+          <div className="bg-black/50 backdrop-blur-sm rounded-full p-2">
+            <Lock className="w-4 h-4 text-white/70" />
+          </div>
+        )}
+      </div>
       
       <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
         <p className="text-xs font-medium tracking-[0.2em] uppercase opacity-70 mb-2">

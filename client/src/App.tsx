@@ -21,12 +21,18 @@ import ImageControl from "@/pages/image-control";
 import EditDetail from "@/pages/edit-detail";
 import TodaysEdit from "@/pages/todays-edit";
 import Destinations from "@/pages/destinations";
+import ComingSoon from "@/pages/coming-soon";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Threshold} />
       <Route path="/destinations" component={Destinations} />
+      <Route path="/destinations/hydra" component={ComingSoon} />
+      <Route path="/destinations/slow-travel" component={ComingSoon} />
+      <Route path="/destinations/retreat" component={ComingSoon} />
+      <Route path="/destinations/new-york" component={ComingSoon} />
+      <Route path="/coming-soon/:page" component={ComingSoon} />
       <Route path="/concierge" component={Concierge} />
       <Route path="/itinerary/morocco" component={Concierge} />
       <Route path="/images" component={ImageManagement} />

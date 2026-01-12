@@ -27,7 +27,7 @@ export const DESTINATIONS: Destination[] = [
     summary: "Stone, water, and stillness on a car-free Greek island",
     imageSlotKey: "destination-hydra",
     defaultImage: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&q=80&w=1200",
-    route: "/destinations/hydra",
+    route: "/coming-soon/hydra",
     available: false
   },
   {
@@ -37,7 +37,7 @@ export const DESTINATIONS: Destination[] = [
     summary: "Less, but longer. The art of staying somewhere long enough to belong",
     imageSlotKey: "destination-slow-travel",
     defaultImage: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=1200",
-    route: "/destinations/slow-travel",
+    route: "/coming-soon/slow-travel",
     available: false
   },
   {
@@ -47,7 +47,7 @@ export const DESTINATIONS: Destination[] = [
     summary: "Movement, then stillness. Places designed for practice and presence",
     imageSlotKey: "destination-retreat",
     defaultImage: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1200",
-    route: "/destinations/retreat",
+    route: "/coming-soon/retreat",
     available: false
   },
   {
@@ -57,7 +57,7 @@ export const DESTINATIONS: Destination[] = [
     summary: "The weekend that holds. Culture, food, and a different kind of pace",
     imageSlotKey: "destination-new-york",
     defaultImage: "https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&q=80&w=1200",
-    route: "/destinations/new-york",
+    route: "/coming-soon/new-york",
     available: false
   }
 ];

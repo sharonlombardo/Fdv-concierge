@@ -4,41 +4,59 @@ import { Link } from "wouter";
 import { MapPin, Sparkles, Heart, Globe, Bell, ChevronRight } from "lucide-react";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
+import { PinButton } from "@/components/pin-button";
 
 const EXPLORE_CATEGORIES = [
   { id: "destinations", label: "Travel Destinations", icon: MapPin, href: "/destinations" },
-  { id: "experiences", label: "Experiences", icon: Sparkles, href: "/current" },
-  { id: "rituals", label: "Rituals", icon: Heart, href: "/current" },
-  { id: "culture", label: "Culture", icon: Globe, href: "/current" },
-  { id: "concierge", label: "Concierge", icon: Bell, href: "/concierge" },
+  { id: "experiences", label: "Experiences", icon: Sparkles, href: "/coming-soon/experiences" },
+  { id: "rituals", label: "Rituals", icon: Heart, href: "/coming-soon/rituals" },
+  { id: "culture", label: "Culture", icon: Globe, href: "/coming-soon/culture" },
+  { id: "concierge", label: "Concierge", icon: Bell, href: "/coming-soon/concierge-services" },
 ];
 
 function TodaysEditCard({ getImageUrl }: { getImageUrl: (key: string) => string }) {
   const cardImage = getImageUrl("todays-edit-card");
   return (
-    <Link href="/todays-edit">
-      <div 
-        className="group relative overflow-hidden rounded-lg aspect-[4/5] md:aspect-[16/9] cursor-pointer"
-        data-testid="card-todays-edit"
-      >
+    <div className="relative">
+      <Link href="/todays-edit">
         <div 
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-          style={{
-            backgroundImage: `url('${cardImage}')`
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
-          <p className="text-xs font-medium tracking-[0.2em] uppercase opacity-80 mb-2">Today's Edit</p>
-          <h3 className="font-serif text-2xl md:text-3xl font-medium mb-2">Desert Neutrals</h3>
-          <p className="text-sm opacity-80 mb-4">A curated selection of mood, looks, and pieces</p>
-          <div className="flex items-center gap-2 text-xs font-medium tracking-wide opacity-70 group-hover:opacity-100 transition-opacity">
-            <span>View Edit</span>
-            <ChevronRight className="w-4 h-4" />
+          className="group relative overflow-hidden rounded-lg aspect-[4/5] md:aspect-[16/9] cursor-pointer"
+          data-testid="card-todays-edit"
+        >
+          <div 
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+            style={{
+              backgroundImage: `url('${cardImage}')`
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
+            <p className="text-xs font-medium tracking-[0.2em] uppercase opacity-80 mb-2">Today's Edit</p>
+            <h3 className="font-serif text-2xl md:text-3xl font-medium mb-2">Desert Neutrals</h3>
+            <p className="text-sm opacity-80 mb-4">A curated selection of mood, looks, and pieces</p>
+            <div className="flex items-center gap-2 text-xs font-medium tracking-wide opacity-70 group-hover:opacity-100 transition-opacity">
+              <span>View Edit</span>
+              <ChevronRight className="w-4 h-4" />
+            </div>
           </div>
         </div>
+      </Link>
+      <div className="absolute top-4 right-4 z-10">
+        <PinButton
+          itemType="edit"
+          itemId="todays-edit-desert-neutrals"
+          itemData={{
+            title: "Today's Edit - Desert Neutrals",
+            imageUrl: cardImage,
+            editTag: "todays-edit",
+            description: "A curated selection of mood, looks, and pieces"
+          }}
+          sourceContext="landing_page"
+          aestheticTags={["edit", "curated"]}
+          size="md"
+        />
       </div>
-    </Link>
+    </div>
   );
 }
 

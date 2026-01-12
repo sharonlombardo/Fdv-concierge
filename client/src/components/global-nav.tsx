@@ -1,69 +1,90 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import fdvLogo from "@assets/LOGO_1767219658929.png";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/current", label: "The Current" },
   { href: "/suitcase", label: "Suitcase" },
+  { href: "/destinations", label: "Destinations" },
   { href: "/concierge", label: "Concierge" },
-  { href: "/packing", label: "Packing" },
   { href: "/image-control", label: "Image Control" },
 ];
 
-export function GlobalNav({ variant = "default" }: { variant?: "default" | "overlay" }) {
+interface GlobalNavProps {
+  variant?: "default" | "overlay" | "fixed";
+  showBack?: boolean;
+  backHref?: string;
+  onBack?: () => void;
+}
+
+export function GlobalNav({ variant = "default", showBack = true, backHref, onBack }: GlobalNavProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
 
   const isOverlay = variant === "overlay";
-  const textColor = isOverlay ? "text-foreground" : "text-foreground";
-  const hoverColor = isOverlay ? "hover:text-muted-foreground" : "hover:text-muted-foreground";
+  const isFixed = variant === "fixed";
+  const textColor = isOverlay ? "text-white" : "text-foreground";
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else if (backHref) {
+      setLocation(backHref);
+    } else {
+      window.history.back();
+    }
+  };
+
+  const navClasses = isFixed
+    ? "fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border"
+    : isOverlay
+    ? "absolute top-0 left-0 right-0 z-50"
+    : "bg-background border-b border-border";
 
   return (
     <>
-      <nav className={`flex items-center justify-between px-6 py-4 ${isOverlay ? "absolute top-0 left-0 right-0 z-50" : "bg-background border-b border-border"}`}>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsOpen(true)}
-          className="text-foreground"
-          data-testid="button-menu"
-        >
-          <Menu className="w-5 h-5" />
-        </Button>
-        <div className="flex items-center gap-8">
-          <Link href="/">
-            <span className={`font-serif text-lg tracking-tight ${textColor}`} data-testid="nav-logo">
-              FDV
-            </span>
-          </Link>
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/current">
-              <span className={`text-xs tracking-widest uppercase ${textColor} ${hoverColor} transition-colors`} data-testid="nav-current">
-                The Current
-              </span>
-            </Link>
-            <Link href="/suitcase">
-              <span className={`text-xs tracking-widest uppercase ${textColor} ${hoverColor} transition-colors`} data-testid="nav-suitcase">
-                Suitcase
-              </span>
-            </Link>
-            <Link href="/concierge">
-              <span className={`text-xs tracking-widest uppercase ${textColor} ${hoverColor} transition-colors`} data-testid="nav-concierge">
-                Concierge
-              </span>
-            </Link>
-          </div>
+      <nav className={`flex items-center justify-between px-4 md:px-6 py-3 md:py-4 ${navClasses}`}>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(true)}
+            className={textColor}
+            data-testid="button-menu"
+          >
+            <Menu className="w-5 h-5" />
+          </Button>
+          {showBack && location !== "/" && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBack}
+              className={textColor}
+              data-testid="button-back"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          )}
         </div>
-        <div className="w-9" />
+        <Link href="/">
+          <img 
+            src={fdvLogo} 
+            alt="FDV Concierge" 
+            className="h-6 md:h-8 w-auto dark:invert cursor-pointer" 
+            data-testid="nav-logo"
+          />
+        </Link>
+        <div className="w-[76px] md:w-[84px]" />
       </nav>
 
       {isOpen && (
         <div className="fixed inset-0 z-[9999] bg-background animate-in fade-in duration-200">
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-              <span className="font-serif text-lg tracking-tight">FDV</span>
+              <img src={fdvLogo} alt="FDV" className="h-6 w-auto dark:invert" />
               <Button
                 variant="ghost"
                 size="icon"
@@ -91,9 +112,7 @@ export function GlobalNav({ variant = "default" }: { variant?: "default" | "over
               </div>
             </div>
             <div className="px-8 py-6 border-t border-border">
-              <p className="text-xs text-muted-foreground tracking-widest uppercase">
-                FIL DE VIE CONCIERGE
-              </p>
+              <img src={fdvLogo} alt="FIL DE VIE CONCIERGE" className="h-4 w-auto dark:invert opacity-50" />
             </div>
           </div>
         </div>

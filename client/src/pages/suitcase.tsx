@@ -38,13 +38,14 @@ const VIEW_MODES = [
 
 const CATEGORY_TABS = [
   { id: "all", label: "All" },
+  { id: "travel-destinations", label: "Travel/Destinations" },
   { id: "style", label: "Your Style" },
   { id: "state-of-mind", label: "State of Mind" },
-  { id: "culture", label: "Culture" },
-  { id: "daily-rituals", label: "Daily Rituals" },
-  { id: "places", label: "Travel & Experiences" },
   { id: "items", label: "Objects of Desire" },
-  { id: "inspiration", label: "Inspiration" },
+  { id: "daily-rituals", label: "Daily Rituals" },
+  { id: "culture", label: "Culture" },
+  { id: "experiences", label: "Experiences" },
+  { id: "my-edits", label: "My Edits" },
 ];
 
 const EDIT_CARDS = [
@@ -124,20 +125,22 @@ const SAVE_TYPE_TO_CATEGORY: Record<string, string> = {
   'style': 'style',
   'accessory': 'style',
   'wardrobe': 'style',
-  'image': 'inspiration',
-  'inspire': 'inspiration',
-  'scene': 'inspiration',
-  'cover': 'inspiration',
+  'product': 'style',
+  'image': 'travel-destinations',
+  'inspire': 'travel-destinations',
+  'scene': 'travel-destinations',
+  'cover': 'travel-destinations',
+  'destination': 'travel-destinations',
   'quote': 'state-of-mind',
-  'experience': 'places',
-  'place': 'places',
-  'feature': 'places',
-  'product': 'items',
+  'experience': 'experiences',
+  'place': 'travel-destinations',
+  'feature': 'travel-destinations',
   'object': 'items',
   'item': 'items',
   'article': 'culture',
   'culture': 'culture',
   'ritual': 'daily-rituals',
+  'edit': 'my-edits',
 };
 
 function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
@@ -146,6 +149,8 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
       return saves;
     case "state-of-mind":
       return saves.filter(s => s.itemType === "quote");
+    case "my-edits":
+      return saves.filter(s => s.itemType === "edit");
     default:
       return saves.filter(s => SAVE_TYPE_TO_CATEGORY[s.itemType] === tab);
   }

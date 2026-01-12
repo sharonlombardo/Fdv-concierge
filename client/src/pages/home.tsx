@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'wouter';
+import { GlobalNav } from '@/components/global-nav';
 import fdvLogo from '@assets/LOGO_1767219658929.png';
 import { 
   ChevronRight, 
@@ -8,8 +9,7 @@ import {
   Sun, 
   Cloud, 
   Wind, 
-  Menu, 
-  X, 
+  X,
   Phone, 
   Navigation, 
   Clock, 
@@ -943,7 +943,6 @@ export default function Home() {
       window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<FlowItem | null>(null);
   const [isShareMode, setIsShareMode] = useState(false);
   const [packingListItems, setPackingListItems] = useState<Record<string, PackingListItem>>(() => {
@@ -1076,31 +1075,24 @@ export default function Home() {
     return null;
   };
 
+  const handleNavBack = () => {
+    if (pageIndex > 0) {
+      prevPage();
+    } else {
+      setLocation('/destinations');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-foreground selection:text-background transition-colors duration-500 overflow-x-hidden">
       
-      <nav className="fixed top-0 left-0 right-0 p-4 md:p-6 flex justify-between items-center z-[50] bg-background/80 backdrop-blur-md border-b border-border">
-        <div 
-          className="cursor-pointer" 
-          onClick={() => setPageIndex(0)}
-          data-testid="link-home"
-        >
-          <img src={fdvLogo} alt="FDV Concierge" className="h-8 w-auto dark:invert" />
-        </div>
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={() => setMenuOpen(!menuOpen)}
-            data-testid="button-menu"
-          >
-            {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-          </Button>
-        </div>
-      </nav>
+      <GlobalNav 
+        variant="fixed" 
+        showBack={true} 
+        onBack={handleNavBack}
+      />
 
-      <div className="pt-32 pb-48 px-6 md:px-12 max-w-5xl mx-auto min-h-screen flex flex-col">
+      <div className="pt-20 md:pt-24 pb-48 px-6 md:px-12 max-w-5xl mx-auto min-h-screen flex flex-col">
         
         {isCoverPage(currentPage) && (
           <div className="flex-1 flex flex-col justify-center items-center text-center px-4 animate-in fade-in slide-in-from-bottom-12 duration-1000">
@@ -1579,102 +1571,6 @@ export default function Home() {
           </Button>
         </footer>
       </div>
-
-      {menuOpen && (
-        <div className="fixed inset-0 bg-foreground dark:bg-card text-background dark:text-foreground z-[200] flex flex-col justify-center items-center p-8 transition-all duration-500 overflow-y-auto">
-          <button 
-            onClick={() => setMenuOpen(false)} 
-            className="fixed top-6 right-6 z-[210]"
-            data-testid="button-close-menu"
-          >
-            <X className="w-6 h-6" />
-          </button>
-          <div className="w-full max-w-lg space-y-8 text-center py-24">
-            {ITINERARY_DATA.map((p, i) => {
-              // Insert Overview link right before Travel Notes (field-notes-global page)
-              const isBeforeTravelNotes = 'type' in p && p.type === 'field-notes-global';
-              return (
-                <div key={i}>
-                  {isBeforeTravelNotes && (
-                    <a 
-                      href="/editorial"
-                      className="block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] opacity-25 hover:opacity-100 transition-all transform hover:scale-105 font-serif mb-8"
-                      data-testid="link-editorial"
-                    >
-                      Overview
-                    </a>
-                  )}
-                  <button 
-                    className={`block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] transition-all transform hover:scale-105 font-serif ${pageIndex === i ? 'opacity-100 font-bold italic underline underline-offset-8' : 'opacity-25 hover:opacity-100'}`} 
-                    onClick={() => { setPageIndex(i); setMenuOpen(false); }}
-                    data-testid={`button-menu-item-${i}`}
-                  >
-                    {getPageTitle(p)}
-                  </button>
-                </div>
-              );
-            })}
-            <a 
-              href="/current"
-              className="block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] opacity-25 hover:opacity-100 transition-all transform hover:scale-105 font-serif mt-4"
-              data-testid="link-current"
-            >
-              The Current
-            </a>
-            <a 
-              href="/suitcase"
-              className="block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] opacity-25 hover:opacity-100 transition-all transform hover:scale-105 font-serif mt-4"
-              data-testid="link-suitcase"
-            >
-              Suitcase
-            </a>
-            <a 
-              href="/packing"
-              className="block w-full text-xl md:text-2xl lg:text-3xl uppercase tracking-[0.2em] opacity-25 hover:opacity-100 transition-all transform hover:scale-105 font-serif mt-4"
-              data-testid="link-packing"
-            >
-              Packing List
-            </a>
-            <div className="pt-12 border-t border-current/20 mt-12 space-y-4">
-              <a 
-                href="/library"
-                className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all"
-                data-testid="link-image-library"
-              >
-                Image Library
-              </a>
-              <a 
-                href="/rules"
-                className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all"
-                data-testid="link-image-rules"
-              >
-                Image Rules
-              </a>
-              <a 
-                href="/images"
-                className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all"
-                data-testid="link-image-management"
-              >
-                Manual Overrides
-              </a>
-              <a 
-                href="/image-control"
-                className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all"
-                data-testid="link-image-control"
-              >
-                Image Control
-              </a>
-              <a 
-                href="/test-saves"
-                className="block w-full text-sm uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-all text-amber-500"
-                data-testid="link-debug-saves"
-              >
-                Debug: View Saves
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
 
       {activeItem && !isShareMode && (
         <ItemDetailDrawer
