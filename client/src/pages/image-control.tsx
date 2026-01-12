@@ -2,10 +2,16 @@ import { useState, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Upload, RotateCcw, Check, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Upload, RotateCcw, Check, Image as ImageIcon, ChevronDown } from "lucide-react";
 import { Link } from "wouter";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface ImageSlotData {
   key: string;
@@ -21,6 +27,13 @@ interface ImageSlotData {
 interface ImageSlotsResponse {
   slots: ImageSlotData[];
   grouped: Record<string, ImageSlotData[]>;
+}
+
+interface CategoryData {
+  name: string;
+  sections: { name: string; slots: ImageSlotData[] }[];
+  totalSlots: number;
+  customCount: number;
 }
 
 function ImageSlotCard({ slot, onUpload, onReset, isUploading }: {
@@ -105,8 +118,84 @@ function ImageSlotCard({ slot, onUpload, onReset, isUploading }: {
   );
 }
 
+function getCategoryFromSection(section: string): string {
+  if (section.startsWith("The Current:")) return "The Current";
+  if (section.startsWith("Morocco Editorial:")) {
+    if (section.includes("Wardrobe Extras")) return "Morocco Wardrobe Extras";
+    return "Morocco Editorial";
+  }
+  if (section.includes("Landing") || section.includes("Trip Transition") || section.includes("Today's Edit")) {
+    return "Landing Page";
+  }
+  return section;
+}
+
+function organizeByCategory(slots: ImageSlotData[]): CategoryData[] {
+  const categoryMap = new Map<string, Map<string, ImageSlotData[]>>();
+  
+  for (const slot of slots) {
+    const category = getCategoryFromSection(slot.section);
+    if (!categoryMap.has(category)) {
+      categoryMap.set(category, new Map());
+    }
+    const sectionMap = categoryMap.get(category)!;
+    if (!sectionMap.has(slot.section)) {
+      sectionMap.set(slot.section, []);
+    }
+    sectionMap.get(slot.section)!.push(slot);
+  }
+
+  const categoryOrder = [
+    "The Current",
+    "Landing Page", 
+    "Morocco Editorial",
+    "Morocco Wardrobe Extras"
+  ];
+
+  const result: CategoryData[] = [];
+  
+  for (const categoryName of categoryOrder) {
+    const sectionMap = categoryMap.get(categoryName);
+    if (sectionMap) {
+      const sectionEntries = Array.from(sectionMap.entries()) as [string, ImageSlotData[]][];
+      const sections = sectionEntries.map(([name, slots]) => ({
+        name,
+        slots
+      }));
+      const allSlots = sections.flatMap(s => s.slots);
+      result.push({
+        name: categoryName,
+        sections,
+        totalSlots: allSlots.length,
+        customCount: allSlots.filter(s => s.hasCustomImage).length
+      });
+    }
+  }
+
+  const allCategories = Array.from(categoryMap.entries());
+  for (const [categoryName, sectionMap] of allCategories) {
+    if (!categoryOrder.includes(categoryName)) {
+      const sectionEntries = Array.from(sectionMap.entries()) as [string, ImageSlotData[]][];
+      const sections = sectionEntries.map(([name, slots]) => ({
+        name,
+        slots
+      }));
+      const allSlots = sections.flatMap(s => s.slots);
+      result.push({
+        name: categoryName,
+        sections,
+        totalSlots: allSlots.length,
+        customCount: allSlots.filter(s => s.hasCustomImage).length
+      });
+    }
+  }
+
+  return result;
+}
+
 export default function ImageControlPage() {
   const [uploadingSlot, setUploadingSlot] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const { toast } = useToast();
 
   const { data, isLoading } = useQuery<ImageSlotsResponse>({
@@ -162,75 +251,180 @@ export default function ImageControlPage() {
     resetMutation.mutate(slotKey);
   };
 
-  const sections = data ? Object.entries(
-    data.slots.reduce((acc, slot) => {
-      if (!acc[slot.section]) acc[slot.section] = [];
-      acc[slot.section].push(slot);
-      return acc;
-    }, {} as Record<string, ImageSlotData[]>)
-  ) : [];
+  const categories = data ? organizeByCategory(data.slots) : [];
+
+  const scrollToCategory = (categoryName: string) => {
+    setActiveCategory(categoryName);
+    const element = document.getElementById(`category-${categoryName.toLowerCase().replace(/\s+/g, '-')}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <Link href="/">
-            <Button variant="ghost" size="sm" className="gap-2 mb-4" data-testid="button-back-home">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Itinerary
-            </Button>
-          </Link>
-          
-          <div className="flex items-center gap-3 mb-2">
-            <ImageIcon className="w-8 h-8 text-amber-600" />
-            <h1 className="font-serif text-3xl md:text-4xl font-medium" data-testid="text-page-title">
-              Image Control
-            </h1>
-          </div>
-          <p className="text-muted-foreground max-w-2xl">
-            Manage all images in your app from one place. Upload your own images to replace the defaults, 
-            or reset back to the original placeholders.
-          </p>
-        </div>
+      <div className="flex">
+        {/* Sticky Sidebar Navigation */}
+        <aside className="hidden lg:block w-64 shrink-0 border-r border-border bg-card/50 h-screen sticky top-0 overflow-y-auto">
+          <div className="p-6">
+            <Link href="/">
+              <Button variant="ghost" size="sm" className="gap-2 mb-6 -ml-2" data-testid="button-back-home">
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </Button>
+            </Link>
+            
+            <div className="flex items-center gap-2 mb-6">
+              <ImageIcon className="w-5 h-5 text-amber-600" />
+              <h1 className="font-serif text-lg font-medium">Image Control</h1>
+            </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="aspect-[4/3] bg-stone-200 dark:bg-stone-800 rounded-md animate-pulse" />
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-12">
-            {sections.map(([sectionName, slots]) => (
-              <section key={sectionName}>
-                <h2 className="font-serif text-xl font-medium mb-4 pb-2 border-b border-border" data-testid={`section-${sectionName.toLowerCase().replace(/\s+/g, '-')}`}>
-                  {sectionName}
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {slots.map((slot) => (
-                    <ImageSlotCard
-                      key={slot.key}
-                      slot={slot}
-                      onUpload={handleUpload}
-                      onReset={handleReset}
-                      isUploading={uploadingSlot === slot.key}
-                    />
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
-        )}
+            <nav className="space-y-1">
+              {categories.map((category) => (
+                <button
+                  key={category.name}
+                  onClick={() => scrollToCategory(category.name)}
+                  className={`w-full text-left px-3 py-2.5 rounded-md text-sm transition-colors hover-elevate ${
+                    activeCategory === category.name 
+                      ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-900 dark:text-amber-100' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                  data-testid={`nav-${category.name.toLowerCase().replace(/\s+/g, '-')}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">{category.name}</span>
+                    <span className="text-xs opacity-60">{category.customCount}/{category.totalSlots}</span>
+                  </div>
+                </button>
+              ))}
+            </nav>
 
-        <div className="mt-12 p-6 bg-amber-50 dark:bg-amber-950/30 rounded-md border border-amber-200 dark:border-amber-800">
-          <h3 className="font-medium mb-2">How it works</h3>
-          <ul className="text-sm text-muted-foreground space-y-1">
-            <li>1. Click "Upload" on any image slot to replace it with your own image</li>
-            <li>2. Your custom images are saved and will appear throughout the app</li>
-            <li>3. Click the reset button to restore the original placeholder</li>
-            <li>4. Images are stored securely and persist between sessions</li>
-          </ul>
-        </div>
+            <div className="mt-8 p-4 bg-amber-50 dark:bg-amber-950/30 rounded-md text-xs text-muted-foreground">
+              <p className="font-medium text-foreground mb-2">Quick Tips</p>
+              <ul className="space-y-1">
+                <li>Click a category to jump to it</li>
+                <li>Expand sections to see slots</li>
+                <li>Green badge = custom image</li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 min-w-0">
+          {/* Mobile Header */}
+          <div className="lg:hidden sticky top-0 z-10 bg-[#fafaf9] dark:bg-background border-b border-border p-4">
+            <div className="flex items-center justify-between mb-4">
+              <Link href="/">
+                <Button variant="ghost" size="sm" className="gap-2" data-testid="button-back-home-mobile">
+                  <ArrowLeft className="w-4 h-4" />
+                  Back
+                </Button>
+              </Link>
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-5 h-5 text-amber-600" />
+                <span className="font-serif font-medium">Image Control</span>
+              </div>
+            </div>
+            
+            {/* Mobile Category Selector */}
+            <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4">
+              {categories.map((category) => (
+                <button
+                  key={category.name}
+                  onClick={() => scrollToCategory(category.name)}
+                  className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                    activeCategory === category.name 
+                      ? 'bg-amber-600 text-white' 
+                      : 'bg-stone-200 dark:bg-stone-800 text-muted-foreground'
+                  }`}
+                  data-testid={`nav-mobile-${category.name.toLowerCase().replace(/\s+/g, '-')}`}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-4 lg:p-8 max-w-5xl">
+            {/* Desktop Header */}
+            <div className="hidden lg:block mb-8">
+              <h1 className="font-serif text-3xl font-medium mb-2" data-testid="text-page-title">
+                Image Control Center
+              </h1>
+              <p className="text-muted-foreground">
+                Manage all images in your app. Upload custom images or reset to defaults.
+              </p>
+            </div>
+
+            {isLoading ? (
+              <div className="space-y-6">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="h-24 bg-stone-200 dark:bg-stone-800 rounded-md animate-pulse" />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-8">
+                {categories.map((category) => (
+                  <section 
+                    key={category.name}
+                    id={`category-${category.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    className="scroll-mt-24 lg:scroll-mt-8"
+                  >
+                    <div className="flex items-center justify-between mb-4 pb-2 border-b border-border">
+                      <h2 className="font-serif text-xl font-medium">{category.name}</h2>
+                      <Badge variant="outline" className="text-xs">
+                        {category.customCount} of {category.totalSlots} customized
+                      </Badge>
+                    </div>
+
+                    <Accordion type="multiple" className="space-y-2">
+                      {category.sections.map((section, idx) => {
+                        const sectionId = section.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                        const customInSection = section.slots.filter(s => s.hasCustomImage).length;
+                        
+                        return (
+                          <AccordionItem 
+                            key={section.name} 
+                            value={`${category.name}-${idx}`}
+                            className="border border-border rounded-md bg-card/50 overflow-hidden"
+                          >
+                            <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-stone-50 dark:hover:bg-stone-900/50">
+                              <div className="flex items-center justify-between w-full pr-4">
+                                <span className="font-medium text-sm">{section.name}</span>
+                                <div className="flex items-center gap-2">
+                                  {customInSection > 0 && (
+                                    <Badge variant="secondary" className="text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300">
+                                      {customInSection} custom
+                                    </Badge>
+                                  )}
+                                  <span className="text-xs text-muted-foreground">{section.slots.length} slots</span>
+                                </div>
+                              </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="px-4 pb-4">
+                              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pt-2">
+                                {section.slots.map((slot) => (
+                                  <ImageSlotCard
+                                    key={slot.key}
+                                    slot={slot}
+                                    onUpload={handleUpload}
+                                    onReset={handleReset}
+                                    isUploading={uploadingSlot === slot.key}
+                                  />
+                                ))}
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        );
+                      })}
+                    </Accordion>
+                  </section>
+                ))}
+              </div>
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );
