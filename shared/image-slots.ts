@@ -906,7 +906,816 @@ export const IMAGE_SLOTS: ImageSlot[] = [
     defaultUrl: "https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "21:18",
     description: "Day 8: Return"
-  }
+  },
+
+  // ========================================
+  // MOROCCO EDITORIAL: DAY 1 - ARRIVAL
+  // ========================================
+  {
+    key: "d1-1",
+    label: "Marrakech Menara Airport",
+    section: "Morocco Editorial: Day 1",
+    defaultUrl: "https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Arrival at Marrakech Menara Airport"
+  },
+  {
+    key: "d1-1-wardrobe",
+    label: "Arrival Style",
+    section: "Morocco Editorial: Day 1",
+    defaultUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Breathable travel layers wardrobe"
+  },
+  {
+    key: "d1-2",
+    label: "Transfer to Atlas Mountains",
+    section: "Morocco Editorial: Day 1",
+    defaultUrl: "https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Private transfer to Atlas range"
+  },
+  {
+    key: "d1-3",
+    label: "Check-in at Kasbah Bab Ourika",
+    section: "Morocco Editorial: Day 1",
+    defaultUrl: "https://images.unsplash.com/photo-1505089182331-50e58f00062b?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Eco-lodge with 360-degree mountain views"
+  },
+  {
+    key: "d1-3-wardrobe",
+    label: "Mountain Casual Style",
+    section: "Morocco Editorial: Day 1",
+    defaultUrl: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Light cashmere wrap for afternoon"
+  },
+  {
+    key: "d1-4",
+    label: "Walk the Grounds",
+    section: "Morocco Editorial: Day 1",
+    defaultUrl: "https://images.unsplash.com/photo-1536713009761-0d3815e109d9?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Organic gardens and terraces"
+  },
+  {
+    key: "d1-5",
+    label: "Settle In and Rest",
+    section: "Morocco Editorial: Day 1",
+    defaultUrl: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Decompress with mountain air"
+  },
+  {
+    key: "d1-6",
+    label: "Dinner at the Kasbah",
+    section: "Morocco Editorial: Day 1",
+    defaultUrl: "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Organic produce dinner"
+  },
+  {
+    key: "d1-6-wardrobe",
+    label: "Evening Knitwear",
+    section: "Morocco Editorial: Day 1",
+    defaultUrl: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Warm knitwear or heavy wrap"
+  },
+  {
+    key: "d1-7",
+    label: "Early Night",
+    section: "Morocco Editorial: Day 1",
+    defaultUrl: "https://images.unsplash.com/photo-1518331647614-7a1f04cd34cf?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Rest early before the journey"
+  },
+
+  // ========================================
+  // MOROCCO EDITORIAL: DAY 2 - ATLAS MOUNTAINS
+  // ========================================
+  {
+    key: "d2-1",
+    label: "Breakfast at the Kasbah",
+    section: "Morocco Editorial: Day 2",
+    defaultUrl: "https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Fresh breakfast with Atlas views"
+  },
+  {
+    key: "d2-1-wardrobe",
+    label: "Morning Layers",
+    section: "Morocco Editorial: Day 2",
+    defaultUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Relaxed morning linen or cotton"
+  },
+  {
+    key: "d2-2",
+    label: "Walk the Grounds",
+    section: "Morocco Editorial: Day 2",
+    defaultUrl: "https://images.unsplash.com/photo-1536713009761-0d3815e109d9?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Explore organic gardens"
+  },
+  {
+    key: "d2-3",
+    label: "Optional Village Walk",
+    section: "Morocco Editorial: Day 2",
+    defaultUrl: "https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Berber village hike"
+  },
+  {
+    key: "d2-4",
+    label: "Lunch at the Kasbah",
+    section: "Morocco Editorial: Day 2",
+    defaultUrl: "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Organic garden produce"
+  },
+  {
+    key: "d2-4-wardrobe",
+    label: "Afternoon Layers",
+    section: "Morocco Editorial: Day 2",
+    defaultUrl: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Relaxed light and breathable"
+  },
+  {
+    key: "d2-5",
+    label: "Pool or Terrace Time",
+    section: "Morocco Editorial: Day 2",
+    defaultUrl: "https://images.unsplash.com/photo-1518331647614-7a1f04cd34cf?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Mountain midday sun by infinity pool"
+  },
+  {
+    key: "d2-6",
+    label: "Reading, Walking, or Rest",
+    section: "Morocco Editorial: Day 2",
+    defaultUrl: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Intentionally unstructured time"
+  },
+  {
+    key: "d2-7",
+    label: "Dinner at the Kasbah",
+    section: "Morocco Editorial: Day 2",
+    defaultUrl: "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Mountain views and organic cuisine"
+  },
+  {
+    key: "d2-7-wardrobe",
+    label: "Mountain Evening Wrap",
+    section: "Morocco Editorial: Day 2",
+    defaultUrl: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Warm knitwear for mountain evening"
+  },
+  {
+    key: "d2-8",
+    label: "Early Night",
+    section: "Morocco Editorial: Day 2",
+    defaultUrl: "https://images.unsplash.com/photo-1518331647614-7a1f04cd34cf?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Rest before Marrakech transition"
+  },
+
+  // ========================================
+  // MOROCCO EDITORIAL: DAY 3 - ATLAS TO MARRAKECH
+  // ========================================
+  {
+    key: "d3-1",
+    label: "Breakfast at the Kasbah",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Final breakfast with mountain views"
+  },
+  {
+    key: "d3-1-wardrobe",
+    label: "Morning Comfort",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Relaxed linen or cotton"
+  },
+  {
+    key: "d3-2",
+    label: "Final Walk and Views",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1536713009761-0d3815e109d9?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Last walk through the grounds"
+  },
+  {
+    key: "d3-3",
+    label: "Transfer to Marrakech",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Descend into the Red City"
+  },
+  {
+    key: "d3-4",
+    label: "Optional Stop at Anima Garden",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Andre Heller's fantastical garden"
+  },
+  {
+    key: "d3-5",
+    label: "Check-in at El Fenn",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1534067783941-51c9c23ea337?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Sanctuary of bold colors and art"
+  },
+  {
+    key: "d3-5-wardrobe",
+    label: "Urban Chic Transition",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Polished linen sets"
+  },
+  {
+    key: "d3-6",
+    label: "Explore Courtyards",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1548018560-c7196548e84d?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Hidden corners and art pieces"
+  },
+  {
+    key: "d3-7",
+    label: "Visit El Fenn Gift Shop",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1531501410720-c8d437636169?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Curated Moroccan crafts"
+  },
+  {
+    key: "d3-8",
+    label: "Rooftop Snacks and Cocktails",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Watch the light change over Medina"
+  },
+  {
+    key: "d3-9",
+    label: "Dinner at El Fenn Rooftop",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Sunset views over Koutoubia"
+  },
+  {
+    key: "d3-9-wardrobe",
+    label: "Cocktail Attire",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Elevated but comfortable"
+  },
+
+  // ========================================
+  // MOROCCO EDITORIAL: DAY 4 - MARRAKECH
+  // ========================================
+  {
+    key: "d4-1",
+    label: "Breakfast at the Riad",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Fresh pastries and mint tea"
+  },
+  {
+    key: "d4-1-wardrobe",
+    label: "Morning Linen",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Relaxed linen or cotton layers"
+  },
+  {
+    key: "d4-2",
+    label: "Dar El Bacha",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1548018560-c7196548e84d?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Stunning 1910 pasha's palace"
+  },
+  {
+    key: "d4-3",
+    label: "Coffee at Bacha Coffee",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Legendary coffee in intricate tilework"
+  },
+  {
+    key: "d4-4",
+    label: "Lunch at Nomad",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Modern Moroccan rooftop terrace"
+  },
+  {
+    key: "d4-4-wardrobe",
+    label: "Smart Casual",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Light layers for terrace"
+  },
+  {
+    key: "d4-5",
+    label: "Badi Palace",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1553522991-71439aa62779?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "16th-century ruined palace"
+  },
+  {
+    key: "d4-6",
+    label: "Souk Cherifia",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1531501410720-c8d437636169?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Contemporary Moroccan design"
+  },
+  {
+    key: "d4-7",
+    label: "Mustapha Blaoui",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1590073242678-70ee3fc28f8e?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Legendary treasure house"
+  },
+  {
+    key: "d4-8",
+    label: "Rest at El Fenn",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Rooftop, pool, or quiet room"
+  },
+  {
+    key: "d4-9",
+    label: "Drinks at Royal Mansour",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Opulent hotel cocktails"
+  },
+  {
+    key: "d4-9-wardrobe",
+    label: "Evening Elegant",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Dress to match the setting"
+  },
+  {
+    key: "d4-10",
+    label: "Dinner at Dar Yacout",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Legendary Moroccan banquet"
+  },
+
+  // ========================================
+  // MOROCCO EDITORIAL: DAY 5 - ESSAOUIRA
+  // ========================================
+  {
+    key: "d5-1",
+    label: "Depart Marrakech",
+    section: "Morocco Editorial: Day 5",
+    defaultUrl: "https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Drive to the coast"
+  },
+  {
+    key: "d5-1-wardrobe",
+    label: "Coastal Layers",
+    section: "Morocco Editorial: Day 5",
+    defaultUrl: "https://images.unsplash.com/photo-1577900232427-18219b9166a3?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Windbreaker or light trench"
+  },
+  {
+    key: "d5-2",
+    label: "Walk Ramparts",
+    section: "Morocco Editorial: Day 5",
+    defaultUrl: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Walk the ramparts and old town"
+  },
+  {
+    key: "d5-3",
+    label: "Lunch at Dar Baba",
+    section: "Morocco Editorial: Day 5",
+    defaultUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Seaside lunch"
+  },
+  {
+    key: "d5-4",
+    label: "Coastal E-bike Ride",
+    section: "Morocco Editorial: Day 5",
+    defaultUrl: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Ride along the coast"
+  },
+  {
+    key: "d5-5",
+    label: "Walk Along the Water",
+    section: "Morocco Editorial: Day 5",
+    defaultUrl: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Ocean horizon walk"
+  },
+  {
+    key: "d5-6",
+    label: "Return to Marrakech",
+    section: "Morocco Editorial: Day 5",
+    defaultUrl: "https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Return before dark"
+  },
+  {
+    key: "d5-7",
+    label: "Dinner at +61",
+    section: "Morocco Editorial: Day 5",
+    defaultUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Evening dinner in Marrakech"
+  },
+  {
+    key: "d5-7-wardrobe",
+    label: "Evening Style",
+    section: "Morocco Editorial: Day 5",
+    defaultUrl: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Relaxed evening attire"
+  },
+
+  // ========================================
+  // MOROCCO EDITORIAL: DAY 6 - CULTURE & FOOD
+  // ========================================
+  {
+    key: "d6-1",
+    label: "Breakfast at the Riad",
+    section: "Morocco Editorial: Day 6",
+    defaultUrl: "https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Start the day at El Fenn"
+  },
+  {
+    key: "d6-1-wardrobe",
+    label: "Morning Layers",
+    section: "Morocco Editorial: Day 6",
+    defaultUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Comfortable linen or cotton"
+  },
+  {
+    key: "d6-2",
+    label: "Saadian Tombs",
+    section: "Morocco Editorial: Day 6",
+    defaultUrl: "https://images.unsplash.com/photo-1553522991-71439aa62779?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Historic royal mausoleums"
+  },
+  {
+    key: "d6-3",
+    label: "MAP Marrakech",
+    section: "Morocco Editorial: Day 6",
+    defaultUrl: "https://images.unsplash.com/photo-1554907984-15263bfd63bd?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Photography museum in Medina"
+  },
+  {
+    key: "d6-4",
+    label: "Lunch at La Famille",
+    section: "Morocco Editorial: Day 6",
+    defaultUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Garden lunch spot"
+  },
+  {
+    key: "d6-4-wardrobe",
+    label: "Lunch Style",
+    section: "Morocco Editorial: Day 6",
+    defaultUrl: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Light and breathable"
+  },
+  {
+    key: "d6-5",
+    label: "Rest at El Fenn",
+    section: "Morocco Editorial: Day 6",
+    defaultUrl: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Afternoon recharge"
+  },
+  {
+    key: "d6-6",
+    label: "Cooking Workshop",
+    section: "Morocco Editorial: Day 6",
+    defaultUrl: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "La Maison Arabe cooking class"
+  },
+  {
+    key: "d6-7",
+    label: "Optional Hammam",
+    section: "Morocco Editorial: Day 6",
+    defaultUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "El Fenn or La Mamounia spa"
+  },
+  {
+    key: "d6-8",
+    label: "Dinner at Terrasse des Epices",
+    section: "Morocco Editorial: Day 6",
+    defaultUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Rooftop dinner in Medina"
+  },
+  {
+    key: "d6-8-wardrobe",
+    label: "Evening Attire",
+    section: "Morocco Editorial: Day 6",
+    defaultUrl: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Elevated evening style"
+  },
+
+  // ========================================
+  // MOROCCO EDITORIAL: DAY 7 - AGAFAY DESERT
+  // ========================================
+  {
+    key: "d7-1",
+    label: "Breakfast at the Riad",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Morning at El Fenn"
+  },
+  {
+    key: "d7-1-wardrobe",
+    label: "Morning Comfort",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Relaxed morning layers"
+  },
+  {
+    key: "d7-2",
+    label: "Jardin Majorelle",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Iconic cobalt blue gardens"
+  },
+  {
+    key: "d7-3",
+    label: "Yves Saint Laurent Museum",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1554907984-15263bfd63bd?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Fashion exhibition and architecture"
+  },
+  {
+    key: "d7-4",
+    label: "Lunch at Royal Mansour",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Luxury lunch or drinks"
+  },
+  {
+    key: "d7-4-wardrobe",
+    label: "Smart Lunch Style",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Polished for Royal Mansour"
+  },
+  {
+    key: "d7-5",
+    label: "Transfer to Agafay Desert",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1507400492013-162706c8c05e?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Drive to the stone desert"
+  },
+  {
+    key: "d7-6",
+    label: "Dune Buggy Ride",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Desert adventure"
+  },
+  {
+    key: "d7-7",
+    label: "Camel Ride at Sunset",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Classic sunset camel experience"
+  },
+  {
+    key: "d7-7-wardrobe",
+    label: "Desert Simple",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1577900232427-18219b9166a3?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Simple and beautiful, bring a wrap"
+  },
+  {
+    key: "d7-8",
+    label: "Dinner in the Desert",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Under the stars"
+  },
+  {
+    key: "d7-9",
+    label: "Return to Marrakech",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Night drive back to the city"
+  },
+
+  // ========================================
+  // MOROCCO EDITORIAL: DAY 8 - RETURN
+  // ========================================
+  {
+    key: "d8-1",
+    label: "Breakfast at the Riad",
+    section: "Morocco Editorial: Day 8",
+    defaultUrl: "https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Final breakfast at El Fenn"
+  },
+  {
+    key: "d8-1-wardrobe",
+    label: "Travel Layers",
+    section: "Morocco Editorial: Day 8",
+    defaultUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800",
+    aspectRatio: "4:5",
+    description: "Comfortable for the journey home"
+  },
+  {
+    key: "d8-2",
+    label: "Final Packing",
+    section: "Morocco Editorial: Day 8",
+    defaultUrl: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Last morning preparations"
+  },
+  {
+    key: "d8-3",
+    label: "Check-out and Departure",
+    section: "Morocco Editorial: Day 8",
+    defaultUrl: "https://images.unsplash.com/photo-1534067783941-51c9c23ea337?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Farewell to El Fenn"
+  },
+  {
+    key: "d8-4",
+    label: "Transfer to Airport",
+    section: "Morocco Editorial: Day 8",
+    defaultUrl: "https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Drive to Menara Airport"
+  },
+  {
+    key: "d8-5",
+    label: "International Flight",
+    section: "Morocco Editorial: Day 8",
+    defaultUrl: "https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Flight to New York"
+  },
+  {
+    key: "d8-6",
+    label: "Arrival in New York",
+    section: "Morocco Editorial: Day 8",
+    defaultUrl: "https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Journey continues in a different rhythm"
+  },
+
+  // ========================================
+  // MOROCCO EDITORIAL: WARDROBE EXTRAS
+  // These are the 4 accessory slots for each wardrobe item
+  // ========================================
+  // Day 1 Extras
+  { key: "d1-1-extra-0", label: "Arrival Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 1 arrival accessory 1" },
+  { key: "d1-1-extra-1", label: "Arrival Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 1 arrival accessory 2" },
+  { key: "d1-1-extra-2", label: "Arrival Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 1 arrival accessory 3" },
+  { key: "d1-1-extra-3", label: "Arrival Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 1 arrival accessory 4" },
+  { key: "d1-3-extra-0", label: "Kasbah Check-in Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 1 kasbah accessory 1" },
+  { key: "d1-3-extra-1", label: "Kasbah Check-in Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 1 kasbah accessory 2" },
+  { key: "d1-3-extra-2", label: "Kasbah Check-in Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 1 kasbah accessory 3" },
+  { key: "d1-3-extra-3", label: "Kasbah Check-in Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 1 kasbah accessory 4" },
+  { key: "d1-6-extra-0", label: "Kasbah Dinner Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 1 dinner accessory 1" },
+  { key: "d1-6-extra-1", label: "Kasbah Dinner Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 1 dinner accessory 2" },
+  { key: "d1-6-extra-2", label: "Kasbah Dinner Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 1 dinner accessory 3" },
+  { key: "d1-6-extra-3", label: "Kasbah Dinner Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 1 dinner accessory 4" },
+  // Day 2 Extras
+  { key: "d2-1-extra-0", label: "Day 2 Breakfast Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 2 breakfast accessory 1" },
+  { key: "d2-1-extra-1", label: "Day 2 Breakfast Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 2 breakfast accessory 2" },
+  { key: "d2-1-extra-2", label: "Day 2 Breakfast Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 2 breakfast accessory 3" },
+  { key: "d2-1-extra-3", label: "Day 2 Breakfast Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 2 breakfast accessory 4" },
+  { key: "d2-4-extra-0", label: "Day 2 Lunch Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 2 lunch accessory 1" },
+  { key: "d2-4-extra-1", label: "Day 2 Lunch Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 2 lunch accessory 2" },
+  { key: "d2-4-extra-2", label: "Day 2 Lunch Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 2 lunch accessory 3" },
+  { key: "d2-4-extra-3", label: "Day 2 Lunch Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 2 lunch accessory 4" },
+  { key: "d2-7-extra-0", label: "Day 2 Dinner Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 2 dinner accessory 1" },
+  { key: "d2-7-extra-1", label: "Day 2 Dinner Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 2 dinner accessory 2" },
+  { key: "d2-7-extra-2", label: "Day 2 Dinner Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 2 dinner accessory 3" },
+  { key: "d2-7-extra-3", label: "Day 2 Dinner Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 2 dinner accessory 4" },
+  // Day 3 Extras
+  { key: "d3-1-extra-0", label: "Day 3 Breakfast Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 3 breakfast accessory 1" },
+  { key: "d3-1-extra-1", label: "Day 3 Breakfast Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 3 breakfast accessory 2" },
+  { key: "d3-1-extra-2", label: "Day 3 Breakfast Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 3 breakfast accessory 3" },
+  { key: "d3-1-extra-3", label: "Day 3 Breakfast Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 3 breakfast accessory 4" },
+  { key: "d3-5-extra-0", label: "El Fenn Check-in Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 3 el fenn accessory 1" },
+  { key: "d3-5-extra-1", label: "El Fenn Check-in Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 3 el fenn accessory 2" },
+  { key: "d3-5-extra-2", label: "El Fenn Check-in Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 3 el fenn accessory 3" },
+  { key: "d3-5-extra-3", label: "El Fenn Check-in Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 3 el fenn accessory 4" },
+  { key: "d3-9-extra-0", label: "Day 3 Dinner Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 3 dinner accessory 1" },
+  { key: "d3-9-extra-1", label: "Day 3 Dinner Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 3 dinner accessory 2" },
+  { key: "d3-9-extra-2", label: "Day 3 Dinner Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 3 dinner accessory 3" },
+  { key: "d3-9-extra-3", label: "Day 3 Dinner Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 3 dinner accessory 4" },
+  // Day 4 Extras
+  { key: "d4-1-extra-0", label: "Day 4 Breakfast Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 4 breakfast accessory 1" },
+  { key: "d4-1-extra-1", label: "Day 4 Breakfast Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 4 breakfast accessory 2" },
+  { key: "d4-1-extra-2", label: "Day 4 Breakfast Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 4 breakfast accessory 3" },
+  { key: "d4-1-extra-3", label: "Day 4 Breakfast Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 4 breakfast accessory 4" },
+  { key: "d4-4-extra-0", label: "Nomad Lunch Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 4 lunch accessory 1" },
+  { key: "d4-4-extra-1", label: "Nomad Lunch Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 4 lunch accessory 2" },
+  { key: "d4-4-extra-2", label: "Nomad Lunch Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 4 lunch accessory 3" },
+  { key: "d4-4-extra-3", label: "Nomad Lunch Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 4 lunch accessory 4" },
+  { key: "d4-9-extra-0", label: "Royal Mansour Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 4 evening accessory 1" },
+  { key: "d4-9-extra-1", label: "Royal Mansour Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 4 evening accessory 2" },
+  { key: "d4-9-extra-2", label: "Royal Mansour Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 4 evening accessory 3" },
+  { key: "d4-9-extra-3", label: "Royal Mansour Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 4 evening accessory 4" },
+  // Day 5 Extras
+  { key: "d5-1-extra-0", label: "Day 5 Depart Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 5 depart accessory 1" },
+  { key: "d5-1-extra-1", label: "Day 5 Depart Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 5 depart accessory 2" },
+  { key: "d5-1-extra-2", label: "Day 5 Depart Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 5 depart accessory 3" },
+  { key: "d5-1-extra-3", label: "Day 5 Depart Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 5 depart accessory 4" },
+  { key: "d5-7-extra-0", label: "Day 5 Dinner Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 5 dinner accessory 1" },
+  { key: "d5-7-extra-1", label: "Day 5 Dinner Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 5 dinner accessory 2" },
+  { key: "d5-7-extra-2", label: "Day 5 Dinner Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 5 dinner accessory 3" },
+  { key: "d5-7-extra-3", label: "Day 5 Dinner Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 5 dinner accessory 4" },
+  // Day 6 Extras
+  { key: "d6-1-extra-0", label: "Day 6 Breakfast Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 6 breakfast accessory 1" },
+  { key: "d6-1-extra-1", label: "Day 6 Breakfast Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 6 breakfast accessory 2" },
+  { key: "d6-1-extra-2", label: "Day 6 Breakfast Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 6 breakfast accessory 3" },
+  { key: "d6-1-extra-3", label: "Day 6 Breakfast Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 6 breakfast accessory 4" },
+  { key: "d6-4-extra-0", label: "La Famille Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 6 lunch accessory 1" },
+  { key: "d6-4-extra-1", label: "La Famille Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 6 lunch accessory 2" },
+  { key: "d6-4-extra-2", label: "La Famille Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 6 lunch accessory 3" },
+  { key: "d6-4-extra-3", label: "La Famille Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 6 lunch accessory 4" },
+  { key: "d6-8-extra-0", label: "Terrasse des Epices Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 6 dinner accessory 1" },
+  { key: "d6-8-extra-1", label: "Terrasse des Epices Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 6 dinner accessory 2" },
+  { key: "d6-8-extra-2", label: "Terrasse des Epices Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 6 dinner accessory 3" },
+  { key: "d6-8-extra-3", label: "Terrasse des Epices Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 6 dinner accessory 4" },
+  // Day 7 Extras
+  { key: "d7-1-extra-0", label: "Day 7 Breakfast Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 7 breakfast accessory 1" },
+  { key: "d7-1-extra-1", label: "Day 7 Breakfast Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 7 breakfast accessory 2" },
+  { key: "d7-1-extra-2", label: "Day 7 Breakfast Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 7 breakfast accessory 3" },
+  { key: "d7-1-extra-3", label: "Day 7 Breakfast Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 7 breakfast accessory 4" },
+  { key: "d7-4-extra-0", label: "Royal Mansour Lunch Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 7 lunch accessory 1" },
+  { key: "d7-4-extra-1", label: "Royal Mansour Lunch Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 7 lunch accessory 2" },
+  { key: "d7-4-extra-2", label: "Royal Mansour Lunch Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 7 lunch accessory 3" },
+  { key: "d7-4-extra-3", label: "Royal Mansour Lunch Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 7 lunch accessory 4" },
+  { key: "d7-7-extra-0", label: "Desert Sunset Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 7 sunset accessory 1" },
+  { key: "d7-7-extra-1", label: "Desert Sunset Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 7 sunset accessory 2" },
+  { key: "d7-7-extra-2", label: "Desert Sunset Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 7 sunset accessory 3" },
+  { key: "d7-7-extra-3", label: "Desert Sunset Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 7 sunset accessory 4" },
+  // Day 8 Extras
+  { key: "d8-1-extra-0", label: "Day 8 Breakfast Extra 1", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 8 breakfast accessory 1" },
+  { key: "d8-1-extra-1", label: "Day 8 Breakfast Extra 2", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 8 breakfast accessory 2" },
+  { key: "d8-1-extra-2", label: "Day 8 Breakfast Extra 3", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 8 breakfast accessory 3" },
+  { key: "d8-1-extra-3", label: "Day 8 Breakfast Extra 4", section: "Morocco Editorial: Wardrobe Extras", defaultUrl: "", aspectRatio: "1:1", description: "Day 8 breakfast accessory 4" }
 ];
 
 export function getSlotsBySection(): Record<string, ImageSlot[]> {

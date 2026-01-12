@@ -9,7 +9,6 @@ import { Briefcase } from "lucide-react";
 import NotFound from "@/pages/not-found";
 import Threshold from "@/pages/threshold";
 import Concierge from "@/pages/home";
-import ImageManagement from "@/pages/image-management";
 import ImageLibrary from "@/pages/image-library";
 import ImageRules from "@/pages/image-rules";
 import Editorial from "@/pages/editorial";
@@ -35,7 +34,6 @@ function Router() {
       <Route path="/coming-soon/:page" component={ComingSoon} />
       <Route path="/concierge" component={Concierge} />
       <Route path="/itinerary/morocco" component={Concierge} />
-      <Route path="/images" component={ImageManagement} />
       <Route path="/library" component={ImageLibrary} />
       <Route path="/rules" component={ImageRules} />
       <Route path="/editorial" component={Editorial} />
