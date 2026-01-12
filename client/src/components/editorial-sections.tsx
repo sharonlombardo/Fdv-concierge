@@ -125,7 +125,7 @@ export function EditorialHero({ showScrollIndicator = true }: EditorialHeroProps
           MOROCCO
         </h1>
         <p className="text-base md:text-lg font-light tracking-[0.15em] uppercase opacity-90 mb-10">
-          April 3–10, 2026
+          Atlas Mountains & Marrakech
         </p>
       </div>
       
