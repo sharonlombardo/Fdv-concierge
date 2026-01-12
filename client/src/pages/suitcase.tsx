@@ -103,6 +103,7 @@ function getTypeLabel(itemType: string): string {
     image: "Image",
     cover: "Cover",
     accessory: "Accessory",
+    destination: "Destination",
   };
   return typeMap[itemType] || itemType;
 }
@@ -113,6 +114,12 @@ function getSourceLabel(sourceContext: string): string {
   }
   if (sourceContext.includes("current")) {
     return "from The Current";
+  }
+  if (sourceContext.includes("todays_edit") || sourceContext.includes("opening")) {
+    return "from Today's Edit";
+  }
+  if (sourceContext.includes("destinations")) {
+    return "from Destinations";
   }
   if (sourceContext.includes("packing")) {
     return "from Packing";
