@@ -109,7 +109,7 @@ export function ImageCard({
         />
       </div>
       {(showPin || showSuitcase) && itemId && (
-        <div className="absolute bottom-3 right-3 flex gap-2">
+        <div className="absolute top-3 right-3 flex flex-col gap-1">
           {showPin && (
             <PinButton
               itemType="moment"
@@ -279,7 +279,7 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
                                 alt={`Accessory ${idx + 1}`}
                                 className="w-full h-full object-cover"
                               />
-                              <div className="absolute bottom-1 right-1 flex gap-1">
+                              <div className="absolute top-1 right-1 flex flex-col gap-0.5">
                                 <PinButton
                                   itemType="product"
                                   itemId={extra.imageKey}
