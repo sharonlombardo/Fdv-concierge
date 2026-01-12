@@ -1,31 +1,33 @@
-# FDV Concierge - Morocco Editorial Components Reference
-## Version 1.0 - January 2026
+# Morocco Editorial v1 - Component Reference
 
-This document contains all the component code for the Morocco 2026 editorial scroll experience.
-You can copy any of these components to restore or recreate the editorial experience.
+**Backup Date:** January 12, 2026
+**Version:** Updated with pins and suitcases, vertical stacking in upper right
 
----
+This file contains the complete code for the Morocco Editorial scroll experience. This is your safekeeping backup that you can download.
 
-## File Structure
-
-```
-backups/morocco-editorial-v1/
-  editorial-sections.tsx    - Shared reusable editorial components
-  editorial.tsx             - Standalone editorial page with save/acquire buttons
-  itinerary-data.ts         - Complete Morocco itinerary data
-  COMPONENT-REFERENCE.md    - This file (all code in one place)
-```
+## Files Included:
+1. `client/src/components/editorial-sections.tsx` - Main editorial components
 
 ---
 
-## 1. Editorial Sections Component (`editorial-sections.tsx`)
+## Features:
+- Full-screen hero with "MOROCCO" title and "Atlas Mountains & Marrakech" subtitle
+- 8-day itinerary scroll with day headers, event images, wardrobe looks, and accessories
+- Pin buttons on ALL images (upper right, vertical stack)
+- Suitcase buttons on wardrobe looks and accessories
+- Day hero images from Image Control
+- Event titles only (no time-of-day labels)
+- Mantras displayed at end of each day section
 
-This is the core reusable component that renders the editorial overview scroll.
-It exports: `EditorialOverview`, `EditorialDaySection`, `EditorialHero`, `ImageCard`, and `extractEditorialData`.
+---
+
+## File: editorial-sections.tsx
 
 ```tsx
 import { ChevronDown } from "lucide-react";
 import { ITINERARY_DATA, DayPage, FlowItem } from "@shared/itinerary-data";
+import { PinButton } from "@/components/pin-button";
+import { SuitcaseButton } from "@/components/suitcase-button";
 
 export interface DayEditorial {
   dayNumber: number;
@@ -90,7 +92,7 @@ export function extractEditorialData(): DayEditorial[] {
         location: dayPage.location,
         date: dayPage.date,
         mantra: dayPage.mantra || '"Let each moment unfold with intention."',
-        heroImageKey: `day-${dayPage.day}-hero`,
+        heroImageKey: `d${dayPage.day}-hero`,
         heroImageDefault: dayPage.flow[0]?.image || '',
         flows,
       });
@@ -104,11 +106,23 @@ interface ImageCardProps {
   imageUrl: string;
   label?: string;
   aspectRatio?: string;
+  itemId?: string;
+  itemTitle?: string;
+  showPin?: boolean;
+  showSuitcase?: boolean;
 }
 
-export function ImageCard({ imageUrl, label, aspectRatio = "aspect-[3/4]" }: ImageCardProps) {
+export function ImageCard({ 
+  imageUrl, 
+  label, 
+  aspectRatio = "aspect-[3/4]",
+  itemId,
+  itemTitle,
+  showPin = false,
+  showSuitcase = false
+}: ImageCardProps) {
   return (
-    <div className="group">
+    <div className="group relative">
       <div className={`${aspectRatio} overflow-hidden rounded-md bg-muted`}>
         <img 
           src={imageUrl}
@@ -120,6 +134,45 @@ export function ImageCard({ imageUrl, label, aspectRatio = "aspect-[3/4]" }: Ima
           }}
         />
       </div>
+      {(showPin || showSuitcase) && itemId && (
+        <div className="absolute top-3 right-3 flex flex-col gap-1">
+          {showPin && (
+            <PinButton
+              itemType="moment"
+              itemId={itemId}
+              itemData={{
+                title: itemTitle || label || "Morocco",
+                imageUrl: imageUrl,
+                sourceStory: "morocco-2026",
+                issueNumber: 1,
+                saveType: "moment",
+                storyTag: "morocco",
+                editionTag: "morocco-2026",
+                editTag: "morocco-editorial",
+                assetKey: itemId,
+                assetUrl: imageUrl
+              }}
+              sourceContext="morocco_editorial"
+              aestheticTags={["morocco", "travel", "editorial"]}
+              size="sm"
+            />
+          )}
+          {showSuitcase && (
+            <SuitcaseButton
+              itemId={itemId}
+              itemData={{
+                title: itemTitle || label || "Look",
+                imageUrl: imageUrl,
+                storyTag: "morocco",
+                editTag: "morocco-wardrobe"
+              }}
+              sourceContext="morocco_editorial"
+              aestheticTags={["morocco", "wardrobe", "look"]}
+              size="sm"
+            />
+          )}
+        </div>
+      )}
       {label && (
         <p className="text-xs font-medium tracking-[0.1em] uppercase text-muted-foreground mt-3 text-center">
           {label}
@@ -151,7 +204,7 @@ export function EditorialHero({ showScrollIndicator = true }: EditorialHeroProps
           MOROCCO
         </h1>
         <p className="text-base md:text-lg font-light tracking-[0.15em] uppercase opacity-90 mb-10">
-          April 3-10, 2026
+          Atlas Mountains & Marrakech
         </p>
       </div>
       
@@ -188,13 +241,14 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
       </div>
 
       <div className="mb-16 max-w-2xl mx-auto">
-        <div className="aspect-[4/5] overflow-hidden rounded-md bg-muted">
-          <img 
-            src={heroImage}
-            alt={day.location}
-            className="w-full h-full object-cover"
-          />
-        </div>
+        <ImageCard 
+          imageUrl={heroImage}
+          itemId={day.heroImageKey}
+          itemTitle={`Day ${day.dayNumber} - ${day.location}`}
+          aspectRatio="aspect-[4/5]"
+          showPin={true}
+          showSuitcase={false}
+        />
       </div>
 
       <div className="space-y-16">
@@ -215,23 +269,28 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
           return (
             <div key={flow.id} className="space-y-6">
               <div className="text-center">
-                <p className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground">
-                  {flow.time}
-                </p>
-                <h3 className="font-serif text-xl md:text-2xl mt-1">{flow.title}</h3>
+                <h3 className="font-serif text-xl md:text-2xl">{flow.title}</h3>
               </div>
               
               <div className={`grid gap-6 ${hasWardrobeContent ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}>
                 <ImageCard 
                   imageUrl={eventImage} 
                   aspectRatio="aspect-[4/5]"
+                  itemId={flow.eventImageKey}
+                  itemTitle={flow.title}
+                  showPin={true}
+                  showSuitcase={false}
                 />
                 {hasWardrobeContent && (
                   <div className="space-y-4">
-                    {wardrobeImage && (
+                    {wardrobeImage && flow.wardrobeImageKey && (
                       <ImageCard 
                         imageUrl={wardrobeImage} 
                         aspectRatio="aspect-[4/5]"
+                        itemId={flow.wardrobeImageKey}
+                        itemTitle={`${flow.title} Look`}
+                        showPin={true}
+                        showSuitcase={true}
                       />
                     )}
                     {hasAccessories && (
@@ -240,12 +299,45 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
                           if (!hasCustomImage(extra.imageKey)) return null;
                           const extraImage = getImageUrl(extra.imageKey, extra.imageDefault);
                           return (
-                            <div key={idx} className="aspect-square overflow-hidden rounded-sm bg-muted">
+                            <div key={idx} className="aspect-square overflow-hidden rounded-sm bg-muted relative group">
                               <img 
                                 src={extraImage}
                                 alt={`Accessory ${idx + 1}`}
                                 className="w-full h-full object-cover"
                               />
+                              <div className="absolute top-1 right-1 flex flex-col gap-0.5">
+                                <PinButton
+                                  itemType="product"
+                                  itemId={extra.imageKey}
+                                  itemData={{
+                                    title: `${flow.title} Accessory ${idx + 1}`,
+                                    imageUrl: extraImage,
+                                    sourceStory: "morocco-2026",
+                                    issueNumber: 1,
+                                    saveType: "product",
+                                    storyTag: "morocco",
+                                    editionTag: "morocco-2026",
+                                    editTag: "morocco-wardrobe",
+                                    assetKey: extra.imageKey,
+                                    assetUrl: extraImage
+                                  }}
+                                  sourceContext="morocco_editorial"
+                                  aestheticTags={["morocco", "accessory", "wardrobe"]}
+                                  size="sm"
+                                />
+                                <SuitcaseButton
+                                  itemId={extra.imageKey}
+                                  itemData={{
+                                    title: `${flow.title} Accessory ${idx + 1}`,
+                                    imageUrl: extraImage,
+                                    storyTag: "morocco",
+                                    editTag: "morocco-wardrobe"
+                                  }}
+                                  sourceContext="morocco_editorial"
+                                  aestheticTags={["morocco", "accessory", "wardrobe"]}
+                                  size="sm"
+                                />
+                              </div>
                             </div>
                           );
                         })}
@@ -302,67 +394,24 @@ export function EditorialOverview({ getImageUrl, hasCustomImage }: EditorialOver
 
 ---
 
-## 2. How to Use the Editorial Overview
-
-To embed the editorial overview in any page, import and use like this:
-
-```tsx
-import { EditorialOverview } from "@/components/editorial-sections";
-import { useCustomImages } from "@/hooks/use-custom-images";
-
-function MyPage() {
-  const { getImageUrl, hasCustomImage } = useCustomImages();
-  
-  return (
-    <div>
-      <EditorialOverview 
-        getImageUrl={getImageUrl}
-        hasCustomImage={hasCustomImage}
-      />
-      {/* Your other content after the scroll */}
-    </div>
-  );
-}
-```
+## Image Slot Keys Used:
+- `d1-hero` through `d8-hero` - Day header images
+- `d1-1`, `d1-2`, etc. - Event images
+- `d1-1-wardrobe`, etc. - Wardrobe look images
+- `d1-1-extra-0` through `d1-1-extra-3` - Accessory images
 
 ---
 
-## 3. Key Design Elements
+## How to Restore
 
-### Hero Section
-- Full-screen hero with Morocco title
-- Background image with gradient overlay
-- Scroll indicator (bouncing chevron)
-
-### Day Sections
-- Centered day label ("Day One", "Day Two", etc.)
-- Location title in large serif font
-- Date display
-- Hero image for the day
-- Event/activity cards with optional wardrobe pairings
-- Daily mantra quote at bottom
-
-### Typography
-- Headings: Serif font (Playfair Display)
-- Body: Sans-serif (Inter)
-- Tracking: Wide letter-spacing on labels
-
-### Spacing
-- Large vertical padding (py-20 md:py-28)
-- Border separators between days
-- Centered max-width container (max-w-5xl)
+1. Copy the `editorial-sections.tsx` content to `client/src/components/editorial-sections.tsx`
+2. Ensure `PinButton` and `SuitcaseButton` components exist in `client/src/components/`
+3. Ensure `itinerary-data.ts` exists in `shared/`
 
 ---
 
-## 4. File Locations in Project
-
-| Component | Location |
-|-----------|----------|
-| Editorial Sections | `client/src/components/editorial-sections.tsx` |
-| Standalone Editorial Page | `client/src/pages/editorial.tsx` |
-| Itinerary Data | `shared/itinerary-data.ts` |
-| Home/Concierge Page | `client/src/pages/home.tsx` |
-
----
-
-## Backup Created: January 12, 2026
+## Dependencies
+- `@shared/itinerary-data` - 8-day itinerary data
+- `@/components/pin-button` - Pin save functionality
+- `@/components/suitcase-button` - Suitcase/packing functionality
+- `lucide-react` - ChevronDown icon
