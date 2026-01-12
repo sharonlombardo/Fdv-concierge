@@ -61,7 +61,7 @@ function DestinationCard({
         </p>
         {destination.available && (
           <div className="flex items-center gap-2 text-xs font-medium tracking-wide opacity-70 group-hover:opacity-100 transition-opacity">
-            <span>View Itinerary</span>
+            <span>Explore</span>
             <ChevronRight className="w-4 h-4" />
           </div>
         )}
