@@ -12,6 +12,19 @@ import { IMAGE_SLOTS } from "@shared/image-slots";
 type GetImageUrlFn = (assetKey: string) => string;
 const ImageContext = createContext<GetImageUrlFn>((key) => "");
 
+function getBucketLabel(bucket: string): string {
+  const labelMap: Record<string, string> = {
+    "Inspiration": "Inspired",
+    "Travel & Experiences": "Travel & Experience",
+    "Your Style": "Style",
+    "Objects of Desire": "Object of Desire",
+    "Daily Rituals": "Ritual",
+    "State of Mind": "State of Mind",
+    "Culture": "Culture",
+  };
+  return labelMap[bucket] || bucket;
+}
+
 function useGetImageUrl() {
   return useContext(ImageContext);
 }
@@ -268,7 +281,7 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
         )}
       </div>
       </div>
-      <p className="text-[10px] text-center text-muted-foreground/60 italic mt-2">{bucket}</p>
+      <p className="text-[10px] text-center text-muted-foreground/60 italic mt-2">{getBucketLabel(bucket)}</p>
     </div>
   );
 
@@ -384,8 +397,7 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
                 />
               )}
             </div>
-            <p className="text-xs text-muted-foreground mt-2 text-center">{tile.caption}</p>
-            <p className="text-[10px] text-muted-foreground/60 text-center italic">{tile.bucket}</p>
+            <p className="text-[10px] text-muted-foreground/60 text-center italic mt-2">{getBucketLabel(tile.bucket)}</p>
           </div>
           );
         })}
@@ -449,8 +461,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
               />
             )}
           </div>
-          <p className="text-sm text-center mt-3 text-muted-foreground">{image1.caption}</p>
-          <p className="text-[10px] text-center text-muted-foreground/60 italic">{image1.bucket}</p>
+          <p className="text-[10px] text-center text-muted-foreground/60 italic mt-3">{getBucketLabel(image1.bucket)}</p>
         </div>
         <div className="relative group" data-testid={`two-up-${image2.assetKey}`}>
           <div className="aspect-[4/5] bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden">
@@ -497,8 +508,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
               />
             )}
           </div>
-          <p className="text-sm text-center mt-3 text-muted-foreground">{image2.caption}</p>
-          <p className="text-[10px] text-center text-muted-foreground/60 italic">{image2.bucket}</p>
+          <p className="text-[10px] text-center text-muted-foreground/60 italic mt-3">{getBucketLabel(image2.bucket)}</p>
         </div>
       </div>
     </div>
