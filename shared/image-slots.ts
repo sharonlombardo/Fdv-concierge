@@ -836,124 +836,140 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   // MOROCCO EDITORIAL: DAY 1 - ARRIVAL
   // ========================================
   {
+    key: "d1-hero",
+    label: "Day 1 Header Image",
+    section: "Morocco Editorial: Day 1",
+    defaultUrl: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Large image at top of Day 1 section (before event cards)"
+  },
+  {
     key: "d1-1",
-    label: "Marrakech Menara Airport",
+    label: "1. Marrakech Menara Airport",
     section: "Morocco Editorial: Day 1",
     defaultUrl: "https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Arrival at Marrakech Menara Airport"
+    description: "First event card - Airport arrival"
   },
   {
     key: "d1-1-wardrobe",
-    label: "Arrival Style",
+    label: "1. Arrival Style (Wardrobe)",
     section: "Morocco Editorial: Day 1",
     defaultUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800",
     aspectRatio: "4:5",
-    description: "Breathable travel layers wardrobe"
+    description: "Wardrobe for airport arrival"
   },
   {
     key: "d1-2",
-    label: "Transfer to Atlas Mountains",
+    label: "2. Transfer to Atlas Mountains",
     section: "Morocco Editorial: Day 1",
     defaultUrl: "https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Private transfer to Atlas range"
+    description: "Second event card - Transfer"
   },
   {
     key: "d1-3",
-    label: "Check-in at Kasbah Bab Ourika",
+    label: "3. Check-in at Kasbah",
     section: "Morocco Editorial: Day 1",
     defaultUrl: "https://images.unsplash.com/photo-1505089182331-50e58f00062b?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Eco-lodge with 360-degree mountain views"
+    description: "Third event card - Kasbah check-in"
   },
   {
     key: "d1-3-wardrobe",
-    label: "Mountain Casual Style",
+    label: "3. Mountain Casual (Wardrobe)",
     section: "Morocco Editorial: Day 1",
     defaultUrl: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80&w=800",
     aspectRatio: "4:5",
-    description: "Light cashmere wrap for afternoon"
+    description: "Wardrobe for Kasbah check-in"
   },
   {
     key: "d1-4",
-    label: "Walk the Grounds",
+    label: "4. Walk the Grounds",
     section: "Morocco Editorial: Day 1",
     defaultUrl: "https://images.unsplash.com/photo-1536713009761-0d3815e109d9?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Organic gardens and terraces"
+    description: "Fourth event card"
   },
   {
     key: "d1-5",
-    label: "Settle In and Rest",
+    label: "5. Settle In and Rest",
     section: "Morocco Editorial: Day 1",
     defaultUrl: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Decompress with mountain air"
+    description: "Fifth event card"
   },
   {
     key: "d1-6",
-    label: "Dinner at the Kasbah",
+    label: "6. Dinner at the Kasbah",
     section: "Morocco Editorial: Day 1",
     defaultUrl: "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Organic produce dinner"
+    description: "Sixth event card - Dinner"
   },
   {
     key: "d1-6-wardrobe",
-    label: "Evening Knitwear",
+    label: "6. Evening Knitwear (Wardrobe)",
     section: "Morocco Editorial: Day 1",
     defaultUrl: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&q=80&w=800",
     aspectRatio: "4:5",
-    description: "Warm knitwear or heavy wrap"
+    description: "Wardrobe for dinner"
   },
   {
     key: "d1-7",
-    label: "Early Night",
+    label: "7. Early Night",
     section: "Morocco Editorial: Day 1",
     defaultUrl: "https://images.unsplash.com/photo-1518331647614-7a1f04cd34cf?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Rest early before the journey"
+    description: "Seventh event card"
   },
 
   // ========================================
   // MOROCCO EDITORIAL: DAY 2 - ATLAS MOUNTAINS
   // ========================================
   {
+    key: "d2-hero",
+    label: "Day 2 Header Image",
+    section: "Morocco Editorial: Day 2",
+    defaultUrl: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Large image at top of Day 2 section"
+  },
+  {
     key: "d2-1",
-    label: "Breakfast at the Kasbah",
+    label: "1. Breakfast at the Kasbah",
     section: "Morocco Editorial: Day 2",
     defaultUrl: "https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Fresh breakfast with Atlas views"
+    description: "First event card"
   },
   {
     key: "d2-1-wardrobe",
-    label: "Morning Layers",
+    label: "1. Morning Layers (Wardrobe)",
     section: "Morocco Editorial: Day 2",
     defaultUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800",
     aspectRatio: "4:5",
-    description: "Relaxed morning linen or cotton"
+    description: "Wardrobe for breakfast"
   },
   {
     key: "d2-2",
-    label: "Walk the Grounds",
+    label: "2. Walk the Grounds",
     section: "Morocco Editorial: Day 2",
     defaultUrl: "https://images.unsplash.com/photo-1536713009761-0d3815e109d9?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Explore organic gardens"
+    description: "Second event card"
   },
   {
     key: "d2-3",
-    label: "Optional Village Walk",
+    label: "3. Optional Village Walk",
     section: "Morocco Editorial: Day 2",
     defaultUrl: "https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
-    description: "Berber village hike"
+    description: "Third event card"
   },
   {
     key: "d2-4",
-    label: "Lunch at the Kasbah",
+    label: "4. Lunch at the Kasbah",
     section: "Morocco Editorial: Day 2",
     defaultUrl: "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
@@ -1012,8 +1028,16 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   // MOROCCO EDITORIAL: DAY 3 - ATLAS TO MARRAKECH
   // ========================================
   {
+    key: "d3-hero",
+    label: "Day 3 Header Image",
+    section: "Morocco Editorial: Day 3",
+    defaultUrl: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Large image at top of Day 3 section"
+  },
+  {
     key: "d3-1",
-    label: "Breakfast at the Kasbah",
+    label: "1. Breakfast at the Kasbah",
     section: "Morocco Editorial: Day 3",
     defaultUrl: "https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
@@ -1112,8 +1136,16 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   // MOROCCO EDITORIAL: DAY 4 - MARRAKECH
   // ========================================
   {
+    key: "d4-hero",
+    label: "Day 4 Header Image",
+    section: "Morocco Editorial: Day 4",
+    defaultUrl: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Large image at top of Day 4 section"
+  },
+  {
     key: "d4-1",
-    label: "Breakfast at the Riad",
+    label: "1. Breakfast at the Riad",
     section: "Morocco Editorial: Day 4",
     defaultUrl: "https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
@@ -1220,8 +1252,16 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   // MOROCCO EDITORIAL: DAY 5 - ESSAOUIRA
   // ========================================
   {
+    key: "d5-hero",
+    label: "Day 5 Header Image",
+    section: "Morocco Editorial: Day 5",
+    defaultUrl: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Large image at top of Day 5 section"
+  },
+  {
     key: "d5-1",
-    label: "Depart Marrakech",
+    label: "1. Depart Marrakech",
     section: "Morocco Editorial: Day 5",
     defaultUrl: "https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
@@ -1296,8 +1336,16 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   // MOROCCO EDITORIAL: DAY 6 - CULTURE & FOOD
   // ========================================
   {
+    key: "d6-hero",
+    label: "Day 6 Header Image",
+    section: "Morocco Editorial: Day 6",
+    defaultUrl: "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Large image at top of Day 6 section"
+  },
+  {
     key: "d6-1",
-    label: "Breakfast at the Riad",
+    label: "1. Breakfast at the Riad",
     section: "Morocco Editorial: Day 6",
     defaultUrl: "https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
@@ -1388,8 +1436,16 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   // MOROCCO EDITORIAL: DAY 7 - AGAFAY DESERT
   // ========================================
   {
+    key: "d7-hero",
+    label: "Day 7 Header Image",
+    section: "Morocco Editorial: Day 7",
+    defaultUrl: "https://images.unsplash.com/photo-1507400492013-162706c8c05e?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Large image at top of Day 7 section"
+  },
+  {
     key: "d7-1",
-    label: "Breakfast at the Riad",
+    label: "1. Breakfast at the Riad",
     section: "Morocco Editorial: Day 7",
     defaultUrl: "https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",
@@ -1488,8 +1544,16 @@ export const IMAGE_SLOTS: ImageSlot[] = [
   // MOROCCO EDITORIAL: DAY 8 - RETURN
   // ========================================
   {
+    key: "d8-hero",
+    label: "Day 8 Header Image",
+    section: "Morocco Editorial: Day 8",
+    defaultUrl: "https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&q=80&w=1200",
+    aspectRatio: "16:9",
+    description: "Large image at top of Day 8 section"
+  },
+  {
     key: "d8-1",
-    label: "Breakfast at the Riad",
+    label: "1. Breakfast at the Riad",
     section: "Morocco Editorial: Day 8",
     defaultUrl: "https://images.unsplash.com/photo-1540914124281-342587941389?auto=format&fit=crop&q=80&w=1200",
     aspectRatio: "16:9",

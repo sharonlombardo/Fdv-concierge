@@ -64,7 +64,7 @@ export function extractEditorialData(): DayEditorial[] {
         location: dayPage.location,
         date: dayPage.date,
         mantra: dayPage.mantra || '"Let each moment unfold with intention."',
-        heroImageKey: `day-${dayPage.day}-hero`,
+        heroImageKey: `d${dayPage.day}-hero`,
         heroImageDefault: dayPage.flow[0]?.image || '',
         flows,
       });
