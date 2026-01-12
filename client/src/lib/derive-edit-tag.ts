@@ -16,6 +16,7 @@ const STORY_TO_EDIT: Record<string, string> = {
   'retreat': 'retreat-edit',
   'new-york': 'new-york-edit',
   'opening': 'opening-edit',
+  'todays-edit': 'opening-edit',
 };
 
 const METADATA_STORY_MAP: Record<string, string> = {
