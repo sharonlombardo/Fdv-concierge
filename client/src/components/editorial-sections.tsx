@@ -189,10 +189,7 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
           return (
             <div key={flow.id} className="space-y-6">
               <div className="text-center">
-                <p className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground">
-                  {flow.time}
-                </p>
-                <h3 className="font-serif text-xl md:text-2xl mt-1">{flow.title}</h3>
+                <h3 className="font-serif text-xl md:text-2xl">{flow.title}</h3>
               </div>
               
               <div className={`grid gap-6 ${hasWardrobeContent ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}>
