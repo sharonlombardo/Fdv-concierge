@@ -1010,32 +1010,63 @@ export default function Home() {
         {ITINERARY_DATA.map((page, pageIdx) => {
           if (isCoverPage(page)) {
             return (
-              <div key={pageIdx} className="min-h-screen flex flex-col justify-center items-center text-center px-4 animate-in fade-in slide-in-from-bottom-12 duration-1000">
-                <h1 
-                  className="text-[min(16vw,180px)] font-serif font-bold tracking-tighter leading-none m-0 uppercase select-none w-full whitespace-nowrap overflow-visible"
-                  data-testid="text-cover-title"
-                >
-                  {page.title}
-                </h1>
-                <div className="h-[2px] w-32 md:w-48 bg-foreground mt-8" />
-                <p className="text-[10px] md:text-sm tracking-[1em] font-bold uppercase text-muted-foreground mt-8">
-                  {page.subtitle}
-                </p>
-                <div className="w-full max-w-4xl aspect-[4/5] md:aspect-[21/9] relative overflow-hidden mt-12 grayscale shadow-2xl transition-all duration-1000 hover:grayscale-0 rounded-md">
-                  {(() => {
-                    const coverUrl = getImageUrl('cover-main', page.image, { imageType: 'cover' });
-                    return (
+              <div key={pageIdx} className="animate-in fade-in slide-in-from-bottom-12 duration-1000">
+                <div className="min-h-screen flex flex-col justify-center items-center text-center px-4">
+                  <h1 
+                    className="text-[min(16vw,180px)] font-serif font-bold tracking-tighter leading-none m-0 uppercase select-none w-full whitespace-nowrap overflow-visible"
+                    data-testid="text-cover-title"
+                  >
+                    {page.title}
+                  </h1>
+                  <div className="h-[2px] w-32 md:w-48 bg-foreground mt-8" />
+                  <p className="text-[10px] md:text-sm tracking-[1em] font-bold uppercase text-muted-foreground mt-8">
+                    {page.subtitle}
+                  </p>
+                  <div className="w-full max-w-4xl aspect-[4/5] md:aspect-[21/9] relative overflow-hidden mt-12 grayscale shadow-2xl transition-all duration-1000 hover:grayscale-0 rounded-md">
+                    {(() => {
+                      const coverUrl = getImageUrl('cover-main', page.image, { imageType: 'cover' });
+                      return (
+                        <img 
+                          key={coverUrl}
+                          src={coverUrl} 
+                          className="w-full h-full object-cover scale-110" 
+                          alt={page.title}
+                          onError={(e) => { 
+                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200'; 
+                          }}
+                        />
+                      );
+                    })()}
+                  </div>
+                </div>
+
+                <div className="py-24 md:py-32">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                    <div className="aspect-[3/4] overflow-hidden rounded-md">
                       <img 
-                        key={coverUrl}
-                        src={coverUrl} 
-                        className="w-full h-full object-cover scale-110" 
-                        alt={page.title}
-                        onError={(e) => { 
-                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200'; 
-                        }}
+                        src="https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&q=80&w=800" 
+                        alt="Marrakech architecture" 
+                        className="w-full h-full object-cover"
                       />
-                    );
-                  })()}
+                    </div>
+                    <div className="aspect-[3/4] overflow-hidden rounded-md">
+                      <img 
+                        src="https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=800" 
+                        alt="Moroccan door" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="aspect-[3/4] overflow-hidden rounded-md hidden md:block">
+                      <img 
+                        src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&q=80&w=800" 
+                        alt="Atlas Mountains" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-center text-xs tracking-[0.3em] uppercase text-muted-foreground mt-8">
+                    Eight days across the Atlas Mountains, Marrakech, and Essaouira
+                  </p>
                 </div>
               </div>
             );
@@ -1043,17 +1074,73 @@ export default function Home() {
 
           if (isIntroPage(page)) {
             return (
-              <div key={pageIdx} className="py-32 max-w-2xl mx-auto space-y-20 animate-in fade-in duration-1000">
-                <h2 className="text-[11px] font-bold tracking-[0.6em] uppercase text-muted-foreground">THE RHYTHM</h2>
-                <div className="space-y-16">
-                  {page.body.map((para, i) => (
-                    <p 
-                      key={i} 
-                      className={`text-2xl md:text-3xl lg:text-4xl leading-[1.6] font-serif ${i === page.body.length - 1 ? 'italic font-bold border-t-2 pt-16 border-border' : 'text-muted-foreground'}`}
-                    >
-                      {para}
-                    </p>
-                  ))}
+              <div key={pageIdx} className="animate-in fade-in duration-1000">
+                <div className="py-32 max-w-2xl mx-auto space-y-20">
+                  <h2 className="text-[11px] font-bold tracking-[0.6em] uppercase text-muted-foreground">THE RHYTHM</h2>
+                  <div className="space-y-16">
+                    {page.body.map((para, i) => (
+                      <p 
+                        key={i} 
+                        className={`text-2xl md:text-3xl lg:text-4xl leading-[1.6] font-serif ${i === page.body.length - 1 ? 'italic font-bold border-t-2 pt-16 border-border' : 'text-muted-foreground'}`}
+                      >
+                        {para}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="py-16 md:py-24">
+                  <div className="aspect-[21/9] w-full overflow-hidden rounded-md">
+                    <img 
+                      src="https://images.unsplash.com/photo-1517821099606-cef63a9e3e11?auto=format&fit=crop&q=80&w=1600" 
+                      alt="Moroccan courtyard" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <p className="text-center text-muted-foreground font-serif italic text-lg mt-8 max-w-xl mx-auto">
+                    From the stillness of mountain mornings to the golden light of medina evenings
+                  </p>
+                </div>
+
+                <div className="py-16 max-w-3xl mx-auto">
+                  <h3 className="text-[11px] font-bold tracking-[0.5em] uppercase text-muted-foreground mb-12 text-center">THE JOURNEY</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div className="space-y-3">
+                      <p className="text-3xl md:text-4xl font-serif font-bold">1-2</p>
+                      <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground">Atlas Mountains</p>
+                    </div>
+                    <div className="space-y-3">
+                      <p className="text-3xl md:text-4xl font-serif font-bold">3-7</p>
+                      <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground">Marrakech</p>
+                    </div>
+                    <div className="space-y-3">
+                      <p className="text-3xl md:text-4xl font-serif font-bold">5</p>
+                      <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground">Essaouira</p>
+                    </div>
+                    <div className="space-y-3">
+                      <p className="text-3xl md:text-4xl font-serif font-bold">7</p>
+                      <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground">Agafay Desert</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="py-16 md:py-24">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="aspect-[4/5] overflow-hidden rounded-md">
+                      <img 
+                        src="https://images.unsplash.com/photo-1505089182331-50e58f00062b?auto=format&fit=crop&q=80&w=800" 
+                        alt="Kasbah Bab Ourika" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="aspect-[4/5] overflow-hidden rounded-md">
+                      <img 
+                        src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=800" 
+                        alt="Moroccan dining" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             );
@@ -1061,18 +1148,68 @@ export default function Home() {
 
           if (isFieldNotesPage(page)) {
             return (
-              <div key={pageIdx} className="py-32 animate-in fade-in duration-1000 uppercase">
-                <div className="mb-24 text-center">
-                  <h2 className="text-5xl md:text-7xl font-serif font-bold tracking-tighter mb-6">{page.title}</h2>
-                  <div className="h-1.5 w-24 bg-foreground mx-auto" />
+              <div key={pageIdx} className="animate-in fade-in duration-1000">
+                <div className="py-16 md:py-24 mb-8">
+                  <div className="aspect-[16/9] w-full overflow-hidden rounded-md">
+                    <img 
+                      src="https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&q=80&w=1600" 
+                      alt="Moroccan spices and market" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 </div>
-                <div className="grid md:grid-cols-2 gap-x-24 gap-y-20">
-                  {page.notes.map((note, i) => (
-                    <div key={i} className="space-y-6 border-l border-border pl-10">
-                      <h3 className="text-xs font-bold uppercase tracking-[0.4em]">{note.title}</h3>
-                      <p className="text-muted-foreground text-base md:text-lg leading-relaxed font-serif normal-case">{note.text}</p>
+
+                <div className="py-32 uppercase">
+                  <div className="mb-24 text-center">
+                    <h2 className="text-5xl md:text-7xl font-serif font-bold tracking-tighter mb-6">{page.title}</h2>
+                    <div className="h-1.5 w-24 bg-foreground mx-auto" />
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-x-24 gap-y-20">
+                    {page.notes.map((note, i) => (
+                      <div key={i} className="space-y-6 border-l border-border pl-10">
+                        <h3 className="text-xs font-bold uppercase tracking-[0.4em]">{note.title}</h3>
+                        <p className="text-muted-foreground text-base md:text-lg leading-relaxed font-serif normal-case">{note.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="py-24 md:py-32 border-t border-border">
+                  <div className="max-w-2xl mx-auto text-center space-y-8">
+                    <h3 className="text-[11px] font-bold tracking-[0.5em] uppercase text-muted-foreground">THE EXPERIENCE</h3>
+                    <p className="text-2xl md:text-3xl font-serif text-muted-foreground leading-relaxed">
+                      A journey curated for those who seek depth over distance. Architecture, food, and stillness woven into eight unforgettable days.
+                    </p>
+                  </div>
+
+                  <div className="mt-16 grid grid-cols-3 gap-4">
+                    <div className="aspect-[3/4] overflow-hidden rounded-md">
+                      <img 
+                        src="https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?auto=format&fit=crop&q=80&w=600" 
+                        alt="Marrakech airport" 
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                  ))}
+                    <div className="aspect-[3/4] overflow-hidden rounded-md">
+                      <img 
+                        src="https://images.unsplash.com/photo-1536713009761-0d3815e109d9?auto=format&fit=crop&q=80&w=600" 
+                        alt="Mountain terrace" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="aspect-[3/4] overflow-hidden rounded-md">
+                      <img 
+                        src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=600" 
+                        alt="Riad interior" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-24 text-center">
+                    <p className="text-xs tracking-[0.4em] uppercase text-muted-foreground mb-4">Scroll to explore the daily itinerary</p>
+                    <div className="h-16 w-px bg-border mx-auto" />
+                  </div>
                 </div>
               </div>
             );
