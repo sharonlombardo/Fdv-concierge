@@ -38,14 +38,29 @@ interface CategoryData {
 
 // Mapping from slot keys to their suitcase bucket destinations
 const SLOT_BUCKET_MAP: Record<string, string> = {
-  // Morocco section
+  // Opening
+  "opening-cover": "Inspired",
+  // Morocco section - heroes and moments
+  "morocco-hero": "Travel & Experience",
+  "morocco-style-1": "Style",
+  "morocco-texture-1": "Inspired",
+  "morocco-object-1": "Object of Desire",
+  "morocco-experience-1": "Travel & Experience",
+  "morocco-ritual-1": "Ritual",
+  // Morocco tiles
   "morocco-tile-1": "Inspired",
   "morocco-tile-2": "Travel & Experience",
   "morocco-tile-3": "Style",
   "morocco-tile-4": "Object of Desire",
   "morocco-tile-5": "Ritual",
   "morocco-tile-6": "Inspired",
-  // Hydra section
+  // Hydra section - heroes and moments
+  "hydra-hero": "Travel & Experience",
+  "hydra-style-1": "Style",
+  "hydra-texture-1": "Inspired",
+  "hydra-object-1": "Object of Desire",
+  "hydra-ritual-1": "Ritual",
+  // Hydra tiles
   "hydra-tile-1": "Inspired",
   "hydra-tile-2": "Ritual",
   "hydra-tile-3": "Style",
@@ -54,7 +69,13 @@ const SLOT_BUCKET_MAP: Record<string, string> = {
   "hydra-tile-6": "Travel & Experience",
   "hydra-light-1": "Inspired",
   "hydra-light-2": "Inspired",
-  // Slow Travel section
+  // Slow Travel section - heroes and moments
+  "slow-travel-hero": "State of Mind",
+  "slow-culture-1": "Culture",
+  "slow-style-1": "Style",
+  "slow-object-1": "Object of Desire",
+  "slow-ritual-1": "Ritual",
+  // Slow Travel tiles
   "slow-lunch": "Culture",
   "slow-museum": "Culture",
   "slow-tile-1": "Style",
@@ -63,14 +84,27 @@ const SLOT_BUCKET_MAP: Record<string, string> = {
   "slow-tile-4": "Ritual",
   "slow-tile-5": "Ritual",
   "slow-tile-6": "Inspired",
-  // Retreat section
+  // Retreat section - heroes and moments
+  "retreat-hero": "Travel & Experience",
+  "retreat-ritual-1": "Ritual",
+  "retreat-place-1": "Travel & Experience",
+  "retreat-object-1": "Object of Desire",
+  "retreat-style-1": "Style",
+  // Retreat tiles
   "retreat-tile-1": "Object of Desire",
   "retreat-tile-2": "Object of Desire",
   "retreat-tile-3": "Object of Desire",
   "retreat-tile-4": "Ritual",
   "retreat-tile-5": "Travel & Experience",
   "retreat-tile-6": "Style",
-  // New York section
+  // New York section - heroes and moments
+  "newyork-hero": "Culture",
+  "newyork-style-1": "Style",
+  "newyork-culture-1": "Culture",
+  "newyork-experience-1": "Travel & Experience",
+  "newyork-object-1": "Object of Desire",
+  "newyork-ritual-1": "Ritual",
+  // New York tiles
   "ny-tile-1": "Travel & Experience",
   "ny-tile-2": "Travel & Experience",
   "ny-tile-3": "Culture",
@@ -80,6 +114,9 @@ const SLOT_BUCKET_MAP: Record<string, string> = {
   "ny-culture-1": "Culture",
   "ny-culture-2": "Culture",
   "ny-reset-1": "Ritual",
+  "ny-reset-2": "Object of Desire",
+  "ny-reset-3": "Object of Desire",
+  "ny-reset-4": "Inspired",
 };
 
 function getSlotBucketLabel(slotKey: string): string | null {
