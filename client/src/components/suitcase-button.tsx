@@ -1,7 +1,21 @@
-import { Briefcase } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+
+function SuitcaseIcon({ size = 18, className }: { size?: number; className?: string }) {
+  return (
+    <svg 
+      width={size} 
+      height={size} 
+      viewBox="0 0 24 24" 
+      fill="currentColor"
+      className={className}
+    >
+      <path d="M9 3C9 2.45 9.45 2 10 2H14C14.55 2 15 2.45 15 3V5H9V3Z" />
+      <rect x="3" y="6" width="18" height="14" rx="2" />
+    </svg>
+  );
+}
 
 interface SuitcaseButtonProps {
   itemId: string;
@@ -107,15 +121,15 @@ export function SuitcaseButton({
   });
 
   const sizeClasses = {
-    sm: "h-6 w-6",
-    md: "h-8 w-8", 
-    lg: "h-10 w-10"
+    sm: "h-7 w-7",
+    md: "h-10 w-10", 
+    lg: "h-12 w-12"
   };
 
   const iconSizes = {
-    sm: 14,
-    md: 18,
-    lg: 22
+    sm: 17,
+    md: 22,
+    lg: 26
   };
 
   return (
@@ -128,10 +142,10 @@ export function SuitcaseButton({
         }
       }}
       className={cn(
-        "rounded-full bg-white/90 dark:bg-black/70 backdrop-blur-sm shadow-sm",
-        "hover:bg-white dark:hover:bg-black hover:scale-110 transition-all duration-200",
+        "hover:scale-110 transition-all duration-200",
         "flex items-center justify-center",
-        isPurchased ? "text-red-600" : "text-foreground",
+        "text-stone-900 dark:text-stone-100",
+        "drop-shadow-md",
         sizeClasses[size],
         className
       )}
@@ -139,11 +153,7 @@ export function SuitcaseButton({
       title={isPurchased ? "Purchased" : "Add to Suitcase"}
       data-testid={`suitcase-button-${itemId}`}
     >
-      <Briefcase 
-        size={iconSizes[size]}
-        strokeWidth={2}
-        fill={isPurchased ? "currentColor" : "none"}
-      />
+      <SuitcaseIcon size={iconSizes[size]} />
     </button>
   );
 }
