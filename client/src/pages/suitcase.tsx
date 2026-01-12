@@ -104,6 +104,14 @@ function getTypeLabel(itemType: string): string {
     cover: "Cover",
     accessory: "Accessory",
     destination: "Destination",
+    mood: "mood",
+    texture: "texture",
+    inspiration: "inspiration",
+    experience: "experience",
+    ritual: "ritual",
+    object: "object",
+    item: "item",
+    culture: "culture",
   };
   return typeMap[itemType] || itemType;
 }
@@ -135,10 +143,13 @@ const SAVE_TYPE_TO_CATEGORY: Record<string, string> = {
   'product': 'style',
   'image': 'travel-destinations',
   'inspire': 'travel-destinations',
+  'inspiration': 'state-of-mind',
   'scene': 'travel-destinations',
   'cover': 'travel-destinations',
   'destination': 'travel-destinations',
   'quote': 'state-of-mind',
+  'mood': 'state-of-mind',
+  'texture': 'state-of-mind',
   'experience': 'experiences',
   'place': 'travel-destinations',
   'feature': 'travel-destinations',

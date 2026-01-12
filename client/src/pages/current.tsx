@@ -158,7 +158,7 @@ function PageTurnHero({ title, stateOfMind, paragraph, assetKey, bucket, pinType
             editionTag: "current-edition-1",
             editTag: `${storyTag}-edit`,
             assetKey,
-            assetUrl: ""
+            assetUrl: imageUrl
           }}
           sourceContext="the_current_issue_1"
           aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
@@ -245,7 +245,7 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
             editionTag: "current-edition-1",
             editTag: `${storyTag}-edit`,
             assetKey,
-            assetUrl: ""
+            assetUrl: imageUrl
           }}
           sourceContext="the_current_issue_1"
           aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
@@ -256,7 +256,7 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
             itemId={assetKey}
             itemData={{
               title,
-              imageUrl: "",
+              imageUrl: imageUrl,
               storyTag,
               editTag: `${storyTag}-edit`
             }}
@@ -360,7 +360,7 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
                   editionTag: "current-edition-1",
                   editTag: `${storyTag}-edit`,
                   assetKey: tile.assetKey,
-                  assetUrl: ""
+                  assetUrl: imageUrl
                 }}
                 sourceContext="the_current_issue_1"
                 aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), storyTag]}
@@ -424,7 +424,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
                 editionTag: "current-edition-1",
                 editTag: `${storyTag}-edit`,
                 assetKey: image1.assetKey,
-                assetUrl: ""
+                assetUrl: image1Url
               }}
               sourceContext="the_current_issue_1"
               aestheticTags={[image1.bucket.toLowerCase(), image1.pinType.toLowerCase(), storyTag]}
@@ -471,7 +471,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
                 editionTag: "current-edition-1",
                 editTag: `${storyTag}-edit`,
                 assetKey: image2.assetKey,
-                assetUrl: ""
+                assetUrl: image2Url
               }}
               sourceContext="the_current_issue_1"
               aestheticTags={[image2.bucket.toLowerCase(), image2.pinType.toLowerCase(), storyTag]}
@@ -531,7 +531,7 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: Moti
               editionTag: "current-edition-1",
               editTag: `${storyTag}-edit`,
               assetKey: id,
-              assetUrl: ""
+              assetUrl: imageUrl
             }}
             sourceContext="the_current_issue_1"
             aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
