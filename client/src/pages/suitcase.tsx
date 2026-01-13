@@ -174,6 +174,11 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
       return saves.filter(s => s.itemType === "edit");
     case "my-trips":
       return saves.filter(s => s.itemType === "trip" || s.metadata?.bucket === "my-trips");
+    case "travel-destinations":
+      return saves.filter(s => 
+        SAVE_TYPE_TO_CATEGORY[s.itemType] === "travel-destinations" || 
+        s.itemType === "trip"
+      );
     default:
       return saves.filter(s => SAVE_TYPE_TO_CATEGORY[s.itemType] === tab);
   }
