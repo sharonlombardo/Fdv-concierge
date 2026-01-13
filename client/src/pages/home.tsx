@@ -56,6 +56,7 @@ import {
   extractEditorialData,
   EditorialDaySection
 } from '@/components/editorial-sections';
+import { LoadingImage } from '@/components/loading-image';
 
 function isDayPage(page: ItineraryPage): page is DayPage {
   return 'day' in page;
@@ -324,13 +325,10 @@ function ItemDetailDrawer({
             {item.title}
           </h2>
           <div className="aspect-[16/9] w-full overflow-hidden bg-muted my-6 rounded-md relative">
-            <img 
+            <LoadingImage 
               src={getImageUrl(item.id, item.image, { time: item.time, location, title: item.title, description: item.description, imageType: 'item' })} 
               className="w-full h-full object-cover" 
               alt={item.title}
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200';
-              }}
             />
             <div className="absolute top-2 right-2">
               <PinButton
@@ -460,8 +458,8 @@ function ItemDetailDrawer({
             
             <div className="space-y-6">
               <div className="space-y-4">
-                <div className="aspect-[3/4] w-full max-w-md mx-auto bg-muted rounded-md relative">
-                  <img 
+                <div className="aspect-[3/4] w-full max-w-md mx-auto bg-muted rounded-md relative overflow-hidden">
+                  <LoadingImage 
                     src={getImageUrl(
                       `${item.id}-wardrobe`,
                       item.commercialWardrobe || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800",

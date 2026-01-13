@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { ITINERARY_DATA, DayPage, FlowItem } from "@shared/itinerary-data";
 import { PinButton } from "@/components/pin-button";
@@ -110,17 +111,26 @@ export function ImageCard({
   };
   const aestheticTags = aestheticTagsMap[imageType] || ["morocco", "travel"];
   
+  const [isLoaded, setIsLoaded] = useState(false);
+  
   return (
     <div className="group relative">
-      <div className={`${aspectRatio} overflow-hidden rounded-md bg-muted`}>
+      <div className={`${aspectRatio} overflow-hidden rounded-md bg-muted relative`}>
+        {!isLoaded && (
+          <div className="absolute inset-0 bg-muted animate-pulse" />
+        )}
         <img 
           src={imageUrl}
           alt={label || "Editorial image"}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+          onLoad={() => setIsLoaded(true)}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.style.display = 'none';
+            setIsLoaded(true);
           }}
+          loading="lazy"
+          decoding="async"
         />
       </div>
       {(showPin || showSuitcase) && itemId && (

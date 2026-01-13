@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PinButton } from "@/components/pin-button";
 import { SuitcaseButton } from "@/components/suitcase-button";
+import { LoadingImage } from "@/components/loading-image";
 
 const MOOD_KEYS = [
   "todays-edit-mood-1",
@@ -85,7 +86,7 @@ export default function TodaysEdit() {
                     className="relative aspect-[4/5] overflow-hidden rounded-lg bg-muted group"
                     data-testid={`img-mood-${index + 1}`}
                   >
-                    <img 
+                    <LoadingImage 
                       src={imageUrl} 
                       alt={`Mood ${index + 1}`}
                       className="w-full h-full object-cover"
@@ -142,7 +143,7 @@ export default function TodaysEdit() {
                     className="relative aspect-square overflow-hidden rounded-lg bg-muted group"
                     data-testid={`img-look-${index + 1}`}
                   >
-                    <img 
+                    <LoadingImage 
                       src={imageUrl} 
                       alt={`Look ${index + 1}`}
                       className="w-full h-full object-cover"

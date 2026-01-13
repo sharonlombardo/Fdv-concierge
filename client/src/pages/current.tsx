@@ -8,6 +8,7 @@ import { GlobalNav } from "@/components/global-nav";
 import { EditorialDetailDrawer, type EditorialItem } from "@/components/editorial-detail-drawer";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
+import { LoadingImage } from "@/components/loading-image";
 
 type GetImageUrlFn = (assetKey: string) => string;
 const ImageContext = createContext<GetImageUrlFn>((key) => "");
@@ -144,7 +145,7 @@ function PageTurnHero({ title, stateOfMind, paragraph, assetKey, bucket, pinType
     <div className="relative w-full min-h-[70vh] md:min-h-[80vh] flex items-end" data-testid={`hero-${assetKey}`}>
       <div className="absolute inset-0 bg-stone-200 dark:bg-stone-800">
         {imageUrl ? (
-          <img 
+          <LoadingImage 
             src={imageUrl} 
             alt={title}
             className="w-full h-full object-cover"
@@ -235,7 +236,7 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
     <div>
       <div className="relative aspect-[4/5] md:aspect-square bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden">
       {imageUrl ? (
-        <img 
+        <LoadingImage 
           src={imageUrl} 
           alt={title}
           className="w-full h-full object-cover"
