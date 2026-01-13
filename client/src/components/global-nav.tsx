@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { href: "/current", label: "The Current" },
   { href: "/suitcase", label: "Suitcase" },
   { href: "/packing", label: "Packing List" },
+  { href: "/diary", label: "Travel Diary" },
   { href: "/destinations", label: "Destinations" },
   { href: "/concierge", label: "Concierge" },
   { href: "/image-control", label: "Image Control" },

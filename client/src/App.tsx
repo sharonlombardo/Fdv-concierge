@@ -21,6 +21,7 @@ import EditDetail from "@/pages/edit-detail";
 import TodaysEdit from "@/pages/todays-edit";
 import Destinations from "@/pages/destinations";
 import ComingSoon from "@/pages/coming-soon";
+import TravelDiary from "@/pages/travel-diary";
 
 function Router() {
   return (
@@ -38,6 +39,7 @@ function Router() {
       <Route path="/rules" component={ImageRules} />
       <Route path="/editorial" component={Editorial} />
       <Route path="/packing" component={PackingList} />
+      <Route path="/diary" component={TravelDiary} />
       <Route path="/current">{() => <CurrentFeed />}</Route>
       <Route path="/suitcase" component={SuitcasePage} />
       <Route path="/suitcase/edit/:editTag" component={EditDetail} />
@@ -52,7 +54,7 @@ function Router() {
 function FloatingSuitcase() {
   const [location] = useLocation();
   
-  if (location === '/packing' || location === '/editorial' || location === '/suitcase' || location === '/todays-edit') return null;
+  if (location === '/packing' || location === '/editorial' || location === '/suitcase' || location === '/todays-edit' || location === '/diary') return null;
   
   return (
     <Link href="/suitcase">
