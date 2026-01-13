@@ -407,37 +407,18 @@ export default function SuitcasePage() {
           <p className="text-sm text-muted-foreground mb-6" data-testid="text-suitcase-stats">
             {saves.length} saves • {itemsToShop} items to shop • {CURATED_QUOTES.length} quotes
           </p>
-          <Button
+          <button
             onClick={handleCurateClick}
-            className="gap-2"
-            size="lg"
             disabled={saves.length === 0}
+            className="inline-flex items-center gap-2 text-sm tracking-wide text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             data-testid="button-curate-for-me"
           >
-            <Sparkles className="w-4 h-4" />
-            Curate for Me
-          </Button>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span className="font-medium">Curate for Me</span>
+          </button>
         </header>
 
-        <div className="flex justify-center gap-2 mb-6">
-          {VIEW_MODES.map((mode) => (
-            <Button
-              key={mode.id}
-              variant={viewMode === mode.id ? "default" : "outline"}
-              size="sm"
-              onClick={() => setViewMode(mode.id)}
-              data-testid={`button-view-${mode.id}`}
-            >
-              {mode.label}
-            </Button>
-          ))}
-        </div>
-
-        {viewMode === "edit" ? (
-          <ByEditView saves={saves} />
-        ) : (
-          <>
-            <div className="border-b border-border mb-8">
+        <div className="border-b border-border mb-8">
               <nav className="flex gap-1 overflow-x-auto pb-px -mb-px" data-testid="nav-suitcase-tabs">
                 {CATEGORY_TABS.map((tab) => (
                   <button
@@ -507,8 +488,6 @@ export default function SuitcasePage() {
                 ))}
               </div>
             )}
-          </>
-        )}
       </div>
       <DetailDrawer
         item={selectedItem}
