@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { saveJournalEntrySchema, journalEntrySchema, customImageSchema, imageLibraryItemSchema, imageRuleSchema, selfieImageSchema, saveSchema } from "@shared/schema";
 import { IMAGE_SLOTS, getSlotsBySection } from "@shared/image-slots";
 import { generateMoroccoSeedItems, MOROCCO_SEED_ITEM_COUNT } from "@shared/morocco-seed-data";
+import { EMBEDDED_IMAGE_MAPPINGS } from "@shared/embedded-image-mappings";
 import { registerObjectStorageRoutes, ObjectStorageService } from "./replit_integrations/object_storage";
 
 export async function registerRoutes(
@@ -70,9 +71,17 @@ export async function registerRoutes(
       
       try {
         const customImages = await storage.getCustomImages();
-        customImageMap = new Map(customImages.map(img => [img.imageKey, img.customUrl]));
+        if (customImages.length > 0) {
+          customImageMap = new Map(customImages.map(img => [img.imageKey, img.customUrl]));
+        }
       } catch (dbError) {
-        console.warn("Database unavailable, using default images:", dbError);
+        console.warn("Database unavailable for custom images:", dbError);
+      }
+      
+      // Use embedded mappings as fallback when database is empty or unavailable
+      if (customImageMap.size === 0) {
+        console.log("Using embedded image mappings (database empty or unavailable)");
+        customImageMap = new Map(Object.entries(EMBEDDED_IMAGE_MAPPINGS));
       }
       
       const slotsWithOverrides = IMAGE_SLOTS.map(slot => ({
