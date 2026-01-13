@@ -53,6 +53,12 @@ export async function registerRoutes(
     }
   });
 
+  // Helper to fix HTML entity encoding in URLs (production build can encode & as &amp;)
+  const sanitizeUrl = (url: string): string => {
+    if (!url) return url;
+    return url.replace(/&amp;/g, '&');
+  };
+
   // Image Slots API - centralized image management
   app.get("/api/image-slots", async (req, res) => {
     try {
@@ -67,7 +73,8 @@ export async function registerRoutes(
       
       const slotsWithOverrides = IMAGE_SLOTS.map(slot => ({
         ...slot,
-        currentUrl: customImageMap.get(slot.key) || slot.defaultUrl,
+        defaultUrl: sanitizeUrl(slot.defaultUrl),
+        currentUrl: sanitizeUrl(customImageMap.get(slot.key) || slot.defaultUrl),
         hasCustomImage: customImageMap.has(slot.key)
       }));
       
