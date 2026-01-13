@@ -366,17 +366,37 @@ export async function registerRoutes(
     }
   });
 
-  // Helper function to auto-seed morocco data when saves are empty
+  // Helper function to auto-seed morocco data when missing
   async function autoSeedMoroccoIfEmpty() {
     try {
       const allSaves = await storage.getSaves();
-      if (allSaves.length > 0) return allSaves;
       
-      console.log("Auto-seeding Morocco Edit data (saves table is empty)...");
+      // Check if Morocco Edit items already exist
+      const moroccoSaves = allSaves.filter(s => 
+        s.editTag === 'morocco-edit' || 
+        s.storyTag === 'morocco' || 
+        (s.sourceContext && s.sourceContext.includes('morocco'))
+      );
+      
       const canonicalItems = generateMoroccoSeedItems();
+      const THRESHOLD = Math.floor(canonicalItems.length * 0.5); // 50% threshold
+      
+      // Skip seeding if we already have most Morocco items
+      if (moroccoSaves.length >= THRESHOLD) {
+        return allSaves;
+      }
+      
+      console.log(`Auto-seeding Morocco Edit data (found ${moroccoSaves.length} of ${canonicalItems.length} items)...`);
       const now = Date.now();
       
+      // Get existing item IDs to avoid duplicates
+      const existingItemIds = new Set(allSaves.map(s => s.itemId));
+      
+      let seededCount = 0;
       for (const item of canonicalItems) {
+        // Skip if item already exists
+        if (existingItemIds.has(item.itemId)) continue;
+        
         await storage.addSave({
           itemType: item.itemType,
           itemId: item.itemId,
@@ -399,9 +419,10 @@ export async function registerRoutes(
           title: item.title,
           assetUrl: item.assetUrl,
         });
+        seededCount++;
       }
       
-      console.log(`Auto-seeded ${canonicalItems.length} Morocco Edit items`);
+      console.log(`Auto-seeded ${seededCount} new Morocco Edit items`);
       return await storage.getSaves();
     } catch (error) {
       console.error("Error auto-seeding:", error);
