@@ -56,8 +56,14 @@ export async function registerRoutes(
   // Image Slots API - centralized image management
   app.get("/api/image-slots", async (req, res) => {
     try {
-      const customImages = await storage.getCustomImages();
-      const customImageMap = new Map(customImages.map(img => [img.imageKey, img.customUrl]));
+      let customImageMap = new Map<string, string>();
+      
+      try {
+        const customImages = await storage.getCustomImages();
+        customImageMap = new Map(customImages.map(img => [img.imageKey, img.customUrl]));
+      } catch (dbError) {
+        console.warn("Database unavailable, using default images:", dbError);
+      }
       
       const slotsWithOverrides = IMAGE_SLOTS.map(slot => ({
         ...slot,
@@ -81,8 +87,8 @@ export async function registerRoutes(
       const images = await storage.getCustomImages();
       res.json(images);
     } catch (error) {
-      console.error("Error fetching custom images:", error);
-      res.status(500).json({ error: "Failed to fetch custom images" });
+      console.warn("Database unavailable for custom images, returning empty:", error);
+      res.json([]);
     }
   });
 
@@ -132,8 +138,8 @@ export async function registerRoutes(
       const images = await storage.getImageLibrary();
       res.json(images);
     } catch (error) {
-      console.error("Error fetching image library:", error);
-      res.status(500).json({ error: "Failed to fetch image library" });
+      console.warn("Database unavailable for image library, returning empty:", error);
+      res.json([]);
     }
   });
 
@@ -203,8 +209,8 @@ export async function registerRoutes(
       const rules = await storage.getImageRules();
       res.json(rules);
     } catch (error) {
-      console.error("Error fetching image rules:", error);
-      res.status(500).json({ error: "Failed to fetch image rules" });
+      console.warn("Database unavailable for image rules, returning empty:", error);
+      res.json([]);
     }
   });
 
