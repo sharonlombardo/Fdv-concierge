@@ -113,8 +113,8 @@ function StickyNav({ activeSection }: { activeSection: string }) {
 
   return (
     <nav className="sticky top-0 z-50 bg-[#fafaf9]/95 dark:bg-background/95 backdrop-blur-sm border-b border-border/50">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="flex items-center justify-center gap-6 md:gap-10 py-3 overflow-x-auto">
+      <div className="overflow-x-auto">
+        <div className="flex items-center justify-center gap-6 md:gap-10 py-3 px-6 min-w-max mx-auto">
           {NAV_ITEMS.map((item) => (
             <button
               key={item.id}
