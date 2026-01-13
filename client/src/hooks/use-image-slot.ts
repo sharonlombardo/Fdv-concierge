@@ -19,6 +19,8 @@ interface ImageSlotsResponse {
 export function useImageSlots() {
   return useQuery<ImageSlotsResponse>({
     queryKey: ["/api/image-slots"],
+    staleTime: 1000 * 60 * 5, // 5 minutes instead of Infinity
+    refetchOnMount: true,
   });
 }
 

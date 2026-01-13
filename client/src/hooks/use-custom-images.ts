@@ -34,22 +34,25 @@ function normalizeTimeToCategory(timeStr: string): string[] {
 }
 
 export function useCustomImages() {
-  const { data: customImages = [], isLoading: isLoadingCustom } = useQuery<CustomImage[]>({
+  const { data: customImages = [], isLoading: isLoadingCustom, isError: isErrorCustom } = useQuery<CustomImage[]>({
     queryKey: ['/api/images'],
-    staleTime: 0, // Always refetch to prevent stale cached images
-    refetchOnMount: 'always',
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnMount: true,
+    retry: 1,
   });
 
-  const { data: libraryImages = [], isLoading: isLoadingLibrary } = useQuery<ImageLibraryItem[]>({
+  const { data: libraryImages = [], isLoading: isLoadingLibrary, isError: isErrorLibrary } = useQuery<ImageLibraryItem[]>({
     queryKey: ['/api/library'],
-    staleTime: 0,
-    refetchOnMount: 'always',
+    staleTime: 1000 * 60 * 5,
+    refetchOnMount: true,
+    retry: 1,
   });
 
-  const { data: rules = [], isLoading: isLoadingRules } = useQuery<ImageRule[]>({
+  const { data: rules = [], isLoading: isLoadingRules, isError: isErrorRules } = useQuery<ImageRule[]>({
     queryKey: ['/api/rules'],
-    staleTime: 0,
-    refetchOnMount: 'always',
+    staleTime: 1000 * 60 * 5,
+    refetchOnMount: true,
+    retry: 1,
   });
 
   const isLoading = isLoadingCustom || isLoadingLibrary || isLoadingRules;
