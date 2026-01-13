@@ -189,12 +189,36 @@ export function EditorialHero({ showScrollIndicator = true }: EditorialHeroProps
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
       
       <div className="relative z-10 text-center text-white">
-        <h1 className="font-serif text-[clamp(3.5rem,10vw,8rem)] font-normal tracking-[0.25em] mb-6 drop-shadow-lg">
+        <h1 className="font-serif text-[clamp(3.5rem,10vw,8rem)] font-normal tracking-[0.25em] mb-4 drop-shadow-lg">
           MOROCCO
         </h1>
-        <p className="text-base md:text-lg font-light tracking-[0.15em] uppercase opacity-90 mb-10">
+        <p className="text-base md:text-lg font-light tracking-[0.15em] uppercase opacity-90 mb-6">
           Atlas Mountains & Marrakech
         </p>
+        
+        <div className="flex items-center justify-center gap-8">
+          <button
+            onClick={() => {
+              const el = document.getElementById('editorial-overview');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="text-xs font-medium tracking-[0.2em] uppercase text-white/80 hover:text-white transition-colors"
+            data-testid="button-overview"
+          >
+            Overview
+          </button>
+          <span className="text-white/40">|</span>
+          <button
+            onClick={() => {
+              const el = document.getElementById('daily-flow');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="text-xs font-medium tracking-[0.2em] uppercase text-white/80 hover:text-white transition-colors"
+            data-testid="button-daily-flow"
+          >
+            Daily Flow
+          </button>
+        </div>
       </div>
       
       {showScrollIndicator && (

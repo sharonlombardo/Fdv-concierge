@@ -1013,13 +1013,14 @@ export default function Home() {
       />
 
       {/* Editorial Overview - Long-form narrative scroll (no interactive elements) */}
+      <div id="editorial-overview" className="scroll-mt-20" />
       <EditorialOverview 
         getImageUrl={getImageUrl}
         hasCustomImage={hasCustomImage}
       />
 
       {/* Transition to Interactive Logistics */}
-      <div className="py-20 md:py-28 text-center px-4 border-t border-border">
+      <div id="daily-flow" className="py-20 md:py-28 text-center px-4 border-t border-border scroll-mt-20">
         <h2 className="text-[11px] font-bold tracking-[0.5em] uppercase text-muted-foreground mb-6">DETAILED ITINERARY</h2>
         <p className="font-serif text-2xl md:text-3xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
           Tap any event below to explore contacts, wardrobe notes, and your personal journal.
