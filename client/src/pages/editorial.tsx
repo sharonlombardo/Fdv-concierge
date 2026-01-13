@@ -140,12 +140,36 @@ function HeroSection({ isSaved, isAcquired, onSave, onAcquire, isPending }: Hero
       </div>
       
       <div className="relative z-10 text-center text-white">
-        <h1 className="font-serif text-[clamp(3.5rem,10vw,8rem)] font-normal tracking-[0.25em] mb-6 drop-shadow-lg">
+        <h1 className="font-serif text-[clamp(3.5rem,10vw,8rem)] font-normal tracking-[0.25em] mb-4 drop-shadow-lg">
           MOROCCO
         </h1>
-        <p className="text-base md:text-lg font-light tracking-[0.15em] uppercase opacity-90 mb-10">
-          April 3–10, 2026
+        <p className="text-base md:text-lg font-light tracking-[0.15em] uppercase opacity-90 mb-6">
+          Atlas Mountains & Marrakech
         </p>
+        
+        <div className="flex items-center justify-center gap-8 mb-10">
+          <button
+            onClick={() => {
+              const el = document.getElementById('editorial-overview');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="text-xs font-medium tracking-[0.2em] uppercase text-white/80 hover:text-white transition-colors"
+            data-testid="button-overview"
+          >
+            Overview
+          </button>
+          <span className="text-white/40">|</span>
+          <button
+            onClick={() => {
+              const el = document.getElementById('daily-flow');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="text-xs font-medium tracking-[0.2em] uppercase text-white/80 hover:text-white transition-colors"
+            data-testid="button-daily-flow"
+          >
+            Daily Flow
+          </button>
+        </div>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
           <Button
@@ -462,8 +486,11 @@ export default function Editorial() {
         isPending={saveEditMutation.isPending || acquireEditMutation.isPending}
       />
 
+      {/* Editorial Overview */}
+      <div id="editorial-overview" className="scroll-mt-20" />
+      
       {/* Day Sections */}
-      <div className="max-w-5xl mx-auto px-4 md:px-6">
+      <div id="daily-flow" className="max-w-5xl mx-auto px-4 md:px-6 scroll-mt-20">
         {editorialData.map((day) => (
           <DaySection 
             key={day.dayNumber}
