@@ -68,9 +68,9 @@ export default function TodaysEdit() {
         </header>
 
         <section className="mb-16">
-          <h2 className="text-xs font-medium tracking-[0.3em] uppercase text-muted-foreground mb-6 text-center">
-            Mood
-          </h2>
+          <p className="text-sm text-muted-foreground text-center max-w-xl mx-auto mb-8 leading-relaxed italic">
+            We noticed a thread—quiet warmth, natural textures, unhurried beauty. Here's what belongs together.
+          </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {isLoading ? (
               Array.from({ length: 4 }).map((_, i) => (
