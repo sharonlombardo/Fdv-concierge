@@ -433,7 +433,7 @@ export async function registerRoutes(
   // Saves/Pin API
   app.get("/api/saves", async (req, res) => {
     try {
-      const allSaves = await autoSeedMoroccoIfEmpty();
+      const allSaves = await storage.getSaves();
       res.json(allSaves);
     } catch (error) {
       console.error("Error fetching saves:", error);
