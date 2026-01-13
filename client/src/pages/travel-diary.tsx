@@ -15,7 +15,7 @@ interface DiaryEntryCardProps {
   dayPage: DayPage;
   entry: {
     note?: string;
-    logImages?: Array<{ url: string; caption: string }>;
+    logImages?: Array<{ src: string; caption?: string }>;
   };
 }
 
@@ -61,10 +61,10 @@ function DiaryEntryCard({ flowItem, dayPage, entry }: DiaryEntryCardProps) {
       
       {hasPhotos && (
         <div className="mt-4 pl-24 grid grid-cols-2 md:grid-cols-4 gap-2">
-          {entry.logImages?.map((img, idx) => (
+          {entry.logImages?.map((img: { src: string; caption?: string }, idx: number) => (
             <div key={idx} className="aspect-square rounded-md overflow-hidden bg-muted">
               <img 
-                src={img.url} 
+                src={img.src} 
                 alt={img.caption || `Photo ${idx + 1}`}
                 className="w-full h-full object-cover"
               />
