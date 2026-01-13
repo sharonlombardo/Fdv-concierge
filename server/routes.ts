@@ -392,7 +392,7 @@ export async function registerRoutes(
         editTag: data.editTag || data.metadata?.editTag || null,
         purchaseStatus: data.purchaseStatus || null,
         title: data.title || data.metadata?.title || null,
-        assetUrl: data.assetUrl || data.metadata?.assetUrl || null,
+        assetUrl: data.assetUrl || data.metadata?.assetUrl || data.metadata?.imageUrl || null,
       });
       res.json(newSave);
     } catch (error) {
