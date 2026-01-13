@@ -126,7 +126,7 @@ export default function TodaysEdit() {
 
         <section className="mb-16">
           <h2 className="text-xs font-medium tracking-[0.3em] uppercase text-muted-foreground mb-6 text-center">
-            Looks & Objects
+            Style & Objects of Desire
           </h2>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
             {isLoading ? (
