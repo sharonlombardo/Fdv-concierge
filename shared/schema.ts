@@ -22,6 +22,10 @@ export const journalEntrySchema = z.object({
   image: z.string().optional(),
   myLook: z.string().optional(),
   logImage: z.string().optional(),
+  logImages: z.array(z.object({
+    src: z.string(),
+    caption: z.string().optional(),
+  })).optional(),
   updatedAt: z.number().optional(),
 });
 
@@ -35,6 +39,25 @@ export const saveJournalEntrySchema = z.object({
   id: z.string(),
   data: journalEntrySchema,
 });
+
+// Journal entries table - stores user notes and photos for itinerary items
+export const journalEntries = pgTable("journal_entries", {
+  id: serial("id").primaryKey(),
+  entryId: text("entry_id").notNull().unique(), // matches flowItem.id from itinerary
+  note: text("note"),
+  image: text("image"), // base64 or URL
+  myLook: text("my_look"), // base64 or URL  
+  logImage: text("log_image"), // base64 or URL
+  logImages: jsonb("log_images"), // array of {src, caption}
+  updatedAt: bigint("updated_at", { mode: "number" }),
+});
+
+export const insertJournalEntrySchema = createInsertSchema(journalEntries).omit({
+  id: true,
+});
+
+export type InsertJournalEntry = z.infer<typeof insertJournalEntrySchema>;
+export type JournalEntryRow = typeof journalEntries.$inferSelect;
 
 export type SaveJournalEntryInput = z.infer<typeof saveJournalEntrySchema>;
 

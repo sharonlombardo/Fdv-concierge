@@ -4,7 +4,8 @@ import {
   type ImageLibraryItem, type InsertImageLibrary, imageLibrary,
   type ImageRule, type InsertImageRule, imageRules,
   type SelfieImage, type InsertSelfieImage, selfieImages,
-  type Save, type InsertSave, saves
+  type Save, type InsertSave, saves,
+  journalEntries
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -52,11 +53,9 @@ export interface IStorage {
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
-  private journalEntries: JournalEntries;
 
   constructor() {
     this.users = new Map();
-    this.journalEntries = {};
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -77,22 +76,81 @@ export class MemStorage implements IStorage {
   }
 
   async getJournalEntries(): Promise<JournalEntries> {
-    return this.journalEntries;
+    const rows = await db.select().from(journalEntries);
+    const entries: JournalEntries = {};
+    for (const row of rows) {
+      entries[row.entryId] = {
+        note: row.note || undefined,
+        image: row.image || undefined,
+        myLook: row.myLook || undefined,
+        logImage: row.logImage || undefined,
+        logImages: (row.logImages as any) || undefined,
+        updatedAt: row.updatedAt || undefined,
+      };
+    }
+    return entries;
   }
 
   async saveJournalEntry(id: string, data: Partial<JournalEntry>): Promise<JournalEntry> {
-    const currentEntry = this.journalEntries[id] || {};
-    const updatedEntry: JournalEntry = {
-      ...currentEntry,
-      ...data,
-      updatedAt: Date.now(),
-    };
-    this.journalEntries[id] = updatedEntry;
-    return updatedEntry;
+    const existing = await db.select().from(journalEntries).where(eq(journalEntries.entryId, id));
+    
+    if (existing.length > 0) {
+      const current = existing[0];
+      const [updated] = await db
+        .update(journalEntries)
+        .set({
+          note: data.note !== undefined ? data.note : current.note,
+          image: data.image !== undefined ? data.image : current.image,
+          myLook: data.myLook !== undefined ? data.myLook : current.myLook,
+          logImage: data.logImage !== undefined ? data.logImage : current.logImage,
+          logImages: data.logImages !== undefined ? data.logImages : current.logImages,
+          updatedAt: Date.now(),
+        })
+        .where(eq(journalEntries.entryId, id))
+        .returning();
+      return {
+        note: updated.note || undefined,
+        image: updated.image || undefined,
+        myLook: updated.myLook || undefined,
+        logImage: updated.logImage || undefined,
+        logImages: (updated.logImages as any) || undefined,
+        updatedAt: updated.updatedAt || undefined,
+      };
+    } else {
+      const [created] = await db
+        .insert(journalEntries)
+        .values({
+          entryId: id,
+          note: data.note,
+          image: data.image,
+          myLook: data.myLook,
+          logImage: data.logImage,
+          logImages: data.logImages,
+          updatedAt: Date.now(),
+        })
+        .returning();
+      return {
+        note: created.note || undefined,
+        image: created.image || undefined,
+        myLook: created.myLook || undefined,
+        logImage: created.logImage || undefined,
+        logImages: (created.logImages as any) || undefined,
+        updatedAt: created.updatedAt || undefined,
+      };
+    }
   }
 
   async getJournalEntry(id: string): Promise<JournalEntry | undefined> {
-    return this.journalEntries[id];
+    const [row] = await db.select().from(journalEntries).where(eq(journalEntries.entryId, id));
+    if (!row) return undefined;
+    return {
+      note: row.note || undefined,
+      image: row.image || undefined,
+      myLook: row.myLook || undefined,
+      logImage: row.logImage || undefined,
+      logImages: (row.logImages as any) || undefined,
+      updatedAt: row.updatedAt || undefined,
+    };
   }
 
   async getCustomImages(): Promise<CustomImage[]> {
