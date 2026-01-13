@@ -28,6 +28,8 @@ export function OptimizedImage({
     
     if (src !== prevSrcRef.current) {
       setIsLoaded(false);
+      setCurrentSrc(null);
+      setHasError(false);
       prevSrcRef.current = src;
     }
 
@@ -54,21 +56,23 @@ export function OptimizedImage({
     };
   }, [src, fallbackSrc, priority]);
 
-  const displaySrc = hasError ? fallbackSrc : (currentSrc || src);
+  const displaySrc = currentSrc || (hasError ? fallbackSrc : null);
 
   return (
     <div className={`relative overflow-hidden ${aspectRatio || ""}`}>
       {!isLoaded && (
         <div className="absolute inset-0 bg-muted animate-pulse" />
       )}
-      <img
-        ref={imgRef}
-        src={displaySrc}
-        alt={alt}
-        className={`${className} ${isLoaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}
-        loading={priority ? "eager" : "lazy"}
-        decoding="async"
-      />
+      {displaySrc && (
+        <img
+          ref={imgRef}
+          src={displaySrc}
+          alt={alt}
+          className={`${className} ${isLoaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
+        />
+      )}
     </div>
   );
 }
