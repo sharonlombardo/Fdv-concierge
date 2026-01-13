@@ -394,6 +394,10 @@ export default function SuitcasePage() {
   });
 
   const handleItemClick = (save: SavedItem) => {
+    if (save.itemType === "trip") {
+      navigate("/concierge");
+      return;
+    }
     setSelectedItem(save);
     setDrawerOpen(true);
   };
