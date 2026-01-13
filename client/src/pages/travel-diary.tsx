@@ -27,32 +27,20 @@ function DiaryEntryCard({ flowItem, dayPage, entry }: DiaryEntryCardProps) {
   
   return (
     <div className="border-b border-border pb-8 mb-8 last:border-b-0">
-      <div className="flex items-start gap-4">
-        <div className="w-20 h-20 rounded-md overflow-hidden bg-muted flex-shrink-0">
-          <img 
-            src={flowItem.image} 
-            alt={flowItem.title}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = 'none';
-            }}
-          />
+      <div>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+          <Calendar className="w-3 h-3" />
+          <span>Day {dayPage.day} — {flowItem.time}</span>
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-            <Calendar className="w-3 h-3" />
-            <span>Day {dayPage.day} — {flowItem.time}</span>
-          </div>
-          <h3 className="font-serif text-lg font-medium mb-1 truncate">{flowItem.title}</h3>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <MapPin className="w-3 h-3" />
-            <span>{dayPage.location}</span>
-          </div>
+        <h3 className="font-serif text-lg font-medium mb-1">{flowItem.title}</h3>
+        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+          <MapPin className="w-3 h-3" />
+          <span>{dayPage.location}</span>
         </div>
       </div>
       
       {hasNote && (
-        <div className="mt-4 pl-24">
+        <div className="mt-4">
           <p className="font-serif italic text-muted-foreground leading-relaxed">
             "{entry.note}"
           </p>
@@ -60,7 +48,7 @@ function DiaryEntryCard({ flowItem, dayPage, entry }: DiaryEntryCardProps) {
       )}
       
       {hasPhotos && (
-        <div className="mt-4 pl-24 grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2">
           {entry.logImages?.map((img: { src: string; caption?: string }, idx: number) => (
             <div key={idx} className="aspect-square rounded-md overflow-hidden bg-muted">
               <img 
