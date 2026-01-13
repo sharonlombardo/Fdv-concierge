@@ -4,11 +4,15 @@ import { storage } from "./storage";
 import { saveJournalEntrySchema, journalEntrySchema, customImageSchema, imageLibraryItemSchema, imageRuleSchema, selfieImageSchema, saveSchema } from "@shared/schema";
 import { IMAGE_SLOTS, getSlotsBySection } from "@shared/image-slots";
 import { generateMoroccoSeedItems, MOROCCO_SEED_ITEM_COUNT } from "@shared/morocco-seed-data";
+import { registerObjectStorageRoutes, ObjectStorageService } from "./replit_integrations/object_storage";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  
+  // Register object storage routes for file uploads
+  registerObjectStorageRoutes(app);
   
   app.get("/api/journal", async (req, res) => {
     try {
@@ -540,6 +544,140 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error seeding morocco-edit:", error);
       res.status(500).json({ error: "Failed to seed morocco-edit" });
+    }
+  });
+
+  // Migration endpoint: Move base64 images from database to object storage
+  // This solves the production image issue by storing images in shared object storage
+  app.post("/api/migrate/images-to-storage", async (req, res) => {
+    try {
+      const objectStorageService = new ObjectStorageService();
+      const customImages = await storage.getCustomImages();
+      
+      if (customImages.length === 0) {
+        return res.json({ 
+          message: "No custom images to migrate", 
+          migrated: 0 
+        });
+      }
+      
+      const results: { key: string; success: boolean; objectPath?: string; error?: string }[] = [];
+      
+      for (const img of customImages) {
+        try {
+          // Check if it's a base64 image
+          if (!img.customUrl.startsWith('data:image')) {
+            results.push({ 
+              key: img.imageKey, 
+              success: true, 
+              objectPath: img.customUrl,
+              error: 'Already a URL, skipping'
+            });
+            continue;
+          }
+          
+          // Extract the base64 data and content type
+          const matches = img.customUrl.match(/^data:image\/(\w+);base64,(.+)$/);
+          if (!matches) {
+            results.push({ 
+              key: img.imageKey, 
+              success: false, 
+              error: 'Invalid base64 format' 
+            });
+            continue;
+          }
+          
+          const [, format, base64Data] = matches;
+          const contentType = `image/${format}`;
+          const buffer = Buffer.from(base64Data, 'base64');
+          
+          // Get presigned URL for upload
+          const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+          
+          // Upload directly to object storage
+          const uploadResponse = await fetch(uploadURL, {
+            method: 'PUT',
+            body: buffer,
+            headers: {
+              'Content-Type': contentType,
+              'Content-Length': buffer.length.toString(),
+            },
+          });
+          
+          if (!uploadResponse.ok) {
+            results.push({ 
+              key: img.imageKey, 
+              success: false, 
+              error: `Upload failed: ${uploadResponse.status}` 
+            });
+            continue;
+          }
+          
+          // Get the normalized object path
+          const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
+          
+          // Update the database with the new object storage path
+          await storage.saveCustomImage(img.imageKey, {
+            customUrl: objectPath,
+            originalUrl: img.originalUrl || undefined,
+            label: img.label || undefined,
+          });
+          
+          results.push({ 
+            key: img.imageKey, 
+            success: true, 
+            objectPath 
+          });
+          
+        } catch (imgError) {
+          results.push({ 
+            key: img.imageKey, 
+            success: false, 
+            error: imgError instanceof Error ? imgError.message : 'Unknown error' 
+          });
+        }
+      }
+      
+      const successCount = results.filter(r => r.success && r.objectPath?.startsWith('/objects/')).length;
+      const skipCount = results.filter(r => r.success && !r.objectPath?.startsWith('/objects/')).length;
+      const failCount = results.filter(r => !r.success).length;
+      
+      res.json({
+        message: `Migration complete: ${successCount} migrated, ${skipCount} skipped, ${failCount} failed`,
+        migrated: successCount,
+        skipped: skipCount,
+        failed: failCount,
+        results
+      });
+      
+    } catch (error) {
+      console.error("Error migrating images:", error);
+      res.status(500).json({ error: "Failed to migrate images" });
+    }
+  });
+
+  // Status endpoint: Check migration status
+  app.get("/api/migrate/status", async (req, res) => {
+    try {
+      const customImages = await storage.getCustomImages();
+      
+      const base64Count = customImages.filter(img => img.customUrl.startsWith('data:image')).length;
+      const objectStorageCount = customImages.filter(img => img.customUrl.startsWith('/objects/')).length;
+      const externalUrlCount = customImages.filter(img => 
+        !img.customUrl.startsWith('data:image') && !img.customUrl.startsWith('/objects/')
+      ).length;
+      
+      res.json({
+        total: customImages.length,
+        base64: base64Count,
+        objectStorage: objectStorageCount,
+        externalUrls: externalUrlCount,
+        needsMigration: base64Count > 0
+      });
+      
+    } catch (error) {
+      console.error("Error checking migration status:", error);
+      res.status(500).json({ error: "Failed to check migration status" });
     }
   });
 
