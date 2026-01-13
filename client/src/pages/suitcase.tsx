@@ -47,6 +47,7 @@ const CATEGORY_TABS = [
   { id: "culture", label: "Culture" },
   { id: "experiences", label: "Experiences" },
   { id: "my-edits", label: "My Edits" },
+  { id: "my-trips", label: "My Trips" },
 ];
 
 const EDIT_CARDS = [
@@ -157,6 +158,7 @@ const SAVE_TYPE_TO_CATEGORY: Record<string, string> = {
   'object': 'items',
   'item': 'items',
   'article': 'culture',
+  'trip': 'my-trips',
   'culture': 'culture',
   'ritual': 'daily-rituals',
   'edit': 'my-edits',
@@ -170,6 +172,8 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
       return saves.filter(s => s.itemType === "quote");
     case "my-edits":
       return saves.filter(s => s.itemType === "edit");
+    case "my-trips":
+      return saves.filter(s => s.itemType === "trip" || s.metadata?.bucket === "my-trips");
     default:
       return saves.filter(s => SAVE_TYPE_TO_CATEGORY[s.itemType] === tab);
   }

@@ -7,6 +7,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { GlobalNav } from "@/components/global-nav";
+import { PinButton } from "@/components/pin-button";
+import { SuitcaseButton } from "@/components/suitcase-button";
 
 interface DayEditorial {
   dayNumber: number;
@@ -91,17 +93,51 @@ interface HeroSectionProps {
 }
 
 function HeroSection({ isSaved, isAcquired, onSave, onAcquire, isPending }: HeroSectionProps) {
+  const heroImageUrl = 'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1600';
+  
   return (
     <div className="h-screen relative flex items-center justify-center overflow-hidden">
       <div 
         className="absolute inset-0"
         style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1600')`,
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.3)), url('${heroImageUrl}')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
+      
+      <div className="absolute top-20 right-4 z-20 flex flex-col items-center gap-1">
+        <PinButton
+          itemType="trip"
+          itemId="morocco-trip-2026"
+          itemData={{
+            title: "Morocco 2026",
+            subtitle: "Atlas Mountains & Marrakech",
+            imageUrl: heroImageUrl,
+            bucket: "my-trips",
+            storyTag: "morocco",
+            editTag: "morocco-trip",
+          }}
+          sourceContext="editorial"
+          aestheticTags={["trip", "morocco", "travel"]}
+          size="sm"
+        />
+        <SuitcaseButton
+          itemId="morocco-trip-2026"
+          itemData={{
+            title: "Morocco 2026",
+            subtitle: "Atlas Mountains & Marrakech",
+            imageUrl: heroImageUrl,
+            bucket: "my-trips",
+            storyTag: "morocco",
+            editTag: "morocco-trip",
+          }}
+          sourceContext="editorial"
+          aestheticTags={["trip", "morocco", "travel"]}
+          size="sm"
+        />
+      </div>
       
       <div className="relative z-10 text-center text-white">
         <h1 className="font-serif text-[clamp(3.5rem,10vw,8rem)] font-normal tracking-[0.25em] mb-6 drop-shadow-lg">
