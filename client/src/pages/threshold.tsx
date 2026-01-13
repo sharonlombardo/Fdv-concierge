@@ -240,12 +240,6 @@ export default function Threshold() {
 
       <div id="current-content">
         <ExploreRow />
-        
-        <section className="px-6 pb-12 md:pb-16">
-          <div className="max-w-4xl mx-auto">
-            <TodaysEditCard getImageUrl={getImageUrl} />
-          </div>
-        </section>
 
         <CurrentFeed embedded />
       </div>
