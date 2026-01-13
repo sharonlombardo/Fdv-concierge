@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { X, Briefcase, Package } from "lucide-react";
+import { X, Briefcase, Package, Sparkles } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { GlobalNav } from "@/components/global-nav";
 import { DetailDrawer } from "@/components/detail-drawer";
 import { deriveEditTag } from "@/lib/derive-edit-tag";
+import { TripTransition } from "@/components/trip-transition";
 
 type SavedItem = {
   id: number;
@@ -358,6 +359,17 @@ export default function SuitcasePage() {
   const [activeTab, setActiveTab] = useState("all");
   const [selectedItem, setSelectedItem] = useState<SavedItem | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showTransition, setShowTransition] = useState(false);
+  const [, navigate] = useLocation();
+
+  const handleCurateClick = () => {
+    setShowTransition(true);
+  };
+
+  const handleTransitionComplete = () => {
+    setShowTransition(false);
+    navigate("/todays-edit");
+  };
 
   const { data: saves = [], isLoading } = useQuery<SavedItem[]>({
     queryKey: ["/api/saves"],
@@ -392,9 +404,19 @@ export default function SuitcasePage() {
           <p className="text-muted-foreground mb-4" data-testid="text-suitcase-subtitle">
             Everything you've saved
           </p>
-          <p className="text-sm text-muted-foreground" data-testid="text-suitcase-stats">
+          <p className="text-sm text-muted-foreground mb-6" data-testid="text-suitcase-stats">
             {saves.length} saves • {itemsToShop} items to shop • {CURATED_QUOTES.length} quotes
           </p>
+          <Button
+            onClick={handleCurateClick}
+            className="gap-2"
+            size="lg"
+            disabled={saves.length === 0}
+            data-testid="button-curate-for-me"
+          >
+            <Sparkles className="w-4 h-4" />
+            Curate for Me
+          </Button>
         </header>
 
         <div className="flex justify-center gap-2 mb-6">
@@ -492,6 +514,10 @@ export default function SuitcasePage() {
         item={selectedItem}
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
+      />
+      <TripTransition
+        isActive={showTransition}
+        onComplete={handleTransitionComplete}
       />
     </div>
   );
