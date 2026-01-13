@@ -54,13 +54,13 @@ export default function TodaysEdit() {
 
         <header className="mb-12 text-center">
           <p className="text-xs font-medium tracking-[0.3em] uppercase text-muted-foreground mb-3">
-            Today's Edit
+            Based on your saves
           </p>
           <h1 
             className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight mb-4"
             data-testid="text-todays-edit-title"
           >
-            Desert Neutrals
+            Your Capsule
           </h1>
           <p className="text-muted-foreground max-w-lg mx-auto">
             A curated selection of mood, looks, and pieces for the journey ahead.
