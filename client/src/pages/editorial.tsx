@@ -137,6 +137,19 @@ function HeroSection({ isSaved, isAcquired, onSave, onAcquire, isPending }: Hero
           aestheticTags={["trip", "morocco", "travel"]}
           size="sm"
         />
+        <PinButton
+          itemType="destination"
+          itemId="morocco-inspiration-2026"
+          itemData={{
+            title: "Morocco Inspiration",
+            subtitle: "Atlas Mountains & Marrakech",
+            imageUrl: heroImageUrl,
+            storyTag: "morocco",
+          }}
+          sourceContext="editorial"
+          aestheticTags={["destination", "inspiration", "morocco"]}
+          size="sm"
+        />
       </div>
       
       <div className="relative z-10 text-center text-white">

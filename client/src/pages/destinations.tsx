@@ -30,16 +30,17 @@ function DestinationCard({
       
       <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
         <PinButton
-          itemType="destination"
-          itemId={`destination-${destination.slug}`}
+          itemType="trip"
+          itemId={`trip-${destination.slug}`}
           itemData={{
             title: destination.title,
             imageUrl: imageUrl,
             description: destination.summary,
-            storyTag: destination.slug
+            storyTag: destination.slug,
+            bucket: "my-trips"
           }}
           sourceContext="destinations_overview"
-          aestheticTags={["destination", "travel", destination.slug]}
+          aestheticTags={["trip", "travel", destination.slug]}
           size="md"
         />
         {!destination.available && (
