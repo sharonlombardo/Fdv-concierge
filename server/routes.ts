@@ -366,10 +366,53 @@ export async function registerRoutes(
     }
   });
 
+  // Helper function to auto-seed morocco data when saves are empty
+  async function autoSeedMoroccoIfEmpty() {
+    try {
+      const allSaves = await storage.getSaves();
+      if (allSaves.length > 0) return allSaves;
+      
+      console.log("Auto-seeding Morocco Edit data (saves table is empty)...");
+      const canonicalItems = generateMoroccoSeedItems();
+      const now = Date.now();
+      
+      for (const item of canonicalItems) {
+        await storage.addSave({
+          itemType: item.itemType,
+          itemId: item.itemId,
+          sourceContext: 'morocco_itinerary',
+          aestheticTags: ['morocco', item.time.toLowerCase()],
+          savedAt: now,
+          metadata: {
+            seeded: true,
+            day: item.day,
+            time: item.time,
+            flowTitle: item.flowTitle,
+            isPlaceholder: item.isPlaceholder || false,
+            description: item.description,
+            shopLink: item.shopLink,
+          },
+          editionTag: 'morocco-2026',
+          storyTag: 'morocco',
+          editTag: 'morocco-edit',
+          purchaseStatus: null,
+          title: item.title,
+          assetUrl: item.assetUrl,
+        });
+      }
+      
+      console.log(`Auto-seeded ${canonicalItems.length} Morocco Edit items`);
+      return await storage.getSaves();
+    } catch (error) {
+      console.error("Error auto-seeding:", error);
+      return [];
+    }
+  }
+
   // Saves/Pin API
   app.get("/api/saves", async (req, res) => {
     try {
-      const allSaves = await storage.getSaves();
+      const allSaves = await autoSeedMoroccoIfEmpty();
       res.json(allSaves);
     } catch (error) {
       console.error("Error fetching saves:", error);
