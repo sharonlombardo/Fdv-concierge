@@ -86,17 +86,19 @@ interface ImageCardProps {
   showPin?: boolean;
   showSuitcase?: boolean;
   imageType?: 'place' | 'look' | 'accessory';
+  preserveAspectRatio?: boolean;
 }
 
-export function ImageCard({ 
-  imageUrl, 
-  label, 
+export function ImageCard({
+  imageUrl,
+  label,
   aspectRatio = "aspect-[3/4]",
   itemId,
   itemTitle,
   showPin = false,
   showSuitcase = false,
-  imageType = 'place'
+  imageType = 'place',
+  preserveAspectRatio = false
 }: ImageCardProps) {
   const itemTypeMap = {
     'place': 'place',
@@ -115,14 +117,14 @@ export function ImageCard({
   
   return (
     <div className="group relative">
-      <div className={`${aspectRatio} overflow-hidden rounded-md bg-muted relative`}>
+      <div className={`${preserveAspectRatio ? '' : aspectRatio} overflow-hidden rounded-md bg-muted relative`}>
         {!isLoaded && (
-          <div className="absolute inset-0 bg-muted animate-pulse" />
+          <div className={`${preserveAspectRatio ? 'min-h-[200px]' : 'absolute inset-0'} bg-muted animate-pulse`} />
         )}
-        <img 
+        <img
           src={imageUrl}
           alt={label || "Editorial image"}
-          className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`w-full ${preserveAspectRatio ? 'h-auto' : 'h-full object-cover'} transition-all duration-500 group-hover:scale-105 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setIsLoaded(true)}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
@@ -309,14 +311,14 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
                 {hasWardrobeContent && (
                   <div className="space-y-4">
                     {wardrobeImage && flow.wardrobeImageKey && (
-                      <ImageCard 
-                        imageUrl={wardrobeImage} 
-                        aspectRatio="aspect-[4/5]"
+                      <ImageCard
+                        imageUrl={wardrobeImage}
                         itemId={flow.wardrobeImageKey}
                         itemTitle={`${flow.title} Look`}
                         showPin={true}
                         showSuitcase={true}
                         imageType="look"
+                        preserveAspectRatio={true}
                       />
                     )}
                     {hasAccessories && (

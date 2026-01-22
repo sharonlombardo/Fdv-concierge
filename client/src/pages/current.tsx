@@ -145,8 +145,8 @@ function PageTurnHero({ title, stateOfMind, paragraph, assetKey, bucket, pinType
     <div className="relative w-full min-h-[70vh] md:min-h-[80vh] flex items-end" data-testid={`hero-${assetKey}`}>
       <div className="absolute inset-0 bg-stone-200 dark:bg-stone-800">
         {imageUrl ? (
-          <LoadingImage 
-            src={imageUrl} 
+          <LoadingImage
+            src={imageUrl}
             alt={title}
             className="w-full h-full object-cover"
           />
@@ -200,29 +200,31 @@ function PageTurnHero({ title, stateOfMind, paragraph, assetKey, bucket, pinType
 function QuoteCard({ quote, id, sourceStory }: QuoteCardProps & { sourceStory?: string }) {
   const storyTag = sourceStory?.toLowerCase().replace(/\s+/g, '-') || 'opening';
   return (
-    <div className="relative py-16 md:py-24 px-8 md:px-16 max-w-3xl mx-auto text-center" data-testid={`quote-${id}`}>
-      <div className="absolute top-4 right-4 z-10">
-        <PinButton
-          itemType="quote"
-          itemId={id}
-          itemData={{ 
-            title: quote, 
-            bucket: "State of Mind", 
-            sourceStory: sourceStory || "The Current", 
-            issueNumber: 1,
-            saveType: "quote",
-            storyTag,
-            editionTag: "current-edition-1",
-            editTag: `${storyTag}-edit`
-          }}
-          sourceContext="the_current_issue_1"
-          aestheticTags={["quote", "state-of-mind", storyTag]}
-          size="md"
-        />
+    <div className="py-16 md:py-24 px-8 md:px-16 max-w-3xl mx-auto text-center" data-testid={`quote-${id}`}>
+      <div className="relative inline-block">
+        <p className="font-serif text-2xl md:text-3xl lg:text-4xl italic leading-relaxed text-foreground/90">
+          "{quote}"
+        </p>
+        <div className="absolute -top-2 -right-8 z-10">
+          <PinButton
+            itemType="quote"
+            itemId={id}
+            itemData={{
+              title: quote,
+              bucket: "State of Mind",
+              sourceStory: sourceStory || "The Current",
+              issueNumber: 1,
+              saveType: "quote",
+              storyTag,
+              editionTag: "current-edition-1",
+              editTag: `${storyTag}-edit`
+            }}
+            sourceContext="the_current_issue_1"
+            aestheticTags={["quote", "state-of-mind", storyTag]}
+            size="sm"
+          />
+        </div>
       </div>
-      <p className="font-serif text-2xl md:text-3xl lg:text-4xl italic leading-relaxed text-foreground/90">
-        "{quote}"
-      </p>
     </div>
   );
 }
@@ -246,12 +248,12 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
           <span className="text-muted-foreground text-xs uppercase tracking-widest">Image Placeholder</span>
         </div>
       )}
-      <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
+      <div className="absolute top-2 right-2 z-10 flex flex-col items-end gap-0">
         <PinButton
           itemType={pinType as any}
           itemId={assetKey}
-          itemData={{ 
-            title, 
+          itemData={{
+            title,
             bucket,
             sourceStory,
             issueNumber: 1,
@@ -264,7 +266,7 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
           }}
           sourceContext="the_current_issue_1"
           aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
-          size="md"
+          size="sm"
         />
         {(pinType === "product" || pinType === "look") && (
           <SuitcaseButton
@@ -277,7 +279,7 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
             }}
             sourceContext="the_current_issue_1"
             aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
-            size="md"
+            size="sm"
           />
         )}
       </div>
@@ -363,12 +365,12 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
                   </div>
                 )}
               </div>
-            <div className="absolute top-2 right-2 z-10 flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+            <div className="absolute top-1.5 right-1.5 z-10 flex flex-col items-end gap-0" onClick={(e) => e.stopPropagation()}>
               <PinButton
                 itemType={tile.pinType as any}
                 itemId={tile.id}
-                itemData={{ 
-                  title: tile.caption, 
+                itemData={{
+                  title: tile.caption,
                   bucket: tile.bucket,
                   sourceStory,
                   issueNumber: 1,
@@ -427,14 +429,14 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
               </div>
             )}
           </div>
-          <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
+          <div className="absolute top-1.5 right-1.5 z-10 flex flex-col items-end gap-0">
             <PinButton
               itemType={image1.pinType as any}
               itemId={image1.assetKey}
-              itemData={{ 
-                title: image1.caption, 
-                bucket: image1.bucket, 
-                sourceStory, 
+              itemData={{
+                title: image1.caption,
+                bucket: image1.bucket,
+                sourceStory,
                 issueNumber: 1,
                 saveType: image1.pinType,
                 storyTag,
@@ -474,14 +476,14 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
               </div>
             )}
           </div>
-          <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
+          <div className="absolute top-1.5 right-1.5 z-10 flex flex-col items-end gap-0">
             <PinButton
               itemType={image2.pinType as any}
               itemId={image2.assetKey}
-              itemData={{ 
-                title: image2.caption, 
-                bucket: image2.bucket, 
-                sourceStory, 
+              itemData={{
+                title: image2.caption,
+                bucket: image2.bucket,
+                sourceStory,
                 issueNumber: 1,
                 saveType: image2.pinType,
                 storyTag,
@@ -534,7 +536,7 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: Moti
         <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
           <p className="font-serif text-2xl md:text-3xl text-white italic text-center px-8">{overlayText}</p>
         </div>
-        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+        <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-0">
           <PinButton
             itemType={pinType as any}
             itemId={id}
@@ -577,27 +579,29 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: Moti
 function ClosingLine({ text, id, sourceStory }: ClosingLineProps & { sourceStory?: string }) {
   const storyTag = sourceStory?.toLowerCase().replace(/\s+/g, '-') || 'opening';
   return (
-    <div className="relative py-12 md:py-16 px-8 max-w-2xl mx-auto text-center" data-testid={`closing-${id}`}>
-      <div className="absolute top-0 right-0 z-10">
-        <PinButton
-          itemType="quote"
-          itemId={id}
-          itemData={{ 
-            title: text, 
-            bucket: "State of Mind", 
-            sourceStory: sourceStory || "The Current", 
-            issueNumber: 1,
-            saveType: "quote",
-            storyTag,
-            editionTag: "current-edition-1",
-            editTag: `${storyTag}-edit`
-          }}
-          sourceContext="the_current_issue_1"
-          aestheticTags={["quote", "closing", "state-of-mind", storyTag]}
-          size="sm"
-        />
+    <div className="py-12 md:py-16 px-8 max-w-2xl mx-auto text-center" data-testid={`closing-${id}`}>
+      <div className="relative inline-block">
+        <p className="text-sm md:text-base text-muted-foreground italic">{text}</p>
+        <div className="absolute -top-1 -right-6 z-10">
+          <PinButton
+            itemType="quote"
+            itemId={id}
+            itemData={{
+              title: text,
+              bucket: "State of Mind",
+              sourceStory: sourceStory || "The Current",
+              issueNumber: 1,
+              saveType: "quote",
+              storyTag,
+              editionTag: "current-edition-1",
+              editTag: `${storyTag}-edit`
+            }}
+            sourceContext="the_current_issue_1"
+            aestheticTags={["quote", "closing", "state-of-mind", storyTag]}
+            size="sm"
+          />
+        </div>
       </div>
-      <p className="text-sm md:text-base text-muted-foreground italic">{text}</p>
     </div>
   );
 }

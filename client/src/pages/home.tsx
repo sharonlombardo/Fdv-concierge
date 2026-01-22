@@ -458,14 +458,19 @@ function ItemDetailDrawer({
             
             <div className="space-y-6">
               <div className="space-y-4">
-                <div className="aspect-[3/4] w-full max-w-md mx-auto bg-muted rounded-md relative overflow-hidden">
-                  <LoadingImage 
+                <div className="w-full max-w-xs mx-auto rounded-md relative">
+                  <img
                     src={getImageUrl(
                       `${item.id}-wardrobe`,
                       item.commercialWardrobe || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800",
                       { imageType: 'wardrobe', title: item.title }
-                    )} 
-                    className="w-full h-full object-cover rounded-md" 
+                    )}
+                    className="rounded-md w-full"
+                    onLoad={(e) => {
+                      // Force natural aspect ratio display
+                      const img = e.currentTarget;
+                      img.style.height = 'auto';
+                    }}
                     alt="Style recommendation"
                   />
                   <div className="absolute top-3 right-3 z-10">

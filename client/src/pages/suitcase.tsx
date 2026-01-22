@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { GlobalNav } from "@/components/global-nav";
 import { DetailDrawer } from "@/components/detail-drawer";
 import { deriveEditTag } from "@/lib/derive-edit-tag";
 import { TripTransition } from "@/components/trip-transition";
+import { useCustomImages } from "@/hooks/use-custom-images";
 
 type SavedItem = {
   id: number;
@@ -173,18 +174,38 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
     case "my-edits":
       return saves.filter(s => s.itemType === "edit");
     case "my-trips":
-      return saves.filter(s => s.itemType === "trip" || s.metadata?.bucket === "my-trips");
+      // Include trips, places/destinations, and items explicitly bucketed to my-trips
+      return saves.filter(s =>
+        s.itemType === "trip" ||
+        s.itemType === "place" ||
+        s.itemType === "destination" ||
+        s.metadata?.bucket === "my-trips"
+      );
     case "travel-destinations":
-      return saves.filter(s => 
-        SAVE_TYPE_TO_CATEGORY[s.itemType] === "travel-destinations" || 
-        s.itemType === "trip"
+      // Include travel/destination items AND trips/places (shared with my-trips)
+      return saves.filter(s =>
+        SAVE_TYPE_TO_CATEGORY[s.itemType] === "travel-destinations" ||
+        s.itemType === "trip" ||
+        s.itemType === "place" ||
+        s.itemType === "destination"
       );
     default:
       return saves.filter(s => SAVE_TYPE_TO_CATEGORY[s.itemType] === tab);
   }
 }
 
-function StateOfMindContent() {
+function StateOfMindContent({ onRemove, removedIds }: { onRemove: (id: string) => void; removedIds: Set<string> }) {
+  const visibleQuotes = CURATED_QUOTES.filter(q => !removedIds.has(q.id));
+
+  if (visibleQuotes.length === 0) {
+    return (
+      <div className="text-center py-20">
+        <h3 className="font-serif text-xl mb-2">No quotes saved</h3>
+        <p className="text-muted-foreground">Explore The Current to save inspiring quotes.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -192,18 +213,39 @@ function StateOfMindContent() {
         <h2 className="font-serif text-2xl">Words to Travel By</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {CURATED_QUOTES.map((quote) => (
-          <div 
+        {visibleQuotes.map((quote) => (
+          <div
             key={quote.id}
-            className="bg-[#f5f1ed] dark:bg-[#2a2825] rounded-md p-8 flex flex-col justify-between min-h-[180px]"
+            className="group bg-[#f5f1ed] dark:bg-[#2a2825] rounded-md min-h-[180px]"
+            style={{ position: 'relative', overflow: 'hidden' }}
             data-testid={`card-quote-${quote.id}`}
           >
-            <p className="font-serif text-lg leading-relaxed text-foreground/80 italic">
-              "{quote.text}"
-            </p>
-            <p className="text-xs text-muted-foreground mt-4 tracking-widest uppercase">
-              {quote.source}
-            </p>
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                padding: '12px',
+                zIndex: 10
+              }}
+            >
+              <button
+                type="button"
+                className="w-6 h-6 rounded-full bg-white/90 dark:bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-black/90 flex items-center justify-center"
+                onClick={() => onRemove(quote.id)}
+                data-testid={`button-remove-quote-${quote.id}`}
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+            <div className="p-8 flex flex-col justify-between h-full min-h-[180px]">
+              <p className="font-serif text-lg leading-relaxed text-foreground/80 italic">
+                "{quote.text}"
+              </p>
+              <p className="text-xs text-muted-foreground mt-4 tracking-widest uppercase">
+                {quote.source}
+              </p>
+            </div>
           </div>
         ))}
       </div>
@@ -211,8 +253,25 @@ function StateOfMindContent() {
   );
 }
 
-function SavedItemCard({ save, onRemove, onClick }: { save: SavedItem; onRemove: () => void; onClick: () => void }) {
-  const imageUrl = save.assetUrl || save.metadata?.imageUrl;
+// Convert itemId to image lookup key
+function getImageKey(itemId: string): string {
+  // d1-1-look -> d1-1-wardrobe (for looks)
+  // d1-1-extra-0 -> d1-1-extra-0 (for extras)
+  if (itemId.endsWith('-look')) {
+    return itemId.replace('-look', '-wardrobe');
+  }
+  return itemId;
+}
+
+function SavedItemCard({ save, onRemove, onClick, getImageUrl }: {
+  save: SavedItem;
+  onRemove: () => void;
+  onClick: () => void;
+  getImageUrl: (key: string, defaultUrl: string) => string;
+}) {
+  const imageKey = getImageKey(save.itemId);
+  const fallbackUrl = save.assetUrl || save.metadata?.imageUrl || '';
+  const imageUrl = getImageUrl(imageKey, fallbackUrl);
   const isOwned = save.purchaseStatus === 'purchased';
   const isWanted = save.purchaseStatus === 'want';
 
@@ -369,7 +428,26 @@ export default function SuitcasePage() {
   const [selectedItem, setSelectedItem] = useState<SavedItem | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showTransition, setShowTransition] = useState(false);
+  const [removedQuotes, setRemovedQuotes] = useState<Set<string>>(() => {
+    // Load from localStorage on initial render
+    try {
+      const stored = localStorage.getItem('fdv-removed-quotes');
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
   const [, navigate] = useLocation();
+  const { getImageUrl } = useCustomImages();
+
+  const handleRemoveQuote = (quoteId: string) => {
+    setRemovedQuotes(prev => {
+      const updated = new Set([...prev, quoteId]);
+      // Persist to localStorage
+      localStorage.setItem('fdv-removed-quotes', JSON.stringify([...updated]));
+      return updated;
+    });
+  };
 
   const handleCurateClick = () => {
     setShowTransition(true);
@@ -457,7 +535,7 @@ export default function SuitcasePage() {
                 ))}
               </div>
             ) : activeTab === "state-of-mind" ? (
-              <StateOfMindContent />
+              <StateOfMindContent onRemove={handleRemoveQuote} removedIds={removedQuotes} />
             ) : filteredSaves.length === 0 ? (
               <div className="text-center py-20">
                 {saves.length === 0 ? (
@@ -497,6 +575,7 @@ export default function SuitcasePage() {
                     save={save}
                     onRemove={() => removeMutation.mutate(save.itemId)}
                     onClick={() => handleItemClick(save)}
+                    getImageUrl={getImageUrl}
                   />
                 ))}
               </div>

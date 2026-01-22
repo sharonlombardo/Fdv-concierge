@@ -68,7 +68,7 @@ export async function registerRoutes(
   app.get("/api/image-slots", async (req, res) => {
     try {
       let customImageMap = new Map<string, string>();
-      
+
       try {
         const customImages = await storage.getCustomImages();
         if (customImages.length > 0) {
@@ -77,7 +77,7 @@ export async function registerRoutes(
       } catch (dbError) {
         console.warn("Database unavailable for custom images:", dbError);
       }
-      
+
       // Use embedded mappings as fallback when database is empty or unavailable
       if (customImageMap.size === 0) {
         console.log("Using embedded image mappings (database empty or unavailable)");
@@ -105,10 +105,31 @@ export async function registerRoutes(
   app.get("/api/images", async (req, res) => {
     try {
       const images = await storage.getCustomImages();
+      // Use embedded mappings as fallback when database is empty
+      if (images.length === 0) {
+        console.log("Using embedded image mappings for /api/images (database empty)");
+        const embeddedImages = Object.entries(EMBEDDED_IMAGE_MAPPINGS).map(([key, url]) => ({
+          id: 0,
+          imageKey: key,
+          customUrl: url,
+          originalUrl: null,
+          label: null,
+          updatedAt: Date.now(),
+        }));
+        return res.json(embeddedImages);
+      }
       res.json(images);
     } catch (error) {
-      console.warn("Database unavailable for custom images, returning empty:", error);
-      res.json([]);
+      console.warn("Database unavailable for custom images, using embedded mappings:", error);
+      const embeddedImages = Object.entries(EMBEDDED_IMAGE_MAPPINGS).map(([key, url]) => ({
+        id: 0,
+        imageKey: key,
+        customUrl: url,
+        originalUrl: null,
+        label: null,
+        updatedAt: Date.now(),
+      }));
+      res.json(embeddedImages);
     }
   });
 

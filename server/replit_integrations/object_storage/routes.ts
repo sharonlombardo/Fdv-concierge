@@ -1,6 +1,12 @@
 import type { Express } from "express";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 
+// Check if we're running in Replit environment (has the sidecar)
+const isReplitEnvironment = !!process.env.REPL_ID || !!process.env.REPLIT_DEPLOYMENT;
+
+// Replit deployment URL for proxying images in local development
+const REPLIT_PROXY_URL = process.env.REPLIT_PROXY_URL || "https://elite-canvas--sharonplombardo.replit.app";
+
 /**
  * Register object storage routes for file uploads.
  *
@@ -14,7 +20,8 @@ import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
  * - Add ACL policies for access control
  */
 export function registerObjectStorageRoutes(app: Express): void {
-  const objectStorageService = new ObjectStorageService();
+  // Only create object storage service in Replit environment
+  const objectStorageService = isReplitEnvironment ? new ObjectStorageService() : null;
 
   /**
    * Request a presigned URL for file upload.
@@ -36,6 +43,12 @@ export function registerObjectStorageRoutes(app: Express): void {
    * Send JSON metadata only, then upload the file directly to uploadURL.
    */
   app.post("/api/uploads/request-url", async (req, res) => {
+    if (!objectStorageService) {
+      return res.status(503).json({
+        error: "Object storage not available in local development",
+      });
+    }
+
     try {
       const { name, size, contentType } = req.body;
 
@@ -69,8 +82,43 @@ export function registerObjectStorageRoutes(app: Express): void {
    *
    * This serves files from object storage. For public files, no auth needed.
    * For protected files, add authentication middleware and ACL checks.
+   *
+   * In local development, proxies requests to the Replit deployment.
    */
   app.get("/objects/:objectPath(*)", async (req, res) => {
+    if (!objectStorageService) {
+      // Local development: proxy to Replit deployment
+      const proxyUrl = `${REPLIT_PROXY_URL}${req.path}`;
+
+      try {
+        const response = await fetch(proxyUrl);
+
+        if (!response.ok) {
+          return res.status(response.status).json({ error: "Image not found on Replit" });
+        }
+
+        // Forward content type header
+        const contentType = response.headers.get("content-type");
+        if (contentType) {
+          res.set("Content-Type", contentType);
+        }
+
+        // Forward cache control
+        const cacheControl = response.headers.get("cache-control");
+        if (cacheControl) {
+          res.set("Cache-Control", cacheControl);
+        }
+
+        // Stream the response body to the client
+        const buffer = await response.arrayBuffer();
+        res.send(Buffer.from(buffer));
+      } catch (error) {
+        console.error("Error proxying image from Replit:", error);
+        return res.status(502).json({ error: "Failed to proxy image from Replit" });
+      }
+      return;
+    }
+
     try {
       const objectFile = await objectStorageService.getObjectEntityFile(req.path);
       await objectStorageService.downloadObject(objectFile, res);
@@ -83,4 +131,3 @@ export function registerObjectStorageRoutes(app: Express): void {
     }
   });
 }
-
