@@ -1,7 +1,8 @@
-// Vercel Blob image mappings
-// Migrated from Replit Object Storage: 2026-01-22
+// Auto-generated Vercel Blob image mappings
+// Generated: 2026-01-22T21:39:16.197Z
+// Migrated from Replit Object Storage
 
-export const EMBEDDED_IMAGE_MAPPINGS: Record<string, string> = {
+export const VERCEL_BLOB_MAPPINGS: Record<string, string> = {
   "d1-4": "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images/d1-4",
   "cover-main": "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images/cover-main",
   "d1-2": "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images/d1-2",

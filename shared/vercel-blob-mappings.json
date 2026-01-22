@@ -1,7 +1,4 @@
-// Vercel Blob image mappings
-// Migrated from Replit Object Storage: 2026-01-22
-
-export const EMBEDDED_IMAGE_MAPPINGS: Record<string, string> = {
+{
   "d1-4": "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images/d1-4",
   "cover-main": "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images/cover-main",
   "d1-2": "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images/d1-2",
@@ -334,4 +331,4 @@ export const EMBEDDED_IMAGE_MAPPINGS: Record<string, string> = {
   "slow-tile-4": "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images/slow-tile-4",
   "retreat-ritual-1": "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images/retreat-ritual-1",
   "retreat-place-1": "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images/retreat-place-1"
-};
+}
