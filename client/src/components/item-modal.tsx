@@ -59,7 +59,7 @@ export function ItemModal({ item, open, onOpenChange }: ItemModalProps) {
   const bookUrl = item.bookUrl || saveDetail?.bookUrl || undefined;
   const description = item.detailDescription || saveDetail?.detailDescription || item.description || undefined;
 
-  const isProduct = item.pinType === "object" || item.pinType === "look" || item.pinType === "product";
+  const isProduct = item.pinType === "object" || item.pinType === "look" || item.pinType === "product" || item.pinType === "item";
   const isPlace = item.pinType === "place" || item.pinType === "experience";
 
   // Products: object-contain (show full garment). Places: object-cover (atmospheric)

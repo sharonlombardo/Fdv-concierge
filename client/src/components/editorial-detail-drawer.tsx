@@ -22,6 +22,10 @@ export type EditorialItem = {
   imageUrl?: string;
   shopLink?: string;
   isPurchaseable?: boolean;
+  // Commerce fields (inline from editorial curation)
+  brand?: string;
+  price?: string;
+  shopUrl?: string;
 };
 
 type EditorialDetailDrawerProps = {

@@ -38,6 +38,11 @@ type PinTile = {
   bucket: string;
   pinType: string;
   imageUrl?: string;
+  // Commerce fields (inline editorial curation)
+  brand?: string;
+  price?: string;
+  shopUrl?: string;
+  title?: string; // Product name override (caption is editorial, title is product name)
 };
 
 type PageTurnHeroProps = {
@@ -328,12 +333,15 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
     if (onOpenDetail) {
       onOpenDetail({
         id: tile.id,
-        title: tile.caption,
+        title: tile.title || tile.caption,
         bucket: tile.bucket,
         pinType: tile.pinType,
         assetKey: tile.assetKey,
         storyTag,
-        imageUrl
+        imageUrl,
+        brand: tile.brand,
+        price: tile.price,
+        shopUrl: tile.shopUrl,
       });
     }
   };
@@ -386,7 +394,7 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
                 aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), storyTag]}
                 size="sm"
               />
-              {(tile.pinType === "product" || tile.pinType === "look") && (
+              {(tile.pinType === "product" || tile.pinType === "look" || tile.pinType === "item" || tile.pinType === "object") && (
                 <SuitcaseButton
                   itemId={tile.id}
                   itemData={{
@@ -744,8 +752,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           tiles={[
             { id: "morocco-1", assetKey: "morocco-tile-1", caption: "Tile close-up", bucket: "Inspiration", pinType: "texture" },
             { id: "morocco-2", assetKey: "morocco-tile-2", caption: "Rooftop dinner", bucket: "Travel & Experiences", pinType: "experience" },
-            { id: "morocco-3", assetKey: "morocco-tile-3", caption: "Linen look", bucket: "Your Style", pinType: "look" },
-            { id: "morocco-4", assetKey: "morocco-tile-4", caption: "Brass detail", bucket: "Objects of Desire", pinType: "object" },
+            { id: "morocco-3", assetKey: "morocco-tile-3", caption: "Linen look", bucket: "Your Style", pinType: "look", title: "Linen Wrap Dress", brand: "Fil de Vie", price: "$285" },
+            { id: "morocco-4", assetKey: "morocco-tile-4", caption: "Brass detail", bucket: "Objects of Desire", pinType: "object", title: "Brass Cuff", brand: "Agmes", price: "$420" },
             { id: "morocco-5", assetKey: "morocco-tile-5", caption: "Morning courtyard", bucket: "Daily Rituals", pinType: "ritual" },
             { id: "morocco-6", assetKey: "morocco-tile-6", caption: "Market color", bucket: "Inspiration", pinType: "inspiration" },
           ]}
@@ -849,9 +857,9 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           tiles={[
             { id: "hydra-1", assetKey: "hydra-tile-1", caption: "Stone wall", bucket: "Inspiration", pinType: "texture" },
             { id: "hydra-2", assetKey: "hydra-tile-2", caption: "Swim morning", bucket: "Daily Rituals", pinType: "ritual" },
-            { id: "hydra-3", assetKey: "hydra-tile-3", caption: "White linen look", bucket: "Your Style", pinType: "look" },
-            { id: "hydra-4", assetKey: "hydra-tile-4", caption: "Leather sandal", bucket: "Objects of Desire", pinType: "item" },
-            { id: "hydra-5", assetKey: "hydra-tile-5", caption: "Woven bag", bucket: "Objects of Desire", pinType: "object" },
+            { id: "hydra-3", assetKey: "hydra-tile-3", caption: "White linen look", bucket: "Your Style", pinType: "look", title: "White Linen Column Dress", brand: "Fil de Vie", price: "$310" },
+            { id: "hydra-4", assetKey: "hydra-tile-4", caption: "Leather sandal", bucket: "Objects of Desire", pinType: "item", title: "Leather Slide Sandal", brand: "A Emery", price: "$280", shopUrl: "https://aemery.com" },
+            { id: "hydra-5", assetKey: "hydra-tile-5", caption: "Woven bag", bucket: "Objects of Desire", pinType: "object", title: "Woven Basket Bag", brand: "Loewe", price: "$890", shopUrl: "https://www.loewe.com" },
             { id: "hydra-6", assetKey: "hydra-tile-6", caption: "Late lunch table", bucket: "Travel & Experiences", pinType: "experience" },
           ]}
           onOpenDetail={handleOpenDetail}
@@ -947,9 +955,9 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           title="Repeat With Intention"
           sourceStory="Slow Travel"
           tiles={[
-            { id: "slow-1", assetKey: "slow-tile-1", caption: "Same outfit day to night", bucket: "Your Style", pinType: "look" },
-            { id: "slow-2", assetKey: "slow-tile-2", caption: "Folded garment stack", bucket: "Objects of Desire", pinType: "object" },
-            { id: "slow-3", assetKey: "slow-tile-3", caption: "Notebook", bucket: "Objects of Desire", pinType: "object" },
+            { id: "slow-1", assetKey: "slow-tile-1", caption: "Same outfit day to night", bucket: "Your Style", pinType: "look", title: "Relaxed Linen Trouser", brand: "Totême", price: "$340", shopUrl: "https://www.toteme-studio.com" },
+            { id: "slow-2", assetKey: "slow-tile-2", caption: "Folded garment stack", bucket: "Objects of Desire", pinType: "object", title: "Capsule Essentials Set", brand: "Fil de Vie" },
+            { id: "slow-3", assetKey: "slow-tile-3", caption: "Notebook", bucket: "Objects of Desire", pinType: "object", title: "Leather Travel Journal", brand: "Smythson", price: "$195", shopUrl: "https://www.smythson.com" },
             { id: "slow-4", assetKey: "slow-tile-4", caption: "Café table", bucket: "Daily Rituals", pinType: "ritual" },
             { id: "slow-5", assetKey: "slow-tile-5", caption: "Walking shot", bucket: "Daily Rituals", pinType: "ritual" },
             { id: "slow-6", assetKey: "slow-tile-6", caption: "Light on wall", bucket: "Inspiration", pinType: "inspiration" },
@@ -1041,12 +1049,12 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           title="What Belongs"
           sourceStory="Retreat"
           tiles={[
-            { id: "retreat-1", assetKey: "retreat-tile-1", caption: "Wrap", bucket: "Objects of Desire", pinType: "item" },
-            { id: "retreat-2", assetKey: "retreat-tile-2", caption: "Oil", bucket: "Objects of Desire", pinType: "object" },
-            { id: "retreat-3", assetKey: "retreat-tile-3", caption: "Sandal", bucket: "Objects of Desire", pinType: "item" },
+            { id: "retreat-1", assetKey: "retreat-tile-1", caption: "Wrap", bucket: "Objects of Desire", pinType: "item", title: "Cashmere Travel Wrap", brand: "Fil de Vie", price: "$425" },
+            { id: "retreat-2", assetKey: "retreat-tile-2", caption: "Oil", bucket: "Objects of Desire", pinType: "object", title: "Body Oil", brand: "Esse", price: "$78", shopUrl: "https://www.esseskincare.com" },
+            { id: "retreat-3", assetKey: "retreat-tile-3", caption: "Sandal", bucket: "Objects of Desire", pinType: "item", title: "Suede Slide", brand: "A Emery", price: "$240", shopUrl: "https://aemery.com" },
             { id: "retreat-4", assetKey: "retreat-tile-4", caption: "Mat", bucket: "Daily Rituals", pinType: "ritual" },
             { id: "retreat-5", assetKey: "retreat-tile-5", caption: "Quiet corridor", bucket: "Travel & Experiences", pinType: "place" },
-            { id: "retreat-6", assetKey: "retreat-tile-6", caption: "Post-practice look", bucket: "Your Style", pinType: "look" },
+            { id: "retreat-6", assetKey: "retreat-tile-6", caption: "Post-practice look", bucket: "Your Style", pinType: "look", title: "Silk Cami & Wide Leg", brand: "Esse", price: "$195", shopUrl: "https://www.esseskincare.com" },
           ]}
           onOpenDetail={handleOpenDetail}
         />
@@ -1130,8 +1138,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
             { id: "ny-1", assetKey: "ny-tile-1", caption: "Bar interior", bucket: "Travel & Experiences", pinType: "experience" },
             { id: "ny-2", assetKey: "ny-tile-2", caption: "Dinner table", bucket: "Travel & Experiences", pinType: "experience" },
             { id: "ny-3", assetKey: "ny-tile-3", caption: "Gallery wall", bucket: "Culture", pinType: "place" },
-            { id: "ny-4", assetKey: "ny-tile-4", caption: "Coat look", bucket: "Your Style", pinType: "look" },
-            { id: "ny-5", assetKey: "ny-tile-5", caption: "Boot or flat", bucket: "Objects of Desire", pinType: "item" },
+            { id: "ny-4", assetKey: "ny-tile-4", caption: "Coat look", bucket: "Your Style", pinType: "look", title: "Wool Overcoat", brand: "Totême", price: "$890", shopUrl: "https://www.toteme-studio.com" },
+            { id: "ny-5", assetKey: "ny-tile-5", caption: "Boot or flat", bucket: "Objects of Desire", pinType: "item", title: "Pointed Leather Flat", brand: "Aeyde", price: "$345", shopUrl: "https://www.aeyde.com" },
             { id: "ny-6", assetKey: "ny-tile-6", caption: "Subway platform", bucket: "Inspiration", pinType: "inspiration" },
           ]}
           onOpenDetail={handleOpenDetail}
@@ -1175,8 +1183,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           sourceStory="New York"
           tiles={[
             { id: "ny-reset-1", assetKey: "ny-reset-1", caption: "Coffee walk", bucket: "Daily Rituals", pinType: "ritual" },
-            { id: "ny-reset-2", assetKey: "ny-reset-2", caption: "Notebook", bucket: "Objects of Desire", pinType: "object" },
-            { id: "ny-reset-3", assetKey: "ny-reset-3", caption: "Sunglasses", bucket: "Objects of Desire", pinType: "item" },
+            { id: "ny-reset-2", assetKey: "ny-reset-2", caption: "Notebook", bucket: "Objects of Desire", pinType: "object", title: "Panama Notebook", brand: "Smythson", price: "$125", shopUrl: "https://www.smythson.com" },
+            { id: "ny-reset-3", assetKey: "ny-reset-3", caption: "Sunglasses", bucket: "Objects of Desire", pinType: "item", title: "Triomphe Sunglasses", brand: "Celine", price: "$450", shopUrl: "https://www.celine.com" },
             { id: "ny-reset-4", assetKey: "ny-reset-4", caption: "Empty street morning", bucket: "Inspiration", pinType: "mood" },
           ]}
           onOpenDetail={handleOpenDetail}
