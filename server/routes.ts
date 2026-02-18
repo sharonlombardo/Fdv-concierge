@@ -473,6 +473,29 @@ export async function registerRoutes(
     }
   });
 
+  // Get full save details (commerce data) for item modal
+  app.get("/api/saves/detail/:itemId", async (req, res) => {
+    try {
+      const { itemId } = req.params;
+      const save = await storage.getSaveByItemId(itemId);
+      if (!save) {
+        return res.json({});
+      }
+      res.json({
+        brand: save.brand,
+        price: save.price,
+        shopUrl: save.shopUrl,
+        bookUrl: save.bookUrl,
+        detailDescription: save.detailDescription,
+        category: save.category,
+        isCurated: save.isCurated,
+      });
+    } catch (error) {
+      console.error("Error fetching save detail:", error);
+      res.status(500).json({ error: "Failed to fetch save detail" });
+    }
+  });
+
   app.post("/api/saves", async (req, res) => {
     try {
       const validationResult = saveSchema.safeParse(req.body);

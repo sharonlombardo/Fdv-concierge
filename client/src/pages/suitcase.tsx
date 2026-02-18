@@ -6,7 +6,7 @@ import { X, Briefcase, Package, Sparkles } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Link, useLocation } from "wouter";
 import { GlobalNav } from "@/components/global-nav";
-import { DetailDrawer } from "@/components/detail-drawer";
+import { ItemModal, type ItemModalData } from "@/components/item-modal";
 import { deriveEditTag } from "@/lib/derive-edit-tag";
 import { TripTransition } from "@/components/trip-transition";
 import { useCustomImages } from "@/hooks/use-custom-images";
@@ -425,7 +425,7 @@ function ByEditView({ saves }: { saves: SavedItem[] }) {
 export default function SuitcasePage() {
   const [viewMode, setViewMode] = useState("category");
   const [activeTab, setActiveTab] = useState("all");
-  const [selectedItem, setSelectedItem] = useState<SavedItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showTransition, setShowTransition] = useState(false);
   const [removedQuotes, setRemovedQuotes] = useState<Set<string>>(() => {
@@ -476,7 +476,18 @@ export default function SuitcasePage() {
       navigate("/concierge");
       return;
     }
-    setSelectedItem(save);
+    const imageKey = getImageKey(save.itemId);
+    const imageUrl = getImageUrl(imageKey, save.assetUrl || save.metadata?.imageUrl || '');
+    setSelectedItem({
+      id: save.itemId,
+      title: save.title || save.metadata?.title || save.itemId,
+      subtitle: save.metadata?.subtitle,
+      bucket: save.itemType,
+      pinType: save.itemType,
+      assetKey: save.itemId,
+      storyTag: save.storyTag || '',
+      imageUrl,
+    });
     setDrawerOpen(true);
   };
 
@@ -581,7 +592,7 @@ export default function SuitcasePage() {
               </div>
             )}
       </div>
-      <DetailDrawer
+      <ItemModal
         item={selectedItem}
         open={drawerOpen}
         onOpenChange={setDrawerOpen}

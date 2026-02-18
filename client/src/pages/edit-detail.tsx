@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, X, Package, Briefcase, Map, Loader2 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { GlobalNav } from "@/components/global-nav";
-import { DetailDrawer } from "@/components/detail-drawer";
+import { ItemModal, type ItemModalData } from "@/components/item-modal";
 import { deriveEditTag } from "@/lib/derive-edit-tag";
 
 type SavedItem = {
@@ -158,7 +158,7 @@ export default function EditDetailPage() {
   const params = useParams();
   const editTag = params.editTag || '';
   const [activeTab, setActiveTab] = useState("all");
-  const [selectedItem, setSelectedItem] = useState<SavedItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
   const seedAttempted = useRef(false);
@@ -213,7 +213,17 @@ export default function EditDetailPage() {
   });
 
   const handleItemClick = (save: SavedItem) => {
-    setSelectedItem(save);
+    const imageUrl = save.assetUrl || save.metadata?.imageUrl || '';
+    setSelectedItem({
+      id: save.itemId,
+      title: save.title || save.metadata?.title || save.itemId,
+      subtitle: save.metadata?.subtitle,
+      bucket: save.itemType,
+      pinType: save.itemType,
+      assetKey: save.itemId,
+      storyTag: save.storyTag || '',
+      imageUrl,
+    });
     setDrawerOpen(true);
   };
 
@@ -305,7 +315,7 @@ export default function EditDetailPage() {
           </div>
         )}
       </div>
-      <DetailDrawer
+      <ItemModal
         item={selectedItem}
         open={drawerOpen}
         onOpenChange={setDrawerOpen}

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { SuitcaseButton } from "@/components/suitcase-button";
 import { TripTransition } from "@/components/trip-transition";
+import { ItemModal, type ItemModalData } from "@/components/item-modal";
 import { useImageSlot } from "@/hooks/use-image-slot";
 
 type EditItem = {
@@ -103,11 +104,12 @@ function useEdits(): Record<string, TodaysEdit> {
   };
 }
 
-function EditItemCard({ item, editId }: { item: EditItem; editId: string }) {
+function EditItemCard({ item, editId, onClick }: { item: EditItem; editId: string; onClick?: () => void }) {
   return (
-    <div 
-      className="group relative bg-white dark:bg-card rounded-md overflow-visible"
+    <div
+      className="group relative bg-white dark:bg-card rounded-md overflow-visible cursor-pointer"
       data-testid={`card-edit-item-${item.id}`}
+      onClick={onClick}
     >
       <div className="aspect-[3/4] relative overflow-hidden rounded-md">
         <img
@@ -152,9 +154,26 @@ export default function TodaysEditDetail() {
   const [, params] = useRoute("/suitcase/todays-edit/:slug");
   const [, setLocation] = useLocation();
   const [showTransition, setShowTransition] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const edits = useEdits();
   const slug = params?.slug || "desert-neutrals";
   const edit = edits[slug];
+
+  const handleItemClick = (item: EditItem) => {
+    setSelectedItem({
+      id: `${slug}-${item.id}`,
+      title: item.name,
+      brand: item.brand,
+      price: item.price,
+      bucket: "Your Style",
+      pinType: "product",
+      assetKey: `${slug}-${item.id}`,
+      storyTag: "morocco",
+      imageUrl: item.imageUrl,
+    });
+    setModalOpen(true);
+  };
 
   if (!edit) {
     return (
@@ -225,7 +244,7 @@ export default function TodaysEditDetail() {
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
               {section.items.map((item) => (
-                <EditItemCard key={item.id} item={item} editId={edit.id} />
+                <EditItemCard key={item.id} item={item} editId={edit.id} onClick={() => handleItemClick(item)} />
               ))}
             </div>
           </section>
@@ -248,9 +267,14 @@ export default function TodaysEditDetail() {
         </div>
       </div>
 
-      <TripTransition 
-        isActive={showTransition} 
-        onComplete={() => setLocation('/editorial')} 
+      <ItemModal
+        item={selectedItem}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+      />
+      <TripTransition
+        isActive={showTransition}
+        onComplete={() => setLocation('/editorial')}
       />
     </div>
   );

@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
-import { ArrowLeft, Check, ChevronDown, X, Eye, Camera } from 'lucide-react';
+import { ArrowLeft, Check, ChevronDown, Eye, Camera } from 'lucide-react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useCustomImages } from '@/hooks/use-custom-images';
 import { SelfieUpload } from '@/components/selfie-upload';
-import { 
-  ITINERARY_DATA, 
+import { ItemModal, type ItemModalData } from '@/components/item-modal';
+import {
+  ITINERARY_DATA,
   type DayPage,
   type FlowItem,
   type WardrobeExtra
@@ -402,98 +403,6 @@ function DaySection({
   );
 }
 
-interface ItemModalProps {
-  item: PackingItem | null;
-  onClose: () => void;
-  isPacked: boolean;
-  onTogglePack: () => void;
-  getImageUrl: (key: string, defaultUrl: string) => string;
-  hasCustomImage: (key: string) => boolean;
-}
-
-function ItemModal({ item, onClose, isPacked, onTogglePack, getImageUrl, hasCustomImage }: ItemModalProps) {
-  if (!item) return null;
-
-  const hasCustom = hasCustomImage(item.imageKey);
-  const displayImage = (hasCustom || item.image) ? getImageUrl(item.imageKey, item.image) : '';
-
-  return (
-    <div 
-      className="fixed inset-0 bg-black/40 z-[1000] flex items-end justify-center"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-      data-testid="modal-overlay"
-    >
-      <div 
-        className="bg-background w-full max-w-md rounded-t-2xl max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300"
-        data-testid="modal-item-detail"
-      >
-        <div className="sticky top-0 bg-background px-5 py-4 border-b border-border flex justify-between items-center z-10">
-          <h3 className="font-serif text-xl font-normal">{item.name}</h3>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="rounded-full bg-muted"
-            onClick={onClose}
-            data-testid="button-modal-close"
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
-
-        <div className="p-5">
-          <div className="w-full aspect-square bg-muted rounded-lg mb-5 overflow-hidden">
-            {displayImage ? (
-              <img 
-                src={displayImage}
-                alt={item.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div 
-                className="w-full h-full flex items-center justify-center text-muted-foreground"
-                style={{ background: 'linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted)/0.7) 100%)' }}
-              >
-                No image
-              </div>
-            )}
-          </div>
-
-          {item.brand && (
-            <p className="text-sm text-muted-foreground mb-5">{item.brand}</p>
-          )}
-
-          <div className="bg-muted/50 rounded-lg p-4 mb-4">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">{item.context}</p>
-            <p className="text-sm leading-relaxed font-light">{item.whyText}</p>
-          </div>
-
-          <div className="bg-muted/50 rounded-lg p-4">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Packing Intelligence</p>
-            <p className="text-sm leading-relaxed font-light">
-              This piece works across multiple days in your capsule. Natural fiber breathes in heat, transitions from day to evening.
-            </p>
-          </div>
-
-          <div className="flex gap-3 mt-6 pt-5 border-t border-border">
-            <Button 
-              variant="outline" 
-              className="flex-1"
-              onClick={onTogglePack}
-              data-testid="button-mark-packed"
-            >
-              {isPacked ? 'Unmark Packed' : 'Mark Packed'}
-            </Button>
-            <Button className="flex-1" data-testid="button-shop-item">
-              Shop Item
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function PackingList() {
   const { getImageUrl, hasCustomImage, isLoading } = useCustomImages();
@@ -504,9 +413,27 @@ export default function PackingList() {
     const saved = localStorage.getItem('fdv_packed_items');
     return saved ? new Set(JSON.parse(saved)) : new Set();
   });
-  const [selectedItem, setSelectedItem] = useState<PackingItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const packingData = useMemo(() => extractPackingData(), []);
+
+  const handleOpenModal = (item: PackingItem) => {
+    const hasCustom = hasCustomImage(item.imageKey);
+    const imageUrl = (hasCustom || item.image) ? getImageUrl(item.imageKey, item.image) : '';
+    setSelectedItem({
+      id: item.id,
+      title: item.name,
+      brand: item.brand,
+      description: `${item.context} — ${item.whyText}`,
+      bucket: item.isLook ? 'Look' : 'Accessory',
+      pinType: item.isLook ? 'look' : 'product',
+      assetKey: item.imageKey,
+      storyTag: 'morocco',
+      imageUrl,
+    });
+    setModalOpen(true);
+  };
 
   const toggleDay = (day: number) => {
     setExpandedDays(prev => {
@@ -620,7 +547,7 @@ export default function PackingList() {
                 viewMode={viewMode}
                 packedItems={packedItems}
                 onTogglePack={togglePacked}
-                onOpenModal={setSelectedItem}
+                onOpenModal={handleOpenModal}
                 getImageUrl={getImageUrl}
                 hasCustomImage={hasCustomImage}
               />
@@ -663,16 +590,11 @@ export default function PackingList() {
         </div>
       </nav>
 
-      {selectedItem && (
-        <ItemModal
-          item={selectedItem}
-          onClose={() => setSelectedItem(null)}
-          isPacked={packedItems.has(selectedItem.id)}
-          onTogglePack={() => togglePacked(selectedItem.id)}
-          getImageUrl={getImageUrl}
-          hasCustomImage={hasCustomImage}
-        />
-      )}
+      <ItemModal
+        item={selectedItem}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+      />
 
       <style>{`
         @media print {

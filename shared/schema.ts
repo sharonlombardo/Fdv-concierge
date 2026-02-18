@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, jsonb, bigint, integer, serial } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, jsonb, bigint, integer, serial, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -197,6 +197,14 @@ export const saves = pgTable("saves", {
   purchaseStatus: text("purchase_status"), // 'in_cart', 'purchased', null
   title: text("title"), // display title
   assetUrl: text("asset_url"), // image/asset URL
+  // Commerce fields (added Session 1)
+  brand: text("brand"),
+  price: text("price"), // Display price e.g. "$295"
+  shopUrl: text("shop_url"), // Affiliate/retailer link
+  bookUrl: text("book_url"), // Booking link (for places)
+  detailDescription: text("detail_description"), // Atmospheric 1-2 line description
+  category: text("category"), // Capsule section e.g. "shoes", "bags", "clothing"
+  isCurated: boolean("is_curated").default(false), // true = FDV pick, false = user save
 });
 
 export const insertSaveSchema = createInsertSchema(saves).omit({
@@ -220,6 +228,13 @@ export const saveSchema = z.object({
   purchaseStatus: z.string().optional(),
   title: z.string().optional(),
   assetUrl: z.string().optional(),
+  brand: z.string().optional(),
+  price: z.string().optional(),
+  shopUrl: z.string().optional(),
+  bookUrl: z.string().optional(),
+  detailDescription: z.string().optional(),
+  category: z.string().optional(),
+  isCurated: z.boolean().optional(),
 });
 
 // SaveType mapping to category tabs
@@ -291,4 +306,58 @@ export const currentFeedContentSchema = z.object({
   content: z.any().optional(),
   tags: z.array(z.string()).optional(),
   publishedAt: z.number(),
+});
+
+// ============================================
+// Commerce & Analytics Tables (Session 1)
+// ============================================
+
+// Events table - tracks commerce analytics
+export const events = pgTable("events", {
+  id: serial("id").primaryKey(),
+  eventType: text("event_type").notNull(), // 'affiliate_click', 'book_click', 'save_item', 'open_modal', 'scroll_depth'
+  itemId: integer("item_id"),
+  destinationUrl: text("destination_url"),
+  sourcePage: text("source_page"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertEventSchema = createInsertSchema(events).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEvent = z.infer<typeof insertEventSchema>;
+export type Event = typeof events.$inferSelect;
+
+export const eventSchema = z.object({
+  id: z.number().optional(),
+  eventType: z.string(),
+  itemId: z.number().optional(),
+  destinationUrl: z.string().optional(),
+  sourcePage: z.string().optional(),
+  metadata: z.any().optional(),
+});
+
+// Waitlist table - email capture for membership gate
+export const waitlist = pgTable("waitlist", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  source: text("source"), // 'membership_gate', 'welcome_screen', 'profile', etc.
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertWaitlistSchema = createInsertSchema(waitlist).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertWaitlist = z.infer<typeof insertWaitlistSchema>;
+export type Waitlist = typeof waitlist.$inferSelect;
+
+export const waitlistSchema = z.object({
+  id: z.number().optional(),
+  email: z.string().email(),
+  source: z.string().optional(),
 });

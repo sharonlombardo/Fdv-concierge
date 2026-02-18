@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { PinButton } from "@/components/pin-button";
 import { SuitcaseButton } from "@/components/suitcase-button";
 import { GlobalNav } from "@/components/global-nav";
-import { EditorialDetailDrawer, type EditorialItem } from "@/components/editorial-detail-drawer";
+import { ItemModal, type ItemModalData } from "@/components/item-modal";
+import type { EditorialItem } from "@/components/editorial-detail-drawer";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
 import { LoadingImage } from "@/components/loading-image";
@@ -612,13 +613,15 @@ function StoryDivider() {
 
 export default function CurrentFeed({ embedded = false }: { embedded?: boolean }) {
   const [activeSection, setActiveSection] = useState("");
-  const [selectedItem, setSelectedItem] = useState<EditorialItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  
+
   const { data: imageSlotsData } = useImageSlots();
 
   const handleOpenDetail = (item: EditorialItem) => {
-    setSelectedItem(item);
+    setSelectedItem({
+      ...item,
+    });
     setDrawerOpen(true);
   };
 
@@ -658,7 +661,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
   return (
     <ImageContext.Provider value={getImageUrl}>
     <div className={embedded ? "" : "min-h-screen bg-[#fafaf9] dark:bg-background"}>
-      <EditorialDetailDrawer
+      <ItemModal
         item={selectedItem}
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
