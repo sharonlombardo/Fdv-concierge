@@ -26,6 +26,7 @@ export type EditorialItem = {
   brand?: string;
   price?: string;
   shopUrl?: string;
+  bookUrl?: string;
 };
 
 type EditorialDetailDrawerProps = {

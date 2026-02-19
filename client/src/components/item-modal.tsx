@@ -186,7 +186,7 @@ export function ItemModal({ item, open, onOpenChange }: ItemModalProps) {
               )}
 
               {/* Action buttons */}
-              {(shopUrl || bookUrl) && (
+              {(shopUrl || bookUrl) ? (
                 <div className="flex gap-3 pt-2">
                   {shopUrl && (
                     <a
@@ -230,6 +230,15 @@ export function ItemModal({ item, open, onOpenChange }: ItemModalProps) {
                       </button>
                     </a>
                   )}
+                </div>
+              ) : brand && (
+                <div className="pt-2">
+                  <p
+                    className="text-xs tracking-[0.15em] uppercase text-center py-3"
+                    style={{ color: "#2c2416", opacity: 0.45 }}
+                  >
+                    Coming Soon
+                  </p>
                 </div>
               )}
 

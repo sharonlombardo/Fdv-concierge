@@ -42,6 +42,7 @@ type PinTile = {
   brand?: string;
   price?: string;
   shopUrl?: string;
+  bookUrl?: string;
   title?: string; // Product name override (caption is editorial, title is product name)
 };
 
@@ -334,6 +335,7 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
       onOpenDetail({
         id: tile.id,
         title: tile.title || tile.caption,
+        description: tile.caption,
         bucket: tile.bucket,
         pinType: tile.pinType,
         assetKey: tile.assetKey,
@@ -342,6 +344,7 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
         brand: tile.brand,
         price: tile.price,
         shopUrl: tile.shopUrl,
+        bookUrl: tile.bookUrl,
       });
     }
   };
@@ -710,7 +713,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <PageTurnHero
           title="Morocco, In Full Color"
           stateOfMind="Pattern, pleasure, heat, and intention."
-          paragraph="Morocco rewards those who look closely. Color layered on color. Texture against texture. Nothing accidental, nothing apologetic. This is a place that asks you to notice, to respond, to be seen noticing."
+          paragraph="Marrakech isn't subtle. The walls are terracotta, the tiles are mint and emerald, the air carries orange blossom and dust at the same time. Everything feels saturated — heat, pigment, scent, light. And yet it never feels chaotic. The color lives inside structure: carved cedar doors, tiled courtyards, long stone corridors, desert symmetry. It's maximal — but disciplined. Ancient materials, bold contrast, and silhouettes that hold their own. That tension is what makes it unforgettable."
           assetKey="morocco-hero"
           bucket="Travel & Experiences"
           pinType="place"
@@ -740,8 +743,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
             "This is where pattern becomes mood."
           ]}
           assetKey="morocco-texture-1"
-          bucket="Inspiration"
-          pinType="texture"
+          bucket="Travel & Experiences"
+          pinType="place"
           sourceStory="Morocco"
           imagePosition="right"
         />
@@ -750,12 +753,12 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           title="Pattern and Pleasure"
           sourceStory="Morocco"
           tiles={[
-            { id: "morocco-1", assetKey: "morocco-tile-1", caption: "Tile close-up", bucket: "Inspiration", pinType: "texture" },
-            { id: "morocco-2", assetKey: "morocco-tile-2", caption: "Rooftop dinner", bucket: "Travel & Experiences", pinType: "experience" },
-            { id: "morocco-3", assetKey: "morocco-tile-3", caption: "Linen look", bucket: "Your Style", pinType: "look", title: "Linen Wrap Dress", brand: "Fil de Vie", price: "$285" },
-            { id: "morocco-4", assetKey: "morocco-tile-4", caption: "Brass detail", bucket: "Objects of Desire", pinType: "object", title: "Brass Cuff", brand: "Agmes", price: "$420" },
-            { id: "morocco-5", assetKey: "morocco-tile-5", caption: "Morning courtyard", bucket: "Daily Rituals", pinType: "ritual" },
-            { id: "morocco-6", assetKey: "morocco-tile-6", caption: "Market color", bucket: "Inspiration", pinType: "inspiration" },
+            { id: "morocco-1", assetKey: "morocco-tile-1", caption: "Amanjena, Marrakech. Terracotta heat. Crisp black cotton. The contrast is the point. Gaia Dress by Phoebe Philo.", bucket: "Your Style", pinType: "look", title: "Gaia Dress", brand: "Phoebe Philo" },
+            { id: "morocco-2", assetKey: "morocco-tile-2", caption: "Glossy mint tile, carved plaster, filtered light. The kind of green that feels completely natural and completely surreal at the same time.", bucket: "Travel & Experiences", pinType: "place" },
+            { id: "morocco-3", assetKey: "morocco-tile-3", caption: "Blush pink against sun-warmed clay. Soft, but never sweet. The color almost disappears into the earth — and that's the beauty of it. Look by Alaïa.", bucket: "Your Style", pinType: "look", brand: "Alaïa" },
+            { id: "morocco-4", assetKey: "morocco-tile-4", caption: "El Fenn. Layered ruby red, saffron, emerald, tile, velvet. It's saturated and fearless, but somehow still composed.", bucket: "Travel & Experiences", pinType: "place", bookUrl: "https://el-fenn.com/" },
+            { id: "morocco-5", assetKey: "morocco-tile-5", caption: "Black against warm limestone — a long, clean silhouette moving through arches. The dress absorbs the light instead of competing with it. Dress by FIL DE VIE.", bucket: "Your Style", pinType: "look", brand: "Fil de Vie" },
+            { id: "morocco-6", assetKey: "morocco-tile-6", caption: "Orange blossom in bloom. That faint citrus-sweet scent in the air — orange blossom drifting through the heat. Color everywhere, but the fragrance is what lingers.", bucket: "Travel & Experiences", pinType: "place" },
           ]}
           onOpenDetail={handleOpenDetail}
         />
@@ -763,12 +766,12 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <MomentBlock
           title="What travels well here"
           paragraphs={[
-            "Choose objects that feel intentional, not precious. Things that look better at night than they did in daylight.",
-            "A sandal you can walk up stairs in. A bag that disappears on your body. Jewelry that catches light and then lets it go."
+            "Choose pieces that feel intentional, not precious. A simple black column dress, a sandal you can walk up the stairs in.",
+            "A bag to throw over your shoulder. Jewelry that feels like armor."
           ]}
           assetKey="morocco-object-1"
-          bucket="Objects of Desire"
-          pinType="object"
+          bucket="Your Style"
+          pinType="look"
           sourceStory="Morocco"
           imagePosition="left"
         />
@@ -776,20 +779,20 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <MomentBlock
           title="Evenings done properly"
           paragraphs={[
-            "Evenings unfold slowly here. A drink on the roof. A long table. Shared plates. Warm air.",
-            "Nothing rushed. Nothing hidden. The city performs beautifully if you give it time."
+            "Terracotta walls, late afternoon sunlight on a single plane of red clay.",
+            "You start noticing how many shades of 'neutral' exist here."
           ]}
           assetKey="morocco-experience-1"
           bucket="Travel & Experiences"
-          pinType="experience"
+          pinType="place"
           sourceStory="Morocco"
           imagePosition="right"
         />
 
         <MotionLoopBlock
           overlayText="Pattern moving in heat"
-          bucket="Inspiration"
-          pinType="mood"
+          bucket="Your Style"
+          pinType="look"
           id="morocco-motion-1"
           sourceStory="Morocco"
         />
@@ -797,12 +800,12 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <MomentBlock
           title="Between places"
           paragraphs={[
-            "Afternoons are for pause. Shade. Water. A return to yourself.",
-            "This is how the night stays beautiful."
+            "El Fenn. Gold light pooling over stone and olive branches.",
+            "At night the color softens, but it never disappears."
           ]}
           assetKey="morocco-ritual-1"
-          bucket="Daily Rituals"
-          pinType="ritual"
+          bucket="Travel & Experiences"
+          pinType="place"
           sourceStory="Morocco"
           imagePosition="left"
         />
