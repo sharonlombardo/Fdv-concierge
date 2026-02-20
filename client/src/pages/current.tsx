@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { Link } from "wouter";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PinButton } from "@/components/pin-button";
 import { SuitcaseButton } from "@/components/suitcase-button";
@@ -83,6 +83,7 @@ type MotionLoopBlockProps = {
   pinType: string;
   id: string;
   sourceStory: string;
+  caption?: string;
 };
 
 type ClosingLineProps = {
@@ -98,6 +99,8 @@ type MomentBlockProps = {
   pinType: string;
   sourceStory: string;
   imagePosition?: "left" | "right";
+  bookUrl?: string;
+  shopUrl?: string;
 };
 
 const NAV_ITEMS = [
@@ -236,7 +239,7 @@ function QuoteCard({ quote, id, sourceStory }: QuoteCardProps & { sourceStory?: 
   );
 }
 
-function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory, imagePosition = "left" }: MomentBlockProps) {
+function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory, imagePosition = "left", bookUrl, shopUrl }: MomentBlockProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
   const getImageUrl = useGetImageUrl();
   const imageUrl = getImageUrl(assetKey);
@@ -275,7 +278,7 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
           aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
           size="sm"
         />
-        {(pinType === "product" || pinType === "look") && (
+        {(pinType === "product" || pinType === "look" || pinType === "style") && (
           <SuitcaseButton
             itemId={assetKey}
             itemData={{
@@ -299,10 +302,43 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
     <div className="flex flex-col justify-center">
       <h3 className="font-serif text-xl md:text-2xl font-medium mb-4">{title}</h3>
       <div className="space-y-4">
-        {paragraphs.map((para, idx) => (
-          <p key={idx} className="text-muted-foreground leading-relaxed">{para}</p>
-        ))}
+        {paragraphs.map((para, idx) => {
+          const isBrandLine = para.includes("Coming Soon") || para.includes("Coming soon");
+          return (
+            <p key={idx} className={`leading-relaxed ${isBrandLine ? "italic text-muted-foreground/70 text-sm" : "text-muted-foreground"}`}>
+              {para}
+            </p>
+          );
+        })}
       </div>
+      {bookUrl && (
+        <p className="mt-4">
+          <a
+            href={bookUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs tracking-[0.15em] uppercase transition-opacity hover:opacity-70"
+            style={{ color: "#6b7456" }}
+          >
+            Book
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        </p>
+      )}
+      {shopUrl && (
+        <p className="mt-4">
+          <a
+            href={shopUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs tracking-[0.15em] uppercase transition-opacity hover:opacity-70"
+            style={{ color: "#6b7456" }}
+          >
+            Shop
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        </p>
+      )}
     </div>
   );
 
@@ -397,7 +433,7 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
                 aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), storyTag]}
                 size="sm"
               />
-              {(tile.pinType === "product" || tile.pinType === "look" || tile.pinType === "item" || tile.pinType === "object") && (
+              {(tile.pinType === "product" || tile.pinType === "look" || tile.pinType === "style" || tile.pinType === "item" || tile.pinType === "object") && (
                 <SuitcaseButton
                   itemId={tile.id}
                   itemData={{
@@ -414,6 +450,242 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
             </div>
             <p className="text-[10px] text-muted-foreground/60 text-center italic mt-2">{getBucketLabel(tile.bucket)}</p>
           </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+type EditorialScrollProps = {
+  title: string;
+  tiles: PinTile[];
+  sourceStory: string;
+};
+
+function EditorialScroll({ title, tiles, sourceStory }: EditorialScrollProps) {
+  const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
+  const getImageUrl = useGetImageUrl();
+
+  // Layout configs per card index: vary sizes and positions for magazine feel
+  const layouts: Array<{
+    wrapper: string;
+    imageClass: string;
+    imageAspect: string;
+    captionClass: string;
+    type: "overlay" | "side" | "stacked";
+    imagePosition?: "left" | "right";
+  }> = [
+    // Card 1: Large hero — full width, tall image, text overlaid at bottom
+    { wrapper: "relative", imageClass: "w-full", imageAspect: "aspect-[4/5] md:aspect-[16/10]", captionClass: "absolute bottom-0 left-0 right-0 p-6 md:p-10 bg-gradient-to-t from-black/60 via-black/30 to-transparent", type: "overlay" },
+    // Card 2: Small — compact, offset right, text underneath
+    { wrapper: "md:ml-auto md:w-[45%]", imageClass: "w-full", imageAspect: "aspect-square", captionClass: "mt-4", type: "stacked" },
+    // Card 3: Medium — image left, text right, 50/50
+    { wrapper: "grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10", imageClass: "", imageAspect: "aspect-[3/4]", captionClass: "", type: "side", imagePosition: "left" },
+    // Card 4: Large — full width, tall overlay (not ultra-wide)
+    { wrapper: "relative", imageClass: "w-full", imageAspect: "aspect-[4/5] md:aspect-[16/10]", captionClass: "absolute bottom-0 left-0 right-0 p-6 md:p-10 bg-gradient-to-t from-black/60 via-black/30 to-transparent", type: "overlay" },
+    // Card 5: Medium — text left, image right
+    { wrapper: "grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10", imageClass: "", imageAspect: "aspect-[3/4]", captionClass: "", type: "side", imagePosition: "right" },
+    // Card 6: Small — compact, offset left, text underneath
+    { wrapper: "md:mr-auto md:w-[45%]", imageClass: "w-full", imageAspect: "aspect-[4/5]", captionClass: "mt-4", type: "stacked" },
+  ];
+
+  function renderCaption(tile: PinTile, isOverlay: boolean) {
+    const textColor = isOverlay ? "text-white/90" : "";
+    const textStyle = isOverlay ? {} : { color: "#2c2416", opacity: 0.7 };
+    const brandStyle = isOverlay ? { opacity: 0.7 } : { opacity: 0.85 };
+    const bucketColor = isOverlay ? "text-white/40" : "";
+    const bucketStyle = isOverlay ? {} : { color: "#2c2416", opacity: 0.35 };
+
+    return (
+      <div className={`flex flex-col justify-center ${isOverlay ? "" : ""}`}>
+        {/* Book link */}
+        {tile.bookUrl && (
+          <p className="mb-3">
+            <a
+              href={tile.bookUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`inline-flex items-center gap-1.5 text-xs tracking-[0.15em] uppercase transition-opacity hover:opacity-70 ${isOverlay ? "text-white/80" : ""}`}
+              style={isOverlay ? {} : { color: "#6b7456" }}
+            >
+              Book
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </p>
+        )}
+
+        {/* Shop link */}
+        {tile.shopUrl && (
+          <p className="mb-3">
+            <a
+              href={tile.shopUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`inline-flex items-center gap-1.5 text-xs tracking-[0.15em] uppercase transition-opacity hover:opacity-70 ${isOverlay ? "text-white/80" : ""}`}
+              style={isOverlay ? {} : { color: "#6b7456" }}
+            >
+              Shop
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </p>
+        )}
+
+        {/* Caption — split brand attribution line if present */}
+        {(() => {
+          if (tile.brand) {
+            // Find the brand attribution sentence (contains "by BrandName")
+            // It's always the last sentence(s), starting from last ". " before "by Brand"
+            const byBrandIdx = tile.caption.lastIndexOf(`by ${tile.brand}`);
+            if (byBrandIdx > 0) {
+              // Walk back to find the start of the brand sentence
+              const beforeBy = tile.caption.substring(0, byBrandIdx);
+              const lastPeriodSpace = beforeBy.lastIndexOf(". ");
+              if (lastPeriodSpace > 0) {
+                const mainText = tile.caption.substring(0, lastPeriodSpace + 1).trim();
+                const brandLine = tile.caption.substring(lastPeriodSpace + 2).trim();
+                return (
+                  <div className={`text-sm leading-relaxed ${textColor}`} style={textStyle}>
+                    <p>{mainText}</p>
+                    <p className="italic mt-2" style={brandStyle}>{brandLine}</p>
+                  </div>
+                );
+              }
+            }
+          }
+          return (
+            <p className={`text-sm leading-relaxed ${textColor}`} style={textStyle}>
+              {tile.caption}
+            </p>
+          );
+        })()}
+
+      </div>
+    );
+  }
+
+  function renderPinButtons(tile: PinTile, imageUrl: string, size: "sm" | "md") {
+    return (
+      <div className={`absolute ${size === "md" ? "top-4 right-4" : "top-2 right-2"} z-10 flex flex-col items-end gap-0`}>
+        <PinButton
+          itemType={tile.pinType as any}
+          itemId={tile.id}
+          itemData={{
+            title: tile.caption,
+            bucket: tile.bucket,
+            sourceStory,
+            issueNumber: 1,
+            saveType: tile.pinType,
+            storyTag,
+            editionTag: "current-edition-1",
+            editTag: `${storyTag}-edit`,
+            assetKey: tile.assetKey,
+            assetUrl: imageUrl
+          }}
+          sourceContext="the_current_issue_1"
+          aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), storyTag]}
+          size={size}
+        />
+        {(tile.pinType === "look" || tile.pinType === "style" || tile.pinType === "product" || tile.pinType === "item" || tile.pinType === "object") && (
+          <SuitcaseButton
+            itemId={tile.id}
+            itemData={{
+              title: tile.caption,
+              imageUrl: imageUrl,
+              storyTag,
+              editTag: `${storyTag}-edit`
+            }}
+            sourceContext="the_current_issue_1"
+            aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), storyTag]}
+            size={size}
+          />
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="py-12 md:py-16 px-4 max-w-5xl mx-auto">
+      <h3 className="text-xs tracking-widest uppercase text-muted-foreground mb-10 text-center">{title}</h3>
+      <div className="space-y-14 md:space-y-20">
+        {tiles.map((tile, index) => {
+          const imageUrl = getImageUrl(tile.assetKey);
+          const layout = layouts[index] || layouts[2]; // fallback to side layout
+          const isOverlay = layout.type === "overlay";
+          const btnSize = (layout.type === "overlay") ? "md" as const : "sm" as const;
+
+          if (layout.type === "overlay") {
+            return (
+              <div key={tile.id} className={layout.wrapper} data-testid={`editorial-${tile.id}`}>
+                <div className={`${layout.imageClass} ${layout.imageAspect} bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden`}>
+                  {imageUrl ? (
+                    <img src={imageUrl} alt={tile.caption} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="text-muted-foreground text-xs uppercase tracking-widest">{tile.caption}</span>
+                    </div>
+                  )}
+                </div>
+                {renderPinButtons(tile, imageUrl, btnSize)}
+                <div className={layout.captionClass}>
+                  {renderCaption(tile, true)}
+                </div>
+              </div>
+            );
+          }
+
+          if (layout.type === "stacked") {
+            return (
+              <div key={tile.id} className={layout.wrapper} data-testid={`editorial-${tile.id}`}>
+                <div className="relative group">
+                  <div className={`${layout.imageAspect} bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden`}>
+                    {imageUrl ? (
+                      <img src={imageUrl} alt={tile.caption} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="text-muted-foreground text-xs uppercase tracking-widest">{tile.caption}</span>
+                      </div>
+                    )}
+                  </div>
+                  {renderPinButtons(tile, imageUrl, btnSize)}
+                </div>
+                <div className={layout.captionClass}>
+                  {renderCaption(tile, false)}
+                </div>
+              </div>
+            );
+          }
+
+          // Side layout
+          const imageBlock = (
+            <div className="relative group">
+              <div className={`${layout.imageAspect} bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden`}>
+                {imageUrl ? (
+                  <img src={imageUrl} alt={tile.caption} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-muted-foreground text-xs uppercase tracking-widest">{tile.caption}</span>
+                  </div>
+                )}
+              </div>
+              {renderPinButtons(tile, imageUrl, btnSize)}
+            </div>
+          );
+
+          return (
+            <div key={tile.id} className={layout.wrapper} data-testid={`editorial-${tile.id}`}>
+              {layout.imagePosition === "left" ? (
+                <>
+                  {imageBlock}
+                  {renderCaption(tile, false)}
+                </>
+              ) : (
+                <>
+                  {renderCaption(tile, false)}
+                  {imageBlock}
+                </>
+              )}
+            </div>
           );
         })}
       </div>
@@ -461,7 +733,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
               aestheticTags={[image1.bucket.toLowerCase(), image1.pinType.toLowerCase(), storyTag]}
               size="sm"
             />
-            {(image1.pinType === "product" || image1.pinType === "look") && (
+            {(image1.pinType === "product" || image1.pinType === "look" || image1.pinType === "style") && (
               <SuitcaseButton
                 itemId={image1.assetKey}
                 itemData={{
@@ -508,7 +780,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
               aestheticTags={[image2.bucket.toLowerCase(), image2.pinType.toLowerCase(), storyTag]}
               size="sm"
             />
-            {(image2.pinType === "product" || image2.pinType === "look") && (
+            {(image2.pinType === "product" || image2.pinType === "look" || image2.pinType === "style") && (
               <SuitcaseButton
                 itemId={image2.assetKey}
                 itemData={{
@@ -530,7 +802,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
   );
 }
 
-function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: MotionLoopBlockProps) {
+function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory, caption }: MotionLoopBlockProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
   const getImageUrl = useGetImageUrl();
   const imageUrl = getImageUrl(id);
@@ -568,7 +840,7 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: Moti
             aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
             size="md"
           />
-          {(pinType === "product" || pinType === "look") && (
+          {(pinType === "product" || pinType === "look" || pinType === "style") && (
             <SuitcaseButton
               itemId={id}
               itemData={{
@@ -584,6 +856,28 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory }: Moti
           )}
         </div>
       </div>
+      {caption && (
+        <div className="mt-6 max-w-2xl mx-auto">
+          {(() => {
+            const comingSoonIdx = caption.indexOf("Coming soon.");
+            if (comingSoonIdx > 0) {
+              const mainText = caption.substring(0, comingSoonIdx).trimEnd();
+              const brandLine = caption.substring(comingSoonIdx - (caption.substring(0, comingSoonIdx).lastIndexOf(". ") > -1 ? comingSoonIdx - caption.substring(0, comingSoonIdx).lastIndexOf(". ") - 2 : 0));
+              // Split at last period before "Coming soon"
+              const lastPeriodBeforeBrand = mainText.lastIndexOf(". ");
+              const descText = lastPeriodBeforeBrand > 0 ? mainText.substring(0, lastPeriodBeforeBrand + 1) : mainText;
+              const brandPart = lastPeriodBeforeBrand > 0 ? mainText.substring(lastPeriodBeforeBrand + 2) + " Coming soon." : "Coming soon.";
+              return (
+                <>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{descText}</p>
+                  <p className="text-sm italic text-muted-foreground/70 mt-2">{brandPart}</p>
+                </>
+              );
+            }
+            return <p className="text-sm text-muted-foreground leading-relaxed">{caption}</p>;
+          })()}
+        </div>
+      )}
     </div>
   );
 }
@@ -694,8 +988,6 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         </>
       )}
 
-      <StickyNav activeSection={activeSection} />
-
       <PageTurnHero
         title="THE CURRENT"
         subhead="Issue 1"
@@ -712,7 +1004,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
       <section id="morocco">
         <PageTurnHero
           title="Morocco, In Full Color"
-          stateOfMind="Pattern, pleasure, heat, and intention."
+          stateOfMind="Pattern, Pleasure, Warmth and light."
           paragraph="Marrakech isn't subtle. The walls are terracotta, the tiles are mint and emerald, the air carries orange blossom and dust at the same time. Everything feels saturated — heat, pigment, scent, light. And yet it never feels chaotic. The color lives inside structure: carved cedar doors, tiled courtyards, long stone corridors, desert symmetry. It's maximal — but disciplined. Ancient materials, bold contrast, and silhouettes that hold their own. That tension is what makes it unforgettable."
           assetKey="morocco-hero"
           bucket="Travel & Experiences"
@@ -724,13 +1016,13 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <MomentBlock
           title="Dressing into the scene"
           paragraphs={[
-            "Morocco asks you to dress with confidence. Not loudly — deliberately.",
-            "Silhouettes that move when you walk. Fabrics that catch air on a staircase. Pieces that look right against tile, brass, and candlelight.",
-            "You dress to belong in the room — and then let the room do the rest."
+            "Amanjena, just outside Marrakech.",
+            "Desert-toned walls, long shadows, stillness. A black bathing suit against all that sand and clay feels moody and intentional — like ink dropped into sun.",
+            "Swimwear by Yves Saint Laurent. Coming Soon."
           ]}
           assetKey="morocco-style-1"
           bucket="Your Style"
-          pinType="look"
+          pinType="style"
           sourceStory="Morocco"
           imagePosition="left"
         />
@@ -738,9 +1030,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <MomentBlock
           title="The visual pleasure"
           paragraphs={[
-            "Every surface has something to say. Tiles repeat. Textiles soften. Glass refracts.",
-            "You don't need to choose one thing. You let the composition hold.",
-            "This is where pattern becomes mood."
+            "El Fenn Hotel. Graphic tile, citrus trees overhead.",
+            "Pattern here is rhythmic."
           ]}
           assetKey="morocco-texture-1"
           bucket="Travel & Experiences"
@@ -749,35 +1040,34 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           imagePosition="right"
         />
 
-        <PinGrid
+        <EditorialScroll
           title="Pattern and Pleasure"
           sourceStory="Morocco"
           tiles={[
-            { id: "morocco-1", assetKey: "morocco-tile-1", caption: "Amanjena, Marrakech. Terracotta heat. Crisp black cotton. The contrast is the point. Gaia Dress by Phoebe Philo.", bucket: "Your Style", pinType: "look", title: "Gaia Dress", brand: "Phoebe Philo" },
+            { id: "morocco-1", assetKey: "morocco-tile-1", caption: "Amanjena, Marrakech. Terracotta heat. Crisp black cotton. The contrast is the point. Gaia Dress by Phoebe Philo — Coming Soon", bucket: "Your Style", pinType: "look", title: "Gaia Dress", brand: "Phoebe Philo" },
             { id: "morocco-2", assetKey: "morocco-tile-2", caption: "Glossy mint tile, carved plaster, filtered light. The kind of green that feels completely natural and completely surreal at the same time.", bucket: "Travel & Experiences", pinType: "place" },
-            { id: "morocco-3", assetKey: "morocco-tile-3", caption: "Blush pink against sun-warmed clay. Soft, but never sweet. The color almost disappears into the earth — and that's the beauty of it. Look by Alaïa.", bucket: "Your Style", pinType: "look", brand: "Alaïa" },
+            { id: "morocco-3", assetKey: "morocco-tile-3", caption: "Blush pink against sun-warmed clay. Soft, but never sweet. The color almost disappears into the earth — and that's the beauty of it. Look by Alaïa — Coming Soon", bucket: "Your Style", pinType: "look", brand: "Alaïa" },
             { id: "morocco-4", assetKey: "morocco-tile-4", caption: "El Fenn. Layered ruby red, saffron, emerald, tile, velvet. It's saturated and fearless, but somehow still composed.", bucket: "Travel & Experiences", pinType: "place", bookUrl: "https://el-fenn.com/" },
-            { id: "morocco-5", assetKey: "morocco-tile-5", caption: "Black against warm limestone — a long, clean silhouette moving through arches. The dress absorbs the light instead of competing with it. Dress by FIL DE VIE.", bucket: "Your Style", pinType: "look", brand: "Fil de Vie" },
+            { id: "morocco-5", assetKey: "morocco-tile-5", caption: "Black against warm limestone — a long, clean silhouette moving through arches. The dress absorbs the light instead of competing with it. Dress by FIL DE VIE — Coming Soon", bucket: "Your Style", pinType: "look", brand: "Fil de Vie" },
             { id: "morocco-6", assetKey: "morocco-tile-6", caption: "Orange blossom in bloom. That faint citrus-sweet scent in the air — orange blossom drifting through the heat. Color everywhere, but the fragrance is what lingers.", bucket: "Travel & Experiences", pinType: "place" },
           ]}
-          onOpenDetail={handleOpenDetail}
         />
 
         <MomentBlock
           title="What travels well here"
           paragraphs={[
-            "Choose pieces that feel intentional, not precious. A simple black column dress, a sandal you can walk up the stairs in.",
-            "A bag to throw over your shoulder. Jewelry that feels like armor."
+            "Choose pieces that feel intentional, not precious. A simple black column dress, a sandal you can walk up the stairs in. A bag to throw over your shoulder. Jewelry that feels like armor.",
+            "Dress by FIL DE VIE. Coming soon."
           ]}
           assetKey="morocco-object-1"
           bucket="Your Style"
-          pinType="look"
+          pinType="style"
           sourceStory="Morocco"
           imagePosition="left"
         />
 
         <MomentBlock
-          title="Evenings done properly"
+          title="SHADES OF NEUTRAL"
           paragraphs={[
             "Terracotta walls, late afternoon sunlight on a single plane of red clay.",
             "You start noticing how many shades of 'neutral' exist here."
@@ -792,22 +1082,23 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <MotionLoopBlock
           overlayText="Pattern moving in heat"
           bucket="Your Style"
-          pinType="look"
+          pinType="style"
           id="morocco-motion-1"
           sourceStory="Morocco"
+          caption="El Fenn. A flash of red against layered tile. Pattern on pattern — and then that one bold interruption. Dress by FIL DE VIE. Coming soon."
         />
 
         <MomentBlock
-          title="Between places"
+          title="EVENINGS DONE PROPERLY"
           paragraphs={[
-            "El Fenn. Gold light pooling over stone and olive branches.",
-            "At night the color softens, but it never disappears."
+            "El Fenn. Gold light pooling over stone and olive branches. At night the color softens, but it never disappears."
           ]}
           assetKey="morocco-ritual-1"
           bucket="Travel & Experiences"
           pinType="place"
           sourceStory="Morocco"
           imagePosition="left"
+          bookUrl="https://el-fenn.com/"
         />
 
         <ClosingLine text="Save what delights you. You'll want to see it again." id="morocco-closing" sourceStory="Morocco" />
@@ -817,86 +1108,118 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
       {/* HYDRA */}
       <section id="hydra">
+        {/* #1 — HERO */}
         <PageTurnHero
           title="The Art of Arrival"
           stateOfMind="White stone. Salt water. Nothing extra."
-          paragraph="Hydra does not rush you. There are no cars waiting. No urgency on arrival. You step off the ferry into stillness. The island asks only that you slow down."
+          paragraph="There are no cars waiting. No rush to check in. You step off the ferry and the island lowers the volume for you."
           assetKey="hydra-hero"
           bucket="Travel & Experiences"
           pinType="place"
         />
 
-        <QuoteCard quote="Arrive composed. Let the place do the rest." id="hydra-quote-1" sourceStory="Hydra" />
+        {/* QUOTE */}
+        <QuoteCard quote="Salt air first. Everything else after." id="hydra-quote-1" sourceStory="Hydra" />
 
+        {/* #2 — MomentBlock: Dressing for Stillness */}
         <MomentBlock
-          title="Dressing for stillness"
+          title="Dressing for Stillness"
           paragraphs={[
-            "Hydra favors restraint. Clean lines. Bare ankles. Nothing that competes with light.",
-            "You dress once here and repeat it with confidence. The discipline is the luxury."
+            "Hydra.",
+            "Hydra favors restraint. Clean lines, bare ankles, nothing that competes with light. A black column against white plaster. Linen that creases intentionally. You dress once here and repeat it with confidence. The discipline is the luxury.",
+            "Look by Yves Saint Laurent — Coming Soon"
           ]}
           assetKey="hydra-style-1"
           bucket="Your Style"
-          pinType="look"
+          pinType="style"
           sourceStory="Hydra"
           imagePosition="left"
         />
 
+        {/* #3 — MomentBlock: Stone, Water, Skin */}
         <MomentBlock
-          title="Stone, water, skin"
+          title="Stone, Water, Skin"
           paragraphs={[
-            "Everything important is elemental. Stone underfoot. Salt on skin. Light moving slowly across a wall.",
-            "There is no decoration here. Only composition."
+            "Hydra port.",
+            "Everything important here is elemental. Stone underfoot. Salt on skin. Light moving slowly across a wall. There is no decoration — only composition."
           ]}
           assetKey="hydra-texture-1"
-          bucket="Inspiration"
-          pinType="texture"
+          bucket="Travel & Experiences"
+          pinType="place"
           sourceStory="Hydra"
           imagePosition="right"
         />
 
-        <PinGrid
+        {/* #4–9 — EditorialScroll: 6 varied magazine-style cards */}
+        <EditorialScroll
           title="Essentials Only"
           sourceStory="Hydra"
           tiles={[
-            { id: "hydra-1", assetKey: "hydra-tile-1", caption: "Stone wall", bucket: "Inspiration", pinType: "texture" },
-            { id: "hydra-2", assetKey: "hydra-tile-2", caption: "Swim morning", bucket: "Daily Rituals", pinType: "ritual" },
-            { id: "hydra-3", assetKey: "hydra-tile-3", caption: "White linen look", bucket: "Your Style", pinType: "look", title: "White Linen Column Dress", brand: "Fil de Vie", price: "$310" },
-            { id: "hydra-4", assetKey: "hydra-tile-4", caption: "Leather sandal", bucket: "Objects of Desire", pinType: "item", title: "Leather Slide Sandal", brand: "A Emery", price: "$280", shopUrl: "https://aemery.com" },
-            { id: "hydra-5", assetKey: "hydra-tile-5", caption: "Woven bag", bucket: "Objects of Desire", pinType: "object", title: "Woven Basket Bag", brand: "Loewe", price: "$890", shopUrl: "https://www.loewe.com" },
-            { id: "hydra-6", assetKey: "hydra-tile-6", caption: "Late lunch table", bucket: "Travel & Experiences", pinType: "experience" },
+            { id: "hydra-4", assetKey: "hydra-tile-1", caption: "Wind off the harbor, oversized tailoring thrown over bare skin. Hydra makes even structure feel relaxed. Shirt by Jil Sander. Coming Soon.", bucket: "Your Style", pinType: "style", brand: "Jil Sander" },
+            { id: "hydra-5", assetKey: "hydra-tile-2", caption: "Port-side, midday. Shutters, stone, a table for one. Hydra doesn't ask you to perform leisure — it just happens.", bucket: "Travel & Experiences", pinType: "place" },
+            { id: "hydra-6", assetKey: "hydra-tile-3", caption: "White against deeper blue. Fabric moving in the breeze. It's less about the outfit and more about how it catches air. Look by Jil Sander. Coming Soon.", bucket: "Your Style", pinType: "style", brand: "Jil Sander" },
+            { id: "hydra-7", assetKey: "hydra-tile-4", caption: "Stone stacked into cliff. No symmetry, just instinct and time. Hydra feels built by hand.", bucket: "Travel & Experiences", pinType: "place" },
+            { id: "hydra-8", assetKey: "hydra-tile-5", caption: "Black swimwear against chalk-white stone. Clean and unfussy. Swimwear by Eres.", bucket: "Your Style", pinType: "style", brand: "Eres", shopUrl: "https://www.eresparis.com/us/en-US/swimwear-2/011401-3333.html" },
+            { id: "hydra-9", assetKey: "hydra-tile-6", caption: "Water so clear it feels architectural. You see every movement, every ripple.", bucket: "Travel & Experiences", pinType: "place" },
           ]}
-          onOpenDetail={handleOpenDetail}
         />
 
+        {/* Section header: LIGHT AND WATER */}
+        <div className="py-12 md:py-16 px-8 max-w-2xl mx-auto text-center">
+          <h2 className="font-serif text-2xl md:text-3xl tracking-wide uppercase" style={{ color: "#2c2416", opacity: 0.6 }}>Light and Water</h2>
+        </div>
+
+        {/* #10 — MomentBlock: What Belongs */}
         <MomentBlock
-          title="What belongs"
+          title="What Belongs"
           paragraphs={[
-            "Bring objects that disappear when worn. A sandal you forget you're wearing. A bag that holds only what's necessary.",
-            "Hydra edits for you if you let it."
+            "Bring objects that disappear when worn. A sandal you forget you're wearing. A shirt that flies in the wind. A bag that holds only what's necessary. Hydra edits for you if you let it.",
+            "Blouse by Phoebe Philo. Coming soon."
           ]}
           assetKey="hydra-object-1"
-          bucket="Objects of Desire"
-          pinType="object"
+          bucket="Your Style"
+          pinType="style"
           sourceStory="Hydra"
           imagePosition="left"
         />
 
-        <TwoUpFeature
+        {/* #11 — MomentBlock: place */}
+        <MomentBlock
           title="Light and Water"
-          image1={{ assetKey: "hydra-light-1", caption: "Morning", bucket: "Inspiration", pinType: "mood" }}
-          image2={{ assetKey: "hydra-light-2", caption: "Afternoon", bucket: "Inspiration", pinType: "mood" }}
+          paragraphs={[
+            "Harbor below, stone house above, sea wrapping everything. The palette never tries too hard — blue, white, sun."
+          ]}
+          assetKey="hydra-light-1"
+          bucket="Travel & Experiences"
+          pinType="place"
           sourceStory="Hydra"
+          imagePosition="right"
         />
 
+        {/* #12 — MomentBlock: Eres swimwear with Shop link */}
         <MomentBlock
-          title="The daily cadence"
+          title="Afternoon Swim"
           paragraphs={[
-            "Morning is for water. Midday belongs to shade and conversation. Evening arrives without ceremony.",
-            "You do less. You feel more."
+            "Salt, sun, then immersion. Nothing feels more right here than disappearing into water. Swimwear by Eres."
+          ]}
+          assetKey="hydra-light-2"
+          bucket="Your Style"
+          pinType="style"
+          sourceStory="Hydra"
+          imagePosition="left"
+          shopUrl="https://www.eresparis.com/us/en-US/swimwear-2/011401-3333.html"
+        />
+
+        {/* #13 — MomentBlock: The Daily Flow */}
+        <MomentBlock
+          title="The Daily Flow"
+          paragraphs={[
+            "Morning is for water. Midday belongs to shade, conversation and a glass of cold wine. Evening arrives without ceremony. You do less, you feel more.",
+            "Look by Dries Van Noten. Coming soon."
           ]}
           assetKey="hydra-ritual-1"
-          bucket="Daily Rituals"
-          pinType="ritual"
+          bucket="Your Style"
+          pinType="style"
           sourceStory="Hydra"
           imagePosition="right"
         />
@@ -906,96 +1229,129 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
       <StoryDivider />
 
-      {/* SLOW TRAVEL */}
+      {/* SPAIN */}
       <section id="slow-travel">
+        {/* #1 — HERO */}
         <PageTurnHero
-          title="Less, But Longer"
-          stateOfMind="Stay with what's good."
-          paragraph="Slow travel is not about moving less. It's about staying longer with what matters. The same walk every morning. The same table. Familiarity becomes belonging."
+          title="Stay a Little Longer"
+          stateOfMind="Black against stone. Skin warmed by late afternoon."
+          paragraph="Spain isn't about urgency — it's about letting the day stretch."
           assetKey="slow-travel-hero"
-          bucket="State of Mind"
-          pinType="mood"
+          bucket="Travel & Experiences"
+          pinType="place"
         />
 
-        <QuoteCard quote="The point isn't to see more. It's to stay longer with what feels right." id="slow-travel-quote-1" sourceStory="Slow Travel" />
+        {/* QUOTE */}
+        <QuoteCard quote="The point isn't to see more. It's to stay longer with what feels right." id="slow-travel-quote-1" sourceStory="Spain" />
 
+        {/* #2 — MomentBlock: Editing as Intelligence */}
         <MomentBlock
-          title="Editing as intelligence"
+          title="Editing as Intelligence"
           paragraphs={[
-            "Slow travel is cultural fluency. Knowing when to sit. When to stay. When to repeat a ritual rather than replace it.",
-            "It's choosing one museum room instead of ten. The same café twice. The same walk every morning.",
-            "Repetition becomes familiarity. Familiarity becomes belonging."
+            "Bare shoulders. A single cuff. Clean lines that don't compete with light. Spain rewards restraint — even in heat.",
+            "Cuff by Phoebe Philo. Coming Soon."
           ]}
           assetKey="slow-culture-1"
-          bucket="Culture"
-          pinType="culture"
-          sourceStory="Slow Travel"
+          bucket="Your Style"
+          pinType="style"
+          sourceStory="Spain"
           imagePosition="left"
         />
 
-        <TwoUpFeature
-          title="Editing is Intelligence"
-          image1={{ assetKey: "slow-lunch", caption: "Long lunch", bucket: "Culture", pinType: "culture" }}
-          image2={{ assetKey: "slow-museum", caption: "Museum stair", bucket: "Culture", pinType: "place" }}
-          sourceStory="Slow Travel"
-        />
-
+        {/* #3 — MomentBlock: Stone & Horizon */}
         <MomentBlock
-          title="Repetition with intention"
+          title="Stone & Horizon"
           paragraphs={[
-            "The most confident travelers repeat themselves. The same silhouette, refined. The same palette, trusted.",
-            "Packing less doesn't limit you. It frees you.",
-            "When you stop performing variety, you arrive composed."
+            "Vertical cliff, striped umbrella, sea moving slowly below. The landscape feels elemental, almost graphic."
           ]}
-          assetKey="slow-style-1"
-          bucket="Your Style"
-          pinType="look"
-          sourceStory="Slow Travel"
+          assetKey="slow-lunch"
+          bucket="Travel & Experiences"
+          pinType="place"
+          sourceStory="Spain"
           imagePosition="right"
         />
 
-        <PinGrid
-          title="Repeat With Intention"
-          sourceStory="Slow Travel"
-          tiles={[
-            { id: "slow-1", assetKey: "slow-tile-1", caption: "Same outfit day to night", bucket: "Your Style", pinType: "look", title: "Relaxed Linen Trouser", brand: "Totême", price: "$340", shopUrl: "https://www.toteme-studio.com" },
-            { id: "slow-2", assetKey: "slow-tile-2", caption: "Folded garment stack", bucket: "Objects of Desire", pinType: "object", title: "Capsule Essentials Set", brand: "Fil de Vie" },
-            { id: "slow-3", assetKey: "slow-tile-3", caption: "Notebook", bucket: "Objects of Desire", pinType: "object", title: "Leather Travel Journal", brand: "Smythson", price: "$195", shopUrl: "https://www.smythson.com" },
-            { id: "slow-4", assetKey: "slow-tile-4", caption: "Café table", bucket: "Daily Rituals", pinType: "ritual" },
-            { id: "slow-5", assetKey: "slow-tile-5", caption: "Walking shot", bucket: "Daily Rituals", pinType: "ritual" },
-            { id: "slow-6", assetKey: "slow-tile-6", caption: "Light on wall", bucket: "Inspiration", pinType: "inspiration" },
+        {/* #4 — MomentBlock: Black swim against pale water */}
+        <MomentBlock
+          title="Sharp Silhouette"
+          paragraphs={[
+            "Black swim against pale water and tree shade. The silhouette stays sharp, even when everything else is soft.",
+            "Swimwear by FIL DE VIE. Coming soon."
           ]}
-          onOpenDetail={handleOpenDetail}
+          assetKey="slow-museum"
+          bucket="Your Style"
+          pinType="style"
+          sourceStory="Spain"
+          imagePosition="left"
         />
 
+        {/* #5 — MomentBlock: Open water, Loro Piana */}
         <MomentBlock
-          title="What earns space"
+          title="Expansive"
           paragraphs={[
-            "In slow travel, objects earn their place. They travel well. They work hard. They feel right in more than one moment.",
-            "Nothing disposable. Nothing excess.",
-            "Everything chosen."
+            "Open water. No soundtrack but wind and distant boats. Spain feels expansive without trying.",
+            "Look by Loro Piana. Coming soon."
+          ]}
+          assetKey="slow-tile-2"
+          bucket="Travel & Experiences"
+          pinType="place"
+          sourceStory="Spain"
+          imagePosition="right"
+        />
+
+        {/* Section header: EDITING IS INTELLIGENCE */}
+        <div className="py-12 md:py-16 px-8 max-w-2xl mx-auto text-center">
+          <h2 className="font-serif text-2xl md:text-3xl tracking-wide uppercase" style={{ color: "#2c2416", opacity: 0.6 }}>Editing is Intelligence</h2>
+        </div>
+
+        {/* #6–11 — EditorialScroll: 6 varied magazine-style cards */}
+        <EditorialScroll
+          title="Editing is Intelligence"
+          sourceStory="Spain"
+          tiles={[
+            { id: "spain-6", assetKey: "slow-tile-1", caption: "Minimal swim, clean cut, nothing ornamental. The body becomes part of the landscape. Sweater by Phoebe Philo.", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo" },
+            { id: "spain-7", assetKey: "slow-style-1", caption: "A path carved through stone toward the sea. You walk slower without deciding to. Dress by FIL DE VIE. Coming soon.", bucket: "Travel & Experiences", pinType: "place", brand: "FIL DE VIE" },
+            { id: "spain-8", assetKey: "slow-tile-3", caption: "Salt hair, narrow deck, strong sun. Pieces that hold their shape against wind matter here. Swimwear by Eres. Coming soon.", bucket: "Your Style", pinType: "style", brand: "Eres" },
+            { id: "spain-9", assetKey: "slow-tile-4", caption: "Heat. Salt. Open sea.", bucket: "Travel & Experiences", pinType: "place" },
+            { id: "spain-10", assetKey: "slow-tile-5", caption: "Dark lenses against white sky. The light is unforgiving here — the accessories shouldn't be. Sunglasses by Phoebe Philo.", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", shopUrl: "https://us.phoebephilo.com/products/bombe-sunglasses-fume-acetate" },
+            { id: "spain-11", assetKey: "slow-tile-6", caption: "A cove tucked into rock. Shade feels earned. Water feels earned.", bucket: "Travel & Experiences", pinType: "place" },
+          ]}
+        />
+
+        {/* Section header: REPEAT WITH INTENTION */}
+        <div className="py-12 md:py-16 px-8 max-w-2xl mx-auto text-center">
+          <h2 className="font-serif text-2xl md:text-3xl tracking-wide uppercase" style={{ color: "#2c2416", opacity: 0.6 }}>Repeat with Intention</h2>
+        </div>
+
+        {/* #12 — MomentBlock: RayBan sunglasses with Shop link */}
+        <MomentBlock
+          title="Gold at the Waterline"
+          paragraphs={[
+            "Gold at the waterline. Sun, salt, skin. That's enough.",
+            "Sunglasses by RayBan."
           ]}
           assetKey="slow-object-1"
-          bucket="Objects of Desire"
-          pinType="object"
-          sourceStory="Slow Travel"
+          bucket="Your Style"
+          pinType="style"
+          sourceStory="Spain"
           imagePosition="left"
+          shopUrl="https://www.ray-ban.com/usa/sunglasses/RB4940wayfarer%20puffer-black/8056262910863"
         />
 
+        {/* #13 — MomentBlock: style */}
         <MomentBlock
-          title="The daily anchor"
+          title="Late Afternoon"
           paragraphs={[
-            "A morning walk. The same seat. The same order.",
-            "Ritual is what makes time feel generous."
+            "Late afternoon. Linen, sunglasses, a glass in hand. Spain doesn't perform — it lingers."
           ]}
           assetKey="slow-ritual-1"
-          bucket="Daily Rituals"
-          pinType="ritual"
-          sourceStory="Slow Travel"
+          bucket="Your Style"
+          pinType="style"
+          sourceStory="Spain"
           imagePosition="right"
         />
 
-        <ClosingLine text="Save what you want to stay with. Let go of the rest." id="slow-travel-closing" sourceStory="Slow Travel" />
+        <ClosingLine text="Save what you want. Let go of the rest." id="slow-travel-closing" sourceStory="Spain" />
       </section>
 
       <StoryDivider />
@@ -1003,92 +1359,92 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
       {/* RETREAT */}
       <section id="retreat">
         <PageTurnHero
-          title="Movement, Then Stillness"
-          stateOfMind="Begin in the body. End in quiet."
-          paragraph="A ritual retreat is not an escape. It is a return to sequence. Movement, then stillness. Effort, then rest. The body leads. The mind follows."
+          title="Into the Desert"
+          stateOfMind="A serene sanctuary with modernist lines."
+          paragraph="Dust-pink walls. Open corridors. A pool that mirrors the sky. This isn't a resort — it's a recalibration. The desert strips things back. What remains is deliberate."
           assetKey="retreat-hero"
           bucket="Travel & Experiences"
           pinType="place"
         />
 
-        <QuoteCard quote="Move the body. Then listen." id="retreat-quote-1" sourceStory="Retreat" />
+        <QuoteCard quote="A serene sanctuary with modernist lines." id="retreat-quote-1" sourceStory="Retreat" />
 
         <MomentBlock
-          title="Movement as calibration"
+          title="Sandstone and Sky"
           paragraphs={[
-            "Movement here is not performance. It is preparation.",
-            "Stretching, walking, breathing — done without mirrors or urgency. Enough to wake the body. Never enough to exhaust it.",
-            "The point is not intensity. It is clarity."
+            "Sandstone and sky. The quiet hits first. Then the architecture. Clean geometry against open desert — nothing competes."
           ]}
           assetKey="retreat-ritual-1"
-          bucket="Daily Rituals"
-          pinType="ritual"
+          bucket="Travel & Experiences"
+          pinType="place"
           sourceStory="Retreat"
           imagePosition="left"
         />
 
-        <MotionLoopBlock
-          overlayText="Breath. Water. Walking."
-          bucket="Daily Rituals"
-          pinType="ritual"
-          id="retreat-motion-1"
-          sourceStory="Retreat"
-        />
-
         <MomentBlock
-          title="Architecture that supports practice"
+          title="Morning Ritual"
           paragraphs={[
-            "The best retreats are designed to get out of your way. Rooms feel held, not styled. Paths invite walking, not wandering.",
-            "Silence is built into the walls."
+            "Early yoga. Morning swim. The light is already warm by 7 a.m. Movement here isn't scheduled — it's instinctive."
           ]}
-          assetKey="retreat-place-1"
+          assetKey="retreat-motion-1"
           bucket="Travel & Experiences"
           pinType="place"
           sourceStory="Retreat"
           imagePosition="right"
         />
 
-        <PinGrid
-          title="What Belongs"
+        <MomentBlock
+          title="Carved Into Rock"
+          paragraphs={[
+            "A pool carved straight into the rock. Water, stone, sky — nothing else. The palette is the landscape."
+          ]}
+          assetKey="retreat-place-1"
+          bucket="Travel & Experiences"
+          pinType="place"
+          sourceStory="Retreat"
+          imagePosition="left"
+        />
+
+        <EditorialScroll
+          title="Desert Essentials"
           sourceStory="Retreat"
           tiles={[
-            { id: "retreat-1", assetKey: "retreat-tile-1", caption: "Wrap", bucket: "Objects of Desire", pinType: "item", title: "Cashmere Travel Wrap", brand: "Fil de Vie", price: "$425" },
-            { id: "retreat-2", assetKey: "retreat-tile-2", caption: "Oil", bucket: "Objects of Desire", pinType: "object", title: "Body Oil", brand: "Esse", price: "$78", shopUrl: "https://www.esseskincare.com" },
-            { id: "retreat-3", assetKey: "retreat-tile-3", caption: "Sandal", bucket: "Objects of Desire", pinType: "item", title: "Suede Slide", brand: "A Emery", price: "$240", shopUrl: "https://aemery.com" },
-            { id: "retreat-4", assetKey: "retreat-tile-4", caption: "Mat", bucket: "Daily Rituals", pinType: "ritual" },
-            { id: "retreat-5", assetKey: "retreat-tile-5", caption: "Quiet corridor", bucket: "Travel & Experiences", pinType: "place" },
-            { id: "retreat-6", assetKey: "retreat-tile-6", caption: "Post-practice look", bucket: "Your Style", pinType: "look", title: "Silk Cami & Wide Leg", brand: "Esse", price: "$195", shopUrl: "https://www.esseskincare.com" },
+            { id: "retreat-1", assetKey: "retreat-tile-1", caption: "A room that opens onto rock and sky. Bare walls. Nothing competing with the view. Look by The Row. Coming soon.", bucket: "Your Style", pinType: "style", brand: "The Row" },
+            { id: "retreat-2", assetKey: "retreat-tile-2", caption: "Clean lines. Technical fabric. Modern pieces that make sense against ancient land. Look by Fear Of God. Coming soon.", bucket: "Your Style", pinType: "style", brand: "Fear Of God" },
+            { id: "retreat-3", assetKey: "retreat-tile-3", caption: "Late afternoon, stretched out in the sun. The desert has a way of softening you. Cashmere set by Phoebe Philo. Coming soon.", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo" },
+            { id: "retreat-4", assetKey: "retreat-tile-4", caption: "Warm stone. Soft light. The kind of quiet you don't rush. Look by Aimé Leon Dore. Coming soon.", bucket: "Your Style", pinType: "style", brand: "Aimé Leon Dore" },
+            { id: "retreat-5", assetKey: "retreat-tile-5", caption: "Red rock and still water. Everything blends. Nothing shouts.", bucket: "Travel & Experiences", pinType: "place" },
+            { id: "retreat-6", assetKey: "retreat-tile-6", caption: "A long dark line against open desert. Simple. Strong. Enough. Look by Jil Sander. Coming soon.", bucket: "Your Style", pinType: "style", brand: "Jil Sander" },
           ]}
-          onOpenDetail={handleOpenDetail}
         />
 
         <MomentBlock
-          title="What belongs in practice"
+          title="Midday Settles In"
           paragraphs={[
-            "Everything here serves a purpose. A wrap for warmth. Oil for skin. Shoes you step out of easily.",
-            "Nothing distracts. Nothing performs."
+            "Midday settles in. Shade becomes the luxury.",
+            "Swimwear by Eres. Coming soon."
           ]}
           assetKey="retreat-object-1"
-          bucket="Objects of Desire"
-          pinType="object"
+          bucket="Your Style"
+          pinType="style"
           sourceStory="Retreat"
           imagePosition="left"
         />
 
         <MomentBlock
-          title="Dressing after movement"
+          title="Inside, Cool Stone"
           paragraphs={[
-            "After practice, dressing becomes instinctive. Soft layers. Neutral tones. Shapes that don't interrupt the body.",
-            "You are not dressing to be seen. You are dressing to stay in the state you've entered."
+            "Inside, cool stone. Outside, endless heat. That edge between the two is the whole mood.",
+            "Look by Fear Of God. Coming soon."
           ]}
           assetKey="retreat-style-1"
           bucket="Your Style"
-          pinType="look"
+          pinType="style"
           sourceStory="Retreat"
           imagePosition="right"
         />
 
-        <ClosingLine text="Begin with movement. End with stillness. Remember how it feels." id="retreat-closing" sourceStory="Retreat" />
+        <ClosingLine text="Keep what you want to remember." id="retreat-closing" sourceStory="Retreat" />
       </section>
 
       <StoryDivider />

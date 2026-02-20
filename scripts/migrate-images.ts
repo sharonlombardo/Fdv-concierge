@@ -4,7 +4,6 @@
  */
 
 import { put } from '@vercel/blob';
-import { EMBEDDED_IMAGE_MAPPINGS } from '../shared/embedded-image-mappings.js';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
@@ -15,11 +14,36 @@ const __dirname = path.dirname(__filename);
 const REPLIT_BASE_URL = 'https://elite-canvas--sharonplombardo.replit.app';
 const OUTPUT_FILE = path.join(__dirname, '../shared/vercel-blob-mappings.ts');
 
+interface ImageSlot {
+  key: string;
+  currentUrl: string;
+  hasCustomImage: boolean;
+}
+
 interface MigrationResult {
   key: string;
   oldPath: string;
   newUrl: string | null;
   error?: string;
+}
+
+async function fetchImageSlots(): Promise<Record<string, string>> {
+  console.log('Fetching image slots from Replit API...');
+  const response = await fetch(`${REPLIT_BASE_URL}/api/image-slots`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch image slots: ${response.status}`);
+  }
+  const data = await response.json();
+
+  const customImages: Record<string, string> = {};
+  for (const slot of data.slots || []) {
+    if (slot.currentUrl && slot.currentUrl.includes('/objects/')) {
+      customImages[slot.key] = slot.currentUrl;
+    }
+  }
+
+  console.log(`Found ${Object.keys(customImages).length} custom images to migrate\n`);
+  return customImages;
 }
 
 async function downloadImage(url: string): Promise<Buffer | null> {
@@ -39,7 +63,8 @@ async function downloadImage(url: string): Promise<Buffer | null> {
 
 async function uploadToVercelBlob(key: string, buffer: Buffer, contentType: string): Promise<string | null> {
   try {
-    const blob = await put(`images/${key}`, buffer, {
+    // Use a versioned path to avoid conflicts with existing blobs
+    const blob = await put(`images-v2/${key}`, buffer, {
       access: 'public',
       contentType,
     });
@@ -60,11 +85,14 @@ function getContentType(buffer: Buffer): string {
 }
 
 async function migrateImages() {
+  // Fetch custom images from Replit API
+  const customImages = await fetchImageSlots();
+
   const results: MigrationResult[] = [];
   const newMappings: Record<string, string> = {};
 
-  const entries = Object.entries(EMBEDDED_IMAGE_MAPPINGS);
-  console.log(`\nMigrating ${entries.length} images from Replit to Vercel Blob...\n`);
+  const entries = Object.entries(customImages);
+  console.log(`Migrating ${entries.length} images from Replit to Vercel Blob...\n`);
 
   let successCount = 0;
   let failCount = 0;

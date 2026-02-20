@@ -275,18 +275,21 @@ function SavedItemCard({ save, onRemove, onClick, getImageUrl }: {
   const isOwned = save.purchaseStatus === 'purchased';
   const isWanted = save.purchaseStatus === 'want';
 
+  // Use object-contain for look/wardrobe items to show full outfit without cropping
+  const isLookItem = save.itemType === 'look' || save.itemId.includes('-look') || save.itemId.includes('-wardrobe');
+
   return (
     <div
       className="group relative bg-white dark:bg-card rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
       data-testid={`card-saved-${save.id}`}
       onClick={onClick}
     >
-      <div className="aspect-[3/4] relative">
+      <div className={`aspect-[3/4] relative ${isLookItem ? 'bg-stone-100 dark:bg-stone-800' : ''}`}>
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={save.title || save.metadata?.title || "Saved item"}
-            className="w-full h-full object-cover"
+            className={`w-full h-full ${isLookItem ? 'object-contain' : 'object-cover'}`}
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 dark:from-stone-700 dark:to-stone-800 flex items-center justify-center">
