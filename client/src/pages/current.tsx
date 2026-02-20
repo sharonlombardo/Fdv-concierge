@@ -101,6 +101,7 @@ type MomentBlockProps = {
   imagePosition?: "left" | "right";
   bookUrl?: string;
   shopUrl?: string;
+  bookLabel?: string;
 };
 
 const NAV_ITEMS = [
@@ -239,7 +240,7 @@ function QuoteCard({ quote, id, sourceStory }: QuoteCardProps & { sourceStory?: 
   );
 }
 
-function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory, imagePosition = "left", bookUrl, shopUrl }: MomentBlockProps) {
+function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory, imagePosition = "left", bookUrl, shopUrl, bookLabel }: MomentBlockProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
   const getImageUrl = useGetImageUrl();
   const imageUrl = getImageUrl(assetKey);
@@ -320,7 +321,7 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
             className="inline-flex items-center gap-1.5 text-xs tracking-[0.15em] uppercase transition-opacity hover:opacity-70"
             style={{ color: "#6b7456" }}
           >
-            Book
+            {bookLabel || "Book"}
             <ExternalLink className="w-3 h-3" />
           </a>
         </p>
@@ -1452,118 +1453,161 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
       {/* NEW YORK */}
       <section id="new-york">
         <PageTurnHero
-          title="The Weekend That Holds"
-          stateOfMind="Containment, appetite, and momentum."
-          paragraph="New York doesn't slow down for you. You learn how to move inside it. The rhythm is relentless, but it holds you if you let it. This is how the weekend sustains."
+          title="New York, Always"
+          stateOfMind="You don't visit New York. You return to it."
+          paragraph="Golden hour in Midtown never gets old. It lasts maybe ten minutes. That's the magic."
           assetKey="newyork-hero"
-          bucket="Culture"
+          bucket="Travel & Experiences"
           pinType="place"
         />
 
-        <QuoteCard quote="New York isn't conquered. It's edited." id="newyork-quote-1" sourceStory="New York" />
+        <QuoteCard quote="You don't visit New York. You return to it." id="newyork-quote-1" sourceStory="New York" />
 
+        {/* #2 — MomentBlock: Phoebe Philo coat with Shop link */}
         <MomentBlock
-          title="Dressing for the city's pace"
+          title="Made for Tailoring"
           paragraphs={[
-            "New York dressing is about stamina. Clothes that hold their shape at midnight. Shoes you can stand in. A coat that finishes the sentence.",
-            "Black works here. So does bone, charcoal, deep brown.",
-            "Nothing precious. Everything intentional."
+            "New York is made for tailoring. A long coat, sharp trousers, nothing complicated. It always works here.",
+            "Look by Phoebe Philo."
           ]}
           assetKey="newyork-style-1"
           bucket="Your Style"
-          pinType="look"
+          pinType="style"
           sourceStory="New York"
           imagePosition="left"
+          shopUrl="https://us.phoebephilo.com/products/mans-coat-tobacco-cashmere"
         />
 
+        {/* #3 — MomentBlock: Washington Square Park */}
         <MomentBlock
-          title="Choosing where to look"
+          title="Washington Square"
           paragraphs={[
-            "You don't rush culture in this city. You let it meet you.",
-            "One exhibition. One room you stay in longer than planned. A moment where time loosens its grip.",
-            "New York gives generously — if you don't ask for everything."
+            "Washington Square Park on a warm afternoon. Musicians, chess players, flowers, and that arch framing everything like a movie set."
           ]}
           assetKey="newyork-culture-1"
-          bucket="Culture"
-          pinType="culture"
+          bucket="Travel & Experiences"
+          pinType="place"
           sourceStory="New York"
           imagePosition="right"
         />
 
-        <PinGrid
+        {/* Editorial Scroll — positions 4-9 */}
+        <EditorialScroll
           title="Night Plan"
           sourceStory="New York"
           tiles={[
-            { id: "ny-1", assetKey: "ny-tile-1", caption: "Bar interior", bucket: "Travel & Experiences", pinType: "experience" },
-            { id: "ny-2", assetKey: "ny-tile-2", caption: "Dinner table", bucket: "Travel & Experiences", pinType: "experience" },
-            { id: "ny-3", assetKey: "ny-tile-3", caption: "Gallery wall", bucket: "Culture", pinType: "place" },
-            { id: "ny-4", assetKey: "ny-tile-4", caption: "Coat look", bucket: "Your Style", pinType: "look", title: "Wool Overcoat", brand: "Totême", price: "$890", shopUrl: "https://www.toteme-studio.com" },
-            { id: "ny-5", assetKey: "ny-tile-5", caption: "Boot or flat", bucket: "Objects of Desire", pinType: "item", title: "Pointed Leather Flat", brand: "Aeyde", price: "$345", shopUrl: "https://www.aeyde.com" },
-            { id: "ny-6", assetKey: "ny-tile-6", caption: "Subway platform", bucket: "Inspiration", pinType: "inspiration" },
+            { id: "ny-1", assetKey: "ny-tile-1", caption: "The Swan Bar, Lower East Side. One of those rooms where the lighting is perfect and no one is in a rush. Order a martini. Stay for dessert.", bucket: "Travel & Experiences", pinType: "experience", bookUrl: "https://swanroomnyc.com/" },
+            { id: "ny-2", assetKey: "ny-tile-2", caption: "Le CouCou. Soho. White tablecloths, chandeliers, a little bit of drama. New York still knows how to do glamour.", bucket: "Travel & Experiences", pinType: "experience", bookUrl: "https://lecoucou.com/" },
+            { id: "ny-3", assetKey: "ny-tile-3", caption: "Downtown at night is a different city. Neon, bikes, music leaking out of somewhere you want to go.", bucket: "Travel & Experiences", pinType: "experience" },
+            { id: "ny-4", assetKey: "ny-tile-4", caption: "Long black fur coat under concrete columns. The city loves a strong silhouette. Coat by FIL DE VIE. Coming soon.", bucket: "Your Style", pinType: "style", brand: "FIL DE VIE" },
+            { id: "ny-5", assetKey: "ny-tile-5", caption: "A sharp black boot that can handle pavement, gallery floors, and a late-night walk home. Boot by Phoebe Philo.", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", shopUrl: "https://us.phoebephilo.com/products/soft-pump-cream-patent-leather" },
+            { id: "ny-6", assetKey: "ny-tile-6", caption: "Waiting for the train, headphones in, coat moving in the draft. It's cinematic even when it's ordinary. Dress & Stole by FIL DE VIE. Coming soon.", bucket: "Your Style", pinType: "style", brand: "FIL DE VIE" },
           ]}
-          onOpenDetail={handleOpenDetail}
         />
 
+        {/* #10 — MomentBlock: The Plaza with Book link */}
         <MomentBlock
-          title="Evenings done well"
+          title="The Plaza"
           paragraphs={[
-            "The best nights are edited. A bar that understands lighting. A table that doesn't turn. A meal that unfolds slowly.",
-            "You don't need to know everyone. You just need to be exactly where you are."
+            "The Plaza lit up at night. Touristy? Maybe. Still iconic? Always."
           ]}
           assetKey="newyork-experience-1"
           bucket="Travel & Experiences"
-          pinType="experience"
+          pinType="place"
           sourceStory="New York"
           imagePosition="left"
+          bookUrl="https://www.theplazany.com/history/"
         />
 
-        <TwoUpFeature
-          title="Culture Hour"
-          image1={{ assetKey: "ny-culture-1", caption: "Museum stair", bucket: "Culture", pinType: "place" }}
-          image2={{ assetKey: "ny-culture-2", caption: "Gallery quiet room", bucket: "Culture", pinType: "place" }}
-          sourceStory="New York"
-        />
+        {/* CULTURE HOUR — positions 11-12 */}
+        <h3 className="text-xs tracking-widest uppercase text-muted-foreground mb-8 text-center py-8">Culture Hour</h3>
 
+        {/* #11 — MomentBlock: The Met with Visit link */}
         <MomentBlock
-          title="What carries the weekend"
+          title="The Met"
           paragraphs={[
-            "A bag that stays close. Sunglasses for the morning after. One piece of jewelry that works everywhere.",
-            "New York asks for objects that keep up — not slow you down."
+            "The Tomb of Perneb at The Met. A museum afternoon is mandatory. Clean lines, good art, and an outfit that belongs there.",
+            "Look by FIL DE VIE. Coming soon."
+          ]}
+          assetKey="ny-culture-1"
+          bucket="Travel & Experiences"
+          pinType="culture"
+          sourceStory="New York"
+          imagePosition="left"
+          bookUrl="https://www.metmuseum.org/art/collection/search/100000099"
+          bookLabel="Visit"
+        />
+
+        {/* #12 — MomentBlock: Guggenheim with Visit link */}
+        <MomentBlock
+          title="The Guggenheim"
+          paragraphs={[
+            "The Guggenheim never disappoints. Walk the spiral slowly. Look up."
+          ]}
+          assetKey="ny-culture-2"
+          bucket="Travel & Experiences"
+          pinType="culture"
+          sourceStory="New York"
+          imagePosition="right"
+          bookUrl="https://www.guggenheim.org/"
+          bookLabel="Visit"
+        />
+
+        {/* #13 — MomentBlock: What Carries the Weekend with Shop link */}
+        <MomentBlock
+          title="What Carries the Weekend"
+          paragraphs={[
+            "A bag that stays close. Sunglasses for the morning after. One piece of jewelry that works everywhere. New York asks for objects that keep up — not slow you down.",
+            "Drive Bag by Phoebe Philo."
           ]}
           assetKey="newyork-object-1"
-          bucket="Objects of Desire"
-          pinType="object"
+          bucket="Your Style"
+          pinType="style"
+          sourceStory="New York"
+          imagePosition="left"
+          shopUrl="https://us.phoebephilo.com/products/drive-bag-black-leather"
+        />
+
+        {/* Editorial Scroll — positions 14-16 */}
+        <EditorialScroll
+          title="Sunday Details"
+          sourceStory="New York"
+          tiles={[
+            { id: "ny-reset-1", assetKey: "ny-reset-1", caption: "Carnegie Hill stoops in late afternoon. It feels like you've stepped into someone's movie.", bucket: "Travel & Experiences", pinType: "place" },
+            { id: "ny-reset-2", assetKey: "ny-reset-2", caption: "A red notebook in your bag. New York gives you ideas whether you ask for them or not. Cartier Diary.", bucket: "Objects of Desire", pinType: "object", brand: "Cartier", shopUrl: "https://www.cartier.com/en-us/home-%26-stationery/pens-%26-stationery/notebooks-%26-stationery/cartier-planner-refill-paper-CROG001421.html" },
+            { id: "ny-reset-3", assetKey: "ny-reset-3", caption: "Good sunglasses are non-negotiable here. Even in winter. Phoebe Philo Peak Sunglasses.", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", shopUrl: "https://us.phoebephilo.com/products/peak-sunglasses-black-acetate" },
+          ]}
+        />
+
+        {/* #17 — MomentBlock: Evening walk with Shop link */}
+        <MomentBlock
+          title="Evening Walk"
+          paragraphs={[
+            "Evening walk, collar up, traffic behind you. This is the version of you the city likes best.",
+            "Phoebe Philo Coat."
+          ]}
+          assetKey="ny-reset-4"
+          bucket="Your Style"
+          pinType="style"
+          sourceStory="New York"
+          imagePosition="left"
+          shopUrl="https://us.phoebephilo.com/products/robe-coat-black-cashmere"
+        />
+
+        {/* #18 — MomentBlock: Central Park Sunday */}
+        <MomentBlock
+          title="Central Park"
+          paragraphs={[
+            "Central Park on a Sunday morning is for walking. No destination. No performance. Coffee in hand. Coat open. The city exhales with you."
+          ]}
+          assetKey="newyork-ritual-1"
+          bucket="Travel & Experiences"
+          pinType="place"
           sourceStory="New York"
           imagePosition="right"
         />
 
-        <PinGrid
-          title="Sunday Reset"
-          sourceStory="New York"
-          tiles={[
-            { id: "ny-reset-1", assetKey: "ny-reset-1", caption: "Coffee walk", bucket: "Daily Rituals", pinType: "ritual" },
-            { id: "ny-reset-2", assetKey: "ny-reset-2", caption: "Notebook", bucket: "Objects of Desire", pinType: "object", title: "Panama Notebook", brand: "Smythson", price: "$125", shopUrl: "https://www.smythson.com" },
-            { id: "ny-reset-3", assetKey: "ny-reset-3", caption: "Sunglasses", bucket: "Objects of Desire", pinType: "item", title: "Triomphe Sunglasses", brand: "Celine", price: "$450", shopUrl: "https://www.celine.com" },
-            { id: "ny-reset-4", assetKey: "ny-reset-4", caption: "Empty street morning", bucket: "Inspiration", pinType: "mood" },
-          ]}
-          onOpenDetail={handleOpenDetail}
-        />
-
-        <MomentBlock
-          title="Sunday containment"
-          paragraphs={[
-            "Sunday is for walking. No destination. No performance.",
-            "Coffee in hand. Coat open. The city exhales with you.",
-            "This is how you stay."
-          ]}
-          assetKey="newyork-ritual-1"
-          bucket="Daily Rituals"
-          pinType="ritual"
-          sourceStory="New York"
-          imagePosition="left"
-        />
-
-        <ClosingLine text="Save what sustains you. You'll need it again next week." id="newyork-closing" sourceStory="New York" />
+        <ClosingLine text="Save what you'll return to." id="newyork-closing" sourceStory="New York" />
       </section>
 
       <div className="py-20 text-center">
