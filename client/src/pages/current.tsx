@@ -10,9 +10,62 @@ import type { EditorialItem } from "@/components/editorial-detail-drawer";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
 import { LoadingImage } from "@/components/loading-image";
+import { ITINERARY_DATA, type DayPage } from "@shared/itinerary-data";
 
 type GetImageUrlFn = (assetKey: string) => string;
 const ImageContext = createContext<GetImageUrlFn>((key) => "");
+
+// Generate Morocco itinerary product tiles for Shop the Story
+// Includes ALL daily looks from the Morocco itinerary with brand attribution
+function getMoroccoItineraryTiles(): PinTile[] {
+  const tiles: PinTile[] = [];
+  const seenIds = new Set<string>();
+  for (const page of ITINERARY_DATA) {
+    if ('day' in page) {
+      const dayPage = page as DayPage;
+      for (const item of dayPage.flow) {
+        if (item.commercialWardrobe) {
+          const tileId = `${item.id}-look`;
+          if (seenIds.has(tileId)) continue; // deduplicate
+          seenIds.add(tileId);
+          tiles.push({
+            id: tileId,
+            assetKey: `${item.id}-wardrobe`,
+            caption: item.wardrobe || `Day ${dayPage.day} Look`,
+            bucket: "Your Style",
+            pinType: "look",
+            title: `${item.title} - The Look`,
+            imageUrl: item.commercialWardrobe,
+            brand: "FDV Curated",
+          });
+        }
+        // Also include wardrobeExtras if they have images and shopLinks
+        if (item.wardrobeExtras) {
+          for (let i = 0; i < item.wardrobeExtras.length; i++) {
+            const extra = item.wardrobeExtras[i];
+            if (extra.image) {
+              const extraId = `${item.id}-extra-${i}`;
+              if (seenIds.has(extraId)) continue;
+              seenIds.add(extraId);
+              tiles.push({
+                id: extraId,
+                assetKey: extraId,
+                caption: extra.name || `Accessory`,
+                bucket: "Your Style",
+                pinType: "product",
+                title: extra.name || `${item.title} - Accessory`,
+                imageUrl: extra.image,
+                brand: "FDV Curated",
+                shopUrl: extra.shopLink,
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+  return tiles;
+}
 
 function getBucketLabel(bucket: string): string {
   const labelMap: Record<string, string> = {
@@ -72,9 +125,10 @@ type PinGridProps = {
 
 type TwoUpFeatureProps = {
   title: string;
-  image1: { assetKey: string; caption: string; bucket: string; pinType: string };
-  image2: { assetKey: string; caption: string; bucket: string; pinType: string };
+  image1: { assetKey: string; caption: string; bucket: string; pinType: string; brand?: string; shopUrl?: string; bookUrl?: string };
+  image2: { assetKey: string; caption: string; bucket: string; pinType: string; brand?: string; shopUrl?: string; bookUrl?: string };
   sourceStory: string;
+  onOpenDetail?: (item: EditorialItem) => void;
 };
 
 type MotionLoopBlockProps = {
@@ -84,6 +138,7 @@ type MotionLoopBlockProps = {
   id: string;
   sourceStory: string;
   caption?: string;
+  onOpenDetail?: (item: EditorialItem) => void;
 };
 
 type ClosingLineProps = {
@@ -102,6 +157,8 @@ type MomentBlockProps = {
   bookUrl?: string;
   shopUrl?: string;
   bookLabel?: string;
+  brand?: string;
+  onOpenDetail?: (item: EditorialItem) => void;
 };
 
 const NAV_ITEMS = [
@@ -240,14 +297,33 @@ function QuoteCard({ quote, id, sourceStory }: QuoteCardProps & { sourceStory?: 
   );
 }
 
-function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory, imagePosition = "left", bookUrl, shopUrl, bookLabel }: MomentBlockProps) {
+function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory, imagePosition = "left", bookUrl, shopUrl, bookLabel, brand, onOpenDetail }: MomentBlockProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
   const getImageUrl = useGetImageUrl();
   const imageUrl = getImageUrl(assetKey);
-  
+  const isProduct = ["style", "object", "look", "product", "item"].includes(pinType);
+
+  const handleImageClick = () => {
+    if (isProduct && onOpenDetail) {
+      onOpenDetail({
+        id: assetKey,
+        title,
+        description: paragraphs.join(' '),
+        bucket,
+        pinType,
+        assetKey,
+        storyTag,
+        imageUrl,
+        brand,
+        shopUrl,
+        bookUrl,
+      });
+    }
+  };
+
   const imageBlock = (
     <div>
-      <div className="relative aspect-[4/5] md:aspect-square bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden">
+      <div className={`relative aspect-[4/5] md:aspect-square bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden ${isProduct ? 'cursor-pointer' : ''}`} onClick={isProduct ? handleImageClick : undefined}>
       {imageUrl ? (
         <LoadingImage 
           src={imageUrl} 
@@ -259,7 +335,7 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
           <span className="text-muted-foreground text-xs uppercase tracking-widest">Image Placeholder</span>
         </div>
       )}
-      <div className="absolute top-2 right-2 z-10 flex flex-col items-end gap-0">
+      <div className="absolute top-2 right-2 z-10 flex flex-col items-end gap-0" onClick={(e) => e.stopPropagation()}>
         <PinButton
           itemType={pinType as any}
           itemId={assetKey}
@@ -365,8 +441,10 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
 function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
   const getImageUrl = useGetImageUrl();
-  
+  const isProductType = (pt: string) => ["style", "object", "look", "product", "item"].includes(pt);
+
   const handleTileClick = (tile: PinTile) => {
+    if (!isProductType(tile.pinType)) return; // Non-products: no modal
     const imageUrl = getImageUrl(tile.assetKey);
     if (onOpenDetail) {
       onOpenDetail({
@@ -392,12 +470,13 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
         {tiles.map((tile) => {
           const imageUrl = getImageUrl(tile.assetKey);
+          const tileIsProduct = isProductType(tile.pinType);
           return (
-            <div 
-              key={tile.id} 
-              className="relative group cursor-pointer" 
+            <div
+              key={tile.id}
+              className={`relative group ${tileIsProduct ? 'cursor-pointer' : ''}`}
               data-testid={`tile-${tile.id}`}
-              onClick={() => handleTileClick(tile)}
+              onClick={tileIsProduct ? () => handleTileClick(tile) : undefined}
             >
               <div className="aspect-square bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden transition-transform group-hover:scale-[1.02]">
                 {imageUrl ? (
@@ -462,11 +541,32 @@ type EditorialScrollProps = {
   title: string;
   tiles: PinTile[];
   sourceStory: string;
+  onOpenDetail?: (item: EditorialItem) => void;
 };
 
-function EditorialScroll({ title, tiles, sourceStory }: EditorialScrollProps) {
+function EditorialScroll({ title, tiles, sourceStory, onOpenDetail }: EditorialScrollProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
   const getImageUrl = useGetImageUrl();
+  const isProductType = (pt: string) => ["style", "object", "look", "product", "item"].includes(pt);
+
+  const handleTileClick = (tile: PinTile, imageUrl: string) => {
+    if (!isProductType(tile.pinType)) return; // Non-products: no modal
+    if (onOpenDetail) {
+      onOpenDetail({
+        id: tile.id,
+        title: tile.title || tile.caption,
+        description: tile.caption,
+        bucket: tile.bucket,
+        pinType: tile.pinType,
+        assetKey: tile.assetKey,
+        storyTag,
+        imageUrl,
+        brand: tile.brand,
+        shopUrl: tile.shopUrl,
+        bookUrl: tile.bookUrl,
+      });
+    }
+  };
 
   // Layout configs per card index: vary sizes and positions for magazine feel
   const layouts: Array<{
@@ -567,7 +667,7 @@ function EditorialScroll({ title, tiles, sourceStory }: EditorialScrollProps) {
 
   function renderPinButtons(tile: PinTile, imageUrl: string, size: "sm" | "md") {
     return (
-      <div className={`absolute ${size === "md" ? "top-4 right-4" : "top-2 right-2"} z-10 flex flex-col items-end gap-0`}>
+      <div className={`absolute ${size === "md" ? "top-4 right-4" : "top-2 right-2"} z-10 flex flex-col items-end gap-0`} onClick={(e) => e.stopPropagation()}>
         <PinButton
           itemType={tile.pinType as any}
           itemId={tile.id}
@@ -614,10 +714,11 @@ function EditorialScroll({ title, tiles, sourceStory }: EditorialScrollProps) {
           const layout = layouts[index] || layouts[2]; // fallback to side layout
           const isOverlay = layout.type === "overlay";
           const btnSize = (layout.type === "overlay") ? "md" as const : "sm" as const;
+          const tileIsProduct = isProductType(tile.pinType);
 
           if (layout.type === "overlay") {
             return (
-              <div key={tile.id} className={layout.wrapper} data-testid={`editorial-${tile.id}`}>
+              <div key={tile.id} className={`${layout.wrapper} ${tileIsProduct ? 'cursor-pointer' : ''}`} data-testid={`editorial-${tile.id}`} onClick={tileIsProduct ? () => handleTileClick(tile, imageUrl) : undefined}>
                 <div className={`${layout.imageClass} ${layout.imageAspect} bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden`}>
                   {imageUrl ? (
                     <img src={imageUrl} alt={tile.caption} className="w-full h-full object-cover" />
@@ -637,7 +738,7 @@ function EditorialScroll({ title, tiles, sourceStory }: EditorialScrollProps) {
 
           if (layout.type === "stacked") {
             return (
-              <div key={tile.id} className={layout.wrapper} data-testid={`editorial-${tile.id}`}>
+              <div key={tile.id} className={`${layout.wrapper} ${tileIsProduct ? 'cursor-pointer' : ''}`} data-testid={`editorial-${tile.id}`} onClick={tileIsProduct ? () => handleTileClick(tile, imageUrl) : undefined}>
                 <div className="relative group">
                   <div className={`${layout.imageAspect} bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden`}>
                     {imageUrl ? (
@@ -659,7 +760,7 @@ function EditorialScroll({ title, tiles, sourceStory }: EditorialScrollProps) {
 
           // Side layout
           const imageBlock = (
-            <div className="relative group">
+            <div className={`relative group ${tileIsProduct ? 'cursor-pointer' : ''}`} onClick={tileIsProduct ? () => handleTileClick(tile, imageUrl) : undefined}>
               <div className={`${layout.imageAspect} bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden`}>
                 {imageUrl ? (
                   <img src={imageUrl} alt={tile.caption} className="w-full h-full object-cover" />
@@ -694,17 +795,39 @@ function EditorialScroll({ title, tiles, sourceStory }: EditorialScrollProps) {
   );
 }
 
-function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps) {
+function TwoUpFeature({ title, image1, image2, sourceStory, onOpenDetail }: TwoUpFeatureProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
   const getImageUrl = useGetImageUrl();
   const image1Url = getImageUrl(image1.assetKey);
   const image2Url = getImageUrl(image2.assetKey);
-  
+  const isProductType = (pt: string) => ["style", "object", "look", "product", "item"].includes(pt);
+
+  const handleClick = (img: typeof image1, imgUrl: string) => {
+    if (!isProductType(img.pinType)) return; // Non-products: no modal
+    if (onOpenDetail) {
+      onOpenDetail({
+        id: img.assetKey,
+        title: img.caption,
+        bucket: img.bucket,
+        pinType: img.pinType,
+        assetKey: img.assetKey,
+        storyTag,
+        imageUrl: imgUrl,
+        brand: img.brand,
+        shopUrl: img.shopUrl,
+        bookUrl: img.bookUrl,
+      });
+    }
+  };
+
+  const img1IsProduct = isProductType(image1.pinType);
+  const img2IsProduct = isProductType(image2.pinType);
+
   return (
     <div className="py-12 md:py-16 px-4 max-w-5xl mx-auto">
       <h3 className="text-xs tracking-widest uppercase text-muted-foreground mb-8 text-center">{title}</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="relative group" data-testid={`two-up-${image1.assetKey}`}>
+        <div className={`relative group ${img1IsProduct ? 'cursor-pointer' : ''}`} data-testid={`two-up-${image1.assetKey}`} onClick={img1IsProduct ? () => handleClick(image1, image1Url) : undefined}>
           <div className="aspect-[4/5] bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden">
             {image1Url ? (
               <img src={image1Url} alt={image1.caption} className="w-full h-full object-cover" />
@@ -714,7 +837,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
               </div>
             )}
           </div>
-          <div className="absolute top-1.5 right-1.5 z-10 flex flex-col items-end gap-0">
+          <div className="absolute top-1.5 right-1.5 z-10 flex flex-col items-end gap-0" onClick={(e) => e.stopPropagation()}>
             <PinButton
               itemType={image1.pinType as any}
               itemId={image1.assetKey}
@@ -751,7 +874,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
           </div>
           <p className="text-[10px] text-center text-muted-foreground/60 italic mt-3">{getBucketLabel(image1.bucket)}</p>
         </div>
-        <div className="relative group" data-testid={`two-up-${image2.assetKey}`}>
+        <div className={`relative group ${img2IsProduct ? 'cursor-pointer' : ''}`} data-testid={`two-up-${image2.assetKey}`} onClick={img2IsProduct ? () => handleClick(image2, image2Url) : undefined}>
           <div className="aspect-[4/5] bg-stone-200 dark:bg-stone-800 rounded-md overflow-hidden">
             {image2Url ? (
               <img src={image2Url} alt={image2.caption} className="w-full h-full object-cover" />
@@ -761,7 +884,7 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
               </div>
             )}
           </div>
-          <div className="absolute top-1.5 right-1.5 z-10 flex flex-col items-end gap-0">
+          <div className="absolute top-1.5 right-1.5 z-10 flex flex-col items-end gap-0" onClick={(e) => e.stopPropagation()}>
             <PinButton
               itemType={image2.pinType as any}
               itemId={image2.assetKey}
@@ -803,14 +926,31 @@ function TwoUpFeature({ title, image1, image2, sourceStory }: TwoUpFeatureProps)
   );
 }
 
-function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory, caption }: MotionLoopBlockProps) {
+function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory, caption, onOpenDetail }: MotionLoopBlockProps) {
   const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
   const getImageUrl = useGetImageUrl();
   const imageUrl = getImageUrl(id);
-  
+  const isProduct = ["style", "object", "look", "product", "item"].includes(pinType);
+
+  const handleClick = () => {
+    if (!isProduct) return; // Non-products: no modal
+    if (onOpenDetail) {
+      onOpenDetail({
+        id,
+        title: overlayText,
+        description: caption,
+        bucket,
+        pinType,
+        assetKey: id,
+        storyTag,
+        imageUrl,
+      });
+    }
+  };
+
   return (
     <div className="py-12 md:py-16 px-4 max-w-4xl mx-auto">
-      <div className="relative aspect-video bg-stone-300 dark:bg-stone-700 rounded-md overflow-hidden" data-testid={`motion-${id}`}>
+      <div className={`relative aspect-video bg-stone-300 dark:bg-stone-700 rounded-md overflow-hidden ${isProduct ? 'cursor-pointer' : ''}`} data-testid={`motion-${id}`} onClick={isProduct ? handleClick : undefined}>
         {imageUrl ? (
           <img src={imageUrl} alt={overlayText} className="w-full h-full object-cover" />
         ) : (
@@ -821,14 +961,14 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory, captio
         <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
           <p className="font-serif text-2xl md:text-3xl text-white italic text-center px-8">{overlayText}</p>
         </div>
-        <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-0">
+        <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-0" onClick={(e) => e.stopPropagation()}>
           <PinButton
             itemType={pinType as any}
             itemId={id}
-            itemData={{ 
-              title: overlayText, 
-              bucket, 
-              sourceStory, 
+            itemData={{
+              title: overlayText,
+              bucket,
+              sourceStory,
               issueNumber: 1,
               saveType: pinType,
               storyTag,
@@ -883,30 +1023,175 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory, captio
   );
 }
 
-function ClosingLine({ text, id, sourceStory }: ClosingLineProps & { sourceStory?: string }) {
-  const storyTag = sourceStory?.toLowerCase().replace(/\s+/g, '-') || 'opening';
+function ClosingLine({ text, id }: ClosingLineProps & { sourceStory?: string }) {
+  // Static UI instruction text — NOT saveable, no pin button
   return (
     <div className="py-12 md:py-16 px-8 max-w-2xl mx-auto text-center" data-testid={`closing-${id}`}>
-      <div className="relative inline-block">
-        <p className="text-sm md:text-base text-muted-foreground italic">{text}</p>
-        <div className="absolute -top-1 -right-6 z-10">
-          <PinButton
-            itemType="quote"
-            itemId={id}
-            itemData={{
-              title: text,
-              bucket: "State of Mind",
-              sourceStory: sourceStory || "The Current",
-              issueNumber: 1,
-              saveType: "quote",
-              storyTag,
-              editionTag: "current-edition-1",
-              editTag: `${storyTag}-edit`
-            }}
-            sourceContext="the_current_issue_1"
-            aestheticTags={["quote", "closing", "state-of-mind", storyTag]}
-            size="sm"
+      <p className="text-sm md:text-base text-muted-foreground italic">{text}</p>
+    </div>
+  );
+}
+
+type ShopTheStoryProps = {
+  tiles: PinTile[];
+  sourceStory: string;
+  onOpenDetail?: (item: EditorialItem) => void;
+};
+
+function ShopTheStory({ tiles, sourceStory, onOpenDetail }: ShopTheStoryProps) {
+  const storyTag = sourceStory.toLowerCase().replace(/\s+/g, '-');
+  const getImageUrl = useGetImageUrl();
+  const isProductType = (pt: string) => ["style", "object", "look", "product", "item"].includes(pt);
+
+  // Only show shoppable products — items with product pinType that have brand/shopUrl/bookUrl
+  const shopTiles = tiles.filter(t => isProductType(t.pinType) && (t.brand || t.shopUrl || t.bookUrl));
+  if (shopTiles.length === 0) return null;
+
+  const handleClick = (tile: PinTile, imageUrl: string) => {
+    if (onOpenDetail) {
+      onOpenDetail({
+        id: tile.id,
+        title: tile.title || tile.caption,
+        description: tile.caption,
+        bucket: tile.bucket,
+        pinType: tile.pinType,
+        assetKey: tile.assetKey,
+        storyTag,
+        imageUrl,
+        brand: tile.brand,
+        price: tile.price,
+        shopUrl: tile.shopUrl,
+        bookUrl: tile.bookUrl,
+      });
+    }
+  };
+
+  return (
+    <div className="py-12 bg-white">
+      <h3
+        className="text-xs tracking-[0.25em] uppercase text-center mb-6"
+        style={{ color: "#9a9a9a", fontFamily: "'Inter', sans-serif" }}
+      >
+        Shop the Story
+      </h3>
+      <div className="overflow-x-auto" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+        <style>{`.shop-scroll::-webkit-scrollbar { display: none; }`}</style>
+        <div className="shop-scroll flex gap-4 px-6 pb-2" style={{ minWidth: "max-content", overflowX: "auto", scrollbarWidth: "none" }}>
+          {shopTiles.map((tile) => {
+            const imageUrl = getImageUrl(tile.assetKey) || tile.imageUrl || "";
+            return (
+              <div
+                key={tile.id}
+                className="flex-shrink-0 w-[160px] md:w-[180px] cursor-pointer group"
+                onClick={() => handleClick(tile, imageUrl)}
+              >
+                <div className="aspect-[3/4] bg-[#f5f5f5] rounded overflow-hidden mb-2">
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt={tile.title || tile.caption}
+                      className="w-full h-full object-contain transition-transform group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-widest text-center px-2">
+                        {tile.title || tile.caption}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {tile.brand && (
+                  <p className="text-[10px] tracking-[0.1em] uppercase truncate" style={{ color: "#9a9a9a" }}>
+                    {tile.brand}
+                  </p>
+                )}
+                <p className="text-[11px] truncate mt-0.5" style={{ color: "#1a1a1a" }}>
+                  {tile.title || tile.caption.split('.')[0]}
+                </p>
+                {tile.price && (
+                  <p className="text-[10px] mt-0.5" style={{ color: "#9a9a9a" }}>
+                    {tile.price}
+                  </p>
+                )}
+                {!tile.shopUrl && !tile.bookUrl && (
+                  <p className="text-[10px] italic mt-0.5" style={{ color: "#1a1a1a", opacity: 0.4 }}>
+                    Coming Soon
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const COVER_STORIES = [
+  { id: "morocco", label: "Morocco, In Full Color" },
+  { id: "hydra", label: "Hydra. The Art Of Arrival" },
+  { id: "slow-travel", label: "Mallorca. Stay a Little Longer" },
+  { id: "retreat", label: "Utah. Into The Desert" },
+  { id: "new-york", label: "New York, Always" },
+];
+
+function CoverHero({ getImageUrl }: { getImageUrl: (key: string) => string }) {
+  const coverImage = getImageUrl("opening-cover");
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+    }
+  };
+
+  return (
+    <div className="relative w-full min-h-[70vh] md:min-h-[85vh] flex flex-col" data-testid="cover-hero">
+      {/* Background image */}
+      <div className="absolute inset-0 bg-stone-200 dark:bg-stone-800">
+        {coverImage ? (
+          <LoadingImage
+            src={coverImage}
+            alt="The Current — Issue 1"
+            className="w-full h-full object-cover"
           />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-muted-foreground text-sm uppercase tracking-widest">Cover Image</span>
+          </div>
+        )}
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/30" />
+
+      {/* Title — upper left */}
+      <div className="relative z-10 p-8 md:p-12">
+        <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white font-medium tracking-tight" data-testid="text-current-title">
+          THE CURRENT
+        </h1>
+        <p className="text-white/70 text-sm md:text-base mt-2 italic">
+          Travel, style & the places we return to
+        </p>
+      </div>
+
+      {/* Spacer */}
+      <div className="flex-1" />
+
+      {/* Story navigation links — across the bottom */}
+      <div className="relative z-10 px-6 md:px-12 pb-8 md:pb-12">
+        <div className="flex flex-wrap justify-center gap-3 md:flex-nowrap md:justify-between md:gap-4 lg:gap-8 max-w-6xl mx-auto">
+          {COVER_STORIES.map((story) => (
+            <button
+              key={story.id}
+              onClick={() => scrollToSection(story.id)}
+              className="text-white/80 hover:text-white text-[10px] md:text-[11px] lg:text-xs tracking-[0.08em] md:tracking-[0.1em] uppercase transition-colors whitespace-nowrap cursor-pointer"
+              data-testid={`cover-link-${story.id}`}
+            >
+              {story.label}
+            </button>
+          ))}
         </div>
       </div>
     </div>
@@ -924,7 +1209,11 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
   const { data: imageSlotsData } = useImageSlots();
 
+  // Only open modal for shoppable products (style/object/look/product/item)
+  const isProductPinType = (pt: string) => ["style", "object", "look", "product", "item"].includes(pt);
+
   const handleOpenDetail = (item: EditorialItem) => {
+    if (!isProductPinType(item.pinType)) return; // Non-products: pin-only, no modal
     setSelectedItem({
       ...item,
     });
@@ -975,29 +1264,11 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
       {!embedded && (
         <>
           <GlobalNav />
-          <header className="text-center py-8 md:py-12 px-4">
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-2" data-testid="text-current-title">
-              THE CURRENT
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-1" data-testid="text-current-issue">
-              Issue 1
-            </p>
-            <p className="text-sm text-muted-foreground tracking-widest uppercase">
-              Discover what resonates
-            </p>
-          </header>
         </>
       )}
 
-      <PageTurnHero
-        title="THE CURRENT"
-        subhead="Issue 1"
-        stateOfMind="A magazine of taste, memory, and places"
-        assetKey="opening-cover"
-        bucket="Inspiration"
-        pinType="mood"
-        isOpening
-      />
+      {/* THE CURRENT — Magazine Cover Hero */}
+      <CoverHero getImageUrl={getImageUrl} />
 
       <StoryDivider />
 
@@ -1015,6 +1286,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <QuoteCard quote="Beauty doesn't whisper here. It invites." id="morocco-quote-1" sourceStory="Morocco" />
 
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Dressing into the scene"
           paragraphs={[
             "Amanjena, just outside Marrakech.",
@@ -1029,6 +1301,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="The visual pleasure"
           paragraphs={[
             "El Fenn Hotel. Graphic tile, citrus trees overhead.",
@@ -1042,6 +1315,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <EditorialScroll
+          onOpenDetail={handleOpenDetail}
           title="Pattern and Pleasure"
           sourceStory="Morocco"
           tiles={[
@@ -1055,6 +1329,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="What travels well here"
           paragraphs={[
             "Choose pieces that feel intentional, not precious. A simple black column dress, a sandal you can walk up the stairs in. A bag to throw over your shoulder. Jewelry that feels like armor.",
@@ -1068,6 +1343,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="SHADES OF NEUTRAL"
           paragraphs={[
             "Terracotta walls, late afternoon sunlight on a single plane of red clay.",
@@ -1081,6 +1357,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <MotionLoopBlock
+          onOpenDetail={handleOpenDetail}
           overlayText="Pattern moving in heat"
           bucket="Your Style"
           pinType="style"
@@ -1090,6 +1367,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="EVENINGS DONE PROPERLY"
           paragraphs={[
             "El Fenn. Gold light pooling over stone and olive branches. At night the color softens, but it never disappears."
@@ -1103,6 +1381,17 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <ClosingLine text="Save what delights you. You'll want to see it again." id="morocco-closing" sourceStory="Morocco" />
+
+        <ShopTheStory
+          onOpenDetail={handleOpenDetail}
+          sourceStory="Morocco"
+          tiles={[
+            { id: "morocco-1", assetKey: "morocco-tile-1", caption: "Gaia Dress", bucket: "Your Style", pinType: "look", title: "Gaia Dress", brand: "Phoebe Philo" },
+            { id: "morocco-3", assetKey: "morocco-tile-3", caption: "Blush pink against sun-warmed clay", bucket: "Your Style", pinType: "look", brand: "Alaïa" },
+            { id: "morocco-5", assetKey: "morocco-tile-5", caption: "Black against warm limestone", bucket: "Your Style", pinType: "look", brand: "Fil de Vie" },
+            ...getMoroccoItineraryTiles(),
+          ]}
+        />
       </section>
 
       <StoryDivider />
@@ -1124,6 +1413,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #2 — MomentBlock: Dressing for Stillness */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Dressing for Stillness"
           paragraphs={[
             "Hydra.",
@@ -1139,6 +1429,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #3 — MomentBlock: Stone, Water, Skin */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Stone, Water, Skin"
           paragraphs={[
             "Hydra port.",
@@ -1153,6 +1444,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #4–9 — EditorialScroll: 6 varied magazine-style cards */}
         <EditorialScroll
+          onOpenDetail={handleOpenDetail}
           title="Essentials Only"
           sourceStory="Hydra"
           tiles={[
@@ -1172,6 +1464,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #10 — MomentBlock: What Belongs */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="What Belongs"
           paragraphs={[
             "Bring objects that disappear when worn. A sandal you forget you're wearing. A shirt that flies in the wind. A bag that holds only what's necessary. Hydra edits for you if you let it.",
@@ -1186,6 +1479,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #11 — MomentBlock: place */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Light and Water"
           paragraphs={[
             "Harbor below, stone house above, sea wrapping everything. The palette never tries too hard — blue, white, sun."
@@ -1199,6 +1493,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #12 — MomentBlock: Eres swimwear with Shop link */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Afternoon Swim"
           paragraphs={[
             "Salt, sun, then immersion. Nothing feels more right here than disappearing into water. Swimwear by Eres."
@@ -1213,6 +1508,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #13 — MomentBlock: The Daily Flow */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="The Daily Flow"
           paragraphs={[
             "Morning is for water. Midday belongs to shade, conversation and a glass of cold wine. Evening arrives without ceremony. You do less, you feel more.",
@@ -1226,6 +1522,16 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <ClosingLine text="Save what steadies you. Return when you need it." id="hydra-closing" sourceStory="Hydra" />
+
+        <ShopTheStory
+          onOpenDetail={handleOpenDetail}
+          sourceStory="Hydra"
+          tiles={[
+            { id: "hydra-4", assetKey: "hydra-tile-1", caption: "Oversized tailoring", bucket: "Your Style", pinType: "style", brand: "Jil Sander" },
+            { id: "hydra-6", assetKey: "hydra-tile-3", caption: "White against deeper blue", bucket: "Your Style", pinType: "style", brand: "Jil Sander" },
+            { id: "hydra-8", assetKey: "hydra-tile-5", caption: "Black swimwear", bucket: "Your Style", pinType: "style", brand: "Eres", shopUrl: "https://www.eresparis.com/us/en-US/swimwear-2/011401-3333.html" },
+          ]}
+        />
       </section>
 
       <StoryDivider />
@@ -1247,6 +1553,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #2 — MomentBlock: Editing as Intelligence */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Editing as Intelligence"
           paragraphs={[
             "Bare shoulders. A single cuff. Clean lines that don't compete with light. Spain rewards restraint — even in heat.",
@@ -1261,6 +1568,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #3 — MomentBlock: Stone & Horizon */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Stone & Horizon"
           paragraphs={[
             "Vertical cliff, striped umbrella, sea moving slowly below. The landscape feels elemental, almost graphic."
@@ -1274,6 +1582,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #4 — MomentBlock: Black swim against pale water */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Sharp Silhouette"
           paragraphs={[
             "Black swim against pale water and tree shade. The silhouette stays sharp, even when everything else is soft.",
@@ -1288,6 +1597,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #5 — MomentBlock: Open water, Loro Piana */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Expansive"
           paragraphs={[
             "Open water. No soundtrack but wind and distant boats. Spain feels expansive without trying.",
@@ -1307,6 +1617,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #6–11 — EditorialScroll: 6 varied magazine-style cards */}
         <EditorialScroll
+          onOpenDetail={handleOpenDetail}
           title="Editing is Intelligence"
           sourceStory="Spain"
           tiles={[
@@ -1326,6 +1637,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #12 — MomentBlock: RayBan sunglasses with Shop link */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Gold at the Waterline"
           paragraphs={[
             "Gold at the waterline. Sun, salt, skin. That's enough.",
@@ -1341,6 +1653,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #13 — MomentBlock: style */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Late Afternoon"
           paragraphs={[
             "Late afternoon. Linen, sunglasses, a glass in hand. Spain doesn't perform — it lingers."
@@ -1353,6 +1666,16 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <ClosingLine text="Save what you want. Let go of the rest." id="slow-travel-closing" sourceStory="Spain" />
+
+        <ShopTheStory
+          onOpenDetail={handleOpenDetail}
+          sourceStory="Spain"
+          tiles={[
+            { id: "spain-6", assetKey: "slow-tile-1", caption: "Minimal swim", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo" },
+            { id: "spain-10", assetKey: "slow-tile-5", caption: "Bombe Sunglasses", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", title: "Bombe Sunglasses", shopUrl: "https://us.phoebephilo.com/products/bombe-sunglasses-fume-acetate" },
+            { id: "slow-object-1", assetKey: "slow-object-1", caption: "Gold at the Waterline", bucket: "Your Style", pinType: "style", brand: "RayBan", title: "Wayfarer Puffer", shopUrl: "https://www.ray-ban.com/usa/sunglasses/RB4940wayfarer%20puffer-black/8056262910863" },
+          ]}
+        />
       </section>
 
       <StoryDivider />
@@ -1371,6 +1694,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <QuoteCard quote="A serene sanctuary with modernist lines." id="retreat-quote-1" sourceStory="Retreat" />
 
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Sandstone and Sky"
           paragraphs={[
             "Sandstone and sky. The quiet hits first. Then the architecture. Clean geometry against open desert — nothing competes."
@@ -1383,6 +1707,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Morning Ritual"
           paragraphs={[
             "Early yoga. Morning swim. The light is already warm by 7 a.m. Movement here isn't scheduled — it's instinctive."
@@ -1395,6 +1720,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Carved Into Rock"
           paragraphs={[
             "A pool carved straight into the rock. Water, stone, sky — nothing else. The palette is the landscape."
@@ -1407,6 +1733,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <EditorialScroll
+          onOpenDetail={handleOpenDetail}
           title="Desert Essentials"
           sourceStory="Retreat"
           tiles={[
@@ -1420,6 +1747,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Midday Settles In"
           paragraphs={[
             "Midday settles in. Shade becomes the luxury.",
@@ -1433,6 +1761,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Inside, Cool Stone"
           paragraphs={[
             "Inside, cool stone. Outside, endless heat. That edge between the two is the whole mood.",
@@ -1446,6 +1775,18 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <ClosingLine text="Keep what you want to remember." id="retreat-closing" sourceStory="Retreat" />
+
+        <ShopTheStory
+          onOpenDetail={handleOpenDetail}
+          sourceStory="Retreat"
+          tiles={[
+            { id: "retreat-1", assetKey: "retreat-tile-1", caption: "A room that opens onto rock", bucket: "Your Style", pinType: "style", brand: "The Row" },
+            { id: "retreat-2", assetKey: "retreat-tile-2", caption: "Clean lines, technical fabric", bucket: "Your Style", pinType: "style", brand: "Fear Of God" },
+            { id: "retreat-3", assetKey: "retreat-tile-3", caption: "Cashmere set", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo" },
+            { id: "retreat-4", assetKey: "retreat-tile-4", caption: "Warm stone, soft light", bucket: "Your Style", pinType: "style", brand: "Aimé Leon Dore" },
+            { id: "retreat-6", assetKey: "retreat-tile-6", caption: "A long dark line", bucket: "Your Style", pinType: "style", brand: "Jil Sander" },
+          ]}
+        />
       </section>
 
       <StoryDivider />
@@ -1465,6 +1806,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #2 — MomentBlock: Phoebe Philo coat with Shop link */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Made for Tailoring"
           paragraphs={[
             "New York is made for tailoring. A long coat, sharp trousers, nothing complicated. It always works here.",
@@ -1480,6 +1822,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #3 — MomentBlock: Washington Square Park */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Washington Square"
           paragraphs={[
             "Washington Square Park on a warm afternoon. Musicians, chess players, flowers, and that arch framing everything like a movie set."
@@ -1493,6 +1836,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* Editorial Scroll — positions 4-9 */}
         <EditorialScroll
+          onOpenDetail={handleOpenDetail}
           title="Night Plan"
           sourceStory="New York"
           tiles={[
@@ -1507,6 +1851,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #10 — MomentBlock: The Plaza with Book link */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="The Plaza"
           paragraphs={[
             "The Plaza lit up at night. Touristy? Maybe. Still iconic? Always."
@@ -1524,6 +1869,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #11 — MomentBlock: The Met with Visit link */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="The Met"
           paragraphs={[
             "The Tomb of Perneb at The Met. A museum afternoon is mandatory. Clean lines, good art, and an outfit that belongs there.",
@@ -1540,6 +1886,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #12 — MomentBlock: Guggenheim with Visit link */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="The Guggenheim"
           paragraphs={[
             "The Guggenheim never disappoints. Walk the spiral slowly. Look up."
@@ -1555,6 +1902,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #13 — MomentBlock: What Carries the Weekend with Shop link */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="What Carries the Weekend"
           paragraphs={[
             "A bag that stays close. Sunglasses for the morning after. One piece of jewelry that works everywhere. New York asks for objects that keep up — not slow you down.",
@@ -1570,6 +1918,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* Editorial Scroll — positions 14-16 */}
         <EditorialScroll
+          onOpenDetail={handleOpenDetail}
           title="Sunday Details"
           sourceStory="New York"
           tiles={[
@@ -1581,6 +1930,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #17 — MomentBlock: Evening walk with Shop link */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Evening Walk"
           paragraphs={[
             "Evening walk, collar up, traffic behind you. This is the version of you the city likes best.",
@@ -1596,6 +1946,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         {/* #18 — MomentBlock: Central Park Sunday */}
         <MomentBlock
+          onOpenDetail={handleOpenDetail}
           title="Central Park"
           paragraphs={[
             "Central Park on a Sunday morning is for walking. No destination. No performance. Coffee in hand. Coat open. The city exhales with you."
@@ -1608,6 +1959,20 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         />
 
         <ClosingLine text="Save what you'll return to." id="newyork-closing" sourceStory="New York" />
+
+        <ShopTheStory
+          onOpenDetail={handleOpenDetail}
+          sourceStory="New York"
+          tiles={[
+            { id: "ny-1", assetKey: "ny-tile-1", caption: "The Swan Bar", bucket: "Travel & Experiences", pinType: "experience", bookUrl: "https://swanroomnyc.com/" },
+            { id: "ny-2", assetKey: "ny-tile-2", caption: "Le CouCou", bucket: "Travel & Experiences", pinType: "experience", bookUrl: "https://lecoucou.com/" },
+            { id: "ny-5", assetKey: "ny-tile-5", caption: "Soft Pump", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", title: "Soft Pump", shopUrl: "https://us.phoebephilo.com/products/soft-pump-cream-patent-leather" },
+            { id: "newyork-style-1", assetKey: "newyork-style-1", caption: "Man's Coat", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", title: "Man's Coat", shopUrl: "https://us.phoebephilo.com/products/mans-coat-tobacco-cashmere" },
+            { id: "newyork-object-1", assetKey: "newyork-object-1", caption: "Drive Bag", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", title: "Drive Bag", shopUrl: "https://us.phoebephilo.com/products/drive-bag-black-leather" },
+            { id: "ny-reset-2", assetKey: "ny-reset-2", caption: "Cartier Diary", bucket: "Objects of Desire", pinType: "object", brand: "Cartier", title: "Cartier Diary", shopUrl: "https://www.cartier.com/en-us/home-%26-stationery/pens-%26-stationery/notebooks-%26-stationery/cartier-planner-refill-paper-CROG001421.html" },
+            { id: "ny-reset-3", assetKey: "ny-reset-3", caption: "Peak Sunglasses", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", title: "Peak Sunglasses", shopUrl: "https://us.phoebephilo.com/products/peak-sunglasses-black-acetate" },
+          ]}
+        />
       </section>
 
       <div className="py-20 text-center">

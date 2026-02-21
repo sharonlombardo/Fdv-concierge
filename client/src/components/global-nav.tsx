@@ -20,9 +20,10 @@ interface GlobalNavProps {
   showBack?: boolean;
   backHref?: string;
   onBack?: () => void;
+  hideLogo?: boolean;
 }
 
-export function GlobalNav({ variant = "default", showBack = true, backHref, onBack }: GlobalNavProps) {
+export function GlobalNav({ variant = "default", showBack = true, backHref, onBack, hideLogo = false }: GlobalNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [location, setLocation] = useLocation();
 
@@ -71,14 +72,16 @@ export function GlobalNav({ variant = "default", showBack = true, backHref, onBa
             </Button>
           )}
         </div>
-        <Link href="/" className={isOverlay ? "absolute left-1/2 -translate-x-1/2" : ""}>
-          <img 
-            src={fdvLogo} 
-            alt="FDV Concierge" 
-            className={`h-8 md:h-11 w-auto cursor-pointer ${isOverlay ? "brightness-0 invert" : "dark:invert"}`}
-            data-testid="nav-logo"
-          />
-        </Link>
+        {!hideLogo && (
+          <Link href="/" className={isOverlay ? "absolute left-1/2 -translate-x-1/2" : ""}>
+            <img
+              src={fdvLogo}
+              alt="FDV Concierge"
+              className={`h-8 md:h-11 w-auto cursor-pointer ${isOverlay ? "brightness-0 invert" : "dark:invert"}`}
+              data-testid="nav-logo"
+            />
+          </Link>
+        )}
         <div className="w-[76px] md:w-[84px]" />
       </nav>
 

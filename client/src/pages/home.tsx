@@ -38,6 +38,7 @@ import { useCustomImages } from '@/hooks/use-custom-images';
 import { SelfiePickerModal } from '@/components/selfie-picker-modal';
 import { PinButton } from '@/components/pin-button';
 import { SuitcaseButton } from '@/components/suitcase-button';
+import { ItemModal, type ItemModalData } from '@/components/item-modal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import type { SelfieImage } from '@shared/schema';
@@ -199,6 +200,7 @@ interface ItemDetailDrawerProps {
   onImagesUpdate: (id: string, images: LocalLogImage[]) => void;
   onShare: () => void;
   onApplySelfie: (imageKey: string, selfie: SelfieImage) => void;
+  onOpenProductModal?: (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string }) => void;
 }
 
 interface LocalLogImage {
@@ -206,20 +208,21 @@ interface LocalLogImage {
   caption: string;
 }
 
-function ItemDetailDrawer({ 
-  item, 
-  entries, 
-  status, 
+function ItemDetailDrawer({
+  item,
+  entries,
+  status,
   location,
   date,
-  onClose, 
+  onClose,
   onJournalChange,
   getImageUrl,
   hasCustomImage,
   onImageUpload,
   onImagesUpdate,
   onShare,
-  onApplySelfie
+  onApplySelfie,
+  onOpenProductModal
 }: ItemDetailDrawerProps) {
   const [selfiePickerOpen, setSelfiePickerOpen] = useState(false);
   const [selfiePickerTarget, setSelfiePickerTarget] = useState<string | null>(null);
@@ -458,7 +461,20 @@ function ItemDetailDrawer({
             
             <div className="space-y-6">
               <div className="space-y-4">
-                <div className="w-full max-w-xs mx-auto rounded-md relative">
+                <div
+                  className="w-full max-w-xs mx-auto rounded-md relative cursor-pointer"
+                  onClick={() => {
+                    if (onOpenProductModal) {
+                      onOpenProductModal({
+                        title: `${item.title} - The Look`,
+                        imageUrl: getImageUrl(`${item.id}-wardrobe`, item.commercialWardrobe || "", { imageType: 'wardrobe', title: item.title }),
+                        itemId: `${item.id}-look`,
+                        description: item.wardrobe,
+                        pinType: "look",
+                      });
+                    }
+                  }}
+                >
                   <img
                     src={getImageUrl(
                       `${item.id}-wardrobe`,
@@ -530,26 +546,22 @@ function ItemDetailDrawer({
                       <div className="aspect-square bg-card border border-border rounded-md overflow-hidden relative group">
                         {hasImage ? (
                           <>
-                            {extra?.shopLink ? (
-                              <a 
-                                href={extra.shopLink} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="block w-full h-full"
-                              >
-                                <img 
-                                  src={getImageUrl(extraKey, extra?.image || '')} 
-                                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
-                                  alt={extra?.name || placeholderName}
-                                />
-                              </a>
-                            ) : (
-                              <img 
-                                src={getImageUrl(extraKey, extra?.image || '')} 
-                                className="w-full h-full object-cover" 
-                                alt={extra?.name || placeholderName}
-                              />
-                            )}
+                            <img
+                              src={getImageUrl(extraKey, extra?.image || '')}
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                              alt={extra?.name || placeholderName}
+                              onClick={() => {
+                                if (onOpenProductModal) {
+                                  onOpenProductModal({
+                                    title: extra?.name || placeholderName,
+                                    imageUrl: getImageUrl(extraKey, extra?.image || ''),
+                                    itemId: extraKey,
+                                    shopUrl: extra?.shopLink,
+                                    pinType: "product",
+                                  });
+                                }
+                              }}
+                            />
                             <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
                               <PinButton
                                 itemType="product"
@@ -922,6 +934,8 @@ export default function Home() {
   const [, setLocation] = useLocation();
   const [activeItem, setActiveItem] = useState<FlowItem | null>(null);
   const [isShareMode, setIsShareMode] = useState(false);
+  const [productModalItem, setProductModalItem] = useState<ItemModalData | null>(null);
+  const [productModalOpen, setProductModalOpen] = useState(false);
 
   const { entries: journalEntries, saveEntry, status: saveStatus } = useJournal();
   const { getImageUrl, hasCustomImage, isLoading: isLoadingImages } = useCustomImages();
@@ -1004,22 +1018,40 @@ export default function Home() {
     setLocation('/destinations');
   };
 
+  const openProductModal = (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string }) => {
+    setProductModalItem({
+      id: data.itemId,
+      title: data.title,
+      bucket: "Your Style",
+      pinType: data.pinType || "look",
+      assetKey: data.itemId,
+      storyTag: "morocco",
+      imageUrl: data.imageUrl,
+      brand: data.brand,
+      shopUrl: data.shopUrl,
+      description: data.description,
+    });
+    setProductModalOpen(true);
+  };
+
   const editorialData = extractEditorialData();
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-foreground selection:text-background transition-colors duration-500 overflow-x-hidden">
       
-      <GlobalNav 
-        variant="fixed" 
-        showBack={true} 
+      <GlobalNav
+        variant="fixed"
+        showBack={true}
         onBack={handleNavBack}
+        hideLogo={true}
       />
 
       {/* Editorial Overview - Long-form narrative scroll (no interactive elements) */}
       <div id="editorial-overview" className="scroll-mt-20" />
-      <EditorialOverview 
+      <EditorialOverview
         getImageUrl={getImageUrl}
         hasCustomImage={hasCustomImage}
+        onOpenProductModal={openProductModal}
       />
 
       {/* Transition to Interactive Logistics */}
@@ -1096,10 +1128,14 @@ export default function Home() {
               <div className="mb-32">
                 <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] pb-4 border-b-2 border-foreground mb-16">SCHEDULE</h3>
                 <div className="space-y-6">
-                  {dayPage.flow.map((item, i) => (
-                      <button 
-                        key={i} 
-                        onClick={() => setActiveItem(item)} 
+                  {dayPage.flow.map((item, i) => {
+                    const wardrobeUrl = item.commercialWardrobe
+                      ? getImageUrl(`${item.id}-wardrobe`, item.commercialWardrobe, { imageType: 'wardrobe', title: item.title })
+                      : null;
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => setActiveItem(item)}
                         className="group w-full text-left p-8 md:p-10 bg-card border border-border hover:border-foreground transition-all rounded-md flex gap-6 md:gap-10 items-start active:scale-[0.99]"
                         data-testid={`button-flow-item-${item.id}`}
                       >
@@ -1118,9 +1154,31 @@ export default function Home() {
                             {item.description || item.body}
                           </p>
                         </div>
+                        {wardrobeUrl && (
+                          <div
+                            className="w-16 h-16 md:w-20 md:h-20 rounded-md overflow-hidden bg-muted shrink-0 ring-1 ring-border hover:ring-foreground transition-all"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openProductModal({
+                                title: `${item.title} - The Look`,
+                                imageUrl: wardrobeUrl,
+                                itemId: `${item.id}-look`,
+                                description: item.wardrobe,
+                                pinType: "look",
+                              });
+                            }}
+                          >
+                            <img
+                              src={wardrobeUrl}
+                              alt="Shop look"
+                              className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                            />
+                          </div>
+                        )}
                         <ArrowRight className="w-6 h-6 text-muted-foreground/30 group-hover:text-foreground group-hover:translate-x-3 transition-all shrink-0" />
                       </button>
-                    ))}
+                    );
+                  })}
                   </div>
                 </div>
 
@@ -1150,6 +1208,7 @@ export default function Home() {
           onImagesUpdate={handleImagesUpdate}
           onShare={() => setIsShareMode(true)}
           onApplySelfie={handleApplySelfie}
+          onOpenProductModal={openProductModal}
         />
       )}
 
@@ -1160,6 +1219,12 @@ export default function Home() {
           onClose={() => setIsShareMode(false)}
         />
       )}
+
+      <ItemModal
+        item={productModalItem}
+        open={productModalOpen}
+        onOpenChange={setProductModalOpen}
+      />
     </div>
   );
 }

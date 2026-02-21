@@ -87,6 +87,7 @@ interface ImageCardProps {
   showSuitcase?: boolean;
   imageType?: 'place' | 'look' | 'accessory';
   preserveAspectRatio?: boolean;
+  onImageClick?: () => void;
 }
 
 export function ImageCard({
@@ -98,7 +99,8 @@ export function ImageCard({
   showPin = false,
   showSuitcase = false,
   imageType = 'place',
-  preserveAspectRatio = false
+  preserveAspectRatio = false,
+  onImageClick
 }: ImageCardProps) {
   const itemTypeMap = {
     'place': 'place',
@@ -117,7 +119,10 @@ export function ImageCard({
   
   return (
     <div className="group relative">
-      <div className={`${preserveAspectRatio ? '' : aspectRatio} overflow-hidden rounded-md bg-muted relative`}>
+      <div
+        className={`${preserveAspectRatio ? '' : aspectRatio} overflow-hidden rounded-md bg-muted relative ${onImageClick ? 'cursor-pointer' : ''}`}
+        onClick={onImageClick}
+      >
         {!isLoaded && (
           <div className={`${preserveAspectRatio ? 'min-h-[200px]' : 'absolute inset-0'} bg-muted animate-pulse`} />
         )}
@@ -246,9 +251,10 @@ interface EditorialDaySectionProps {
   day: DayEditorial;
   getImageUrl: (key: string, defaultUrl: string) => string;
   hasCustomImage: (key: string) => boolean;
+  onOpenProductModal?: (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string }) => void;
 }
 
-export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: EditorialDaySectionProps) {
+export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenProductModal }: EditorialDaySectionProps) {
   const heroImage = hasCustomImage(day.heroImageKey) 
     ? getImageUrl(day.heroImageKey, day.heroImageDefault)
     : day.heroImageDefault;
@@ -319,6 +325,13 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
                         showSuitcase={true}
                         imageType="look"
                         preserveAspectRatio={true}
+                        onImageClick={onOpenProductModal ? () => onOpenProductModal({
+                          title: `${flow.title} - The Look`,
+                          imageUrl: wardrobeImage,
+                          itemId: flow.wardrobeImageKey!,
+                          brand: "FDV Curated",
+                          pinType: "look",
+                        }) : undefined}
                       />
                     )}
                     {hasAccessories && (
@@ -328,10 +341,17 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
                           const extraImage = getImageUrl(extra.imageKey, extra.imageDefault);
                           return (
                             <div key={idx} className="aspect-square overflow-hidden rounded-sm bg-muted relative group">
-                              <img 
+                              <img
                                 src={extraImage}
                                 alt={`Accessory ${idx + 1}`}
-                                className="w-full h-full object-cover"
+                                className={`w-full h-full object-cover ${onOpenProductModal ? 'cursor-pointer' : ''}`}
+                                onClick={onOpenProductModal ? () => onOpenProductModal({
+                                  title: `${flow.title} Accessory ${idx + 1}`,
+                                  imageUrl: extraImage,
+                                  itemId: extra.imageKey,
+                                  brand: "FDV Curated",
+                                  pinType: "product",
+                                }) : undefined}
                               />
                               <div className="absolute top-1 right-1 flex flex-col gap-0.5">
                                 <PinButton
@@ -391,22 +411,24 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage }: Editor
 interface EditorialOverviewProps {
   getImageUrl: (key: string, defaultUrl: string) => string;
   hasCustomImage: (key: string) => boolean;
+  onOpenProductModal?: (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string }) => void;
 }
 
-export function EditorialOverview({ getImageUrl, hasCustomImage }: EditorialOverviewProps) {
+export function EditorialOverview({ getImageUrl, hasCustomImage, onOpenProductModal }: EditorialOverviewProps) {
   const editorialData = extractEditorialData();
-  
+
   return (
     <div className="min-h-screen bg-background">
       <EditorialHero />
-      
+
       <div className="max-w-5xl mx-auto px-4 md:px-6">
         {editorialData.map((day) => (
-          <EditorialDaySection 
+          <EditorialDaySection
             key={day.dayNumber}
             day={day}
             getImageUrl={getImageUrl}
             hasCustomImage={hasCustomImage}
+            onOpenProductModal={onOpenProductModal}
           />
         ))}
       </div>

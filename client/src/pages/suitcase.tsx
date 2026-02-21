@@ -165,6 +165,42 @@ const SAVE_TYPE_TO_CATEGORY: Record<string, string> = {
   'edit': 'my-edits',
 };
 
+function getDestinationLabel(save: SavedItem): string {
+  const storyTag = save.storyTag || save.metadata?.storyTag || '';
+  const source = save.sourceContext || '';
+  if (storyTag === 'morocco' || source.includes('morocco')) return 'Morocco';
+  if (storyTag === 'hydra' || source.includes('hydra')) return 'Hydra';
+  if (storyTag === 'slow-travel' || storyTag === 'spain' || source.includes('spain') || source.includes('slow')) return 'Slow Travel';
+  if (storyTag === 'retreat' || source.includes('retreat')) return 'The Retreat';
+  if (storyTag === 'new-york' || storyTag === 'newyork' || source.includes('new-york') || source.includes('newyork')) return 'New York';
+  if (storyTag === 'opening' || source.includes('opening') || source.includes('todays_edit')) return "Today's Edit";
+  return 'Other';
+}
+
+function groupByDestination(saves: SavedItem[]): { destination: string; items: SavedItem[] }[] {
+  const groups = new Map<string, SavedItem[]>();
+  for (const save of saves) {
+    const dest = getDestinationLabel(save);
+    if (!groups.has(dest)) groups.set(dest, []);
+    groups.get(dest)!.push(save);
+  }
+  // Order: Morocco first, then alphabetical, "Other" last
+  const order = ['Morocco', 'Hydra', 'Slow Travel', 'The Retreat', 'New York', "Today's Edit", 'Other'];
+  const result: { destination: string; items: SavedItem[] }[] = [];
+  for (const dest of order) {
+    if (groups.has(dest)) {
+      result.push({ destination: dest, items: groups.get(dest)! });
+    }
+  }
+  // Any unlisted destinations
+  for (const [dest, items] of groups) {
+    if (!order.includes(dest)) {
+      result.push({ destination: dest, items });
+    }
+  }
+  return result;
+}
+
 function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
   switch (tab) {
     case "all":
@@ -174,18 +210,16 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
     case "my-edits":
       return saves.filter(s => s.itemType === "edit");
     case "my-trips":
-      // Include trips, places/destinations, and items explicitly bucketed to my-trips
+      // Only explicit trip saves — editorial saves are DESTINATIONS, not trips
+      // Trip status is only after user explicitly saves a whole itinerary
       return saves.filter(s =>
         s.itemType === "trip" ||
-        s.itemType === "place" ||
-        s.itemType === "destination" ||
         s.metadata?.bucket === "my-trips"
       );
     case "travel-destinations":
-      // Include travel/destination items AND trips/places (shared with my-trips)
+      // Include all travel/destination items, places, scenes, covers
       return saves.filter(s =>
         SAVE_TYPE_TO_CATEGORY[s.itemType] === "travel-destinations" ||
-        s.itemType === "trip" ||
         s.itemType === "place" ||
         s.itemType === "destination"
       );
@@ -485,11 +519,17 @@ export default function SuitcasePage() {
       id: save.itemId,
       title: save.title || save.metadata?.title || save.itemId,
       subtitle: save.metadata?.subtitle,
+      description: save.metadata?.description,
       bucket: save.itemType,
       pinType: save.itemType,
       assetKey: save.itemId,
       storyTag: save.storyTag || '',
       imageUrl,
+      brand: save.metadata?.brand,
+      price: save.metadata?.price,
+      shopUrl: save.metadata?.shopUrl || save.metadata?.shopLink,
+      bookUrl: save.metadata?.bookUrl,
+      detailDescription: save.metadata?.detailDescription || save.metadata?.description,
     });
     setDrawerOpen(true);
   };
@@ -582,15 +622,29 @@ export default function SuitcasePage() {
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {filteredSaves.map((save) => (
-                  <SavedItemCard
-                    key={save.id}
-                    save={save}
-                    onRemove={() => removeMutation.mutate(save.itemId)}
-                    onClick={() => handleItemClick(save)}
-                    getImageUrl={getImageUrl}
-                  />
+              <div className="space-y-10">
+                {groupByDestination(filteredSaves).map((group) => (
+                  <div key={group.destination}>
+                    {/* Destination header — only show if multiple destinations */}
+                    {groupByDestination(filteredSaves).length > 1 && (
+                      <div className="flex items-center gap-3 mb-4">
+                        <h3 className="text-xs font-bold tracking-[0.2em] uppercase text-muted-foreground">{group.destination}</h3>
+                        <div className="flex-1 h-px bg-border" />
+                        <span className="text-xs text-muted-foreground">{group.items.length}</span>
+                      </div>
+                    )}
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {group.items.map((save) => (
+                        <SavedItemCard
+                          key={save.id}
+                          save={save}
+                          onRemove={() => removeMutation.mutate(save.itemId)}
+                          onClick={() => handleItemClick(save)}
+                          getImageUrl={getImageUrl}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
@@ -599,6 +653,7 @@ export default function SuitcasePage() {
         item={selectedItem}
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
+        source="suitcase"
       />
       <TripTransition
         isActive={showTransition}
