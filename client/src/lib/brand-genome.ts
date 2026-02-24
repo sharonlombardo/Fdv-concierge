@@ -124,3 +124,23 @@ export function getProductDisplayName(product: BrandGenomeProduct): string {
 export function isShoppable(product: BrandGenomeProduct): boolean {
   return product.shop_status === "live" && !!product.url;
 }
+
+/**
+ * Find a product by partial key match (case-insensitive).
+ * Tries exact match first, then checks if either key contains the other.
+ */
+export function findProductByPartialKey(partialKey: string): BrandGenomeProduct | undefined {
+  if (!partialKey) return undefined;
+  const normalized = partialKey.toLowerCase().trim();
+  // Try exact case-insensitive match first
+  const exact = genomeMapLower.get(normalized);
+  if (exact) return exact;
+  // Try partial match — check if either contains the other
+  for (const product of allProductsList) {
+    const dbKey = product.database_match_key.toLowerCase().trim();
+    if (dbKey.includes(normalized) || normalized.includes(dbKey)) {
+      return product;
+    }
+  }
+  return undefined;
+}

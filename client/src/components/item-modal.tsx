@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { getProductByKey, type BrandGenomeProduct } from "@/lib/brand-genome";
+import { getProductByKey, findProductByPartialKey, type BrandGenomeProduct } from "@/lib/brand-genome";
 
 function fireEvent(eventType: string, itemId?: string, destinationUrl?: string, metadata?: Record<string, any>) {
   fetch("/api/events", {
@@ -90,23 +90,50 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
     }
   }, [open, item?.id]);
 
-  // Try brand genome lookup with fallback to imageUrl filename
+  // Try brand genome lookup with multi-level fallback
   const genomeProduct: BrandGenomeProduct | undefined = useMemo(() => {
-    // First try exact match on genomeKey
+    // 1. Try exact match on genomeKey (case-insensitive via getProductByKey)
     if (item?.genomeKey) {
       const exact = getProductByKey(item.genomeKey);
       if (exact) return exact;
     }
-    // Fallback: try to extract filename from imageUrl and match
+    // 2. Try extracting filename from imageUrl
     if (item?.imageUrl) {
       const filename = item.imageUrl.split('/').pop()?.split('?')[0] || "";
       if (filename) {
-        const fallback = getProductByKey(filename);
-        if (fallback) return fallback;
+        const fromFilename = getProductByKey(filename);
+        if (fromFilename) return fromFilename;
+        // Try URL-decoded version
+        try {
+          const decoded = decodeURIComponent(filename);
+          if (decoded !== filename) {
+            const fromDecoded = getProductByKey(decoded);
+            if (fromDecoded) return fromDecoded;
+          }
+        } catch {}
       }
+    }
+    // 3. Try partial key match as last resort
+    if (item?.genomeKey) {
+      const partial = findProductByPartialKey(item.genomeKey);
+      if (partial) return partial;
     }
     return undefined;
   }, [item?.genomeKey, item?.imageUrl]);
+
+  // Debug log for genome data flow verification
+  useEffect(() => {
+    if (item && open) {
+      console.log('[MODAL DEBUG]', {
+        genomeKey: item.genomeKey,
+        genomeFound: !!genomeProduct,
+        genomeBrand: genomeProduct?.brand,
+        genomeName: genomeProduct?.name,
+        title: item.title,
+        imageUrl: item.imageUrl?.substring(0, 80),
+      });
+    }
+  }, [item, genomeProduct, open]);
 
   // Fetch commerce data from saves table
   const { data: saveDetail } = useQuery<SaveDetail>({
@@ -279,12 +306,12 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
                 </div>
               )}
 
-              {/* Title */}
+              {/* Title — genome product name overrides prop title */}
               <h2
                 className="text-lg font-medium leading-snug"
                 style={{ color: "#1a1a1a", fontFamily: "'Inter', sans-serif" }}
               >
-                {item.title}
+                {genomeProduct?.name || item.title}
               </h2>
 
               {/* Color chip */}

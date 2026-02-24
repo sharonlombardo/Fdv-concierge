@@ -25,20 +25,37 @@ function getMoroccoItineraryTiles(): PinTile[] {
   for (const page of ITINERARY_DATA) {
     if ('day' in page) {
       const dayPage = page as DayPage;
+      // Track which time slots we've seen for product map lookups
+      const timeSlotCount: Record<string, number> = {};
+
       for (const item of dayPage.flow) {
         if (item.commercialWardrobe) {
           const tileId = `${item.id}-look`;
           if (seenIds.has(tileId)) continue;
           seenIds.add(tileId);
+
+          // Map flow item time to product map slot
+          const timeKey = item.time?.toLowerCase() || '';
+          const slotName = timeKey.includes('evening') || timeKey.includes('night') ? 'evening' as const
+            : timeKey.includes('afternoon') ? 'afternoon' as const : 'morning' as const;
+          // Use getSlotProducts to find the look genome key for this day/slot
+          if (!timeSlotCount[slotName]) timeSlotCount[slotName] = 0;
+          const slotProds = getSlotProducts(dayPage.day, slotName);
+          const lookEntry = slotProds.find(s => s.position === 'look');
+          const lookGenome = lookEntry?.product;
+
           tiles.push({
             id: tileId,
             assetKey: `${item.id}-wardrobe`,
-            caption: item.wardrobe || `Day ${dayPage.day} Look`,
+            caption: lookGenome ? getProductDisplayName(lookGenome) : (item.wardrobe || `Day ${dayPage.day} Look`),
             bucket: "Your Style",
             pinType: "look",
-            title: `${item.title} - The Look`,
+            title: lookGenome ? getProductDisplayName(lookGenome) : `${item.title} - The Look`,
             imageUrl: item.commercialWardrobe,
-            brand: "FDV Curated",
+            brand: lookGenome?.brand || undefined,
+            price: lookGenome?.price || undefined,
+            shopUrl: lookGenome && isShoppable(lookGenome) ? lookGenome.url : undefined,
+            genomeKey: lookEntry?.key || undefined,
           });
         }
         // Also include wardrobeExtras if they have images
@@ -59,7 +76,7 @@ function getMoroccoItineraryTiles(): PinTile[] {
                 pinType: "product",
                 title: genome ? getProductDisplayName(genome) : (extra.name || `${item.title} - Accessory`),
                 imageUrl: extra.image,
-                brand: genome?.brand || "FDV Curated",
+                brand: genome?.brand || undefined,
                 price: genome?.price || undefined,
                 shopUrl: genome && isShoppable(genome) ? genome.url : extra.shopLink,
                 genomeKey: genome?.database_match_key || undefined,

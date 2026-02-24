@@ -12,7 +12,7 @@ import {
   type WardrobeExtra
 } from '@shared/itinerary-data';
 import logoImage from '@assets/LOGO_1767219658929.png';
-import { getProductByKey, getProductDisplayName, isShoppable } from '@/lib/brand-genome';
+import { getProductByKey, getProductDisplayName, isShoppable, getSlotProducts } from '@/lib/brand-genome';
 
 interface PackingItem {
   id: string;
@@ -27,6 +27,11 @@ interface PackingItem {
   isLook: boolean;
   flowItemId: string;
   extraIndex?: number;
+  genomeKey?: string;
+  price?: string;
+  shopUrl?: string;
+  shopStatus?: 'live' | 'coming_soon';
+  description?: string;
 }
 
 interface WardrobeRow {
@@ -65,28 +70,49 @@ function extractPackingData(): DayData[] {
 
       const processFlow = (flow: FlowItem, timeCategory: 'Morning' | 'Afternoon' | 'Evening'): WardrobeRow | null => {
         if (!flow.commercialWardrobe) return null;
-        
+
         const items: PackingItem[] = [];
-        
+
+        // Map time category to product map slot name
+        const slotName = timeCategory.toLowerCase() as 'morning' | 'afternoon' | 'evening';
+        // Get product map data for this day/slot
+        const slotProducts = getSlotProducts(dayPage.day, slotName);
+        const lookProduct = slotProducts.find(s => s.position === 'look');
+        const lookGenome = lookProduct?.product;
+
         items.push({
           id: `${flow.id}-look`,
           imageKey: `${flow.id}-wardrobe`,
-          name: 'Total Look',
+          name: lookGenome ? getProductDisplayName(lookGenome) : 'Total Look',
+          brand: lookGenome?.brand,
           image: flow.commercialWardrobe,
           context: `${timeCategory} • ${flow.title}`,
-          whyText: flow.wardrobe || 'Styled outfit for this activity.',
+          whyText: lookGenome?.description || flow.wardrobe || 'Styled outfit for this activity.',
           dayNumber: dayPage.day,
           time: timeCategory,
           isLook: true,
           flowItemId: flow.id,
+          genomeKey: lookProduct?.key || undefined,
+          price: lookGenome?.price,
+          shopUrl: lookGenome && isShoppable(lookGenome) ? lookGenome.url : undefined,
+          shopStatus: lookGenome?.shop_status,
+          description: lookGenome?.description,
         });
+
+        // Positions map: index 0=footwear, 1=handbag, 2=jewelry, 3=accessory
+        const positionNames = ['footwear', 'handbag', 'jewelry', 'accessory'] as const;
+        const positionLabels = ['Footwear', 'Handbag', 'Jewelry', 'Accessory'];
 
         for (let i = 0; i < 4; i++) {
           const extra = flow.wardrobeExtras?.[i];
-          if (extra) {
-            // Try genome lookup for richer product name
+          const position = positionNames[i];
+          const mapEntry = slotProducts.find(s => s.position === position);
+          const genome = mapEntry?.product;
+
+          if (extra && extra.image) {
+            // Has editorial data — enrich with genome if available
             const extraFilename = extra.image?.split('/').pop() || '';
-            const extraGenome = getProductByKey(extraFilename) || getProductByKey(extra.image || '');
+            const extraGenome = genome || getProductByKey(extraFilename) || getProductByKey(extra.image || '');
             const extraName = extraGenome ? getProductDisplayName(extraGenome) : extra.name;
             const extraBrand = extraGenome?.brand;
             items.push({
@@ -102,13 +128,39 @@ function extractPackingData(): DayData[] {
               isLook: false,
               flowItemId: flow.id,
               extraIndex: i,
+              genomeKey: mapEntry?.key || extraFilename || undefined,
+              price: extraGenome?.price,
+              shopUrl: extraGenome && isShoppable(extraGenome) ? extraGenome.url : undefined,
+              shopStatus: extraGenome?.shop_status,
+              description: extraGenome?.description,
+            });
+          } else if (genome) {
+            // No editorial extra, but product map has a genome entry for this position
+            items.push({
+              id: `${flow.id}-extra-${i}`,
+              imageKey: `${flow.id}-extra-${i}`,
+              name: getProductDisplayName(genome),
+              brand: genome.brand,
+              image: `/product-images/${genome.database_match_key}`,
+              context: `${timeCategory} • ${flow.title}`,
+              whyText: genome.description || `${positionLabels[i]} for ${flow.title.toLowerCase()}.`,
+              dayNumber: dayPage.day,
+              time: timeCategory,
+              isLook: false,
+              flowItemId: flow.id,
+              extraIndex: i,
+              genomeKey: mapEntry?.key || undefined,
+              price: genome.price,
+              shopUrl: isShoppable(genome) ? genome.url : undefined,
+              shopStatus: genome.shop_status,
+              description: genome.description,
             });
           } else {
-            const placeholderNames = ['Footwear', 'Handbag', 'Jewelry', 'Accessory'];
+            // No data at all — placeholder
             items.push({
               id: `${flow.id}-placeholder-${i}`,
               imageKey: `${flow.id}-extra-${i}`,
-              name: placeholderNames[i] || 'Item',
+              name: positionLabels[i] || 'Item',
               image: '',
               context: `${timeCategory} • ${flow.title}`,
               whyText: 'Add your own item.',
@@ -429,19 +481,18 @@ export default function PackingList() {
     const hasCustom = hasCustomImage(item.imageKey);
     const imageUrl = (hasCustom || item.image) ? getImageUrl(item.imageKey, item.image) : '';
 
-    // Try genome lookup for rich product data
-    // The item.image filename might match a genome database_match_key
-    const imageFilename = item.image?.split('/').pop() || '';
-    const genome = getProductByKey(imageFilename) || getProductByKey(item.image || '');
+    // Use genome data from item (populated by product map in extractPackingData)
+    // Fall back to runtime genome lookup if item doesn't have genomeKey
+    const genome = item.genomeKey ? getProductByKey(item.genomeKey) : null;
 
-    const title = genome ? getProductDisplayName(genome) : item.name;
-    const brand = genome?.brand || item.brand;
-    const price = genome?.price;
-    const description = genome?.description || `${item.context} — ${item.whyText}`;
-    const shopUrl = genome && isShoppable(genome) ? genome.url : undefined;
+    const title = item.name; // Already resolved from genome in extractPackingData
+    const brand = item.brand || genome?.brand;
+    const price = item.price || genome?.price;
+    const description = item.description || genome?.description || `${item.context} — ${item.whyText}`;
+    const shopUrl = item.shopUrl || (genome && isShoppable(genome) ? genome.url : undefined);
     const color = genome?.color;
     const sizes = genome?.sizes;
-    const shopStatus = genome?.shop_status;
+    const shopStatus = item.shopStatus || genome?.shop_status;
 
     setSelectedItem({
       id: item.id,
@@ -458,7 +509,7 @@ export default function PackingList() {
       color,
       sizes,
       shopStatus,
-      genomeKey: imageFilename || undefined,
+      genomeKey: item.genomeKey || undefined,
     });
     setModalOpen(true);
   };
