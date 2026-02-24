@@ -26,6 +26,7 @@ export type EditorialItem = {
   price?: string;
   shopUrl?: string;
   bookUrl?: string;
+  genomeKey?: string;
 };
 
 type EditorialDetailDrawerProps = {

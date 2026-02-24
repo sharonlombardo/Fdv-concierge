@@ -307,8 +307,8 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                           title: `${flow.title} - The Look`,
                           imageUrl: wardrobeImage,
                           itemId: flow.wardrobeImageKey!,
-                          brand: "FDV Curated",
                           pinType: "look",
+                          genomeKey: flow.wardrobeImageDefault?.split('/').pop()?.split('?')[0] || undefined,
                         }) : undefined}
                       />
                     )}
@@ -327,8 +327,8 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                                   title: `${flow.title} Accessory ${idx + 1}`,
                                   imageUrl: extraImage,
                                   itemId: extra.imageKey,
-                                  brand: "FDV Curated",
                                   pinType: "product",
+                                  genomeKey: extraImage?.split('/').pop()?.split('?')[0] || undefined,
                                 }) : undefined}
                               />
                               <div className="absolute top-1 right-1 flex flex-col gap-0.5">

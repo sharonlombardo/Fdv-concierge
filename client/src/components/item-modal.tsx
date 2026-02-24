@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
@@ -90,10 +90,23 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
     }
   }, [open, item?.id]);
 
-  // Try brand genome lookup
-  const genomeProduct: BrandGenomeProduct | undefined = item?.genomeKey
-    ? getProductByKey(item.genomeKey)
-    : undefined;
+  // Try brand genome lookup with fallback to imageUrl filename
+  const genomeProduct: BrandGenomeProduct | undefined = useMemo(() => {
+    // First try exact match on genomeKey
+    if (item?.genomeKey) {
+      const exact = getProductByKey(item.genomeKey);
+      if (exact) return exact;
+    }
+    // Fallback: try to extract filename from imageUrl and match
+    if (item?.imageUrl) {
+      const filename = item.imageUrl.split('/').pop()?.split('?')[0] || "";
+      if (filename) {
+        const fallback = getProductByKey(filename);
+        if (fallback) return fallback;
+      }
+    }
+    return undefined;
+  }, [item?.genomeKey, item?.imageUrl]);
 
   // Fetch commerce data from saves table
   const { data: saveDetail } = useQuery<SaveDetail>({

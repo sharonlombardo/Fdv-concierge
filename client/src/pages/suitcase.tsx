@@ -531,6 +531,7 @@ export default function SuitcasePage() {
       shopUrl: save.shopUrl || save.metadata?.shopUrl || save.metadata?.shopLink,
       bookUrl: save.bookUrl || save.metadata?.bookUrl,
       detailDescription: save.detailDescription || save.metadata?.detailDescription || save.metadata?.description,
+      genomeKey: save.metadata?.genomeKey || save.metadata?.assetKey || imageUrl?.split('/').pop()?.split('?')[0] || undefined,
     });
     setDrawerOpen(true);
   };

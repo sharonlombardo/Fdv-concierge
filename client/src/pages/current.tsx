@@ -62,6 +62,7 @@ function getMoroccoItineraryTiles(): PinTile[] {
                 brand: genome?.brand || "FDV Curated",
                 price: genome?.price || undefined,
                 shopUrl: genome && isShoppable(genome) ? genome.url : extra.shopLink,
+                genomeKey: genome?.database_match_key || undefined,
               });
             }
           }
@@ -109,6 +110,7 @@ function getMoroccoItineraryTiles(): PinTile[] {
           brand: genome.brand,
           price: genome.price,
           shopUrl: isShoppable(genome) ? genome.url : undefined,
+          genomeKey: genome.database_match_key,
         });
       }
     }
@@ -147,6 +149,7 @@ type PinTile = {
   shopUrl?: string;
   bookUrl?: string;
   title?: string; // Product name override (caption is editorial, title is product name)
+  genomeKey?: string;
 };
 
 type PageTurnHeroProps = {
@@ -345,6 +348,7 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
         brand,
         shopUrl,
         bookUrl,
+        genomeKey: imageUrl?.split('/').pop()?.split('?')[0] || undefined,
       });
     }
   };
@@ -474,6 +478,7 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
         price: tile.price,
         shopUrl: tile.shopUrl,
         bookUrl: tile.bookUrl,
+        genomeKey: tile.genomeKey || tile.imageUrl?.split('/').pop()?.split('?')[0] || undefined,
       });
     }
   };
@@ -564,6 +569,7 @@ function EditorialScroll({ title, tiles, sourceStory, onOpenDetail }: EditorialS
         brand: tile.brand,
         shopUrl: tile.shopUrl,
         bookUrl: tile.bookUrl,
+        genomeKey: tile.genomeKey || tile.imageUrl?.split('/').pop()?.split('?')[0] || undefined,
       });
     }
   };
@@ -1006,6 +1012,7 @@ function ShopTheStory({ tiles, sourceStory, onOpenDetail }: ShopTheStoryProps) {
         price: tile.price,
         shopUrl: tile.shopUrl,
         bookUrl: tile.bookUrl,
+        genomeKey: tile.genomeKey || tile.imageUrl?.split('/').pop()?.split('?')[0] || undefined,
       });
     }
   };
