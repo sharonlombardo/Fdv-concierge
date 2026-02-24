@@ -12,7 +12,7 @@ import {
   type WardrobeExtra
 } from '@shared/itinerary-data';
 import logoImage from '@assets/LOGO_1767219658929.png';
-import { getProductByKey, getProductDisplayName, isShoppable, getSlotProducts } from '@/lib/brand-genome';
+import { getProductByKey, getProductDisplayName, isShoppable, getSlotProducts, getProductImageUrl } from '@/lib/brand-genome';
 
 interface PackingItem {
   id: string;
@@ -141,7 +141,7 @@ function extractPackingData(): DayData[] {
               imageKey: `${flow.id}-extra-${i}`,
               name: getProductDisplayName(genome),
               brand: genome.brand,
-              image: `/product-images/${genome.database_match_key}`,
+              image: getProductImageUrl(genome.database_match_key),
               context: `${timeCategory} • ${flow.title}`,
               whyText: genome.description || `${positionLabels[i]} for ${flow.title.toLowerCase()}.`,
               dayNumber: dayPage.day,

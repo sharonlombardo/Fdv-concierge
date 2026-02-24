@@ -10,7 +10,7 @@ import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
 import { LoadingImage } from "@/components/loading-image";
 import { ITINERARY_DATA, type DayPage } from "@shared/itinerary-data";
-import { getProductByKey, getProductDisplayName, isShoppable, getProductMapDays, getSlotProducts, type BrandGenomeProduct } from "@/lib/brand-genome";
+import { getProductByKey, getProductDisplayName, isShoppable, getProductMapDays, getSlotProducts, getProductImageUrl, type BrandGenomeProduct } from "@/lib/brand-genome";
 
 type GetImageUrlFn = (assetKey: string) => string;
 const ImageContext = createContext<GetImageUrlFn>((key) => "");
@@ -123,7 +123,7 @@ function getMoroccoItineraryTiles(): PinTile[] {
           bucket: "Your Style",
           pinType: categoryMap[position] || "product",
           title: getProductDisplayName(genome),
-          imageUrl: `/product-images/${genome.database_match_key}`,
+          imageUrl: getProductImageUrl(genome.database_match_key),
           brand: genome.brand,
           price: genome.price,
           shopUrl: isShoppable(genome) ? genome.url : undefined,

@@ -162,6 +162,17 @@ export const SECTION_LOOK_GENOME_KEY: Record<string, string> = {
   "d8-4": "LOOK:FDV:ATLASSCARF:IVORY.jpg",
 };
 
+/** Placeholder image for products without photos */
+const PRODUCT_PLACEHOLDER = "/product-placeholder.svg";
+
+/**
+ * Get the best available image URL for a genome product.
+ * Returns the placeholder SVG since we don't have individual product photos.
+ */
+export function getProductImageUrl(_genomeKey: string): string {
+  return PRODUCT_PLACEHOLDER;
+}
+
 /**
  * Find a product by partial key match (case-insensitive).
  * Tries exact match first, then checks if either key contains the other.
