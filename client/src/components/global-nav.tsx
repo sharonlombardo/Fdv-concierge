@@ -77,7 +77,7 @@ export function GlobalNav({ variant = "default", showBack = true, backHref, onBa
             <img
               src={fdvLogo}
               alt="FDV Concierge"
-              className={`h-8 md:h-11 w-auto cursor-pointer ${isOverlay ? "brightness-0 invert" : "dark:invert"}`}
+              className={`h-7 md:h-9 w-auto cursor-pointer ${isOverlay ? "brightness-0 invert" : "dark:invert"}`}
               data-testid="nav-logo"
             />
           </Link>

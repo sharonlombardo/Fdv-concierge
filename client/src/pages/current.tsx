@@ -3,7 +3,6 @@ import { Link } from "wouter";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PinButton } from "@/components/pin-button";
-import { SuitcaseButton } from "@/components/suitcase-button";
 import { GlobalNav } from "@/components/global-nav";
 import { ItemModal, type ItemModalData } from "@/components/item-modal";
 import type { EditorialItem } from "@/components/editorial-detail-drawer";
@@ -11,22 +10,25 @@ import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
 import { LoadingImage } from "@/components/loading-image";
 import { ITINERARY_DATA, type DayPage } from "@shared/itinerary-data";
+import { getProductByKey, getProductDisplayName, isShoppable, getProductMapDays, getSlotProducts, type BrandGenomeProduct } from "@/lib/brand-genome";
 
 type GetImageUrlFn = (assetKey: string) => string;
 const ImageContext = createContext<GetImageUrlFn>((key) => "");
 
 // Generate Morocco itinerary product tiles for Shop the Story
-// Includes ALL daily looks from the Morocco itinerary with brand attribution
+// Includes looks from itinerary AND individual products (shoes, bags, accessories) from brand genome
 function getMoroccoItineraryTiles(): PinTile[] {
   const tiles: PinTile[] = [];
   const seenIds = new Set<string>();
+
+  // First: add looks from itinerary data
   for (const page of ITINERARY_DATA) {
     if ('day' in page) {
       const dayPage = page as DayPage;
       for (const item of dayPage.flow) {
         if (item.commercialWardrobe) {
           const tileId = `${item.id}-look`;
-          if (seenIds.has(tileId)) continue; // deduplicate
+          if (seenIds.has(tileId)) continue;
           seenIds.add(tileId);
           tiles.push({
             id: tileId,
@@ -39,7 +41,7 @@ function getMoroccoItineraryTiles(): PinTile[] {
             brand: "FDV Curated",
           });
         }
-        // Also include wardrobeExtras if they have images and shopLinks
+        // Also include wardrobeExtras if they have images
         if (item.wardrobeExtras) {
           for (let i = 0; i < item.wardrobeExtras.length; i++) {
             const extra = item.wardrobeExtras[i];
@@ -47,16 +49,19 @@ function getMoroccoItineraryTiles(): PinTile[] {
               const extraId = `${item.id}-extra-${i}`;
               if (seenIds.has(extraId)) continue;
               seenIds.add(extraId);
+              // Try genome lookup for the extra image
+              const genome = getProductByKey(extra.image.replace(/^.*\//, ''));
               tiles.push({
                 id: extraId,
                 assetKey: extraId,
-                caption: extra.name || `Accessory`,
+                caption: genome ? getProductDisplayName(genome) : (extra.name || `Accessory`),
                 bucket: "Your Style",
                 pinType: "product",
-                title: extra.name || `${item.title} - Accessory`,
+                title: genome ? getProductDisplayName(genome) : (extra.name || `${item.title} - Accessory`),
                 imageUrl: extra.image,
-                brand: "FDV Curated",
-                shopUrl: extra.shopLink,
+                brand: genome?.brand || "FDV Curated",
+                price: genome?.price || undefined,
+                shopUrl: genome && isShoppable(genome) ? genome.url : extra.shopLink,
               });
             }
           }
@@ -64,6 +69,51 @@ function getMoroccoItineraryTiles(): PinTile[] {
       }
     }
   }
+
+  // Second: add individual products from the brand genome product map (footwear, bags, jewelry, accessories)
+  const productMapDays = getProductMapDays();
+  const seenGenomeKeys = new Set<string>();
+  for (const day of productMapDays) {
+    const slots = day.slots;
+    for (const [timeSlot, slotData] of Object.entries(slots)) {
+      if (!slotData) continue;
+      // Only add non-look items: footwear, handbag, jewelry, accessory
+      for (const position of ['footwear', 'handbag', 'jewelry', 'accessory'] as const) {
+        const imageKey = (slotData as any)?.[position];
+        if (!imageKey) continue;
+        if (seenGenomeKeys.has(imageKey.toLowerCase())) continue;
+        seenGenomeKeys.add(imageKey.toLowerCase());
+
+        const genome = getProductByKey(imageKey);
+        if (!genome) continue; // Only include items we have genome data for
+
+        const tileId = `genome-${genome.database_match_key}`;
+        if (seenIds.has(tileId)) continue;
+        seenIds.add(tileId);
+
+        const categoryMap: Record<string, string> = {
+          footwear: "product",
+          handbag: "product",
+          jewelry: "accessory",
+          accessory: "product",
+        };
+
+        tiles.push({
+          id: tileId,
+          assetKey: tileId,
+          caption: getProductDisplayName(genome),
+          bucket: "Your Style",
+          pinType: categoryMap[position] || "product",
+          title: getProductDisplayName(genome),
+          imageUrl: `/product-images/${genome.database_match_key}`,
+          brand: genome.brand,
+          price: genome.price,
+          shopUrl: isShoppable(genome) ? genome.url : undefined,
+        });
+      }
+    }
+  }
+
   return tiles;
 }
 
@@ -254,7 +304,7 @@ function PageTurnHero({ title, stateOfMind, paragraph, assetKey, bucket, pinType
         <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white font-medium mb-4" data-testid="hero-title">
           {title}
         </h1>
-        <p className="text-white/80 text-lg md:text-xl italic mb-4">{stateOfMind}</p>
+        <p className="text-white/90 text-lg md:text-xl italic font-medium mb-4 drop-shadow-sm">{stateOfMind}</p>
         {paragraph && (
           <p className="text-white/70 text-base md:text-lg leading-relaxed max-w-2xl">
             {paragraph}
@@ -265,34 +315,12 @@ function PageTurnHero({ title, stateOfMind, paragraph, assetKey, bucket, pinType
   );
 }
 
-function QuoteCard({ quote, id, sourceStory }: QuoteCardProps & { sourceStory?: string }) {
-  const storyTag = sourceStory?.toLowerCase().replace(/\s+/g, '-') || 'opening';
+function QuoteCard({ quote, id }: QuoteCardProps & { sourceStory?: string }) {
   return (
     <div className="py-16 md:py-24 px-8 md:px-16 max-w-3xl mx-auto text-center" data-testid={`quote-${id}`}>
-      <div className="relative inline-block">
-        <p className="font-serif text-2xl md:text-3xl lg:text-4xl italic leading-relaxed text-foreground/90">
-          "{quote}"
-        </p>
-        <div className="absolute -top-2 -right-8 z-10">
-          <PinButton
-            itemType="quote"
-            itemId={id}
-            itemData={{
-              title: quote,
-              bucket: "State of Mind",
-              sourceStory: sourceStory || "The Current",
-              issueNumber: 1,
-              saveType: "quote",
-              storyTag,
-              editionTag: "current-edition-1",
-              editTag: `${storyTag}-edit`
-            }}
-            sourceContext="the_current_issue_1"
-            aestheticTags={["quote", "state-of-mind", storyTag]}
-            size="sm"
-          />
-        </div>
-      </div>
+      <p className="font-serif text-2xl md:text-3xl lg:text-4xl italic leading-relaxed text-foreground/90">
+        "{quote}"
+      </p>
     </div>
   );
 }
@@ -355,20 +383,6 @@ function MomentBlock({ title, paragraphs, assetKey, bucket, pinType, sourceStory
           aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
           size="sm"
         />
-        {(pinType === "product" || pinType === "look" || pinType === "style") && (
-          <SuitcaseButton
-            itemId={assetKey}
-            itemData={{
-              title,
-              imageUrl: imageUrl,
-              storyTag,
-              editTag: `${storyTag}-edit`
-            }}
-            sourceContext="the_current_issue_1"
-            aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
-            size="sm"
-          />
-        )}
       </div>
       </div>
       <p className="text-[10px] text-center text-muted-foreground/60 italic mt-2">{getBucketLabel(bucket)}</p>
@@ -513,20 +527,6 @@ function PinGrid({ title, tiles, sourceStory, onOpenDetail }: PinGridProps) {
                 aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), storyTag]}
                 size="sm"
               />
-              {(tile.pinType === "product" || tile.pinType === "look" || tile.pinType === "style" || tile.pinType === "item" || tile.pinType === "object") && (
-                <SuitcaseButton
-                  itemId={tile.id}
-                  itemData={{
-                    title: tile.caption,
-                    imageUrl: imageUrl,
-                    storyTag,
-                    editTag: `${storyTag}-edit`
-                  }}
-                  sourceContext="the_current_issue_1"
-                  aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), storyTag]}
-                  size="sm"
-                />
-              )}
             </div>
             <p className="text-[10px] text-muted-foreground/60 text-center italic mt-2">{getBucketLabel(tile.bucket)}</p>
           </div>
@@ -687,20 +687,6 @@ function EditorialScroll({ title, tiles, sourceStory, onOpenDetail }: EditorialS
           aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), storyTag]}
           size={size}
         />
-        {(tile.pinType === "look" || tile.pinType === "style" || tile.pinType === "product" || tile.pinType === "item" || tile.pinType === "object") && (
-          <SuitcaseButton
-            itemId={tile.id}
-            itemData={{
-              title: tile.caption,
-              imageUrl: imageUrl,
-              storyTag,
-              editTag: `${storyTag}-edit`
-            }}
-            sourceContext="the_current_issue_1"
-            aestheticTags={[tile.bucket.toLowerCase(), tile.pinType.toLowerCase(), storyTag]}
-            size={size}
-          />
-        )}
       </div>
     );
   }
@@ -857,20 +843,6 @@ function TwoUpFeature({ title, image1, image2, sourceStory, onOpenDetail }: TwoU
               aestheticTags={[image1.bucket.toLowerCase(), image1.pinType.toLowerCase(), storyTag]}
               size="sm"
             />
-            {(image1.pinType === "product" || image1.pinType === "look" || image1.pinType === "style") && (
-              <SuitcaseButton
-                itemId={image1.assetKey}
-                itemData={{
-                  title: image1.caption,
-                  imageUrl: image1Url,
-                  storyTag,
-                  editTag: `${storyTag}-edit`
-                }}
-                sourceContext="the_current_issue_1"
-                aestheticTags={[image1.bucket.toLowerCase(), image1.pinType.toLowerCase(), storyTag]}
-                size="sm"
-              />
-            )}
           </div>
           <p className="text-[10px] text-center text-muted-foreground/60 italic mt-3">{getBucketLabel(image1.bucket)}</p>
         </div>
@@ -904,20 +876,6 @@ function TwoUpFeature({ title, image1, image2, sourceStory, onOpenDetail }: TwoU
               aestheticTags={[image2.bucket.toLowerCase(), image2.pinType.toLowerCase(), storyTag]}
               size="sm"
             />
-            {(image2.pinType === "product" || image2.pinType === "look" || image2.pinType === "style") && (
-              <SuitcaseButton
-                itemId={image2.assetKey}
-                itemData={{
-                  title: image2.caption,
-                  imageUrl: image2Url,
-                  storyTag,
-                  editTag: `${storyTag}-edit`
-                }}
-                sourceContext="the_current_issue_1"
-                aestheticTags={[image2.bucket.toLowerCase(), image2.pinType.toLowerCase(), storyTag]}
-                size="sm"
-              />
-            )}
           </div>
           <p className="text-[10px] text-center text-muted-foreground/60 italic mt-3">{getBucketLabel(image2.bucket)}</p>
         </div>
@@ -981,20 +939,6 @@ function MotionLoopBlock({ overlayText, bucket, pinType, id, sourceStory, captio
             aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
             size="md"
           />
-          {(pinType === "product" || pinType === "look" || pinType === "style") && (
-            <SuitcaseButton
-              itemId={id}
-              itemData={{
-                title: overlayText,
-                imageUrl: imageUrl || "",
-                storyTag,
-                editTag: `${storyTag}-edit`
-              }}
-              sourceContext="the_current_issue_1"
-              aestheticTags={[bucket.toLowerCase(), pinType.toLowerCase(), storyTag]}
-              size="md"
-            />
-          )}
         </div>
       </div>
       {caption && (

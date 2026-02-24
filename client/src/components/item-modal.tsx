@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { PinButton } from "@/components/pin-button";
 import { ExternalLink } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { getProductByKey, type BrandGenomeProduct } from "@/lib/brand-genome";
 
 function fireEvent(eventType: string, itemId?: string, destinationUrl?: string, metadata?: Record<string, any>) {
   fetch("/api/events", {
@@ -22,13 +22,18 @@ export type ItemModalData = {
   assetKey: string;
   storyTag: string;
   imageUrl?: string;
-  // Commerce fields (populated from saves table)
+  // Commerce fields (populated from saves table or brand genome)
   brand?: string;
   price?: string;
   shopUrl?: string;
   bookUrl?: string;
   detailDescription?: string;
   category?: string;
+  // Brand genome fields
+  color?: string;
+  sizes?: string[];
+  shopStatus?: "live" | "coming_soon";
+  genomeKey?: string; // database_match_key for genome lookup
 };
 
 type ItemModalProps = {
@@ -49,14 +54,46 @@ type SaveDetail = {
   isCurated?: boolean | null;
 };
 
+/** Get destination label from storyTag */
+function getDestinationTag(storyTag: string): string {
+  const map: Record<string, string> = {
+    morocco: "Morocco",
+    hydra: "Hydra",
+    "slow-travel": "Slow Travel",
+    spain: "Slow Travel",
+    retreat: "The Retreat",
+    "new-york": "New York",
+    newyork: "New York",
+    opening: "The Current",
+    "todays-edit": "Today's Edit",
+  };
+  return map[storyTag] || "";
+}
+
 export function ItemModal({ item, open, onOpenChange, source = "current" }: ItemModalProps) {
   const fromSuitcase = source === "suitcase";
+  const [notifyEmail, setNotifyEmail] = useState("");
+  const [notifySubmitted, setNotifySubmitted] = useState(false);
+
+  // Reset notify state when modal opens/closes
+  useEffect(() => {
+    if (!open) {
+      setNotifyEmail("");
+      setNotifySubmitted(false);
+    }
+  }, [open]);
+
   // Fire open_modal event
   useEffect(() => {
     if (open && item) {
       fireEvent("open_modal", item.id, undefined, { title: item.title, pinType: item.pinType, storyTag: item.storyTag });
     }
   }, [open, item?.id]);
+
+  // Try brand genome lookup
+  const genomeProduct: BrandGenomeProduct | undefined = item?.genomeKey
+    ? getProductByKey(item.genomeKey)
+    : undefined;
 
   // Fetch commerce data from saves table
   const { data: saveDetail } = useQuery<SaveDetail>({
@@ -71,7 +108,7 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
 
   const queryClient = useQueryClient();
 
-  // Check if item is saved
+  // Check if item is saved — single source of truth
   const { data: saveStatus } = useQuery<{ isPinned: boolean }>({
     queryKey: ["/api/saves/check", item?.id],
     queryFn: async () => {
@@ -89,7 +126,7 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
       if (isSaved) {
         await fetch(`/api/saves/${encodeURIComponent(item!.id)}`, { method: "DELETE" });
       } else {
-        await fetch("/api/saves", {
+        const res = await fetch("/api/saves", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -98,14 +135,20 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
             sourceContext: "item_modal",
             aestheticTags: [item!.bucket.toLowerCase(), item!.pinType.toLowerCase(), item!.storyTag],
             savedAt: Date.now(),
-            metadata: { title: item!.title, imageUrl: item!.imageUrl },
+            metadata: { title: item!.title, imageUrl: item!.imageUrl, brand: brand, shopUrl: shopUrl, bookUrl: bookUrl, price: price },
             storyTag: item!.storyTag,
             editionTag: "current-edition-1",
             editTag: `${item!.storyTag}-edit`,
             title: item!.title,
             assetUrl: item!.imageUrl || "",
+            brand: brand || undefined,
+            price: price || undefined,
+            shopUrl: shopUrl || undefined,
+            bookUrl: bookUrl || undefined,
           }),
         });
+        // 400 = already saved — treat as success
+        if (res.status !== 400 && !res.ok) throw new Error('Failed to save');
       }
     },
     onSuccess: () => {
@@ -117,21 +160,43 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
     },
   });
 
+  const notifyMutation = useMutation({
+    mutationFn: async (email: string) => {
+      await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          itemTitle: item?.title,
+          itemId: item?.id,
+          source: "coming_soon_notify",
+        }),
+      });
+    },
+    onSuccess: () => {
+      setNotifySubmitted(true);
+    },
+  });
+
   if (!item) return null;
 
-  // Merge: props take priority, then DB data
-  const brand = item.brand || saveDetail?.brand || undefined;
-  const price = item.price || saveDetail?.price || undefined;
-  const shopUrl = item.shopUrl || saveDetail?.shopUrl || undefined;
+  // Merge: genome > props > DB
+  const brand = genomeProduct?.brand || item.brand || saveDetail?.brand || undefined;
+  const price = genomeProduct?.price || item.price || saveDetail?.price || undefined;
+  const shopUrl = (genomeProduct?.shop_status === "live" && genomeProduct?.url) || item.shopUrl || saveDetail?.shopUrl || undefined;
   const bookUrl = item.bookUrl || saveDetail?.bookUrl || undefined;
-  const description = item.detailDescription || saveDetail?.detailDescription || item.description || undefined;
+  const description = genomeProduct?.description || item.detailDescription || saveDetail?.detailDescription || item.description || undefined;
+  const color = genomeProduct?.color || item.color || undefined;
+  const sizes = genomeProduct?.sizes || item.sizes || undefined;
+  const shopStatus = genomeProduct?.shop_status || item.shopStatus || (shopUrl ? "live" : "coming_soon");
 
-  const isProduct = item.pinType === "object" || item.pinType === "look" || item.pinType === "product" || item.pinType === "item";
+  const isProduct = ["object", "look", "product", "item", "style", "accessory"].includes(item.pinType);
   const isPlace = item.pinType === "place" || item.pinType === "experience";
 
   // Products: object-contain (show full garment). Places: object-cover (atmospheric)
   const imageObjectFit = isProduct ? "object-contain" : "object-cover";
-  const imageBg = isProduct ? "bg-[#f5f5f5]" : "bg-[#f5f5f5]";
+  const imageBg = isProduct ? "bg-white" : "bg-[#f5f5f5]";
+  const destinationTag = getDestinationTag(item.storyTag);
 
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
@@ -175,182 +240,92 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
                   </span>
                 </div>
               )}
-
-              {/* Pin button overlay — top right of image (hidden on suitcase modal) */}
-              {!fromSuitcase && (
-                <div className="absolute top-4 right-4 z-10" onClick={(e) => e.stopPropagation()}>
-                  <PinButton
-                    itemType={item.pinType}
-                    itemId={item.id}
-                    itemData={{
-                      title: item.title,
-                      subtitle: item.subtitle,
-                      bucket: item.bucket,
-                      sourceStory: item.storyTag,
-                      issueNumber: 1,
-                      saveType: item.pinType,
-                      storyTag: item.storyTag,
-                      editionTag: "current-edition-1",
-                      editTag: `${item.storyTag}-edit`,
-                      assetKey: item.assetKey,
-                      assetUrl: item.imageUrl || "",
-                      imageUrl: item.imageUrl,
-                    }}
-                    sourceContext="the_current_issue_1"
-                    aestheticTags={[
-                      item.bucket.toLowerCase(),
-                      item.pinType.toLowerCase(),
-                      item.storyTag,
-                    ]}
-                    size="md"
-                  />
-                </div>
-              )}
             </div>
 
-            {/* Content area */}
+            {/* Content area — standardized format */}
             <div className="px-6 pb-8 pt-5 space-y-4">
-              {/* Brand name — bold italic */}
-              {brand && (
-                <p
-                  className="text-xs tracking-[0.15em] font-bold italic"
-                  style={{
-                    color: "#1a1a1a",
-                    fontFamily: "'Inter', sans-serif",
-                  }}
-                >
-                  {brand}
-                </p>
+              {/* Row 1: Brand (bold italic) + Price (right-aligned) on same line */}
+              {(brand || price) && (
+                <div className="flex items-baseline justify-between gap-4">
+                  {brand && (
+                    <p
+                      className="text-xs tracking-[0.15em] font-bold italic"
+                      style={{ color: "#1a1a1a", fontFamily: "'Inter', sans-serif" }}
+                    >
+                      {brand}
+                    </p>
+                  )}
+                  {price && (
+                    <p
+                      className="text-xs tracking-[0.1em] shrink-0"
+                      style={{ color: "#1a1a1a", opacity: 0.6, fontFamily: "'Inter', sans-serif" }}
+                    >
+                      {price}
+                    </p>
+                  )}
+                </div>
               )}
 
               {/* Title */}
               <h2
-                className="text-xl font-medium leading-snug"
-                style={{
-                  color: "#1a1a1a",
-                  fontFamily: "'Inter', sans-serif",
-                }}
+                className="text-lg font-medium leading-snug"
+                style={{ color: "#1a1a1a", fontFamily: "'Inter', sans-serif" }}
               >
                 {item.title}
               </h2>
 
-              {/* Price — calm, not shouting */}
-              {price && (
-                <p
-                  className="text-sm"
-                  style={{ color: "#1a1a1a", opacity: 0.6 }}
-                >
-                  {price}
-                </p>
+              {/* Color chip */}
+              {color && (
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] tracking-widest uppercase" style={{ color: "#1a1a1a", opacity: 0.5 }}>
+                    Color
+                  </span>
+                  <span
+                    className="text-xs"
+                    style={{ color: "#1a1a1a", opacity: 0.7, fontFamily: "'Inter', sans-serif" }}
+                  >
+                    {color}
+                  </span>
+                </div>
               )}
 
-              {/* Atmospheric description */}
+              {/* Size chips */}
+              {sizes && sizes.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] tracking-widest uppercase shrink-0" style={{ color: "#1a1a1a", opacity: 0.5 }}>
+                    Size
+                  </span>
+                  <div className="flex gap-1.5">
+                    {sizes.map((size) => (
+                      <span
+                        key={size}
+                        className="px-2.5 py-1 text-xs border rounded"
+                        style={{
+                          color: "#1a1a1a",
+                          borderColor: "rgba(26,26,26,0.2)",
+                          fontFamily: "'Inter', sans-serif",
+                        }}
+                      >
+                        {size}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Description */}
               {description && (
                 <p
-                  className="text-sm leading-relaxed italic"
-                  style={{ color: "#1a1a1a", opacity: 0.7 }}
+                  className="text-sm leading-relaxed"
+                  style={{ color: "#1a1a1a", opacity: 0.7, fontFamily: "'Inter', sans-serif" }}
                 >
                   {description}
                 </p>
               )}
 
-              {fromSuitcase ? (
+              {/* === SHOP / BOOK / COMING SOON — unified for both sources === */}
+              {isProduct && (
                 <>
-                  {/* === SUITCASE MODAL — item is already saved === */}
-                  {isProduct && (
-                    <>
-                      {shopUrl ? (
-                        <a
-                          href={shopUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            fireEvent("affiliate_click", item.id, shopUrl, { brand, title: item.title });
-                          }}
-                        >
-                          <button
-                            className="w-full flex items-center justify-center gap-2 py-3.5 px-5 text-xs tracking-[0.2em] uppercase transition-opacity hover:opacity-80"
-                            style={{ backgroundColor: "#1a1a1a", color: "#ffffff", fontFamily: "'Inter', sans-serif" }}
-                          >
-                            <span>Shop{brand ? ` ${brand}` : ""}</span>
-                            <ExternalLink className="w-3 h-3" />
-                          </button>
-                        </a>
-                      ) : (
-                        <p className="text-xs tracking-[0.15em] italic text-center py-3" style={{ color: "#1a1a1a", opacity: 0.4, fontFamily: "'Inter', sans-serif" }}>
-                          Coming Soon
-                        </p>
-                      )}
-                      {bookUrl && (
-                        <a href={bookUrl} target="_blank" rel="noopener noreferrer" className="block" onClick={(e) => { e.stopPropagation(); fireEvent("book_click", item.id, bookUrl, { title: item.title }); }}>
-                          <button className="w-full flex items-center justify-center gap-2 py-3.5 px-5 text-xs tracking-[0.2em] uppercase transition-all hover:bg-[#1a1a1a] hover:text-white" style={{ backgroundColor: "transparent", color: "#1a1a1a", border: "1px solid #1a1a1a", fontFamily: "'Inter', sans-serif" }}>
-                            <span>Book</span>
-                            <ExternalLink className="w-3 h-3" />
-                          </button>
-                        </a>
-                      )}
-                    </>
-                  )}
-                  {isPlace && (
-                    <>
-                      {item.storyTag === "morocco" ? (
-                        <a href="/concierge" className="block">
-                          <button className="w-full flex items-center justify-center gap-2 py-3.5 px-5 text-xs tracking-[0.2em] uppercase transition-opacity hover:opacity-80" style={{ backgroundColor: "#1a1a1a", color: "#ffffff", fontFamily: "'Inter', sans-serif" }}>
-                            <span>View Itinerary</span>
-                          </button>
-                        </a>
-                      ) : bookUrl ? (
-                        <a href={bookUrl} target="_blank" rel="noopener noreferrer" className="block" onClick={(e) => { e.stopPropagation(); fireEvent("book_click", item.id, bookUrl, { title: item.title }); }}>
-                          <button className="w-full flex items-center justify-center gap-2 py-3.5 px-5 text-xs tracking-[0.2em] uppercase transition-opacity hover:opacity-80" style={{ backgroundColor: "#1a1a1a", color: "#ffffff", fontFamily: "'Inter', sans-serif" }}>
-                            <span>Book</span>
-                            <ExternalLink className="w-3 h-3" />
-                          </button>
-                        </a>
-                      ) : null}
-                    </>
-                  )}
-                  {/* Remove from Suitcase — small text link */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      saveMutation.mutate();
-                      onOpenChange(false);
-                    }}
-                    className="text-xs text-center w-full py-2 transition-opacity hover:opacity-70"
-                    style={{ color: "#1a1a1a", opacity: 0.4, fontFamily: "'Inter', sans-serif" }}
-                  >
-                    Remove from Suitcase
-                  </button>
-                </>
-              ) : (
-                <>
-                  {/* === CURRENT/EDITORIAL MODAL === */}
-                  {/* Save button — pin icon + "Save to Suitcase" */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      saveMutation.mutate();
-                    }}
-                    disabled={saveMutation.isPending}
-                    className="w-full flex items-center justify-center gap-2.5 py-3.5 px-5 text-xs tracking-[0.2em] uppercase transition-all"
-                    style={{
-                      backgroundColor: isSaved ? "#c9a84c" : "transparent",
-                      color: isSaved ? "#ffffff" : "#1a1a1a",
-                      border: isSaved ? "1px solid #c9a84c" : "1px solid #1a1a1a",
-                      fontFamily: "'Inter', sans-serif",
-                      opacity: saveMutation.isPending ? 0.5 : 1,
-                    }}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 32" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth={isSaved ? 0 : 2}>
-                      <circle cx="12" cy="10" r="9" />
-                      <polygon points="9,18 12,32 15,18" />
-                    </svg>
-                    <span>{isSaved ? "Saved to Suitcase" : "Save to Suitcase"}</span>
-                  </button>
-
-                  {/* SHOP / BOOK buttons */}
                   {shopUrl ? (
                     <a
                       href={shopUrl}
@@ -366,16 +341,81 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
                         className="w-full flex items-center justify-center gap-2 py-3.5 px-5 text-xs tracking-[0.2em] uppercase transition-opacity hover:opacity-80"
                         style={{ backgroundColor: "#1a1a1a", color: "#ffffff", fontFamily: "'Inter', sans-serif" }}
                       >
-                        <span>Shop{brand ? ` ${brand}` : ""}</span>
+                        <span>Shop</span>
                         <ExternalLink className="w-3 h-3" />
                       </button>
                     </a>
-                  ) : isProduct ? (
-                    <p className="text-xs tracking-[0.15em] italic text-center py-3" style={{ color: "#1a1a1a", opacity: 0.4, fontFamily: "'Inter', sans-serif" }}>
-                      Coming Soon
-                    </p>
-                  ) : null}
-                  {bookUrl && (
+                  ) : (
+                    /* Coming Soon + Notify Me — only shown once */
+                    <div className="space-y-3">
+                      <p
+                        className="text-xs tracking-[0.15em] italic text-center py-2"
+                        style={{ color: "#1a1a1a", opacity: 0.4, fontFamily: "'Inter', sans-serif" }}
+                      >
+                        Coming Soon
+                      </p>
+                      {!notifySubmitted ? (
+                        <div className="flex gap-2">
+                          <input
+                            type="email"
+                            placeholder="Email for updates"
+                            value={notifyEmail}
+                            onChange={(e) => setNotifyEmail(e.target.value)}
+                            className="flex-1 px-3 py-2.5 text-xs border rounded"
+                            style={{
+                              borderColor: "rgba(26,26,26,0.2)",
+                              color: "#1a1a1a",
+                              fontFamily: "'Inter', sans-serif",
+                              outline: "none",
+                            }}
+                            onFocus={(e) => { e.target.style.borderColor = "#1a1a1a"; }}
+                            onBlur={(e) => { e.target.style.borderColor = "rgba(26,26,26,0.2)"; }}
+                          />
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (notifyEmail.includes("@")) {
+                                notifyMutation.mutate(notifyEmail);
+                              }
+                            }}
+                            disabled={notifyMutation.isPending || !notifyEmail.includes("@")}
+                            className="px-4 py-2.5 text-xs tracking-[0.1em] uppercase transition-opacity hover:opacity-80 shrink-0"
+                            style={{
+                              backgroundColor: "#1a1a1a",
+                              color: "#ffffff",
+                              fontFamily: "'Inter', sans-serif",
+                              opacity: notifyMutation.isPending ? 0.5 : 1,
+                              borderRadius: "4px",
+                            }}
+                          >
+                            Notify Me
+                          </button>
+                        </div>
+                      ) : (
+                        <p
+                          className="text-xs text-center py-2 italic"
+                          style={{ color: "#1a1a1a", opacity: 0.5, fontFamily: "'Inter', sans-serif" }}
+                        >
+                          We'll let you know.
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {isPlace && (
+                <>
+                  {item.storyTag === "morocco" ? (
+                    <a href="/concierge" className="block">
+                      <button
+                        className="w-full flex items-center justify-center gap-2 py-3.5 px-5 text-xs tracking-[0.2em] uppercase transition-opacity hover:opacity-80"
+                        style={{ backgroundColor: "#1a1a1a", color: "#ffffff", fontFamily: "'Inter', sans-serif" }}
+                      >
+                        <span>View Itinerary</span>
+                      </button>
+                    </a>
+                  ) : bookUrl ? (
                     <a
                       href={bookUrl}
                       target="_blank"
@@ -387,24 +427,90 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
                       }}
                     >
                       <button
-                        className="w-full flex items-center justify-center gap-2 py-3.5 px-5 text-xs tracking-[0.2em] uppercase transition-all hover:bg-[#1a1a1a] hover:text-white"
-                        style={{ backgroundColor: "transparent", color: "#1a1a1a", border: "1px solid #1a1a1a", fontFamily: "'Inter', sans-serif" }}
+                        className="w-full flex items-center justify-center gap-2 py-3.5 px-5 text-xs tracking-[0.2em] uppercase transition-opacity hover:opacity-80"
+                        style={{ backgroundColor: "#1a1a1a", color: "#ffffff", fontFamily: "'Inter', sans-serif" }}
                       >
                         <span>Book</span>
                         <ExternalLink className="w-3 h-3" />
                       </button>
                     </a>
-                  )}
+                  ) : null}
                 </>
               )}
 
-              {/* Bucket label — very subtle, editorial */}
-              <p
-                className="text-[10px] tracking-widest uppercase text-center pt-2"
-                style={{ color: "#1a1a1a", opacity: 0.35 }}
-              >
-                {item.bucket}
-              </p>
+              {/* Book button (separate for products that also have a bookUrl) */}
+              {isProduct && bookUrl && (
+                <a
+                  href={bookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    fireEvent("book_click", item.id, bookUrl, { title: item.title });
+                  }}
+                >
+                  <button
+                    className="w-full flex items-center justify-center gap-2 py-3.5 px-5 text-xs tracking-[0.2em] uppercase transition-all hover:bg-[#1a1a1a] hover:text-white"
+                    style={{
+                      backgroundColor: "transparent",
+                      color: "#1a1a1a",
+                      border: "1px solid #1a1a1a",
+                      fontFamily: "'Inter', sans-serif",
+                    }}
+                  >
+                    <span>Book</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </button>
+                </a>
+              )}
+
+              {/* === Save bar — gold when saved === */}
+              {fromSuitcase ? (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    saveMutation.mutate();
+                    onOpenChange(false);
+                  }}
+                  className="text-xs text-center w-full py-2 transition-opacity hover:opacity-70"
+                  style={{ color: "#1a1a1a", opacity: 0.4, fontFamily: "'Inter', sans-serif" }}
+                >
+                  Remove from Suitcase
+                </button>
+              ) : (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    saveMutation.mutate();
+                  }}
+                  disabled={saveMutation.isPending}
+                  className="w-full flex items-center justify-center gap-2.5 py-3.5 px-5 text-xs tracking-[0.2em] uppercase transition-all"
+                  style={{
+                    backgroundColor: isSaved ? "#c9a84c" : "transparent",
+                    color: isSaved ? "#ffffff" : "#1a1a1a",
+                    border: isSaved ? "1px solid #c9a84c" : "1px solid #1a1a1a",
+                    fontFamily: "'Inter', sans-serif",
+                    opacity: saveMutation.isPending ? 0.5 : 1,
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 32" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth={isSaved ? 0 : 2}>
+                    <circle cx="12" cy="10" r="9" />
+                    <polygon points="9,18 12,32 15,18" />
+                  </svg>
+                  <span>{isSaved ? "Saved to Suitcase" : "Save to Suitcase"}</span>
+                </button>
+              )}
+
+              {/* Destination tag — very subtle */}
+              {destinationTag && (
+                <p
+                  className="text-[10px] tracking-widest uppercase text-center pt-1"
+                  style={{ color: "#1a1a1a", opacity: 0.35 }}
+                >
+                  {destinationTag}
+                </p>
+              )}
             </div>
           </div>
         </DialogPrimitive.Content>

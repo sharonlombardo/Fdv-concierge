@@ -798,5 +798,21 @@ export async function registerRoutes(
     }
   });
 
+  // Event tracking API
+  app.post("/api/events", async (req, res) => {
+    try {
+      const { eventType, itemId, destinationUrl, sourcePage, metadata } = req.body;
+      if (!eventType) {
+        return res.status(400).json({ error: "eventType is required" });
+      }
+      // Log event (table may not exist in dev — just acknowledge)
+      console.log(`[EVENT] ${eventType}`, { itemId, destinationUrl, sourcePage, metadata });
+      res.json({ success: true, eventType, itemId });
+    } catch (error) {
+      console.error("Error tracking event:", error);
+      res.status(500).json({ error: "Failed to track event" });
+    }
+  });
+
   return httpServer;
 }

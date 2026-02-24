@@ -87,6 +87,10 @@ export function PinButton({
             assetUrl: itemData.assetUrl || itemData.imageUrl
           })
         });
+        // 400 = already pinned — treat as success (idempotent)
+        if (res.status === 400) {
+          return { action: 'pinned' };
+        }
         if (!res.ok) throw new Error('Failed to pin');
         return { action: 'pinned' };
       }
@@ -124,17 +128,22 @@ export function PinButton({
       className={cn(
         "hover:scale-110 transition-all duration-200",
         "flex items-center justify-center",
-        "drop-shadow-md",
         sizeClasses[size],
         className
       )}
-      style={{ color: "#C9A227" }}
+      style={{
+        color: isPinned ? "#c9a84c" : "#ffffff",
+        filter: isPinned
+          ? "drop-shadow(0 0 6px rgba(201,168,76,0.5))"
+          : "drop-shadow(0 1px 3px rgba(0,0,0,0.5))",
+      }}
       disabled={pinMutation.isPending}
       data-testid={`pin-button-${itemId}`}
     >
-      <PinIcon 
-        size={iconSizes[size]} 
-        fill="currentColor"
+      <PinIcon
+        size={iconSizes[size]}
+        fill={isPinned ? "currentColor" : "none"}
+        className={isPinned ? "" : ""}
       />
     </button>
   );

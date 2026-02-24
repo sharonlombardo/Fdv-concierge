@@ -2,13 +2,12 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { X, Briefcase, Package, Sparkles } from "lucide-react";
+import { X, Briefcase, Package } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Link, useLocation } from "wouter";
 import { GlobalNav } from "@/components/global-nav";
 import { ItemModal, type ItemModalData } from "@/components/item-modal";
 import { deriveEditTag } from "@/lib/derive-edit-tag";
-import { TripTransition } from "@/components/trip-transition";
 import { useCustomImages } from "@/hooks/use-custom-images";
 
 type SavedItem = {
@@ -31,6 +30,13 @@ type SavedItem = {
   purchaseStatus?: string;
   title?: string;
   assetUrl?: string;
+  brand?: string;
+  price?: string;
+  shopUrl?: string;
+  bookUrl?: string;
+  detailDescription?: string;
+  category?: string;
+  isCurated?: boolean;
 };
 
 const VIEW_MODES = [
@@ -173,7 +179,7 @@ function getDestinationLabel(save: SavedItem): string {
   if (storyTag === 'slow-travel' || storyTag === 'spain' || source.includes('spain') || source.includes('slow')) return 'Slow Travel';
   if (storyTag === 'retreat' || source.includes('retreat')) return 'The Retreat';
   if (storyTag === 'new-york' || storyTag === 'newyork' || source.includes('new-york') || source.includes('newyork')) return 'New York';
-  if (storyTag === 'opening' || source.includes('opening') || source.includes('todays_edit')) return "Today's Edit";
+  if (storyTag === 'opening' || storyTag === 'todays-edit' || source.includes('opening') || source.includes('todays_edit')) return "Today's Edit";
   return 'Other';
 }
 
@@ -206,7 +212,10 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
     case "all":
       return saves;
     case "state-of-mind":
-      return saves.filter(s => s.itemType === "quote");
+      return saves.filter(s =>
+        s.itemType === "quote" ||
+        SAVE_TYPE_TO_CATEGORY[s.itemType] === "state-of-mind"
+      );
     case "my-edits":
       return saves.filter(s => s.itemType === "edit");
     case "my-trips":
@@ -217,9 +226,12 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
         s.metadata?.bucket === "my-trips"
       );
     case "travel-destinations":
-      // Include all travel/destination items, places, scenes, covers
+      // Include travel/destination items AND style/product items (dual visibility)
+      // Style items cluster by destination so users see everything from each trip
       return saves.filter(s =>
         SAVE_TYPE_TO_CATEGORY[s.itemType] === "travel-destinations" ||
+        SAVE_TYPE_TO_CATEGORY[s.itemType] === "style" ||
+        SAVE_TYPE_TO_CATEGORY[s.itemType] === "items" ||
         s.itemType === "place" ||
         s.itemType === "destination"
       );
@@ -367,11 +379,9 @@ function SavedItemCard({ save, onRemove, onClick, getImageUrl }: {
           <Badge variant="outline" className="text-xs shrink-0">
             {getTypeLabel(save.itemType)}
           </Badge>
-          {getSourceLabel(save.sourceContext) && (
-            <span className="text-xs text-muted-foreground truncate">
-              {getSourceLabel(save.sourceContext)}
-            </span>
-          )}
+          <span className="text-[10px] font-medium tracking-[0.1em] uppercase text-muted-foreground truncate">
+            {getDestinationLabel(save)}
+          </span>
         </div>
         <h3 className="font-medium text-sm leading-tight line-clamp-2">
           {save.title || save.metadata?.title || save.itemId}
@@ -464,7 +474,6 @@ export default function SuitcasePage() {
   const [activeTab, setActiveTab] = useState("all");
   const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [showTransition, setShowTransition] = useState(false);
   const [removedQuotes, setRemovedQuotes] = useState<Set<string>>(() => {
     // Load from localStorage on initial render
     try {
@@ -484,15 +493,6 @@ export default function SuitcasePage() {
       localStorage.setItem('fdv-removed-quotes', JSON.stringify([...updated]));
       return updated;
     });
-  };
-
-  const handleCurateClick = () => {
-    setShowTransition(true);
-  };
-
-  const handleTransitionComplete = () => {
-    setShowTransition(false);
-    navigate("/todays-edit");
   };
 
   const { data: saves = [], isLoading } = useQuery<SavedItem[]>({
@@ -519,24 +519,23 @@ export default function SuitcasePage() {
       id: save.itemId,
       title: save.title || save.metadata?.title || save.itemId,
       subtitle: save.metadata?.subtitle,
-      description: save.metadata?.description,
+      description: save.metadata?.description || save.detailDescription,
       bucket: save.itemType,
       pinType: save.itemType,
       assetKey: save.itemId,
       storyTag: save.storyTag || '',
       imageUrl,
-      brand: save.metadata?.brand,
-      price: save.metadata?.price,
-      shopUrl: save.metadata?.shopUrl || save.metadata?.shopLink,
-      bookUrl: save.metadata?.bookUrl,
-      detailDescription: save.metadata?.detailDescription || save.metadata?.description,
+      // Commerce: prefer top-level DB columns, fall back to metadata
+      brand: save.brand || save.metadata?.brand,
+      price: save.price || save.metadata?.price,
+      shopUrl: save.shopUrl || save.metadata?.shopUrl || save.metadata?.shopLink,
+      bookUrl: save.bookUrl || save.metadata?.bookUrl,
+      detailDescription: save.detailDescription || save.metadata?.detailDescription || save.metadata?.description,
     });
     setDrawerOpen(true);
   };
 
   const filteredSaves = filterSaves(saves, activeTab);
-
-  const itemsToShop = saves.filter((s) => s.purchaseStatus === 'want').length;
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
@@ -549,18 +548,23 @@ export default function SuitcasePage() {
           <p className="text-muted-foreground mb-4" data-testid="text-suitcase-subtitle">
             Everything you've saved
           </p>
-          <p className="text-sm text-muted-foreground mb-6" data-testid="text-suitcase-stats">
-            {saves.length} saves • {itemsToShop} items to shop • {CURATED_QUOTES.length} quotes
+          <p className="text-sm text-muted-foreground mb-4" data-testid="text-suitcase-stats">
+            {saves.length} {saves.length === 1 ? 'item' : 'items'} saved
           </p>
-          <button
-            onClick={handleCurateClick}
-            disabled={saves.length === 0}
-            className="inline-flex items-center gap-2 text-sm tracking-wide text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-            data-testid="button-curate-for-me"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span className="font-medium">Curate for Me</span>
-          </button>
+          <Link href="/concierge">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-[#c9a84c] text-[#c9a84c] hover:bg-[#c9a84c]/10 mb-2"
+              data-testid="button-curate-for-me-header"
+            >
+              <svg width="12" height="16" viewBox="0 0 24 32" fill="#c9a84c" stroke="none" className="mr-2">
+                <circle cx="12" cy="10" r="9" />
+                <polygon points="9,18 12,32 15,18" />
+              </svg>
+              Curate for Me
+            </Button>
+          </Link>
         </header>
 
         <div className="border-b border-border mb-8">
@@ -599,15 +603,30 @@ export default function SuitcasePage() {
                     <p className="text-muted-foreground max-w-md mx-auto">
                       Start exploring The Current or browse the Morocco itinerary to save things you love.
                     </p>
-                    <div className="flex gap-4 justify-center mt-6">
-                      <Link href="/current">
-                        <Button variant="outline" data-testid="button-explore-current">
-                          Explore The Current
-                        </Button>
-                      </Link>
-                      <Link href="/">
-                        <Button data-testid="button-browse-itinerary">
-                          Browse Itinerary
+                    <div className="flex flex-col items-center gap-4 mt-6">
+                      <div className="flex gap-4 justify-center">
+                        <Link href="/current">
+                          <Button variant="outline" data-testid="button-explore-current">
+                            Explore The Current
+                          </Button>
+                        </Link>
+                        <Link href="/">
+                          <Button data-testid="button-browse-itinerary">
+                            Browse Itinerary
+                          </Button>
+                        </Link>
+                      </div>
+                      <Link href="/concierge">
+                        <Button
+                          variant="outline"
+                          className="mt-2 border-[#c9a84c] text-[#c9a84c] hover:bg-[#c9a84c]/10"
+                          data-testid="button-curate-for-me"
+                        >
+                          <svg width="14" height="18" viewBox="0 0 24 32" fill="#c9a84c" stroke="none" className="mr-2">
+                            <circle cx="12" cy="10" r="9" />
+                            <polygon points="9,18 12,32 15,18" />
+                          </svg>
+                          Curate for Me
                         </Button>
                       </Link>
                     </div>
@@ -619,6 +638,56 @@ export default function SuitcasePage() {
                       Explore and save items to see them here.
                     </p>
                   </>
+                )}
+              </div>
+            ) : activeTab === "my-trips" ? (
+              <div className="space-y-6">
+                {filteredSaves.map((save) => (
+                  <Link key={save.id} href="/">
+                    <div
+                      className="relative overflow-hidden rounded-lg cursor-pointer group"
+                      data-testid={`card-trip-${save.id}`}
+                    >
+                      <div className="aspect-[21/9] relative">
+                        {(save.assetUrl || save.metadata?.imageUrl) ? (
+                          <img
+                            src={save.assetUrl || save.metadata?.imageUrl || ''}
+                            alt={save.title || save.metadata?.title || 'Trip'}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 dark:from-stone-700 dark:to-stone-800" />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                        <div className="absolute bottom-0 left-0 right-0 p-6">
+                          <h3 className="font-serif text-2xl md:text-3xl text-white mb-1">
+                            {save.title || save.metadata?.title || 'Trip'}
+                          </h3>
+                          {save.metadata?.subtitle && (
+                            <p className="text-sm text-white/70">{save.metadata.subtitle}</p>
+                          )}
+                        </div>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            removeMutation.mutate(save.itemId);
+                          }}
+                          data-testid={`button-remove-trip-${save.id}`}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+                {filteredSaves.length === 0 && (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground">No trips saved yet. Visit a destination to save it as a trip.</p>
+                  </div>
                 )}
               </div>
             ) : (
@@ -654,10 +723,6 @@ export default function SuitcasePage() {
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
         source="suitcase"
-      />
-      <TripTransition
-        isActive={showTransition}
-        onComplete={handleTransitionComplete}
       />
     </div>
   );

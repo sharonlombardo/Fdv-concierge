@@ -1,4 +1,5 @@
 import { Switch, Route, Link, useLocation } from "wouter";
+import { useState, useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -69,12 +70,63 @@ function FloatingSuitcase() {
   );
 }
 
+function StickyLogo() {
+  const [location] = useLocation();
+  const [visible, setVisible] = useState(false);
+  const isLanding = location === "/";
+
+  useEffect(() => {
+    if (!isLanding) {
+      setVisible(true);
+      return;
+    }
+
+    const handleScroll = () => {
+      // On landing page, fade in after scrolling past the hero (~80vh)
+      const threshold = window.innerHeight * 0.75;
+      setVisible(window.scrollY > threshold);
+    };
+
+    handleScroll(); // check initial position
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLanding]);
+
+  const handleClick = () => {
+    if (isLanding) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      window.location.href = "/";
+    }
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      className={`fixed top-3 left-1/2 -translate-x-1/2 z-[90] w-[60px] h-[60px] rounded-full overflow-hidden transition-all duration-300 cursor-pointer ${
+        visible
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 -translate-y-2 pointer-events-none"
+      }`}
+      data-testid="sticky-logo"
+      aria-label="Home"
+    >
+      <img
+        src="/logo-circle-white.png"
+        alt="FIL DE VIE CONCIERGE"
+        className="w-full h-full object-contain rounded-full drop-shadow-md"
+      />
+    </button>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="fdv-concierge-theme">
         <TooltipProvider>
           <Toaster />
+          <StickyLogo />
           <Router />
           <FloatingSuitcase />
         </TooltipProvider>

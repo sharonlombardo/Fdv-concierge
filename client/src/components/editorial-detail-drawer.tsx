@@ -7,7 +7,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PinButton } from "@/components/pin-button";
-import { SuitcaseButton } from "@/components/suitcase-button";
 import { ExternalLink } from "lucide-react";
 
 export type EditorialItem = {
@@ -112,38 +111,18 @@ export function EditorialDetailDrawer({ item, open, onOpenChange }: EditorialDet
               />
             </div>
 
-            {isPurchaseable && (
-              <>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Cart:</span>
-                  <SuitcaseButton
-                    itemId={item.id}
-                    itemData={{
-                      title: item.title,
-                      imageUrl: item.imageUrl,
-                      editTag: `${item.storyTag}-edit`,
-                      storyTag: item.storyTag
-                    }}
-                    sourceContext="the_current_issue_1"
-                    aestheticTags={[item.bucket.toLowerCase(), item.pinType.toLowerCase()]}
-                    size="md"
-                  />
-                </div>
-
-                {item.shopLink && (
-                  <a
-                    href={item.shopLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ml-auto"
-                  >
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <ExternalLink className="w-4 h-4" />
-                      View Product
-                    </Button>
-                  </a>
-                )}
-              </>
+            {isPurchaseable && item.shopLink && (
+              <a
+                href={item.shopLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-auto"
+              >
+                <Button variant="outline" size="sm" className="gap-2">
+                  <ExternalLink className="w-4 h-4" />
+                  View Product
+                </Button>
+              </a>
             )}
           </div>
         </div>

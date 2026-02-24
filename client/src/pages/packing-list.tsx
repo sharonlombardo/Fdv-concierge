@@ -12,6 +12,7 @@ import {
   type WardrobeExtra
 } from '@shared/itinerary-data';
 import logoImage from '@assets/LOGO_1767219658929.png';
+import { getProductByKey, getProductDisplayName, isShoppable } from '@/lib/brand-genome';
 
 interface PackingItem {
   id: string;
@@ -83,13 +84,19 @@ function extractPackingData(): DayData[] {
         for (let i = 0; i < 4; i++) {
           const extra = flow.wardrobeExtras?.[i];
           if (extra) {
+            // Try genome lookup for richer product name
+            const extraFilename = extra.image?.split('/').pop() || '';
+            const extraGenome = getProductByKey(extraFilename) || getProductByKey(extra.image || '');
+            const extraName = extraGenome ? getProductDisplayName(extraGenome) : extra.name;
+            const extraBrand = extraGenome?.brand;
             items.push({
               id: `${flow.id}-extra-${i}`,
               imageKey: `${flow.id}-extra-${i}`,
-              name: extra.name,
+              name: extraName,
+              brand: extraBrand,
               image: extra.image,
               context: `${timeCategory} • ${flow.title}`,
-              whyText: `Essential item for ${flow.title.toLowerCase()}.`,
+              whyText: extraGenome?.description || `Essential item for ${flow.title.toLowerCase()}.`,
               dayNumber: dayPage.day,
               time: timeCategory,
               isLook: false,
@@ -421,16 +428,37 @@ export default function PackingList() {
   const handleOpenModal = (item: PackingItem) => {
     const hasCustom = hasCustomImage(item.imageKey);
     const imageUrl = (hasCustom || item.image) ? getImageUrl(item.imageKey, item.image) : '';
+
+    // Try genome lookup for rich product data
+    // The item.image filename might match a genome database_match_key
+    const imageFilename = item.image?.split('/').pop() || '';
+    const genome = getProductByKey(imageFilename) || getProductByKey(item.image || '');
+
+    const title = genome ? getProductDisplayName(genome) : item.name;
+    const brand = genome?.brand || item.brand;
+    const price = genome?.price;
+    const description = genome?.description || `${item.context} — ${item.whyText}`;
+    const shopUrl = genome && isShoppable(genome) ? genome.url : undefined;
+    const color = genome?.color;
+    const sizes = genome?.sizes;
+    const shopStatus = genome?.shop_status;
+
     setSelectedItem({
       id: item.id,
-      title: item.name,
-      brand: item.brand,
-      description: `${item.context} — ${item.whyText}`,
+      title,
+      brand,
+      price,
+      description,
       bucket: item.isLook ? 'Look' : 'Accessory',
       pinType: item.isLook ? 'look' : 'product',
       assetKey: item.imageKey,
       storyTag: 'morocco',
       imageUrl,
+      shopUrl,
+      color,
+      sizes,
+      shopStatus,
+      genomeKey: imageFilename || undefined,
     });
     setModalOpen(true);
   };

@@ -287,7 +287,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (method === 'OPTIONS') {
@@ -332,7 +332,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // GET /api/saves
-    if (path === '/api/saves') {
+    if (path === '/api/saves' && method === 'GET') {
       const result = await pool.query('SELECT * FROM saves ORDER BY saved_at DESC');
       // Transform snake_case to camelCase for frontend
       const saves = result.rows.map(row => ({
@@ -349,6 +349,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         purchaseStatus: row.purchase_status,
         title: row.title,
         assetUrl: row.asset_url,
+        brand: row.brand,
+        price: row.price,
+        shopUrl: row.shop_url,
+        bookUrl: row.book_url,
+        detailDescription: row.detail_description,
+        category: row.category,
+        isCurated: row.is_curated,
       }));
       return res.status(200).json(saves);
     }
@@ -375,6 +382,113 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
+    // GET /api/saves/check/:itemId
+    if (path.startsWith('/api/saves/check/')) {
+      const itemId = decodeURIComponent(path.replace('/api/saves/check/', ''));
+      const result = await pool.query('SELECT id FROM saves WHERE item_id = $1 LIMIT 1', [itemId]);
+      return res.status(200).json({ isPinned: result.rows.length > 0 });
+    }
+
+    // POST /api/saves — create a new save
+    if (path === '/api/saves' && method === 'POST') {
+      const body = req.body || {};
+      const { itemType, itemId, sourceContext, aestheticTags, savedAt, metadata, editionTag, storyTag, editTag, purchaseStatus, title, assetUrl, brand, price, shopUrl, bookUrl, detailDescription, category, isCurated } = body;
+
+      if (!itemType || !itemId) {
+        return res.status(400).json({ error: 'itemType and itemId are required' });
+      }
+
+      // Check if already exists
+      const existing = await pool.query('SELECT id FROM saves WHERE item_id = $1 LIMIT 1', [itemId]);
+      if (existing.rows.length > 0) {
+        return res.status(400).json({ error: 'Already pinned' });
+      }
+
+      const result = await pool.query(
+        `INSERT INTO saves (item_type, item_id, source_context, aesthetic_tags, saved_at, metadata, edition_tag, story_tag, edit_tag, purchase_status, title, asset_url, brand, price, shop_url, book_url, detail_description, category, is_curated)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+         RETURNING *`,
+        [
+          itemType,
+          itemId,
+          sourceContext || null,
+          aestheticTags || null,
+          savedAt || Date.now(),
+          metadata ? JSON.stringify(metadata) : null,
+          editionTag || null,
+          storyTag || null,
+          editTag || null,
+          purchaseStatus || null,
+          title || null,
+          assetUrl || null,
+          brand || null,
+          price || null,
+          shopUrl || null,
+          bookUrl || null,
+          detailDescription || null,
+          category || null,
+          isCurated || false,
+        ]
+      );
+      const row = result.rows[0];
+      return res.status(200).json({
+        id: row.id,
+        itemType: row.item_type,
+        itemId: row.item_id,
+        sourceContext: row.source_context,
+        aestheticTags: row.aesthetic_tags,
+        savedAt: row.saved_at,
+        metadata: row.metadata,
+        editionTag: row.edition_tag,
+        storyTag: row.story_tag,
+        editTag: row.edit_tag,
+        purchaseStatus: row.purchase_status,
+        title: row.title,
+        assetUrl: row.asset_url,
+      });
+    }
+
+    // DELETE /api/saves/:itemId — remove a save
+    if (path.startsWith('/api/saves/') && method === 'DELETE') {
+      const itemId = decodeURIComponent(path.replace('/api/saves/', ''));
+      await pool.query('DELETE FROM saves WHERE item_id = $1', [itemId]);
+      return res.status(200).json({ success: true });
+    }
+
+    // PATCH /api/saves/:itemId — update a save
+    if (path.startsWith('/api/saves/') && method === 'PATCH') {
+      const itemId = decodeURIComponent(path.replace('/api/saves/', ''));
+      const { metadata, purchaseStatus } = req.body || {};
+      const updates: string[] = [];
+      const values: any[] = [];
+      let paramIndex = 1;
+
+      if (metadata !== undefined) {
+        updates.push(`metadata = $${paramIndex}`);
+        values.push(JSON.stringify(metadata));
+        paramIndex++;
+      }
+      if (purchaseStatus !== undefined) {
+        updates.push(`purchase_status = $${paramIndex}`);
+        values.push(purchaseStatus);
+        paramIndex++;
+      }
+
+      if (updates.length === 0) {
+        return res.status(400).json({ error: 'No fields to update' });
+      }
+
+      values.push(itemId);
+      const result = await pool.query(
+        `UPDATE saves SET ${updates.join(', ')} WHERE item_id = $${paramIndex} RETURNING *`,
+        values
+      );
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Save not found' });
+      }
+      return res.status(200).json(result.rows[0]);
+    }
+
     // GET /api/library
     if (path === '/api/library') {
       return res.status(200).json([]);
@@ -390,7 +504,62 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json([]);
     }
 
-    // POST handlers (stub)
+    // POST /api/waitlist — coming soon notify me
+    if (path === '/api/waitlist' && method === 'POST') {
+      const { email, itemTitle, itemId, source } = req.body || {};
+      if (!email) {
+        return res.status(400).json({ error: 'email is required' });
+      }
+      try {
+        await pool.query(
+          `INSERT INTO waitlist (email, item_title, item_id, source, created_at)
+           VALUES ($1, $2, $3, $4, NOW())
+           ON CONFLICT (email, item_id) DO NOTHING`,
+          [email, itemTitle || null, itemId || null, source || 'coming_soon_notify']
+        );
+      } catch (dbError: any) {
+        // Table may not exist yet — create it
+        if (dbError.code === '42P01') {
+          await pool.query(`
+            CREATE TABLE IF NOT EXISTS waitlist (
+              id SERIAL PRIMARY KEY,
+              email TEXT NOT NULL,
+              item_title TEXT,
+              item_id TEXT,
+              source TEXT DEFAULT 'coming_soon_notify',
+              created_at TIMESTAMP DEFAULT NOW(),
+              UNIQUE(email, item_id)
+            )
+          `);
+          await pool.query(
+            'INSERT INTO waitlist (email, item_title, item_id, source, created_at) VALUES ($1, $2, $3, $4, NOW()) ON CONFLICT (email, item_id) DO NOTHING',
+            [email, itemTitle || null, itemId || null, source || 'coming_soon_notify']
+          );
+        } else {
+          console.warn('Waitlist insert failed:', dbError);
+        }
+      }
+      return res.status(200).json({ success: true });
+    }
+
+    // POST /api/events — event tracking
+    if (path === '/api/events' && method === 'POST') {
+      const { eventType, itemId, destinationUrl, sourcePage, metadata } = req.body || {};
+      if (!eventType) {
+        return res.status(400).json({ error: 'eventType is required' });
+      }
+      try {
+        await pool.query(
+          'INSERT INTO events (event_type, item_id, destination_url, source_page, metadata, created_at) VALUES ($1, $2, $3, $4, $5, NOW())',
+          [eventType, itemId || null, destinationUrl || null, sourcePage || null, metadata ? JSON.stringify(metadata) : null]
+        );
+      } catch (dbError) {
+        console.warn('Events table insert failed (table may not exist):', dbError);
+      }
+      return res.status(200).json({ success: true, eventType, itemId });
+    }
+
+    // POST handlers (stub for any uncaught POST)
     if (method === 'POST') {
       return res.status(200).json({ success: true });
     }

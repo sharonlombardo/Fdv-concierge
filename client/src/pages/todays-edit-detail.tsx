@@ -3,7 +3,6 @@ import { Link, useRoute, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Sparkles } from "lucide-react";
-import { SuitcaseButton } from "@/components/suitcase-button";
 import { TripTransition } from "@/components/trip-transition";
 import { ItemModal, type ItemModalData } from "@/components/item-modal";
 import { useImageSlot } from "@/hooks/use-image-slot";
@@ -126,19 +125,6 @@ function EditItemCard({ item, editId, onClick }: { item: EditItem; editId: strin
           >
             {item.fromSaves ? "From Your Saves" : "Suggested"}
           </Badge>
-        </div>
-        <div className="absolute bottom-2 right-2 z-10">
-          <SuitcaseButton
-            itemId={`${editId}-${item.id}`}
-            itemData={{
-              title: item.name,
-              brand: item.brand,
-              imageUrl: item.imageUrl,
-              price: item.price,
-            }}
-            sourceContext={`edit_${editId}`}
-            size="md"
-          />
         </div>
       </div>
       <div className="p-3">

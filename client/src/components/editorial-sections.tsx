@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { ITINERARY_DATA, DayPage, FlowItem } from "@shared/itinerary-data";
 import { PinButton } from "@/components/pin-button";
-import { SuitcaseButton } from "@/components/suitcase-button";
 
 export interface DayEditorial {
   dayNumber: number;
@@ -84,7 +83,6 @@ interface ImageCardProps {
   itemId?: string;
   itemTitle?: string;
   showPin?: boolean;
-  showSuitcase?: boolean;
   imageType?: 'place' | 'look' | 'accessory';
   preserveAspectRatio?: boolean;
   onImageClick?: () => void;
@@ -97,7 +95,6 @@ export function ImageCard({
   itemId,
   itemTitle,
   showPin = false,
-  showSuitcase = false,
   imageType = 'place',
   preserveAspectRatio = false,
   onImageClick
@@ -140,43 +137,27 @@ export function ImageCard({
           decoding="async"
         />
       </div>
-      {(showPin || showSuitcase) && itemId && (
+      {showPin && itemId && (
         <div className="absolute top-3 right-3 flex flex-col gap-1">
-          {showPin && (
-            <PinButton
-              itemType={pinItemType}
-              itemId={itemId}
-              itemData={{
-                title: itemTitle || label || "Morocco",
-                imageUrl: imageUrl,
-                sourceStory: "morocco-2026",
-                issueNumber: 1,
-                saveType: pinItemType,
-                storyTag: "morocco",
-                editionTag: "morocco-2026",
-                editTag: "morocco-editorial",
-                assetKey: itemId,
-                assetUrl: imageUrl
-              }}
-              sourceContext="morocco_editorial"
-              aestheticTags={aestheticTags}
-              size="sm"
-            />
-          )}
-          {showSuitcase && (
-            <SuitcaseButton
-              itemId={itemId}
-              itemData={{
-                title: itemTitle || label || "Look",
-                imageUrl: imageUrl,
-                storyTag: "morocco",
-                editTag: "morocco-wardrobe"
-              }}
-              sourceContext="morocco_editorial"
-              aestheticTags={["morocco", "wardrobe", "style"]}
-              size="sm"
-            />
-          )}
+          <PinButton
+            itemType={pinItemType}
+            itemId={itemId}
+            itemData={{
+              title: itemTitle || label || "Morocco",
+              imageUrl: imageUrl,
+              sourceStory: "morocco-2026",
+              issueNumber: 1,
+              saveType: pinItemType,
+              storyTag: "morocco",
+              editionTag: "morocco-2026",
+              editTag: "morocco-editorial",
+              assetKey: itemId,
+              assetUrl: imageUrl
+            }}
+            sourceContext="morocco_editorial"
+            aestheticTags={aestheticTags}
+            size="sm"
+          />
         </div>
       )}
       {label && (
@@ -251,7 +232,7 @@ interface EditorialDaySectionProps {
   day: DayEditorial;
   getImageUrl: (key: string, defaultUrl: string) => string;
   hasCustomImage: (key: string) => boolean;
-  onOpenProductModal?: (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string }) => void;
+  onOpenProductModal?: (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string; genomeKey?: string }) => void;
 }
 
 export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenProductModal }: EditorialDaySectionProps) {
@@ -272,13 +253,12 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
       </div>
 
       <div className="mb-16 max-w-2xl mx-auto">
-        <ImageCard 
+        <ImageCard
           imageUrl={heroImage}
           itemId={day.heroImageKey}
           itemTitle={`Day ${day.dayNumber} - ${day.location}`}
           aspectRatio="aspect-[4/5]"
           showPin={true}
-          showSuitcase={false}
           imageType="place"
         />
       </div>
@@ -305,13 +285,12 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
               </div>
               
               <div className={`grid gap-6 ${hasWardrobeContent ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}>
-                <ImageCard 
-                  imageUrl={eventImage} 
+                <ImageCard
+                  imageUrl={eventImage}
                   aspectRatio="aspect-[4/5]"
                   itemId={flow.eventImageKey}
                   itemTitle={flow.title}
                   showPin={true}
-                  showSuitcase={false}
                   imageType="place"
                 />
                 {hasWardrobeContent && (
@@ -322,7 +301,6 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                         itemId={flow.wardrobeImageKey}
                         itemTitle={`${flow.title} Look`}
                         showPin={true}
-                        showSuitcase={true}
                         imageType="look"
                         preserveAspectRatio={true}
                         onImageClick={onOpenProductModal ? () => onOpenProductModal({
@@ -373,18 +351,6 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                                   aestheticTags={["morocco", "accessory", "style"]}
                                   size="sm"
                                 />
-                                <SuitcaseButton
-                                  itemId={extra.imageKey}
-                                  itemData={{
-                                    title: `${flow.title} Accessory ${idx + 1}`,
-                                    imageUrl: extraImage,
-                                    storyTag: "morocco",
-                                    editTag: "morocco-wardrobe"
-                                  }}
-                                  sourceContext="morocco_editorial"
-                                  aestheticTags={["morocco", "accessory", "style"]}
-                                  size="sm"
-                                />
                               </div>
                             </div>
                           );
@@ -400,9 +366,28 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
       </div>
 
       <div className="max-w-3xl mx-auto text-center mt-20">
-        <p className="font-serif text-xl md:text-2xl lg:text-3xl italic font-light leading-relaxed text-muted-foreground">
-          "{day.mantra}"
-        </p>
+        <div className="inline-flex items-center gap-3">
+          <p className="font-serif text-xl md:text-2xl lg:text-3xl italic font-light leading-relaxed text-muted-foreground">
+            "{day.mantra}"
+          </p>
+          {/* Glowing gold pin CTA */}
+          <a href="/suitcase" className="shrink-0 group">
+            <svg
+              width="22"
+              height="28"
+              viewBox="0 0 24 32"
+              fill="#c9a84c"
+              stroke="none"
+              className="transition-all group-hover:scale-110"
+              style={{
+                filter: "drop-shadow(0 0 6px rgba(201,168,76,0.5))",
+              }}
+            >
+              <circle cx="12" cy="10" r="9" />
+              <polygon points="9,18 12,32 15,18" />
+            </svg>
+          </a>
+        </div>
       </div>
     </div>
   );
@@ -411,7 +396,7 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
 interface EditorialOverviewProps {
   getImageUrl: (key: string, defaultUrl: string) => string;
   hasCustomImage: (key: string) => boolean;
-  onOpenProductModal?: (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string }) => void;
+  onOpenProductModal?: (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string; genomeKey?: string }) => void;
 }
 
 export function EditorialOverview({ getImageUrl, hasCustomImage, onOpenProductModal }: EditorialOverviewProps) {

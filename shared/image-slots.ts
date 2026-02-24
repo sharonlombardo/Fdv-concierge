@@ -821,7 +821,15 @@ export const IMAGE_SLOTS: ImageSlot[] = [
     section: "Landing Page",
     defaultUrl: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1600",
     aspectRatio: "16:9",
-    description: "Main background image for FIL DE VIE CONCIERGE landing"
+    description: "Main background image for FIL DE VIE CONCIERGE landing (fallback poster)"
+  },
+  {
+    key: "landing-video",
+    label: "Landing Page Video",
+    section: "Landing Page",
+    defaultUrl: "",
+    aspectRatio: "16:9",
+    description: "MP4 video for FIL DE VIE CONCIERGE landing hero background"
   },
   {
     key: "todays-edit-card",

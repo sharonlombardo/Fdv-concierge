@@ -37,9 +37,8 @@ import { useJournal, type JournalEntry } from '@/hooks/use-journal';
 import { useCustomImages } from '@/hooks/use-custom-images';
 import { SelfiePickerModal } from '@/components/selfie-picker-modal';
 import { PinButton } from '@/components/pin-button';
-import { SuitcaseButton } from '@/components/suitcase-button';
 import { ItemModal, type ItemModalData } from '@/components/item-modal';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import type { SelfieImage } from '@shared/schema';
 import { 
@@ -52,12 +51,13 @@ import {
   type FieldNotesPage,
   type JournalPage as JournalPageType
 } from '@shared/itinerary-data';
-import { 
+import {
   EditorialOverview,
   extractEditorialData,
   EditorialDaySection
 } from '@/components/editorial-sections';
 import { LoadingImage } from '@/components/loading-image';
+import { getProductByKey, getProductDisplayName, isShoppable } from '@/lib/brand-genome';
 
 function isDayPage(page: ItineraryPage): page is DayPage {
   return 'day' in page;
@@ -200,7 +200,7 @@ interface ItemDetailDrawerProps {
   onImagesUpdate: (id: string, images: LocalLogImage[]) => void;
   onShare: () => void;
   onApplySelfie: (imageKey: string, selfie: SelfieImage) => void;
-  onOpenProductModal?: (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string }) => void;
+  onOpenProductModal?: (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string; genomeKey?: string }) => void;
 }
 
 interface LocalLogImage {
@@ -509,23 +509,6 @@ function ItemDetailDrawer({
                       size="md"
                     />
                   </div>
-                  <div className="absolute bottom-3 right-3 z-10">
-                    <SuitcaseButton
-                      itemId={`${item.id}-look`}
-                      itemData={{
-                        title: `${item.title} - The Look`,
-                        description: item.wardrobe,
-                        imageUrl: getImageUrl(
-                          `${item.id}-wardrobe`,
-                          item.commercialWardrobe || "",
-                          { imageType: 'wardrobe', title: item.title }
-                        )
-                      }}
-                      sourceContext="morocco_itinerary"
-                      aestheticTags={['look', 'outfit', 'style']}
-                      size="md"
-                    />
-                  </div>
                 </div>
                 <div className="flex justify-between items-center max-w-md mx-auto">
                   <p className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic">FDV Recommendation</p>
@@ -562,7 +545,7 @@ function ItemDetailDrawer({
                                 }
                               }}
                             />
-                            <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="absolute top-1 right-1 z-10">
                               <PinButton
                                 itemType="product"
                                 itemId={extraKey}
@@ -578,18 +561,7 @@ function ItemDetailDrawer({
                                 size="sm"
                               />
                             </div>
-                            <div className="absolute bottom-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <SuitcaseButton
-                                itemId={extraKey}
-                                itemData={{
-                                  title: extra?.name || placeholderName,
-                                  imageUrl: getImageUrl(extraKey, extra?.image || ''),
-                                  shopLink: extra?.shopLink
-                                }}
-                                sourceContext="morocco_itinerary"
-                                aestheticTags={['accessory', placeholderName.toLowerCase()]}
-                                size="sm"
-                              />
+                            <div className="absolute bottom-1 right-1 flex gap-1 z-10">
                               <button
                                 onClick={() => handleOpenSelfiePicker(extraKey)}
                                 className="p-1.5 bg-background/90 rounded-full h-6 w-6 flex items-center justify-center"
@@ -930,6 +902,77 @@ function ShareModal({ item, entries, onClose }: ShareModalProps) {
   );
 }
 
+function SaveTripButton() {
+  const queryClient = useQueryClient();
+  const { data: checkData } = useQuery({
+    queryKey: ['/api/saves/check', 'morocco-trip-2026'],
+    queryFn: async () => {
+      const res = await fetch('/api/saves/check/morocco-trip-2026');
+      if (!res.ok) return { isPinned: false };
+      return res.json();
+    },
+  });
+  const isSaved = checkData?.isPinned ?? false;
+
+  const saveTripMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/saves', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemType: 'trip',
+          itemId: 'morocco-trip-2026',
+          sourceContext: 'morocco_itinerary',
+          aestheticTags: ['morocco', 'trip', 'travel'],
+          savedAt: Date.now(),
+          metadata: {
+            title: 'Morocco \u2014 Atlas Mountains & Marrakech',
+            subtitle: 'April 2026',
+            imageUrl: 'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=800',
+            bucket: 'my-trips',
+          },
+          storyTag: 'morocco',
+          editionTag: 'morocco-2026',
+          editTag: 'morocco-trip',
+          title: 'Morocco \u2014 Atlas Mountains & Marrakech',
+          assetUrl: 'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=800',
+        }),
+      });
+      if (res.status === 400) return { alreadySaved: true };
+      if (!res.ok) throw new Error('Failed to save trip');
+      return { alreadySaved: false };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/saves/check', 'morocco-trip-2026'] });
+    },
+  });
+
+  return (
+    <button
+      onClick={(e) => {
+        e.preventDefault();
+        if (!isSaved) saveTripMutation.mutate();
+      }}
+      disabled={saveTripMutation.isPending || isSaved}
+      className="inline-flex items-center gap-2 py-3 px-8 text-xs tracking-[0.2em] uppercase transition-all"
+      style={{
+        backgroundColor: isSaved ? '#c9a84c' : 'transparent',
+        color: isSaved ? '#ffffff' : '#1a1a1a',
+        border: isSaved ? '1px solid #c9a84c' : '1px solid #1a1a1a',
+        fontFamily: "'Inter', sans-serif",
+        opacity: saveTripMutation.isPending ? 0.5 : 1,
+      }}
+    >
+      <svg width="14" height="14" viewBox="0 0 24 32" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth={isSaved ? 0 : 2}>
+        <circle cx="12" cy="10" r="9" />
+        <polygon points="9,18 12,32 15,18" />
+      </svg>
+      <span>{isSaved ? 'Trip Saved' : 'Save This Trip'}</span>
+    </button>
+  );
+}
+
 export default function Home() {
   const [, setLocation] = useLocation();
   const [activeItem, setActiveItem] = useState<FlowItem | null>(null);
@@ -1018,18 +1061,28 @@ export default function Home() {
     setLocation('/destinations');
   };
 
-  const openProductModal = (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string }) => {
+  const openProductModal = (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string; genomeKey?: string }) => {
+    // Try genome lookup for rich product data
+    const genome = data.genomeKey ? getProductByKey(data.genomeKey) : undefined;
+    const displayName = genome ? getProductDisplayName(genome) : data.title;
+    const shopUrlResolved = genome && isShoppable(genome) ? genome.url : data.shopUrl;
+
     setProductModalItem({
       id: data.itemId,
-      title: data.title,
+      title: displayName,
       bucket: "Your Style",
       pinType: data.pinType || "look",
       assetKey: data.itemId,
       storyTag: "morocco",
       imageUrl: data.imageUrl,
-      brand: data.brand,
-      shopUrl: data.shopUrl,
-      description: data.description,
+      brand: genome?.brand || data.brand,
+      price: genome?.price || undefined,
+      shopUrl: shopUrlResolved || undefined,
+      description: genome?.description || data.description,
+      color: genome?.color || undefined,
+      sizes: genome?.sizes || undefined,
+      shopStatus: genome?.shop_status || undefined,
+      genomeKey: data.genomeKey,
     });
     setProductModalOpen(true);
   };
@@ -1053,6 +1106,11 @@ export default function Home() {
         hasCustomImage={hasCustomImage}
         onOpenProductModal={openProductModal}
       />
+
+      {/* Save Trip CTA */}
+      <div className="py-12 text-center px-4 border-t border-border">
+        <SaveTripButton />
+      </div>
 
       {/* Transition to Interactive Logistics */}
       <div id="daily-flow" className="py-20 md:py-28 text-center px-4 border-t border-border scroll-mt-20">

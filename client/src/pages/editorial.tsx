@@ -8,7 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { GlobalNav } from "@/components/global-nav";
 import { PinButton } from "@/components/pin-button";
-import { SuitcaseButton } from "@/components/suitcase-button";
 
 interface DayEditorial {
   dayNumber: number;
@@ -110,20 +109,6 @@ function HeroSection({ isSaved, isAcquired, onSave, onAcquire, isPending }: Hero
       <div className="absolute top-20 right-4 z-20 flex flex-col items-center gap-1">
         <PinButton
           itemType="trip"
-          itemId="morocco-trip-2026"
-          itemData={{
-            title: "Morocco 2026",
-            subtitle: "Atlas Mountains & Marrakech",
-            imageUrl: heroImageUrl,
-            bucket: "my-trips",
-            storyTag: "morocco",
-            editTag: "morocco-trip",
-          }}
-          sourceContext="editorial"
-          aestheticTags={["trip", "morocco", "travel"]}
-          size="sm"
-        />
-        <SuitcaseButton
           itemId="morocco-trip-2026"
           itemData={{
             title: "Morocco 2026",

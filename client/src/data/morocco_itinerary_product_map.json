@@ -1,0 +1,206 @@
+{
+  "trip": "Morocco",
+  "dates": "April 3-10, 2026",
+  "note": "Each time slot has 5 positions: look (large), footwear, handbag, jewelry/watch, accessory/beauty. Items listed left-to-right matching the packing grid layout.",
+  "days": [
+    {
+      "day": 1,
+      "slots": {
+        "morning": {
+          "look": "LOOK:FDV:PHILOMENACAFTAN:SAND.jpg",
+          "footwear": "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
+          "handbag": "access:bag:bottega:hobo.jpg",
+          "jewelry": "ACCESSORY:BULGAR:SERPENTI:BLK.jpg",
+          "accessory": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg"
+        },
+        "afternoon": {
+          "look": "LOOK:FDV:CYBELBLOUSE:STRIPE.jpg",
+          "footwear": "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
+          "handbag": "access:bag:bottega:hobo.jpg",
+          "jewelry": null,
+          "accessory": "BEAUTY:FDV:PARFUM.jpg"
+        },
+        "evening": {
+          "look": "LOOK:FDV:VIRGINIADRESS:EMERALD.jpg",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "ACCESS:BAG:CHLOE:WRISTLETTE:BLACK.jpg",
+          "jewelry": "ACCESSORY:JEWELRY:BULGARI:CABACHON NECKLACE.jpg",
+          "accessory": "access:jewlery:phoebephilo:hoops.jpg"
+        }
+      }
+    },
+    {
+      "day": 2,
+      "slots": {
+        "morning": {
+          "look": "LOOK:FDV:JUNOBLOUSE:MARRAKECHPANT:STRIPE.jpg",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
+          "jewelry": null,
+          "accessory": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg"
+        },
+        "afternoon": {
+          "look": "LOOK:FDV:DIANADRES:STRIPE.jpg",
+          "footwear": null,
+          "handbag": "ACCESS:BAG:TOWEL:FDV:POOLESSENTIALS:OLIVE.jpg",
+          "jewelry": "access:jewlery:phoebephilo:hoops.jpg",
+          "accessory": "BEAUTY:FDV:TRAVELMIST.jpg"
+        },
+        "evening": {
+          "look": "LOOK:FDV:HONORADRESS:FLORAL.jpg",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "ACCESS:BAG:CHLOE:WRISTLETTE:BLACK.jpg",
+          "jewelry": "phoebe philo earrings dropped.jpg",
+          "accessory": "BEAUTY:VIOLETTEFR:NECATRLIPSTAIN.jpg"
+        }
+      }
+    },
+    {
+      "day": 3,
+      "slots": {
+        "morning": {
+          "look": "LOOK:FDV:BELLACAFTANMINI:IVORY.jpg",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
+          "jewelry": "access:jewlery:phoebephilo:hoops.jpg",
+          "accessory": "ACCESS:SUGNLASSES:LOEWE:BLACK.jpg"
+        },
+        "afternoon": {
+          "look": "LOOK:FDV:LUCINABLOUSE:BLACK.jpg",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "access:bag:bottega:hobo.jpg",
+          "jewelry": "phoebe philo hallmark earrings.jpg",
+          "accessory": "beauty sandwich serum.jpg"
+        },
+        "evening": {
+          "look": "LOOK:FDV:CALYPSODRESS:BLACK.jpg",
+          "footwear": "FOOTWEAR:ALAIA:BLACK.jpg",
+          "handbag": "paco rabanne pailette bag.jpg",
+          "jewelry": "phoebe philo earrings dropped.jpg",
+          "accessory": "immortelle oil.jpg"
+        }
+      }
+    },
+    {
+      "day": 4,
+      "slots": {
+        "morning": {
+          "look": "LOOK:FDV:LILLITHCAFTAN:IVORY.jpg",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "access:bag:bottega:hobo.jpg",
+          "jewelry": null,
+          "accessory": "le prunier sunscreen.jpg"
+        },
+        "afternoon": {
+          "look": "LOOK:FDV:JUNOBLOUSE:BLK.jpg",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
+          "jewelry": "access:jewlery:phoebephilo:hoops.jpg",
+          "accessory": "BEAUTY:RITUELGEINSHA.jpg"
+        },
+        "evening": {
+          "look": "LOOK:FDV:ISADORADRESS:BLK.jpg",
+          "footwear": "FOOTWEAR:ALAIA:BLACK.jpg",
+          "handbag": "ACCESSORY:BAG:DRIESVANNOTEN:BLACK.jpg",
+          "jewelry": "ACCESSORY:BULGAR:SERPENTI:BLK.jpg",
+          "accessory": "BEAUTY:POPPYKING:SINLIPSTICK:RED.jpg"
+        }
+      }
+    },
+    {
+      "day": 5,
+      "slots": {
+        "morning": {
+          "look": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
+          "jewelry": null,
+          "accessory": "ACCESS:SUGNLASSES:LOEWE:BLACK.jpg"
+        },
+        "afternoon": {
+          "_note": "Same as morning",
+          "look": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
+          "jewelry": null,
+          "accessory": "BEAUTY:SAINJANE:SUNRITUAL.jpg"
+        },
+        "evening": {
+          "look": "look:fdv:crepesilkset:black.jpg",
+          "footwear": "FOOTWEAR:ALAIA:BLACK.jpg",
+          "handbag": "ACCESSORY:BAG:BOTTEGA:KALIMERO:BLACK.jpg",
+          "jewelry": "phoebe philo earrings dropped.jpg",
+          "accessory": "ACCESSORY:BULGAR:SERPENTI:BLK.jpg"
+        }
+      }
+    },
+    {
+      "day": 6,
+      "slots": {
+        "morning": {
+          "look": "LOOK:FDV:LUCINABLOUSE:BLACK.jpg",
+          "_look_note": "Sharon said ivory version but confirmed to use black Lucina image",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "access:bag:bottega:hobo.jpg",
+          "jewelry": "ACCESSORY:JEWELRY:BULGARI:CABACHON NECKLACE.jpg",
+          "accessory": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg"
+        },
+        "afternoon": {
+          "look": "LOOK:FDV:CALYPSODRESS:BLACK.jpg",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "access:bag:bottega:hobo.jpg",
+          "jewelry": "ACCESSORY:JEWELRY:BULGARI:CABACHON NECKLACE.jpg",
+          "accessory": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg"
+        },
+        "evening": {
+          "look": "LOOK:FDV:STEVIECAFTAN:BLACK.jpg",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "ACCESS:BAG:CHLOE:WRISTLETTE:BLACK.jpg",
+          "jewelry": "phoebe philo earrings dropped.jpg",
+          "accessory": "BEAUTY:AMANESSENTIALS:JADESET.jpg"
+        }
+      }
+    },
+    {
+      "day": 7,
+      "slots": {
+        "morning": {
+          "look": "LOOK:FDV:HONORADRESS:FLORAL.jpg",
+          "footwear": "footwear, amery kit sandal.jpg",
+          "handbag": "access:bag:bottega:hobo.jpg",
+          "jewelry": "ACCESSORY:JEWELRY:BULGARI:CABACHON NECKLACE.jpg",
+          "accessory": "ACCESS:SUGNLASSES:LOEWE:BLACK.jpg"
+        },
+        "afternoon": null,
+        "evening": {
+          "look": "LOOK:FDV:ASTRIDBLOUSE:BLK.jpg",
+          "footwear": "FOOTWEAR:FERRAGAMO:LOLYSANDAL:BLACK.jpg",
+          "handbag": "access:bag:bottega:hobo.jpg",
+          "jewelry": "access:jewlery:phoebephilo:hoops.jpg",
+          "accessory": "ACCESSORY:GABRIELLAHEARST:WELFATCHASHMERE:SAND.jpg"
+        }
+      }
+    },
+    {
+      "day": 8,
+      "slots": {
+        "morning": {
+          "look": "LOOK:FDV:ATLASSCARF:IVORY.jpg",
+          "footwear": "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
+          "handbag": "access:bag:bottega:hobo.jpg",
+          "jewelry": "ACCESSORY:BULGAR:SERPENTI:BLK.jpg",
+          "accessory": "BEAUTY:FDV:PARFUM.jpg"
+        },
+        "afternoon": {
+          "_note": "Same as morning",
+          "look": "LOOK:FDV:ATLASSCARF:IVORY.jpg",
+          "footwear": "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
+          "handbag": "access:bag:bottega:hobo.jpg",
+          "jewelry": "ACCESSORY:BULGAR:SERPENTI:BLK.jpg",
+          "accessory": "BEAUTY:FDV:PARFUM.jpg"
+        },
+        "evening": null
+      }
+    }
+  ]
+}

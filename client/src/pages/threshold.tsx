@@ -1,10 +1,10 @@
 import { GlobalNav } from "@/components/global-nav";
 import CurrentFeed from "./current";
 import { Link } from "wouter";
-import { MapPin, Sparkles, Heart, Globe, Bell, ChevronRight, Pin } from "lucide-react";
+import { ChevronRight, Pin } from "lucide-react";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { queryClient } from "@/lib/queryClient";
 
 const MOOD_KEYS = [
@@ -23,12 +23,14 @@ const LOOK_KEYS = [
   "todays-edit-look-6",
 ];
 
-const EXPLORE_CATEGORIES = [
-  { id: "destinations", label: "Travel Destinations", icon: MapPin, href: "/destinations" },
-  { id: "experiences", label: "Experiences", icon: Sparkles, href: "/coming-soon/experiences" },
-  { id: "rituals", label: "Rituals", icon: Heart, href: "/coming-soon/rituals" },
-  { id: "culture", label: "Culture", icon: Globe, href: "/coming-soon/culture" },
-  { id: "concierge", label: "Concierge", icon: Bell, href: "/coming-soon/concierge-services" },
+const CATEGORY_NAV = [
+  { id: "travel", label: "Travel / Destinations", href: "/destinations", active: true },
+  { id: "style", label: "Style", href: null, active: false },
+  { id: "culture", label: "Culture", href: null, active: false },
+  { id: "experiences", label: "Experiences", href: null, active: false },
+  { id: "rituals", label: "Rituals", href: null, active: false },
+  { id: "objects", label: "Objects of Desire", href: null, active: false },
+  { id: "stateofmind", label: "State of Mind", href: null, active: false },
 ];
 
 function TodaysEditCard({ getImageUrl }: { getImageUrl: (key: string) => string }) {
@@ -141,23 +143,34 @@ function TodaysEditCard({ getImageUrl }: { getImageUrl: (key: string) => string 
   );
 }
 
-function ExploreRow() {
+function CategoryNav() {
   return (
-    <div className="py-12 md:py-16 px-6" data-testid="section-explore">
+    <div className="py-10 md:py-14 px-6 border-b border-border/30" data-testid="section-category-nav">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-xs font-medium tracking-[0.3em] uppercase text-muted-foreground mb-8 text-center">
-          Explore
-        </h2>
-        <div className="flex flex-wrap justify-center gap-6 md:gap-8">
-          {EXPLORE_CATEGORIES.map((category) => (
-            <Link key={category.id} href={category.href}>
-              <span
-                className="text-sm font-medium tracking-wide text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                data-testid={`link-explore-${category.id}`}
-              >
-                {category.label}
-              </span>
-            </Link>
+        <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+          {CATEGORY_NAV.map((cat, i) => (
+            <span key={cat.id} className="flex items-center gap-4 md:gap-8">
+              {cat.active && cat.href ? (
+                <Link href={cat.href}>
+                  <span
+                    className="text-xs md:text-sm tracking-[0.12em] uppercase text-foreground hover:opacity-70 transition-opacity cursor-pointer"
+                    data-testid={`link-cat-${cat.id}`}
+                  >
+                    {cat.label}
+                  </span>
+                </Link>
+              ) : (
+                <span
+                  className="text-xs md:text-sm tracking-[0.12em] uppercase text-muted-foreground/50 cursor-default"
+                  data-testid={`link-cat-${cat.id}`}
+                >
+                  {cat.label}
+                </span>
+              )}
+              {i < CATEGORY_NAV.length - 1 && (
+                <span className="text-muted-foreground/30 text-xs">·</span>
+              )}
+            </span>
           ))}
         </div>
       </div>
@@ -167,6 +180,7 @@ function ExploreRow() {
 
 export default function Threshold() {
   const { data: imageSlotsData } = useImageSlots();
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const getImageUrl = (assetKey: string): string => {
     if (imageSlotsData?.slots) {
@@ -181,6 +195,40 @@ export default function Threshold() {
 
   const heroImage = getImageUrl("landing-hero");
 
+  // Programmatic autoplay — handles Chrome autoplay policy
+  const attemptPlay = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    // Ensure muted (required for autoplay in most browsers)
+    video.muted = true;
+    video.play().catch(() => {
+      // Silently fail — poster image is the graceful fallback
+    });
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Try to play once metadata is loaded
+    if (video.readyState >= 2) {
+      attemptPlay();
+    } else {
+      video.addEventListener("loadeddata", attemptPlay, { once: true });
+    }
+
+    // Also try on visibility change (tab becomes focused)
+    const onVisible = () => {
+      if (document.visibilityState === "visible") attemptPlay();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      video.removeEventListener("loadeddata", attemptPlay);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [attemptPlay]);
+
   const handleScrollToContent = () => {
     const contentSection = document.getElementById('current-content');
     if (contentSection) {
@@ -191,56 +239,102 @@ export default function Threshold() {
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
       <GlobalNav variant="overlay" />
-      
+
+      {/* LANDING HERO — video background with logo + wordmark */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center">
-        <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)), url('${heroImage}')`
-          }}
+        {/* Video background with static image fallback poster */}
+        <video
+          ref={videoRef}
+          src="/landing-video.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster={heroImage}
+          onCanPlay={attemptPlay}
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
-        <div className="relative z-10 max-w-2xl mx-auto space-y-8 text-white">
-          <h1 
-            className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight drop-shadow-lg"
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#fafaf9]" />
+
+        <div className="relative z-10 w-full mx-auto flex flex-col items-center text-white flex-1 justify-center">
+          {/* Wordmark logo image — white on transparent, HUGE like reference */}
+          <img
+            src="/logo-wordmark-white.png"
+            alt="FIL DE VIE CONCIERGE"
+            className="w-[85vw] max-w-[900px] sm:w-[80vw] md:w-[75vw] drop-shadow-lg mb-10 md:mb-14 mx-auto"
+            draggable={false}
             data-testid="text-threshold-title"
+          />
+
+          {/* Taglines */}
+          <p
+            className="text-lg font-bold text-white mb-2 drop-shadow-md"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
           >
-            FIL DE VIE CONCIERGE
-          </h1>
-          <div className="space-y-4">
-            <p className="text-lg md:text-xl opacity-90" data-testid="text-threshold-line1">
-              Discover the world of FIL DE VIE.
-            </p>
-            <p className="text-lg md:text-xl opacity-90" data-testid="text-threshold-line2">
-              Places, objects, and experiences worth returning to.
-            </p>
-          </div>
-          <p className="text-base opacity-80 max-w-lg mx-auto leading-relaxed" data-testid="text-threshold-paragraph">
-            A collection of places to enter, objects to live with, and moments to come back to.
+            Discover the world of{" "}
+            <span className="tracking-[0.15em]">FIL DE VIE</span>
           </p>
-          <div className="pt-8">
-            <button
-              onClick={handleScrollToContent}
-              className="animate-bounce cursor-pointer"
-              data-testid="button-scroll-down"
-              aria-label="Scroll to content"
+          <p
+            className="text-lg font-semibold italic text-white mb-16 md:mb-20 drop-shadow-md"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            Places, objects, and experiences worth returning to.
+          </p>
+        </div>
+
+        {/* A STATE OF MIND — anchored near bottom of hero */}
+        <div className="relative z-10 pb-10 md:pb-14">
+          <button
+            onClick={handleScrollToContent}
+            className="cursor-pointer group flex flex-col items-center gap-4"
+            data-testid="button-scroll-down"
+            aria-label="Scroll to content"
+          >
+            <p
+              className="text-white text-sm md:text-base tracking-[0.5em] uppercase font-medium drop-shadow-sm"
+              style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
             >
-              <svg 
-                className="w-6 h-6 mx-auto text-muted-foreground/50 hover:text-muted-foreground transition-colors" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            </button>
-          </div>
+              A STATE OF MIND
+            </p>
+            <svg
+              className="w-4 h-4 text-white/40 group-hover:text-white/70 transition-colors animate-bounce"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </button>
         </div>
       </section>
 
-      <div id="current-content">
-        <ExploreRow />
+      {/* Category navigation — between hero and The Current */}
+      <nav
+        className="bg-[#fafaf9] border-b border-black/5"
+        style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+      >
+        <div className="flex items-center justify-center gap-8 sm:gap-12 md:gap-16 px-6 py-12 md:py-16 overflow-x-auto">
+          {["TRAVEL", "STYLE", "CULTURE", "OBJECTS", "RITUALS"].map((cat) => (
+            <span
+              key={cat}
+              onClick={cat === "TRAVEL" ? () => {
+                window.location.href = "/destinations";
+              } : undefined}
+              className={`text-xs md:text-sm tracking-[0.15em] uppercase transition-colors cursor-pointer whitespace-nowrap ${
+                cat === "TRAVEL"
+                  ? "text-[#1a1a1a] font-semibold border-b border-[#1a1a1a] pb-1"
+                  : "text-[#1a1a1a]/40 hover:text-[#1a1a1a]/70 font-medium"
+              }`}
+            >
+              {cat}
+            </span>
+          ))}
+        </div>
+      </nav>
 
+      <div id="current-content">
         <CurrentFeed embedded />
       </div>
     </div>
