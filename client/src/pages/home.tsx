@@ -1074,10 +1074,19 @@ export default function Home() {
   };
 
   const openProductModal = (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string; genomeKey?: string }) => {
+    // Resolve genome key: use provided key, or derive from itemId (e.g. "d1-1-look" or "d1-1-wardrobe" → "d1-1")
+    let resolvedGenomeKey = data.genomeKey;
+    if (!resolvedGenomeKey && data.itemId) {
+      const flowId = data.itemId.replace(/-(look|wardrobe)$/, '');
+      const mapKey = SECTION_LOOK_GENOME_KEY[flowId];
+      if (mapKey) resolvedGenomeKey = mapKey;
+    }
     // Try genome lookup for rich product data
-    const genome = data.genomeKey ? getProductByKey(data.genomeKey) : undefined;
+    const genome = resolvedGenomeKey ? getProductByKey(resolvedGenomeKey) : undefined;
     const displayName = genome ? getProductDisplayName(genome) : data.title;
     const shopUrlResolved = genome && isShoppable(genome) ? genome.url : data.shopUrl;
+
+    console.log('[OPEN MODAL]', { itemId: data.itemId, passedGenomeKey: data.genomeKey, resolvedGenomeKey, genomeName: genome?.name });
 
     setProductModalItem({
       id: data.itemId,
@@ -1094,7 +1103,7 @@ export default function Home() {
       color: genome?.color || undefined,
       sizes: genome?.sizes || undefined,
       shopStatus: genome?.shop_status || undefined,
-      genomeKey: data.genomeKey,
+      genomeKey: resolvedGenomeKey,
     });
     setProductModalOpen(true);
   };
