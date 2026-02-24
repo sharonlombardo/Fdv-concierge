@@ -241,7 +241,7 @@ export default function Threshold() {
       <GlobalNav variant="overlay" />
 
       {/* LANDING HERO — video background with logo + wordmark */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center">
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center bg-black">
         {/* Video background with static image fallback poster */}
         <video
           ref={videoRef}
@@ -293,7 +293,7 @@ export default function Threshold() {
             aria-label="Scroll to content"
           >
             <p
-              className="text-white text-sm md:text-base tracking-[0.5em] uppercase font-medium drop-shadow-sm"
+              className="text-white text-xl md:text-2xl tracking-[0.5em] uppercase font-semibold drop-shadow-sm"
               style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
             >
               A STATE OF MIND

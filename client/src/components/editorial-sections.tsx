@@ -2,6 +2,44 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { ITINERARY_DATA, DayPage, FlowItem } from "@shared/itinerary-data";
 import { PinButton } from "@/components/pin-button";
+import { getProductByKey } from "@/lib/brand-genome";
+
+/**
+ * Hardcoded map: flow.id → genome database_match_key for the "look" image.
+ * Source of truth: morocco_itinerary_product_map.json "look" entries per day/slot.
+ */
+const SECTION_LOOK_GENOME_KEY: Record<string, string> = {
+  // Day 1
+  "d1-1": "LOOK:FDV:PHILOMENACAFTAN:SAND.jpg",
+  "d1-3": "LOOK:FDV:CYBELBLOUSE:STRIPE.jpg",
+  "d1-6": "LOOK:FDV:VIRGINIADRESS:EMERALD.jpg",
+  // Day 2
+  "d2-1": "LOOK:FDV:JUNOBLOUSE:MARRAKECHPANT:STRIPE.jpg",
+  "d2-4": "LOOK:FDV:DIANADRES:STRIPE.jpg",
+  "d2-7": "LOOK:FDV:HONORADRESS:FLORAL.jpg",
+  // Day 3
+  "d3-1": "LOOK:FDV:BELLACAFTANMINI:IVORY.jpg",
+  "d3-5": "LOOK:FDV:LUCINABLOUSE:BLACK.jpg",
+  "d3-9": "LOOK:FDV:CALYPSODRESS:BLACK.jpg",
+  // Day 4
+  "d4-1": "LOOK:FDV:LILLITHCAFTAN:IVORY.jpg",
+  "d4-4": "LOOK:FDV:JUNOBLOUSE:BLK.jpg",
+  "d4-9": "LOOK:FDV:ISADORADRESS:BLK.jpg",
+  // Day 5
+  "d5-1": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
+  "d5-3": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
+  "d5-7": "look:fdv:crepesilkset:black.jpg",
+  // Day 6
+  "d6-1": "LOOK:FDV:LUCINABLOUSE:BLACK.jpg",
+  "d6-4": "LOOK:FDV:CALYPSODRESS:BLACK.jpg",
+  "d6-8": "LOOK:FDV:STEVIECAFTAN:BLACK.jpg",
+  // Day 7
+  "d7-1": "LOOK:FDV:HONORADRESS:FLORAL.jpg",
+  "d7-4": "LOOK:FDV:ASTRIDBLOUSE:BLK.jpg",
+  // Day 8
+  "d8-1": "LOOK:FDV:ATLASSCARF:IVORY.jpg",
+  "d8-4": "LOOK:FDV:ATLASSCARF:IVORY.jpg",
+};
 
 export interface DayEditorial {
   dayNumber: number;
@@ -295,23 +333,30 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                 />
                 {hasWardrobeContent && (
                   <div className="space-y-4">
-                    {wardrobeImage && flow.wardrobeImageKey && (
-                      <ImageCard
-                        imageUrl={wardrobeImage}
-                        itemId={flow.wardrobeImageKey}
-                        itemTitle={`${flow.title} Look`}
-                        showPin={true}
-                        imageType="look"
-                        preserveAspectRatio={true}
-                        onImageClick={onOpenProductModal ? () => onOpenProductModal({
-                          title: `${flow.title} - The Look`,
-                          imageUrl: wardrobeImage,
-                          itemId: flow.wardrobeImageKey!,
-                          pinType: "look",
-                          genomeKey: flow.wardrobeImageDefault?.split('/').pop()?.split('?')[0] || undefined,
-                        }) : undefined}
-                      />
-                    )}
+                    {wardrobeImage && flow.wardrobeImageKey && (() => {
+                      const lookGenomeKey = SECTION_LOOK_GENOME_KEY[flow.id];
+                      const lookProduct = lookGenomeKey ? getProductByKey(lookGenomeKey) : undefined;
+                      return (
+                        <ImageCard
+                          imageUrl={wardrobeImage}
+                          itemId={flow.wardrobeImageKey}
+                          itemTitle={lookProduct?.name || `${flow.title} Look`}
+                          showPin={true}
+                          imageType="look"
+                          preserveAspectRatio={true}
+                          onImageClick={onOpenProductModal ? () => onOpenProductModal({
+                            title: lookProduct?.name || `${flow.title} - The Look`,
+                            imageUrl: wardrobeImage,
+                            itemId: flow.wardrobeImageKey!,
+                            brand: lookProduct?.brand || undefined,
+                            description: lookProduct?.description || undefined,
+                            shopUrl: lookProduct?.url || undefined,
+                            pinType: "look",
+                            genomeKey: lookGenomeKey || undefined,
+                          }) : undefined}
+                        />
+                      );
+                    })()}
                     {hasAccessories && (
                       <div className="grid grid-cols-4 gap-2">
                         {flow.wardrobeExtras.map((extra, idx) => {
