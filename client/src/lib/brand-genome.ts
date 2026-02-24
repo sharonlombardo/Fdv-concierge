@@ -126,6 +126,43 @@ export function isShoppable(product: BrandGenomeProduct): boolean {
 }
 
 /**
+ * Hardcoded map: flow.id → genome database_match_key for the "look" image.
+ * Source of truth: morocco_itinerary_product_map.json "look" entries per day/slot.
+ */
+export const SECTION_LOOK_GENOME_KEY: Record<string, string> = {
+  // Day 1
+  "d1-1": "LOOK:FDV:PHILOMENACAFTAN:SAND.jpg",
+  "d1-3": "LOOK:FDV:CYBELBLOUSE:STRIPE.jpg",
+  "d1-6": "LOOK:FDV:VIRGINIADRESS:EMERALD.jpg",
+  // Day 2
+  "d2-1": "LOOK:FDV:JUNOBLOUSE:MARRAKECHPANT:STRIPE.jpg",
+  "d2-4": "LOOK:FDV:DIANADRES:STRIPE.jpg",
+  "d2-7": "LOOK:FDV:HONORADRESS:FLORAL.jpg",
+  // Day 3
+  "d3-1": "LOOK:FDV:BELLACAFTANMINI:IVORY.jpg",
+  "d3-5": "LOOK:FDV:LUCINABLOUSE:BLACK.jpg",
+  "d3-9": "LOOK:FDV:CALYPSODRESS:BLACK.jpg",
+  // Day 4
+  "d4-1": "LOOK:FDV:LILLITHCAFTAN:IVORY.jpg",
+  "d4-4": "LOOK:FDV:JUNOBLOUSE:BLK.jpg",
+  "d4-9": "LOOK:FDV:ISADORADRESS:BLK.jpg",
+  // Day 5
+  "d5-1": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
+  "d5-3": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
+  "d5-7": "look:fdv:crepesilkset:black.jpg",
+  // Day 6
+  "d6-1": "LOOK:FDV:LUCINABLOUSE:BLACK.jpg",
+  "d6-4": "LOOK:FDV:CALYPSODRESS:BLACK.jpg",
+  "d6-8": "LOOK:FDV:STEVIECAFTAN:BLACK.jpg",
+  // Day 7
+  "d7-1": "LOOK:FDV:HONORADRESS:FLORAL.jpg",
+  "d7-4": "LOOK:FDV:ASTRIDBLOUSE:BLK.jpg",
+  // Day 8
+  "d8-1": "LOOK:FDV:ATLASSCARF:IVORY.jpg",
+  "d8-4": "LOOK:FDV:ATLASSCARF:IVORY.jpg",
+};
+
+/**
  * Find a product by partial key match (case-insensitive).
  * Tries exact match first, then checks if either key contains the other.
  */

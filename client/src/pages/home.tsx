@@ -57,7 +57,7 @@ import {
   EditorialDaySection
 } from '@/components/editorial-sections';
 import { LoadingImage } from '@/components/loading-image';
-import { getProductByKey, getProductDisplayName, isShoppable } from '@/lib/brand-genome';
+import { getProductByKey, getProductDisplayName, isShoppable, SECTION_LOOK_GENOME_KEY } from '@/lib/brand-genome';
 
 function isDayPage(page: ItineraryPage): page is DayPage {
   return 'day' in page;
@@ -465,12 +465,17 @@ function ItemDetailDrawer({
                   className="w-full max-w-xs mx-auto rounded-md relative cursor-pointer"
                   onClick={() => {
                     if (onOpenProductModal) {
+                      const lookGenomeKey = SECTION_LOOK_GENOME_KEY[item.id];
+                      const gp = lookGenomeKey ? getProductByKey(lookGenomeKey) : undefined;
                       onOpenProductModal({
-                        title: `${item.title} - The Look`,
+                        title: gp?.name || `${item.title} - The Look`,
                         imageUrl: getImageUrl(`${item.id}-wardrobe`, item.commercialWardrobe || "", { imageType: 'wardrobe', title: item.title }),
                         itemId: `${item.id}-look`,
-                        description: item.wardrobe,
-                        pinType: "look",
+                        brand: gp?.brand || undefined,
+                        description: gp?.description || item.wardrobe,
+                        shopUrl: gp?.url || undefined,
+                        pinType: "style",
+                        genomeKey: lookGenomeKey || undefined,
                       });
                     }
                   }}
@@ -490,24 +495,31 @@ function ItemDetailDrawer({
                     alt="Style recommendation"
                   />
                   <div className="absolute top-3 right-3 z-10">
-                    <PinButton
-                      itemType="look"
-                      itemId={`${item.id}-look`}
-                      itemData={{
-                        title: `${item.title} - The Look`,
-                        description: item.wardrobe,
-                        imageUrl: getImageUrl(
-                          `${item.id}-wardrobe`,
-                          item.commercialWardrobe || "",
-                          { imageType: 'wardrobe', title: item.title }
-                        ),
-                        editTag: 'morocco-edit',
-                        storyTag: 'morocco'
-                      }}
-                      sourceContext="morocco_itinerary"
-                      aestheticTags={['look', 'outfit', 'style']}
-                      size="md"
-                    />
+                    {(() => {
+                      const pinGenomeKey = SECTION_LOOK_GENOME_KEY[item.id];
+                      const pinProduct = pinGenomeKey ? getProductByKey(pinGenomeKey) : undefined;
+                      return (
+                        <PinButton
+                          itemType="look"
+                          itemId={`${item.id}-look`}
+                          itemData={{
+                            title: pinProduct?.name || `${item.title} - The Look`,
+                            description: pinProduct?.description || item.wardrobe,
+                            imageUrl: getImageUrl(
+                              `${item.id}-wardrobe`,
+                              item.commercialWardrobe || "",
+                              { imageType: 'wardrobe', title: item.title }
+                            ),
+                            editTag: 'morocco-edit',
+                            storyTag: 'morocco',
+                            genomeKey: pinGenomeKey || undefined,
+                          }}
+                          sourceContext="morocco_itinerary"
+                          aestheticTags={['look', 'outfit', 'style']}
+                          size="md"
+                        />
+                      );
+                    })()}
                   </div>
                 </div>
                 <div className="flex justify-between items-center max-w-md mx-auto">
@@ -1217,12 +1229,17 @@ export default function Home() {
                             className="w-16 h-16 md:w-20 md:h-20 rounded-md overflow-hidden bg-muted shrink-0 ring-1 ring-border hover:ring-foreground transition-all"
                             onClick={(e) => {
                               e.stopPropagation();
+                              const tlGenomeKey = SECTION_LOOK_GENOME_KEY[item.id];
+                              const tlProduct = tlGenomeKey ? getProductByKey(tlGenomeKey) : undefined;
                               openProductModal({
-                                title: `${item.title} - The Look`,
+                                title: tlProduct?.name || `${item.title} - The Look`,
                                 imageUrl: wardrobeUrl,
                                 itemId: `${item.id}-look`,
-                                description: item.wardrobe,
-                                pinType: "look",
+                                brand: tlProduct?.brand || undefined,
+                                description: tlProduct?.description || item.wardrobe,
+                                shopUrl: tlProduct?.url || undefined,
+                                pinType: "style",
+                                genomeKey: tlGenomeKey || undefined,
                               });
                             }}
                           >

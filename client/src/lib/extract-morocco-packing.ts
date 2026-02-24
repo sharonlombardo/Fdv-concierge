@@ -1,8 +1,9 @@
-import { 
-  ITINERARY_DATA, 
+import {
+  ITINERARY_DATA,
   type DayPage,
-  type FlowItem 
+  type FlowItem
 } from './itinerary-data';
+import { getProductByKey, SECTION_LOOK_GENOME_KEY } from './brand-genome';
 
 export interface PackingSeedItem {
   itemId: string;
@@ -41,17 +42,19 @@ export function extractMoroccoPackingItems(includeEmptySlots = true): PackingSee
         
         const timeCategory = getTimeCategory(flow.time);
         
+        const packGenomeKey = SECTION_LOOK_GENOME_KEY[flow.id];
+        const packProduct = packGenomeKey ? getProductByKey(packGenomeKey) : undefined;
         items.push({
           itemId: `${flow.id}-look`,
           itemType: 'look',
-          title: `${flow.title} - The Look`,
+          title: packProduct?.name || `${flow.title} - The Look`,
           assetUrl: flow.commercialWardrobe,
           day: dayPage.day,
           time: timeCategory,
           flowTitle: flow.title,
           aestheticTags: ['look', 'outfit', 'style', 'morocco'],
           metadata: {
-            description: flow.wardrobe,
+            description: packProduct?.description || flow.wardrobe,
             isLook: true
           }
         });
