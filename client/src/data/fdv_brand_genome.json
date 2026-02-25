@@ -1,485 +1,493 @@
 [
   {
-    "database_match_key": "ACCESS:BAG:CHLOE:WRISTLETTE:BLACK.jpg",
-    "category": "ACCESSORY: BAG",
-    "brand": "Chloe",
-    "name": "Wristlette",
+    "database_match_key": "LOOK:YSL:JUMPSUIT:BLACK.jpg",
+    "category": "LOOK",
+    "brand": "YSL",
+    "name": "Jumpsuit",
     "color": "Black",
     "sizes": [
-      "O/S"
+      "36-42"
     ],
-    "price": "$4200",
-    "price_numeric": 4200,
-    "description": "Small Bracelet Hobo bag in grained leather",
-    "url": "https://www.chloe.com/en-us/p/bags/shoulder-bag/CH25US623P57001.htmlchloe%20black%20evening%20bag",
+    "price": "$1230",
+    "price_numeric": 1230,
+    "description": "Cotton viscose gabardine jumpsuit with cut away details and wide leg.",
+    "url": "https://www.fwrd.com/product-saint-laurent-sleeveless-jumpsuit-in-gris-fonce/SLAU-WC19/",
     "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Circular Hardware",
-      "Grained Texture",
-      "Evening Fluidity",
-      "Sculptural Handle"
+      "Sculptural Cut-Out",
+      "Gabardine Utility",
+      "Nocturnal Bohemia",
+      "Wide Leg Architecture"
     ]
   },
   {
-    "database_match_key": "ACCESS:BAG:TOWEL:FDV:POOLESSENTIALS:OLIVE.jpg",
-    "category": "ACCESSORY",
-    "brand": "FIL DE VIE",
-    "name": "Pool Essentials",
-    "color": "Olive",
+    "database_match_key": "look:phoebephilo:gaiadress:black.jpg",
+    "category": "LOOK",
+    "brand": "Phoebe Philo",
+    "name": "Gaia Dress",
+    "color": "Black",
     "sizes": [
-      "O/S"
+      "36-42"
     ],
-    "price": "$600",
-    "price_numeric": 600,
-    "description": "Sumptuous terry cloth tote bag and extra large bath sheet. Coming soon.",
+    "price": "$2360",
+    "price_numeric": 2360,
+    "description": "Crisp lightweight poplin long dress with side slit details and low neck line. Coming soon.",
     "url": null,
     "shop_status": "coming_soon",
     "wellspring_atelier_codes": [
-      "Resort Utility",
-      "Tactile Terry",
-      "Olive Monotone",
-      "Embossed Monogram"
+      "Crisp Poplin",
+      "Structural Slit",
+      "Nomadic Noir",
+      "Minimalist Column"
     ]
   },
   {
-    "database_match_key": "ACCESS:SUGNLASSES:LOEWE:BLACK.jpg",
-    "category": "ACCESSORY: Sunglasses",
-    "brand": "Loewe",
-    "name": "Inflated Cat Eye Sunglasses",
-    "color": "Black",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$440",
-    "price_numeric": 440,
-    "description": "Inflated gold-tone embellished cat-eye acetate sunglasses",
-    "url": "https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Inflated Acetate",
-      "Modernist Cat-Eye",
-      "Sculptural Form",
-      "Gold Hardware"
-    ]
-  },
-  {
-    "database_match_key": "ACCESSORY:BAG:BOTTEGA:KALIMERO:BLACK.jpg",
-    "category": "ACCESSORY: BAG",
-    "brand": "Bottega Veneta",
-    "name": "Kalimero Bag",
-    "color": "Black",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$4100",
-    "price_numeric": 4100,
-    "description": "Shoulder bag in soft foulard Intreccio leather with sliding shoulder strap, metallic ring, and knot detail.",
-    "url": "https://www.bottegaveneta.com/en-us/small-kalimero-citta-fondant-813744715.html",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Intrecciato Heritage",
-      "Woven Texture",
-      "Tactile Fluidity",
-      "Slouchy Structure"
-    ]
-  },
-  {
-    "database_match_key": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
-    "category": "ACCESSORY: BAG",
-    "brand": "Demellier London",
-    "name": "Santorini Basket Bag",
-    "color": "Natural",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$355",
-    "price_numeric": 355,
-    "description": "Ethically handwoven in Morocco from 100% natural palm leaves. Each bag is a unique creation.",
-    "url": "https://demellierlondon.com/products/the-santorini-natural-basket-black",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Artisanal Weave",
-      "Resort Utility",
-      "Natural Palm",
-      "Woven Basket"
-    ]
-  },
-  {
-    "database_match_key": "ACCESSORY:BAG:DRIESVANNOTEN:BLACK.jpg",
-    "category": "ACCESSORY: BAG",
-    "brand": "Dries Van Noten",
-    "name": "Embellished Evening Bag",
-    "color": "Black",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$1640",
-    "price_numeric": 1640,
-    "description": "Satin jacquard embellished evening bag.",
-    "url": "https://www.parlourx.com/products/envelope-embroidered-clutch-on-chain-black-gold-1",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Nocturnal Opulence",
-      "Artisanal Jacquard",
-      "Evening Embellishment",
-      "Tapestry"
-    ]
-  },
-  {
-    "database_match_key": "ACCESSORY:BAG:PHOEBEPHILO:DRIVEBAG.jpg",
-    "category": "ACCESSORY: BAG",
+    "database_match_key": "LOOK:PHOEBEPHILO:POLOSWEATER:BLACK.jpg",
+    "category": "LOOK",
     "brand": "Phoebe Philo",
-    "name": "Drive Bag",
+    "name": "Polo Sweater",
     "color": "Black",
     "sizes": [
-      "O/S"
+      "S",
+      "M",
+      "L"
     ],
-    "price": "$6200",
-    "price_numeric": 6200,
-    "description": "Drive bag in vertically quilted black leather with tonal leather lining. The structured bag has tonal stitching and silver tone clasp closure.",
-    "url": "https://us.phoebephilo.com/products/drive-bag-black-leather",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Architectural Quilting",
-      "Utilitarian Elegance",
-      "Structured Volume",
-      "Minimalist Hardware"
-    ]
-  },
-  {
-    "database_match_key": "ACCESSORY:BULGAR:SERPENTI:BLK.jpg",
-    "category": "ACCESSORY",
-    "brand": "Bulgari",
-    "name": "Serpenti watch",
-    "color": "Black/Rose Gold",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$13,200",
-    "price_numeric": 13200,
-    "description": "Serpenti Spiga Lady watch, 35 mm black ceramic curved case, 18 kt rose gold bezel set with diamonds",
-    "url": "https://www.bulgari.com/en-us/watches/womens/serpenti-spiga-watch-rose-gold-ceramic-black-102532",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Serpentine Architecture",
-      "Ceramic Armor",
-      "Horological Heritage",
-      "Diamond Bezel"
-    ]
-  },
-  {
-    "database_match_key": "ACCESSORY:GABRIELLAHEARST:WELFATCHASHMERE:SAND.jpg",
-    "category": "ACCESSORY",
-    "brand": "Gabriella Hearst",
-    "name": "Lauren Knit Wrap",
-    "color": "Black",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$3170",
-    "price_numeric": 3170,
-    "description": "Oatmeal Welfat Cashmere",
-    "url": "https://gabrielahearst.com/products/lauren-knit-wrap-oatmeal",
-    "shop_status": "live",
+    "price": "$990",
+    "price_numeric": 990,
+    "description": "Cashmere polo sweater with short sleeves and button placket. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
     "wellspring_atelier_codes": [
       "Tactile Cashmere",
-      "Nomadic Wrap",
-      "Fringed Fluidity",
-      "Earthy Neutral"
+      "Relaxed Prep",
+      "Elevated Polo",
+      "Nocturnal Knit"
     ]
   },
   {
-    "database_match_key": "ACCESSORY:JEWELRY:BULGARI:CABACHON NECKLACE.jpg",
-    "category": "ACCESSORY: Jewelry",
-    "brand": "1st Dibs",
-    "name": "Lapis cabachon necklace",
-    "color": "Gold/Blue",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$50,000",
-    "price_numeric": 50000,
-    "description": "Bvlgari 1980s Unheated Sapphire and Gold Necklace",
-    "url": "https://www.1stdibs.com/jewelry/necklaces/pendant-necklaces/bvlgari-1980s-unheated-sapphire-gold-necklace/id-j_28202612/",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Archival Estate",
-      "Lapis Cabochon",
-      "1980s Maximalism",
-      "Heavy Gold Chain"
-    ]
-  },
-  {
-    "database_match_key": "ACCESSORY:SMYTHSON:CHELSEANOTEBOOK:RED.jpg",
+    "database_match_key": "LOOK:RAYBAN:PUFFEDWAYFARER:BLACK.jpg",
     "category": "ACCESSORY",
-    "brand": "Smythson",
-    "name": "Chelsea Notebook",
-    "color": "Red",
+    "brand": "RayBan",
+    "name": "Puffed Wayfarer",
+    "color": "Black",
     "sizes": [
       "O/S"
     ],
-    "price": "$165",
-    "price_numeric": 165,
-    "description": "The Chelsea notebook was made for notes-on-the-go. The perfect size for an everyday bag but large enough for your daily plots and plans, this notebook is brimming with our lined Featherweight paper and bound in a tactile crossgrain calf leather.",
-    "url": "https://www.smythson.com/us/scarlet-red-chelsea-notebook-in-panama-1204738.html",
+    "price": "$202",
+    "price_numeric": 202,
+    "description": "Special edition of the classis wayfarer with puffed extra large frame.",
+    "url": "https://www.ray-ban.com/usa/sunglasses/RB4940wayfarer%20puffer-black/8056262848777",
     "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Stationery Heritage",
-      "Crossgrain Leather",
-      "Scarlet Pop",
-      "Analog Luxury"
+      "Inflated Architecture",
+      "Classic Heritage",
+      "Sculptural Acetate",
+      "Essential Base"
     ]
   },
   {
-    "database_match_key": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg",
-    "category": "ACCESSORY: SUNGLASSES",
+    "database_match_key": "LOOK:THEROW:CASHMERETRACKSUIT:CREAM.jpg",
+    "category": "LOOK",
+    "brand": "The Row",
+    "name": "Cashmere track suit",
+    "color": "Cream",
+    "sizes": [
+      "2-12"
+    ],
+    "price": "$2370",
+    "price_numeric": 2370,
+    "description": "Cashmere track suit. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Tactile Cashmere",
+      "Monochromatic Cream",
+      "Elevated Loungewear",
+      "Desert Minimal"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:YSL:BIKINI:BLACK.jpg",
+    "category": "LOOK",
+    "brand": "YSL",
+    "name": "LouLou Bikini",
+    "color": "Black",
+    "sizes": [
+      "36-42"
+    ],
+    "price": "$795",
+    "price_numeric": 795,
+    "description": "Two piece swimsuit ini black.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Minimalist Swim",
+      "High-Waisted Architecture",
+      "Resort Noir",
+      "Essential Base"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:JILSANDER:SILKFLUIDSET:BLACK.jpg",
+    "category": "LOOK",
+    "brand": "Jil Sander",
+    "name": "Silk Button Down Shirt & Fluid Pant",
+    "color": "Black",
+    "sizes": [
+      "32-44"
+    ],
+    "price": "$760/720",
+    "price_numeric": 760,
+    "description": "Relaxed button down fluid shirt & elasticated waistband fluid pant in silk",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Fluid Silk",
+      "Relaxed Architecture",
+      "Elevated Loungewear",
+      "Nocturnal Ease"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:JILSANDER:TRENCHCOAT:WHITE.jpg",
+    "category": "LOOK",
+    "brand": "Jil Sander",
+    "name": "Trench Coat",
+    "color": "White",
+    "sizes": [
+      "36-42"
+    ],
+    "price": "$1230",
+    "price_numeric": 1230,
+    "description": "belted single-breasted coat white cotton gabardine. Classic lapels button fastening long sleeves mid-length belted waist Made in Italy.",
+    "url": "https://www.farfetch.com/shopping/women/jil-sander-belted-single-breasted-coat-item-18804208.aspx",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Cotton Gabardine",
+      "Minimalist Outerwear",
+      "Nomadic Tailoring",
+      "Desert Neutral"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:LOROPIANA:SLIPDRESS:BLACK.jpg",
+    "category": "LOOK",
+    "brand": "Loro Piana",
+    "name": "Slip Dress",
+    "color": "Black",
+    "sizes": [
+      "32-42"
+    ],
+    "price": "$1300",
+    "price_numeric": 1300,
+    "description": "Viscose minimalist slip dress with skinny straps and flared hem. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Minimalist Slip",
+      "90s Gamine",
+      "Flared Architecture",
+      "Nocturnal Fluidity"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:PHOEBEPHILO:BOMBESUNGLASSES:BROWN.jpg",
+    "category": "ACCESSORY",
     "brand": "Phoebe Philo",
-    "name": "Cruise Sunglasses",
-    "color": "Tawny Tortoisshell",
+    "name": "Bombe Sunglasses",
+    "color": "Black",
     "sizes": [
       "O/S"
     ],
-    "price": "$490",
-    "price_numeric": 490,
-    "description": "Cruise sunglasses with sharp tortoiseshell acetate frames, exaggerated angular temples and laurel lenses.",
-    "url": "https://us.phoebephilo.com/products/cruise-sunglasses-tawny-tortoiseshell-acetate",
+    "price": "$750",
+    "price_numeric": 750,
+    "description": "Bombé sunglasses with brown acetate frames, extra-wide, angular temples and dark brown lenses.",
+    "url": "https://us.phoebephilo.com/products/bombe-sunglasses-brown-acetate",
     "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Angular Architecture",
+      "70s Archival",
+      "Angular Temple",
       "Tortoiseshell Heritage",
-      "Exaggerated Temple",
       "Sculptural Shield"
     ]
   },
   {
-    "database_match_key": "BEAUTY:AMANESSENTIALS:JADESET.jpg",
-    "category": "BEAUTY",
-    "brand": "Aman Essentials",
-    "name": "Ritual Gift Set",
-    "color": null,
+    "database_match_key": "LOOK:PHOEBEPHILO:CASHMERETRACKSUIT:ESPRESSO.jpg",
+    "category": "LOOK",
+    "brand": "Phoebe Philo",
+    "name": "Cashmere sweater and track pants",
+    "color": "Espresso",
     "sizes": [
-      "O/S"
+      "32-44"
     ],
-    "price": "$410",
-    "price_numeric": 410,
-    "description": "A collection of hero Aman Essentials products that work together to promote optimal wellbeing in an enhanced ritual of self-care.",
-    "url": "https://shop.aman.com/skincare/face-body-jade-ritual-set/",
-    "shop_status": "live",
+    "price": "$1900/1200",
+    "price_numeric": 1900,
+    "description": "Cashmere track suit. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
     "wellspring_atelier_codes": [
-      "Holistic Ritual",
-      "Jade Tooling",
-      "Resort Spa",
-      "Elevated Wellbeing"
+      "Tactile Cashmere",
+      "Slouchy Luxury",
+      "Espresso Monotone",
+      "Elevated Loungewear"
     ]
   },
   {
-    "database_match_key": "BEAUTY:FDV:PARFUM.jpg",
-    "category": "BEAUTY",
+    "database_match_key": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg",
+    "category": "LOOK",
+    "brand": "Eres",
+    "name": "Effigie Swimsuit",
+    "color": "Black",
+    "sizes": [
+      "38-44"
+    ],
+    "price": "$545",
+    "price_numeric": 545,
+    "description": "One shoulder one piece swimsuit.",
+    "url": "https://www.eresparis.com/us/en-US/swimwear-2/012110-01564.html",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "One Shoulder Architecture",
+      "Minimalist Maillot",
+      "Sculptural Swim",
+      "Resort Noir"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FEAROFGOD:LEATHERCOAT:ESPRESSO.jpg",
+    "category": "LOOK",
+    "brand": "Fear Of God",
+    "name": "Leather Robe Coat",
+    "color": "Espresso",
+    "sizes": [
+      "2-12"
+    ],
+    "price": "$2370",
+    "price_numeric": 2370,
+    "description": "The Leather Robe Coat is crafted in Italy with an unstructured design that enhances the fabric's drape. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Unstructured Drape",
+      "Leather Robe",
+      "Nomadic Armor",
+      "Espresso Monotone"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FILDEVIE:COLUMNDRESS:FURSTOLE:BONE:BLACK.jpg",
+    "category": "LOOK",
     "brand": "FIL DE VIE",
-    "name": "Parfum",
-    "color": null,
+    "name": "Column Dress & Fur Stole",
+    "color": "Bone/Black",
+    "sizes": [
+      "2-12 & O/S"
+    ],
+    "price": "$930/740",
+    "price_numeric": 930,
+    "description": "Heavy weight silk crepe column dress & faux fur stole. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Silk Crepe Column",
+      "High-Contrast Texture",
+      "Sculptural Warmth",
+      "Evening Armor"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FILDEVIE:HERADRESS:BONE.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Hera Dress",
+    "color": "Bone",
+    "sizes": [
+      "2-12"
+    ],
+    "price": "$930",
+    "price_numeric": 930,
+    "description": "Heavy weight silk crepe column dress. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Grecian Architecture",
+      "Silk Crepe",
+      "Fluid Drape",
+      "Antiquity Modernism"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FILDEVIE:STRAPLESSSWIMSUIT:BLACK.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Strapless Swimsuit",
+    "color": "Black",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$395",
+    "price_numeric": 395,
+    "description": "Strapless swimsuit with asymetric cutout. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Sculptural Swim",
+      "Asymmetrical Cut-Out",
+      "Resort Noir",
+      "Negative Space"
+    ]
+  },
+  {
+    "database_match_key": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg",
+    "category": "ACCESSORY",
+    "brand": "Phoebe Philo",
+    "name": "Peak Sunglasses",
+    "color": "Black",
     "sizes": [
       "O/S"
+    ],
+    "price": "$460",
+    "price_numeric": 460,
+    "description": "Modernist cat eye chunky sunglasses.",
+    "url": "https://us.phoebephilo.com/products/peak-sunglasses-black-acetate",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Modernist Cat-Eye",
+      "Chunky Acetate",
+      "Architectural Noir",
+      "Editorial Accessory"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:AIMELEONDORE:QUARTERZIPSET:BLACK.jpg",
+    "category": "LOOK",
+    "brand": "Aimé Leon Dore",
+    "name": "Quarter Zip Pullover & Track pant",
+    "color": "Black",
+    "sizes": [
+      "2-12"
+    ],
+    "price": "$290/240",
+    "price_numeric": 290,
+    "description": "Quarter zip pullover & track pant...",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Elevated Loungewear",
+      "Minimalist Trackset",
+      "Nocturnal Leisure",
+      "Quarter Zip Architecture"
+    ]
+  },
+  {
+    "database_match_key": "Look:alia:soukcoat:desertpants:blush.jpg",
+    "category": "LOOK",
+    "brand": "Alaïa",
+    "name": "Souk Coat/Desert Pant",
+    "color": "Blush",
+    "sizes": [
+      "36-42"
+    ],
+    "price": "$1200/760",
+    "price_numeric": 1200,
+    "description": "Cotton viscose gabardine fluid lightweight coat worn over Cotton viscose gabardine full pants with barrel leg and tapered ankle. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Fluid Gabardine",
+      "Barrel Leg Architecture",
+      "Nomadic Layering",
+      "Blush Monotone"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:DRIESVANNOTEN:LAYEREDSILKDRESS:BLACK.jpg",
+    "category": "LOOK",
+    "brand": "Dries Van Noten",
+    "name": "Layered Silk Dress",
+    "color": "Black",
+    "sizes": [
+      "32-42"
+    ],
+    "price": "$750",
+    "price_numeric": 750,
+    "description": "Layered Viscose and silk dress. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Layered Viscose Silk",
+      "Nocturnal Fluidity",
+      "Effortless Drape",
+      "Minimalist Column"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:ERES:ASIA:SWIMSUIT:BLACK.jpg",
+    "category": "LOOK",
+    "brand": "Eres",
+    "name": "Asymetric One Piece",
+    "color": "Black",
+    "sizes": [
+      "36-42"
+    ],
+    "price": "$460",
+    "price_numeric": 460,
+    "description": "Asymetrical one piece suit.",
+    "url": "https://www.eresparis.com/us/en-US/swimwear-2/011401-01062.html",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Asymmetrical Architecture",
+      "Minimalist Maillot",
+      "Sculptural Swim",
+      "Resort Noir"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FDV:BELLACAFTANMINI:IVORY.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Bella Caftan Mini",
+    "color": "Ivory",
+    "sizes": [
+      "S",
+      "M",
+      "L"
     ],
     "price": "$475",
     "price_numeric": 475,
-    "description": "a scent reminiscent of a a day at the beach. Coming Soon",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Olfactive Memory",
-      "Sun-Drenched",
-      "Coastal Nostalgia",
-      "Tactile Frosted Glass"
-    ]
-  },
-  {
-    "database_match_key": "BEAUTY:FDV:TRAVELMIST.jpg",
-    "category": "ACCESSORY",
-    "brand": "FIL DE VIE",
-    "name": "Travel Mist",
-    "color": null,
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$75.00",
-    "price_numeric": 75,
-    "description": "a refreshing and indulgent experience on the go. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Nomadic Refresh",
-      "Tactile Opaque Glass",
-      "On-The-Go Ritual",
-      "Sensory Utility"
-    ]
-  },
-  {
-    "database_match_key": "BEAUTY:POPPYKING:SINLIPSTICK:RED.jpg",
-    "category": "BEAUTY",
-    "brand": "Poppy King",
-    "name": "Exclusive Original Sin Lipstick",
-    "color": "Red",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$34",
-    "price_numeric": 34,
-    "description": "a glamorous look that still feels casual because of its balm-like formula.",
-    "url": "https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622",
+    "description": "Mini linen caftan with hand crafted embroidery and tassels. Perfect for a day at the beach, pool or sightseeing",
+    "url": "https://fildevie.com/collections/caftans-auto/products/bella-caftan-mini",
     "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Iconic Crimson",
-      "Balm-Like Yield",
-      "Effortless Glamour",
-      "Cult Heritage"
+      "Artisanal Embroidery",
+      "Resort Linen",
+      "Nomadic Mini",
+      "Tasseled Fluidity"
     ]
   },
   {
-    "database_match_key": "BEAUTY:RITUELGEINSHA.jpg",
-    "category": "BEAUTY",
-    "brand": "Bienaime",
-    "name": "Rituel De Geisha Papers",
-    "color": null,
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$23",
-    "price_numeric": 23,
-    "description": "Made in Japan using ancestral processes, this mattifying paper, made of natural fiber, inspired by the beauty rituals of Geishas, will help you keep a porcelain complexion throughout the day",
-    "url": "https://www.beautyhabit.com/products/bienaime-the-",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Ancestral Process",
-      "Natural Fiber",
-      "Porcelain Complexion",
-      "Tactile Ephemera"
-    ]
-  },
-  {
-    "database_match_key": "BEAUTY:SAINJANE:SUNRITUAL.jpg",
-    "category": "BEAUTY",
-    "brand": "Saint Jane",
-    "name": "Sun Ritual Mineral SPF 30",
-    "color": null,
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$38",
-    "price_numeric": 38,
-    "description": "his luxuriously clean, mineral SPF30 sunscreen beautifully blurs the look of pores. Perfect on all skin tones, this multitasking powerhouse is your primer, hydrator, pore minimizer, and sun protection in one. Infused with nutrient-rich flowers like Desert Rose, Jasmine and Hibiscus that thrive in sun-drenched climates, the texture is silky with florals renowned for their natural SPF boosting benefits and antioxidant properties.",
-    "url": "https://saintjanebeauty.com/collections/sun-protection-spf/products/luxury-sun-ritual",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Mineral Shield",
-      "Botanical Efficacy",
-      "Pore-Blurring Canvas",
-      "Multitasking Sun-Care"
-    ]
-  },
-  {
-    "database_match_key": "BEAUTY:VIOLETTEFR:NECATRLIPSTAIN.jpg",
-    "category": "BEAUTY",
-    "brand": "Violette_FR",
-    "name": "Nectar Lip Stain",
-    "color": null,
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$29",
-    "price_numeric": 29,
-    "description": "An innovative high-shine, long-wear lip stain that provides rich hydration and buildable, lasting color",
-    "url": "https://www.violettefr.com/products/lip-nectar-souci-d-automne",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "High-Shine Pigment",
-      "Lasting Wash",
-      "Buildable Color",
-      "French Girl Effortless"
-    ]
-  },
-  {
-    "database_match_key": "FOOTWEAR:ALAIA:BLACK.jpg",
-    "category": "FOOTWEAR",
-    "brand": "Alaia",
-    "name": "HEEL THONG MULES IN VELVET",
-    "color": "Black",
-    "sizes": [
-      "7-10"
-    ],
-    "price": "$1450",
-    "price_numeric": 1450,
-    "description": "Thong mules with stiletto heels Padded straps, 3D effect Velvet covering the heel, the straps & the insole",
-    "url": "https://www.maxfieldla.com/products/alaia-heel-thong-mules-in-velvetalaia%20sandals",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Tactile Velvet",
-      "Sculptural Heel",
-      "90s Minimalism",
-      "Elevated Thong"
-    ]
-  },
-  {
-    "database_match_key": "FOOTWEAR:FERRAGAMO:LOLYSANDAL:BLACK.jpg",
-    "category": "FOOTWEAR",
-    "brand": "Ferragamo",
-    "name": "Loly Fur Leather Thong Sandals",
-    "color": "Black",
-    "sizes": [
-      "7-11"
-    ],
-    "price": "$490",
-    "price_numeric": 490,
-    "description": "leather sandals adorned with soft, fluffy dyed goat fur (Italy) along the strap Flat heel Squared open toe Thong strap Slip-on style Padded insole.",
-    "url": "https://www.bergdorfgoodman.com/p/ferragamo-loly-fur-leather-thong-sandals-prod193820095",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Tactile Fur",
-      "Squared Toe",
-      "Unexpected Texture",
-      "Minimalist Base"
-    ]
-  },
-  {
-    "database_match_key": "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
-    "category": "FOOTWEAR",
-    "brand": "Khaite",
-    "name": "Otto Leather Slippers",
-    "color": "White",
-    "sizes": [
-      "7-10"
-    ],
-    "price": "$595",
-    "price_numeric": 595,
-    "description": "White leather flat slippers",
-    "url": "https://www.mytheresa.com/us/en/women/khaite-otto-leather-slippers-white-p00883068",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Architectural Slip-On",
-      "Matte White Leather",
-      "Elevated Loungewear",
-      "Purist Form"
-    ]
-  },
-  {
-    "database_match_key": "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg",
+    "database_match_key": "LOOK:FDV:CALYPSODRESS:BLACK.jpg",
     "category": "LOOK",
-    "brand": "Phoebe Philo",
-    "name": "Ankle Boot",
+    "brand": "FIL DE VIE",
+    "name": "Calyspo Dress",
     "color": "Black",
     "sizes": [
-      "6-12"
+      "S",
+      "M",
+      "L"
     ],
-    "price": "$1650",
-    "price_numeric": 1650,
-    "description": "Goatskin glove leather ankle boot with 90mm heel.",
-    "url": "www.phoebephilo.com",
+    "price": "$600",
+    "price_numeric": 600,
+    "description": "The romantic spirit of the Calypso Dress is expressed through the fluid silhouette and archival quality linen. The plunging neckline is framed by dramatic bell sleeves and falls to a sweeping skirt.",
+    "url": "https://fildevie.com/collections/dresses/products/calypso-dress",
     "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Architectural Stiletto",
-      "Glove Leather",
-      "Minimalist Armor",
-      "Sculptural Square Toe"
+      "Archival Linen",
+      "Sweeping Silhouette",
+      "Dramatic Bell Sleeve",
+      "Nocturnal Romance"
     ]
   },
   {
@@ -495,7 +503,7 @@
     ],
     "price": "$475",
     "price_numeric": 475,
-    "description": "Linen hand embroidered blouse.",
+    "description": "linen hand embroidered blouse.",
     "url": "https://fildevie.com/collections/tops-auto/products/copy-of-astrid-blouse",
     "shop_status": "live",
     "wellspring_atelier_codes": [
@@ -527,633 +535,11 @@
     ]
   },
   {
-    "database_match_key": "LOOK:FDV:BELLACAFTANMINI:IVORY.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Bella Caftan Mini",
-    "color": "Ivory",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$475",
-    "price_numeric": 475,
-    "description": "Mini linen caftan with hand crafted embroidery and tassels. Perfect for a day at the beach, pool or sightseeing",
-    "url": "https://fildevie.com/collections/caftans-auto/products/bella-caftan-mini",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Artisanal Embroidery",
-      "Resort Linen",
-      "Nomadic Mini",
-      "Tasseled Fluidity"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:CALYPSODRESS:BLACK.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Calypso Dress",
-    "color": "Black",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$600",
-    "price_numeric": 600,
-    "description": "The romantic spirit of the Calypso Dress is expressed through the fluid silhouette and archival quality linen. The plunging neckline is framed by dramatic bell sleeves and falls to a sweeping skirt.",
-    "url": "https://fildevie.com/collections/dresses/products/calypso-dress",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Archival Linen",
-      "Sweeping Silhouette",
-      "Dramatic Bell Sleeve",
-      "Nocturnal Romance"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:CECILYDRESS:BLACK.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Cecily Dress",
-    "color": "Black",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$600",
-    "price_numeric": 600,
-    "description": "Hand knit cotton viscose column dress. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Artisanal Knit",
-      "Columnar Silhouette",
-      "Desert Noir",
-      "Tactile Viscose"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:CYBELBLOUSE:STRIPE.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Cybel Blouse & Marrakech Pants",
-    "color": "Navy/Ivory Stripe",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$395 & $350",
-    "price_numeric": 395,
-    "description": "The low vee neck line, dramatic sleeve detail and airy silhouette make the Cybele Blouse a dream to wear. Crafted in breezy linen with extra long ties.",
-    "url": "https://fildevie.com/collections/tops-auto/products/cybele-blouse",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Nomadic Volume",
-      "Linear Motif",
-      "Breezy Linen",
-      "Dramatic Drape"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:DIANADRES:STRIPE.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Diana Dress",
-    "color": "Ivory/Navy Stripe",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$475",
-    "price_numeric": 475,
-    "description": "Linen sundress with adjustable ties and generous sweep. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Generous Sweep",
-      "Resort Linen",
-      "Nautical Heritage",
-      "Effortless Volume"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:HERADRESS:IVORY.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Hera Dress",
-    "color": "Ivory",
-    "sizes": [
-      "2-12"
-    ],
-    "price": "$860",
-    "price_numeric": 860,
-    "description": "silk jacquard draped dress. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Grecian Architecture",
-      "Silk Jacquard",
-      "Fluid Drape",
-      "Antiquity Modernism"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:HONORADRESS:FLORAL.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Honora Dress",
-    "color": "Multi Floral",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$528",
-    "price_numeric": 528,
-    "description": "The Honora Dress has a romantic silhouette emphasized by a hand smocked and embroidered waist, draped bodice and plunging neckline.",
-    "url": "https://fildevie.com/collections/dresses/products/honora-dress",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Romantic Silhouette",
-      "Hand Smocked",
-      "Artisanal Embroidery",
-      "Dark Floral"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:ISABELLECOAT:BLACK.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Isabelle Coat",
-    "color": "Black",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$2100",
-    "price_numeric": 2100,
-    "description": "Dramatic long faux fur coat. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Voluminous Faux Fur",
-      "Dramatic Outerwear",
-      "Nocturnal Armor",
-      "Textural Volume"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:ISADORADRESS:BLK.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Isadora Dress",
-    "color": "Black",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$795",
-    "price_numeric": 795,
-    "description": "Long dress hand crocheted by artisans in Bolivia",
-    "url": "https://fildevie.com/collections/shop-all/products/isadora-long-crochet-dress",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Artisanal Crochet",
-      "Bolivian Handcraft",
-      "Fringed Hem",
-      "Resort Noir"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:JUNOBLOUSE:BLK.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Juno Blouse",
-    "color": "Black",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$268",
-    "price_numeric": 268,
-    "description": "Cotton batiste relaxed and airy blouse.",
-    "url": "https://fildevie.com/products/juno-blouse",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Cotton Batiste",
-      "Voluminous Sleeve",
-      "Relaxed Volume",
-      "Nomadic Ease"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:JUNOBLOUSE:MARRAKECHPANT:STRIPE.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Juno Blouse & Marrakech Pants",
-    "color": "Ivory/Navy Stripe",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$258/350",
-    "price_numeric": 258,
-    "description": "The Juno Blouse is a FIL DE VIE essential. It has extra long ties so you can create slightly different looks. Perfect over a bikini or with the Marrakech Pants...",
-    "url": "https://fildevie.com/collections/tops-auto/products/juno-blouse",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Nautical Stripe",
-      "Resort Coordinates",
-      "Voluminous Sleeve",
-      "Nomadic Set"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Juno Blouse & Anona Bloomers",
-    "color": "Blue/Ivory stripe",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$268 & $260",
-    "price_numeric": 268,
-    "description": "Linen striped Blouse and Bloomer shorts.",
-    "url": "https://fildevie.com/collections/shop-all/products/anona-bloomers",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Resort Coordinates",
-      "Striped Linen",
-      "Voluminous Bloomers",
-      "Nautical Ease"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:LILLITHCAFTAN:IVORY.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Lillith Caftan",
-    "color": "Ivory",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$475",
-    "price_numeric": 475,
-    "description": "Sumptuous linen caftan dress with dramatic sleeves, lace up tie closure and extra long tassels. Your ticket to anywhere in slouchy luxury.",
-    "url": "https://fildevie.com/collections/shop-all/products/lilith-caftan",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Slouchy Luxury",
-      "Nomadic Caftan",
-      "Dramatic Sleeve",
-      "Tasseled Fluidity"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:LUCINABLOUSE:BLACK.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Lucina Blouse & Marrakech Pants",
-    "color": "black",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$575 & $350",
-    "price_numeric": 575,
-    "description": "The Lucina Blouse is crafted of breezy ramie with cuffed poet sleeves and handmade broderie anglaise. Traditional craftsmanship and modern design are woven together to create a future heirloom. Marrakech pants are linen dropped rise with tapered leg, vent at hem and elasticated waist.",
-    "url": "https://fildevie.com/products/lucina-blouse",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Broderie Anglaise",
-      "Poet Sleeve",
-      "Dropped Rise Architecture",
-      "Nocturnal Bohemia"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:MEDINADRESS:BLK.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Medina Dress",
-    "color": "black",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$650",
-    "price_numeric": 650,
-    "description": "Linen midi length dress with blouson sleeves, low vee neck line with adjustable tie closure, full tiered skirt and self sash belt. Looks beautiful unbelted and loose as well.",
-    "url": "https://fildevie.com/collections/dresses/products/copy-of-medina-dress",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Voluminous Tiering",
-      "Cutwork Detail",
-      "Blouson Sleeve",
-      "Resort Noir"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:MIRACOAT:BLACK.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Mira coat",
-    "color": "Black",
-    "sizes": [
-      "2 - 12"
-    ],
-    "price": "$1650",
-    "price_numeric": 1650,
-    "description": "Felted cashmere oversized long coat with exageratted collar and sculptural shape. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Felted Cashmere",
-      "Sculptural Volume",
-      "Exaggerated Collar",
-      "Nocturnal Tailoring"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:PHILOMENACAFTAN:SAND.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Philomena Caftan",
-    "color": "Sand",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$1250",
-    "price_numeric": 1250,
-    "description": "A dramatically draped caftan silhouette, the Philomena Coat is handcrafted in locally sourced cashmere with a leather belt and brass snaps. Envelope yourself in honest luxury.",
-    "url": "https://fildevie.com/collections/caftans-auto/products/philomena-caftan-coat",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Dramatic Drape",
-      "Locally Sourced Cashmere",
-      "Desert Neutral",
-      "Honest Luxury"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:STEVIECAFTAN:BLACK.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Stevie Caftan",
-    "color": "Black",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$825",
-    "price_numeric": 825,
-    "description": "Airy, silk georgette caftan silhouette with beautiful hand embroidered birds. Silk georgette slip included. A forever piece.",
-    "url": "https://fildevie.com/products/stevie-caftan",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Silk Georgette",
-      "Artisanal Embroidery",
-      "Airy Volume",
-      "Nocturnal Flight"
-    ]
-  },
-  {
-    "database_match_key": "LOOK:FDV:VIRGINIADRESS:EMERALD.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Virginia Dress",
-    "color": "Emerald",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$700",
-    "price_numeric": 700,
-    "description": "Crafted in sumptuous velvet, the Virginia Dress has a poetic silhouette emphasized by romantic button detailed sleeves and a plunging neckline. The relaxed shape is dramatic yet effortless.",
-    "url": "https://fildevie.com/products/virginia-dress-velvet",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Sumptuous Velvet",
-      "Poetic Silhouette",
-      "Jewel Tone",
-      "Romantic Drape"
-    ]
-  },
-  {
-    "database_match_key": "access:bag:bottega:hobo.jpg",
-    "category": "ACCESSORY: BAG",
-    "brand": "Bottega Veneta",
-    "name": "Solstice Bag",
-    "color": "Black",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$4200",
-    "price_numeric": 4200,
-    "description": "Large Shoulder Bag",
-    "url": "https://www.net-a-porter.com/product/1647597342778270",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Slouchy Volume",
-      "Minimalist Architecture",
-      "Matte Leather",
-      "Quiet Luxury"
-    ]
-  },
-  {
-    "database_match_key": "access:jewelry:phoebephilo:silvercuff.jpg",
-    "category": "ACCESSORY: JEWELRY",
-    "brand": "Phoebe Philo",
-    "name": "Silver Cuff",
-    "color": "Silver",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$750",
-    "price_numeric": 750,
-    "description": "Chunky cuff in sterling silver Coming soon.",
-    "url": "www.phoebephilo.com",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Heavy Gauge",
-      "Minimalist Armor",
-      "Sterling Fluidity",
-      "Industrial Elegance"
-    ]
-  },
-  {
-    "database_match_key": "access:jewlery:phoebephilo:hoops.jpg",
-    "category": "ACCESSORY: Jewelry",
-    "brand": "Phoebe Philo",
-    "name": "Gold Studded Hoops",
-    "color": "Gold",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$550",
-    "price_numeric": 550,
-    "description": "Beaded hoop earrings in 24-karat gold-plated sterling silver. Round hoops edged with bobble detailing. Hinged closure, for pierced ears.",
-    "url": "https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Tactile Metal",
-      "Geometric Iteration",
-      "Elevated Daily",
-      "Gold Vermeil"
-    ]
-  },
-  {
-    "database_match_key": "accessory:jewelry:fildevie:silverlinknecklace.jpg",
-    "category": "ACCESSORY",
-    "brand": "FIL DE VIE",
-    "name": "Link Necklace",
-    "color": "Silver",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$475",
-    "price_numeric": 475,
-    "description": "Chunky link necklace - adjustable. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Industrial Scale",
-      "Silver Link",
-      "Sculptural Neckline",
-      "Liquid Metal"
-    ]
-  },
-  {
-    "database_match_key": "accessory:sunglasses:fildevie:sunglasses.jpg",
-    "category": "ACCESSORY: Sunglasses",
-    "brand": "FIL DE VIE",
-    "name": "Mallorca Sunglasses",
-    "color": "Black",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$475",
-    "price_numeric": 475,
-    "description": "chunky cat eye sunglasses. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Chunky Acetate",
-      "Resort Noir",
-      "Modernist Cat-Eye",
-      "Opaque Silhouette"
-    ]
-  },
-  {
-    "database_match_key": "beauty sandwich serum.jpg",
-    "category": "BEAUTY",
-    "brand": "The Beauty Sandwich",
-    "name": "Snatching Sauce",
-    "color": null,
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$250",
-    "price_numeric": 250,
-    "description": "Lifting vitamin serum",
-    "url": "https://www.shopbop.com/ss02-snatching-sauce-beauty-sandwich",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Clinical Efficacy",
-      "High-Touch Formulations",
-      "Sculpting"
-    ]
-  },
-  {
-    "database_match_key": "beauty:leprenuer:sunscreen.jpg",
-    "category": "BEAUTY",
-    "brand": "Le Prunier",
-    "name": "Plumscreen SPF 31",
-    "color": null,
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$28",
-    "price_numeric": 28,
-    "description": "Mineral sunscreen with SPF 31 protection.",
-    "url": "https://leprunier.com/products/plumscreen-spf-31-sunscreen-pa",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Mineral Shield",
-      "Botanical Efficacy",
-      "Clean Sun-Care"
-    ]
-  },
-  {
-    "database_match_key": "fil de vie look grecian dress.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Isabelle Coat",
-    "color": "Black",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$2100",
-    "price_numeric": 2100,
-    "description": "Dramatic long faux fur coat. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Draped Fluidity",
-      "Grecian Architecture",
-      "Desert Neutral",
-      "Nomadic Elegance"
-    ]
-  },
-  {
-    "database_match_key": "footwear, amery kit sandal.jpg",
-    "category": "FOOTWEAR",
-    "brand": "A Emery",
-    "name": "Kir Sandal",
-    "color": "Black",
-    "sizes": [
-      "7-10"
-    ],
-    "price": "$185",
-    "price_numeric": 185,
-    "description": "Flat leather wrap around sandal",
-    "url": "https://aemery.com/products/the-kir-sandal-black",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Utilitarian Elegance",
-      "Strappy Minimal",
-      "Matte Leather",
-      "Gladiator Heritage"
-    ]
-  },
-  {
-    "database_match_key": "immortelle oil.jpg",
+    "database_match_key": "beauty:imortelle oil.jpg",
     "category": "BEAUTY",
     "brand": "Hildegaard",
     "name": "Immortelle Haute Botanical Facial Oil",
-    "color": null,
+    "color": "",
     "sizes": [
       "O/S"
     ],
@@ -1169,162 +555,231 @@
     ]
   },
   {
-    "database_match_key": "look:alai:desertcoat:blush.jpg",
+    "database_match_key": "look:phoebephilo:cashmereovercoat:tobacco.jpg",
     "category": "LOOK",
-    "brand": "Alaia",
-    "name": "Desert Coat & Pant",
-    "color": "Blush",
+    "brand": "Phoebe Philo",
+    "name": "Cashmere overcoat",
+    "color": "Tobacco",
     "sizes": [
       "S",
       "M",
       "L"
     ],
-    "price": "$1500/$650",
-    "price_numeric": 1500,
-    "description": "oversized breezy warm weather coat and barrel shaped trousers in gabardine. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Voluminous Gabardine",
-      "Nomadic Tailoring",
-      "Blush Monotone",
-      "Structural Breeze"
-    ]
-  },
-  {
-    "database_match_key": "look:dress:dries.jpg",
-    "category": "LOOK",
-    "brand": "Dries Van Noten",
-    "name": "Layered Viscose Silk Dress",
-    "color": "Black and Bone",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$1350",
-    "price_numeric": 1350,
-    "description": "Relaxed draped sleeveless dress with scarf collar, in viscose silk. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Fluid Layering",
-      "Scarf Collar Architecture",
-      "Black and Bone Contrast",
-      "Effortless Silk"
-    ]
-  },
-  {
-    "database_match_key": "look:eres:swimsuit.jpg",
-    "category": "LOOK",
-    "brand": "Eres",
-    "name": "Asia Swimsuit",
-    "color": "Black",
-    "sizes": [
-      "36-46"
-    ],
-    "price": "$515",
-    "price_numeric": 515,
-    "description": "One-piece swimsuit, available in the season's colours, has wide straps and a round neckline. Its graphic yet practical shapes feels timeless.",
-    "url": "https://www.eresparis.com/us/en-US/swimwear-2/011401-01564.html",
+    "price": "$5900",
+    "price_numeric": 5900,
+    "description": "Man’s coat in tobacco cashmere wool blend. Double breasted, the coat has inverted sleeves, a lightly structured shoulder, dropped contour waist and slits towards the front. Pressed and partially lined, with a double face construction and a glossy satin finish.",
+    "url": "https://us.phoebephilo.com/products/mans-coat-tobacco-cashmere",
     "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Minimalist Maillot",
-      "Graphic Timelessness",
-      "Sculpting Fit",
-      "Resort Noir"
+      "Menswear Tailoring",
+      "Tobacco Cashmere",
+      "Slouchy Architecture",
+      "Satin Finish"
     ]
   },
   {
-    "database_match_key": "look:fdv:cashmereknitset:ivory.jpg",
+    "database_match_key": "look:ysl:jumsuit.jpg",
     "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Cashmere Knit Set",
-    "color": "Ivory",
+    "brand": "YSL",
+    "name": "Cut Away Jumpsuit",
+    "color": "Black",
     "sizes": [
       "S",
       "M",
       "L"
     ],
-    "price": "$2400",
-    "price_numeric": 2400,
-    "description": "Cashmere knit set. Coming soon.",
+    "price": "$2300",
+    "price_numeric": 2300,
+    "description": "Cotton gabardine cut away jumpsuit with wide leg and adjustable straps. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Sculptural Cut-Out",
+      "Gabardine Utility",
+      "Nocturnal Bohemia",
+      "Wide Leg Architecture"
+    ]
+  },
+  {
+    "database_match_key": "look:fildevie:rheadress:black.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Rhea Dress",
+    "color": "Black",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$475",
+    "price_numeric": 475,
+    "description": "Minimal slik slip dress. Coming Soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Minimalist Slip",
+      "90s Gamine",
+      "Nocturnal Fluidity",
+      "Bare Architecture"
+    ]
+  },
+  {
+    "database_match_key": "look:filevie:buttoncollarshirt:black.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Button Collar Shirt",
+    "color": "Black",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$475",
+    "price_numeric": 475,
+    "description": "Shirt in heavy weight gabardine with button fastening collar. The boyish, generous fit is emphasised by a box pleat at the back which adds gentle volume. In fluid gabardine with a subtle tonal sheen. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Borrowed From The Boys",
+      "Heavy Gabardine",
+      "Utilitarian Volume",
+      "Nocturnal Shirting"
+    ]
+  },
+  {
+    "database_match_key": "look:jilsander:buttondownshirt:bluestripe.jpg",
+    "category": "LOOK",
+    "brand": "Jil Sander",
+    "name": "Relaxed Button Down shirt",
+    "color": "Blue Stripe",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$780",
+    "price_numeric": 780,
+    "description": "A classic, oversized menswear-inspired shirt with a single front pocket. Made from our organic cotton poplin with a washer finish, this shirt offers a relaxed fit with curved hems at the front and back, and a single box pleat at the back yoke. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Menswear Heritage",
+      "Nautical Poplin",
+      "Washer Finish Texture",
+      "Oversized Ease"
+    ]
+  },
+  {
+    "database_match_key": "look:phoebephilo:buttondownshirt.jpg",
+    "category": "LOOK",
+    "brand": "Phoebe Philo",
+    "name": "Linen Relaxed Button Down Shirt",
+    "color": "Ivory",
+    "sizes": [
+      "32-44"
+    ],
+    "price": "$1200",
+    "price_numeric": 1200,
+    "description": "Shirt in linen with button fastening collar. The boyish, generous fit is emphasised by a box pleat at the back which adds gentle volume. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Tactile Linen",
+      "Generous Volume",
+      "Minimalist Shirting",
+      "Desert Neutral"
+    ]
+  },
+  {
+    "database_match_key": "look:fildevie:hipsterbikinibotttoms:blk.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Essential Bikini Bottoms",
+    "color": "Black",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$475",
+    "price_numeric": 475,
+    "description": "Essentail hipster bikini bottoms. Coming Soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Minimalist Swim",
+      "90s Hipster",
+      "Resort Noir",
+      "Essential Base"
+    ]
+  },
+  {
+    "database_match_key": "look:fildevie:knitpolo:black.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Knit Polo",
+    "color": "Black",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$475",
+    "price_numeric": 475,
+    "description": "Relaxed short sleeve knit cashmere polo shirt. Coming soon.",
     "url": null,
     "shop_status": "coming_soon",
     "wellspring_atelier_codes": [
       "Tactile Cashmere",
-      "Elevated Loungewear",
-      "Monochromatic Ivory",
-      "Desert Minimal"
+      "Relaxed Prep",
+      "Elevated Polo",
+      "Nocturnal Knit"
     ]
   },
   {
-    "database_match_key": "look:fdv:crepesilkset:black.jpg",
+    "database_match_key": "look:fildevie:longcaftandress:red.jpg",
     "category": "LOOK",
     "brand": "FIL DE VIE",
-    "name": "Crepe Silk Set",
-    "color": "Black",
+    "name": "Long Caftan Dress",
+    "color": "Red",
     "sizes": [
       "S",
       "M",
       "L"
     ],
-    "price": "$1,200",
-    "price_numeric": 1200,
-    "description": "Off-shoulder crepe silk blouse with velvet tapered trousers. An evening set. Coming soon.",
+    "price": "$825",
+    "price_numeric": 825,
+    "description": "Long caftan dress in red crepe back satin with folded and lightly padded shoulders, sculpted over loose short sleeves. V neck, side pockets and back neck zip. Designed for a relaxed fit, the crepe has fluid and drapey movement. Coming soon.",
     "url": null,
     "shop_status": "coming_soon",
     "wellspring_atelier_codes": [
-      "Nocturnal Silk",
-      "Velvet Contrast",
-      "Off-Shoulder Architecture",
-      "Evening Set"
+      "Sculpted Shoulder",
+      "Fluid Crepe Satin",
+      "Scarlet Drape",
+      "Architectural Caftan"
     ]
   },
   {
-    "database_match_key": "look:fdv:daradressfurstole:bone:black.jpg",
+    "database_match_key": "look:fildevie:moulineset:espresso.jpg",
     "category": "LOOK",
     "brand": "FIL DE VIE",
-    "name": "Dara Dress & Fur Stole",
-    "color": "Bone/Black",
-    "sizes": [
-      "S",
-      "M",
-      "L & O/S"
-    ],
-    "price": "$860 / $780",
-    "price_numeric": 860,
-    "description": "Heavy weight silk fluid dress with elongated sleeves & faux fur stole. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Fluid Silk",
-      "High-Contrast Texture",
-      "Sculptural Warmth",
-      "Evening Armor"
-    ]
-  },
-  {
-    "database_match_key": "look:fiildevie:seleneleathercoat:black.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Selene Leather Coat",
-    "color": "Black",
+    "name": "Mouline Sweater & Track Pant set",
+    "color": "Espresso",
     "sizes": [
       "S",
       "M",
       "L"
     ],
-    "price": "$1750",
-    "price_numeric": 1750,
-    "description": "Sumptuous leather robe coat. Coming soon.",
+    "price": "$2100",
+    "price_numeric": 2100,
+    "description": "Sweater in espressowool cashmere. Chunky, graphic mouline knit constructed with yarns in contrasting colours for a textural effect. Triple rolled tubular collar. Matching track pant. Coming soon.",
     "url": null,
     "shop_status": "coming_soon",
     "wellspring_atelier_codes": [
-      "Leather Robe",
-      "Cinched Waist",
-      "Nomadic Armor",
-      "Matte Black"
+      "Textural Mouline",
+      "Tubular Architecture",
+      "Espresso Monotone",
+      "Elevated Loungewear"
     ]
   },
   {
@@ -1443,57 +898,258 @@
     ]
   },
   {
-    "database_match_key": "look:fildevie:hipsterbikinibotttoms:blk.jpg",
+    "database_match_key": "ACCESS:BAG:CHLOE:WRISTLETTE:BLACK.jpg",
+    "category": "ACCESSORY: BAG",
+    "brand": "Chloe",
+    "name": "Wristlette",
+    "color": "Black",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$4200",
+    "price_numeric": 4200,
+    "description": "Small Bracelet Hobo bag in grained leather",
+    "url": "https://www.chloe.com/en-us/p/bags/shoulder-bag/CH25US623P57001.htmlchloe%20black%20evening%20bag",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Circular Hardware",
+      "Grained Texture",
+      "Evening Fluidity",
+      "Sculptural Handle"
+    ]
+  },
+  {
+    "database_match_key": "ACCESS:BAG:TOWEL:FDV:POOLESSENTIALS:OLIVE.jpg",
+    "category": "ACCESSORY",
+    "brand": "FIL DE VIE",
+    "name": "Pool Essentials",
+    "color": "Olive",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$600",
+    "price_numeric": 600,
+    "description": "Sumptuous terry cloth tote bag and extra large bath sheet. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Resort Utility",
+      "Tactile Terry",
+      "Olive Monotone",
+      "Embossed Monogram"
+    ]
+  },
+  {
+    "database_match_key": "access:jewelry:phoebephilo:silvercuff.jpg",
+    "category": "ACCESSORY: JEWELRY",
+    "brand": "Phoebe Philo",
+    "name": "Silver Cuff",
+    "color": "Silver",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$750",
+    "price_numeric": 750,
+    "description": "Chunky cuff in sterling silver Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Heavy Gauge",
+      "Minimalist Armor",
+      "Sterling Fluidity",
+      "Industrial Elegance"
+    ]
+  },
+  {
+    "database_match_key": "feb 26 pro info pg 66.jpg - Item 1",
+    "category": "ACCESSORY: JEWELRY",
+    "brand": "Phoebe Philo",
+    "name": "Hallmark Earrings",
+    "color": "Gold",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$450",
+    "price_numeric": 450,
+    "description": "Curved plate earrings in 24-karat gold-plated sterling silver with decorative hallmark detailing.",
+    "url": "https://us.phoebephilo.com/products/hallmark-earrings-gold-plated-sterling-silverphoebe%20philo%20gold%20mini%20hoops",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Architectural Metal",
+      "Minimalist Heritage",
+      "Gilded Curve"
+    ]
+  },
+  {
+    "database_match_key": "feb 26 pro info pg 66.jpg - Item 2",
+    "category": "BEAUTY",
+    "brand": "The Beauty Sandwich",
+    "name": "Snatching Sauce",
+    "color": "",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$250",
+    "price_numeric": 250,
+    "description": "Lifting vitamin serum",
+    "url": "https://www.shopbop.com/ss02-snatching-sauce-beauty-sandwich/vp/v=1/1589344947.htm?sizeCode=798beauty%20sandwich%20serum",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Clinical Efficacy",
+      "High-Touch Formulations",
+      "Sculpting"
+    ]
+  },
+  {
+    "database_match_key": "feb 26 prod info pg 1.jpg - Item 1",
+    "category": "ACCESSORY: BAG",
+    "brand": "Paco Rabanne",
+    "name": "Gold Pailette Handbag",
+    "color": "Gold",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$1490",
+    "price_numeric": 1490,
+    "description": "Gold Pailette evening bag with chain soulder strap",
+    "url": "https://fashion.rabanne.com/en-us/products/26pss0548emb025-p710/?variant=52502373335386&utm_source=google&utm_medium=organic_shopping_fashion",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Kinetic Reflection",
+      "Evening Armor",
+      "Metallic Heritage"
+    ]
+  },
+  {
+    "database_match_key": "feb 26 prod info pg 1.jpg - Item 2",
+    "category": "ACCESSORY: JEWELRY",
+    "brand": "Phoebe Philo",
+    "name": "Gold Drop Earrings",
+    "color": "Gold",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$1050",
+    "price_numeric": 1050,
+    "description": "Drop earrings in 24-karat gold-plated sterling silver. Designed for a textured finish...",
+    "url": "https://us.phoebephilo.com/products/double-ball-earrings-in-gold-plated-sterling-silver",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Organic Modernism",
+      "Textured Gold",
+      "Liquid Form"
+    ]
+  },
+  {
+    "database_match_key": "feb 26 prod info pg 1.jpg - Item 3",
+    "category": "BEAUTY",
+    "brand": "Hildegaard",
+    "name": "Immortelle Haute Botanical Facial Oil",
+    "color": "",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$375",
+    "price_numeric": 375,
+    "description": "Haute Botanical Facial Oil 50 ml / 1.7 Fl. Oz.",
+    "url": "https://hildegaard.com/products/immortellehildegaard%20immortellehaute%20botanicalfacial%20oil",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Botanical Alchemy",
+      "Pure Extract",
+      "Ritual Beauty"
+    ]
+  },
+  {
+    "database_match_key": "feb 26 prod info pg 1.jpg - Item 5",
+    "category": "ACCESSORY: BAG",
+    "brand": "Bottega Veneta",
+    "name": "Solstice Bag",
+    "color": "Black",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$4200",
+    "price_numeric": 4200,
+    "description": "Large Shoulder Bag",
+    "url": "https://www.net-a-porter.com/product/1647597342778270",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Slouchy Volume",
+      "Quiet Luxury",
+      "Intrecciato Heritage"
+    ]
+  },
+  {
+    "database_match_key": "feb 26 prod info pg 1.jpg - Item 6",
+    "category": "ACCESSORY: JEWELRY",
+    "brand": "Phoebe Philo",
+    "name": "Gold Studded Hoops",
+    "color": "Gold",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$550",
+    "price_numeric": 550,
+    "description": "Beaded hoop earrings in 24-karat gold-plated sterling silver...",
+    "url": "https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Tactile Metal",
+      "Geometric Iteration",
+      "Elevated Daily"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FDV:MIRACOAT:BLACK.jpg",
     "category": "LOOK",
     "brand": "FIL DE VIE",
-    "name": "Essential Bikini Bottoms",
+    "name": "Mira coat",
     "color": "Black",
+    "sizes": [
+      "2 - 12"
+    ],
+    "price": "$1650",
+    "price_numeric": 1650,
+    "description": "Felted cashmere oversized long coat with exageratted collar and sculptural shape. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Felted Cashmere",
+      "Sculptural Volume",
+      "Exaggerated Collar",
+      "Nocturnal Tailoring"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FDV:PHILOMENACAFTAN:SAND.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Philomena Caftan",
+    "color": "Sand",
     "sizes": [
       "S",
       "M",
       "L"
     ],
-    "price": "$475",
-    "price_numeric": 475,
-    "description": "Essentail hipster bikini bottoms. Coming Soon.",
-    "url": null,
-    "shop_status": "coming_soon",
+    "price": "$1250",
+    "price_numeric": 1250,
+    "description": "A dramatically draped caftan silhouette, the Philomena Coat is handcrafted in locally sourced cashmere with a leather belt and brass snaps. Envelope yourself in honest luxury.",
+    "url": "https://fildevie.com/collections/caftans-auto/products/philomena-caftan-coat",
+    "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Minimalist Swim",
-      "90s Hipster",
-      "Resort Noir",
-      "Essential Base"
+      "Dramatic Drape",
+      "Locally Sourced Cashmere",
+      "Desert Neutral",
+      "Honest Luxury"
     ]
   },
   {
-    "database_match_key": "look:fildevie:knitpolo:black.jpg",
+    "database_match_key": "LOOK:FDV:STEVIECAFTAN:BLACK.jpg",
     "category": "LOOK",
     "brand": "FIL DE VIE",
-    "name": "Knit Polo",
+    "name": "Stevie Caftan",
     "color": "Black",
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "price": "$475",
-    "price_numeric": 475,
-    "description": "Relaxed short sleeve knit cashmere polo shirt. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
-    "wellspring_atelier_codes": [
-      "Tactile Cashmere",
-      "Relaxed Prep",
-      "Elevated Polo",
-      "Nocturnal Knit"
-    ]
-  },
-  {
-    "database_match_key": "look:fildevie:longcaftandress:red.jpg",
-    "category": "LOOK",
-    "brand": "FIL DE VIE",
-    "name": "Long Caftan Dress",
-    "color": "Red",
     "sizes": [
       "S",
       "M",
@@ -1501,45 +1157,91 @@
     ],
     "price": "$825",
     "price_numeric": 825,
-    "description": "Long caftan dress in red crepe back satin with folded and lightly padded shoulders, sculpted over loose short sleeves. V neck, side pockets and back neck zip. Designed for a relaxed fit, the crepe has fluid and drapey movement. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
+    "description": "Airy, silk georgette caftan silhouette with beautiful hand embroidered birds. Silk georgette slip included. A forever piece.",
+    "url": "https://fildevie.com/products/stevie-caftan",
+    "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Sculpted Shoulder",
-      "Fluid Crepe Satin",
-      "Scarlet Drape",
-      "Architectural Caftan"
+      "Silk Georgette",
+      "Artisanal Embroidery",
+      "Airy Volume",
+      "Nocturnal Flight"
     ]
   },
   {
-    "database_match_key": "look:fildevie:moulineset:espresso.jpg",
+    "database_match_key": "LOOK:FDV:VIRGINIADRESS:EMERALD.jpg",
     "category": "LOOK",
     "brand": "FIL DE VIE",
-    "name": "Mouline Sweater & Track Pant set",
-    "color": "Espresso",
+    "name": "Virginia Dress",
+    "color": "Emerald",
     "sizes": [
       "S",
       "M",
       "L"
     ],
-    "price": "$2100",
-    "price_numeric": 2100,
-    "description": "Sweater in espressowool cashmere. Chunky, graphic mouline knit constructed with yarns in contrasting colours for a textural effect. Triple rolled tubular collar. Matching track pant. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
+    "price": "$700",
+    "price_numeric": 700,
+    "description": "Crafted in sumptuous velvet, the Virginia Dress has a poetic silhouette emphasized by romantic button detailed sleeves and a plunging neckline. The relaxed shape is dramatic yet effortless.",
+    "url": "https://fildevie.com/products/virginia-dress-velvet",
+    "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Textural Mouline",
-      "Tubular Architecture",
-      "Espresso Monotone",
-      "Elevated Loungewear"
+      "Sumptuous Velvet",
+      "Poetic Silhouette",
+      "Jewel Tone",
+      "Romantic Drape"
     ]
   },
   {
-    "database_match_key": "look:fildevie:rheadress:black.jpg",
+    "database_match_key": "look:fiildevie:seleneleathercoat:black.jpg",
     "category": "LOOK",
     "brand": "FIL DE VIE",
-    "name": "Rhea Dress",
+    "name": "Selene Leather Coat",
     "color": "Black",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$1750",
+    "price_numeric": 1750,
+    "description": "Sumptuous leather robe coat. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Leather Robe",
+      "Cinched Waist",
+      "Nomadic Armor",
+      "Matte Black"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Juno Blouse & Anona Bloomers",
+    "color": "Blue/Ivory stripe",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$268 & $260",
+    "price_numeric": 268,
+    "description": "Linen striped Blouse and Bloomer shorts.",
+    "url": "https://fildevie.com/collections/shop-all/products/anona-bloomers",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Resort Coordinates",
+      "Striped Linen",
+      "Voluminous Bloomers",
+      "Nautical Ease"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FDV:LILLITHCAFTAN:IVORY.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Lillith Caftan",
+    "color": "Ivory",
     "sizes": [
       "S",
       "M",
@@ -1547,131 +1249,359 @@
     ],
     "price": "$475",
     "price_numeric": 475,
-    "description": "Minimal slik slip dress. Coming Soon.",
-    "url": null,
-    "shop_status": "coming_soon",
+    "description": "Sumptuous linen caftan dress with dramatic sleeves, lace up tie closure and extra long tassels. Your ticket to anywhere in slouchy luxury.",
+    "url": "https://fildevie.com/collections/shop-all/products/lilith-caftan",
+    "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Minimalist Slip",
-      "90s Gamine",
-      "Nocturnal Fluidity",
-      "Bare Architecture"
+      "Slouchy Luxury",
+      "Nomadic Caftan",
+      "Dramatic Sleeve",
+      "Tasseled Fluidity"
     ]
   },
   {
-    "database_match_key": "look:fildevie:straplessswimsuit:black.jpg",
+    "database_match_key": "LOOK:FDV:LUCINABLOUSE:BLACK.jpg",
     "category": "LOOK",
     "brand": "FIL DE VIE",
-    "name": "Strapless Asymetrical Swimsuit",
+    "name": "Lucina Blouse & Marrakech Pants",
     "color": "black",
     "sizes": [
       "S",
       "M",
       "L"
     ],
-    "price": "$475",
-    "price_numeric": 475,
-    "description": "Strapless asymetrical cut out swimsuit. Coming soon.",
-    "url": null,
-    "shop_status": "coming_soon",
+    "price": "$575 & $350",
+    "price_numeric": 575,
+    "description": "The Lucina Blouse is crafted of breezy ramie with cuffed poet sleeves and handmade broderie anglaise. Traditional craftsmanship and modern design are woven together to create a future heirloom. Marrakech pants are linen dropped rise with tapered leg, vent at hem and elasticated waist.",
+    "url": "https://fildevie.com/products/lucina-blouse",
+    "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Sculptural Swim",
-      "Asymmetrical Cut-Out",
-      "Resort Noir",
-      "Negative Space"
+      "Broderie Anglaise",
+      "Poet Sleeve",
+      "Dropped Rise Architecture",
+      "Nocturnal Bohemia"
     ]
   },
   {
-    "database_match_key": "look:filevie:buttoncollarshirt:black.jpg",
+    "database_match_key": "LOOK:FDV:MEDINADRESS:BLK.jpg",
     "category": "LOOK",
     "brand": "FIL DE VIE",
-    "name": "Button Collar Shirt",
+    "name": "Medina Dress",
+    "color": "black",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$650",
+    "price_numeric": 650,
+    "description": "Linen midi length dress with blouson sleeves, low vee neck line with adjustable tie closure, full tiered skirt and self sash belt. Looks beautiful unbelted and loose as well.",
+    "url": "https://fildevie.com/collections/dresses/products/copy-of-medina-dress",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Voluminous Tiering",
+      "Cutwork Detail",
+      "Blouson Sleeve",
+      "Resort Noir"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FDV:HONORADRESS:FLORAL.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Honora Dress",
+    "color": "Multi Floral",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$528",
+    "price_numeric": 528,
+    "description": "The Honora Dress has a romantic silhouette emphasized by a hand smocked and embroidered waist, draped bodice and plunging neckline.",
+    "url": "https://fildevie.com/collections/dresses/products/honora-dress",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Romantic Silhouette",
+      "Hand Smocked",
+      "Artisanal Embroidery",
+      "Dark Floral"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FDV:ISADORADRESS:BLK.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Isadora Dress",
     "color": "Black",
     "sizes": [
       "S",
       "M",
       "L"
     ],
-    "price": "$475",
-    "price_numeric": 475,
-    "description": "Shirt in heavy weight gabardine with button fastening collar. The boyish, generous fit is emphasised by a box pleat at the back which adds gentle volume. In fluid gabardine with a subtle tonal sheen. Coming soon.",
+    "price": "$795",
+    "price_numeric": 795,
+    "description": "Long dress hand crocheted by artisans in Bolivia",
+    "url": "https://fildevie.com/collections/shop-all/products/isadora-long-crochet-dress",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Artisanal Crochet",
+      "Bolivian Handcraft",
+      "Fringed Hem",
+      "Resort Noir"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FDV:JUNOBLOUSE:BLK.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Juno Blouse",
+    "color": "Black",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$268",
+    "price_numeric": 268,
+    "description": "Cotton batiste relaxed and airy blouse.",
+    "url": "https://fildevie.com/products/juno-blouse",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Cotton Batiste",
+      "Voluminous Sleeve",
+      "Relaxed Volume",
+      "Nomadic Ease"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FDV:JUNOBLOUSE:MARRAKECHPANT:STRIPE.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Juno Blouse & Marrakech Pants",
+    "color": "Ivory/Navy Stripe",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$258/350",
+    "price_numeric": 258,
+    "description": "The Juno Blouse is a FIL DE VIE essential. It has extra long ties so you can create slightly different looks. Perfect over a bikini or with the Marrakech Pants...",
+    "url": "https://fildevie.com/collections/tops-auto/products/juno-blouse",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Nautical Stripe",
+      "Resort Coordinates",
+      "Voluminous Sleeve",
+      "Nomadic Set"
+    ]
+  },
+  {
+    "database_match_key": "look:fdv:cashmereknitset:ivory.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Cashmere Knit Set",
+    "color": "Ivory",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$2400",
+    "price_numeric": 2400,
+    "description": "Cashmere knit set. Coming soon.",
     "url": null,
     "shop_status": "coming_soon",
     "wellspring_atelier_codes": [
-      "Borrowed From The Boys",
-      "Heavy Gabardine",
-      "Utilitarian Volume",
-      "Nocturnal Shirting"
+      "Tactile Cashmere",
+      "Elevated Loungewear",
+      "Monochromatic Ivory",
+      "Desert Minimal"
     ]
   },
   {
-    "database_match_key": "look:jilsander:buttondownshirt:bluestripe.jpg",
+    "database_match_key": "LOOK:FDV:CECILYDRESS:BLACK.jpg",
     "category": "LOOK",
-    "brand": "Jil Sander",
-    "name": "Relaxed Button Down shirt",
-    "color": "Blue Stripe",
+    "brand": "FIL DE VIE",
+    "name": "Cecily Dress",
+    "color": "Black",
     "sizes": [
       "S",
       "M",
       "L"
     ],
-    "price": "$780",
-    "price_numeric": 780,
-    "description": "A classic, oversized menswear-inspired shirt with a single front pocket. Made from our organic cotton poplin with a washer finish, this shirt offers a relaxed fit with curved hems at the front and back, and a single box pleat at the back yoke. Coming soon.",
-    "url": "www.jilsander.com",
-    "shop_status": "live",
+    "price": "$600",
+    "price_numeric": 600,
+    "description": "Hand knit cotton viscose column dress. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
     "wellspring_atelier_codes": [
-      "Menswear Heritage",
-      "Nautical Poplin",
-      "Washer Finish Texture",
-      "Oversized Ease"
+      "Artisanal Knit",
+      "Columnar Silhouette",
+      "Desert Noir",
+      "Tactile Viscose"
     ]
   },
   {
-    "database_match_key": "look:phoebephilo:buttondownshirt.jpg",
+    "database_match_key": "LOOK:FDV:CYBELBLOUSE:STRIPE.jpg",
     "category": "LOOK",
-    "brand": "Phoebe Philo",
-    "name": "Linen Relaxed Button Down Shirt",
+    "brand": "FIL DE VIE",
+    "name": "Cybel Blouse & Marrakech Pants",
+    "color": "Navy/Ivory Stripe",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$395 & $350",
+    "price_numeric": 395,
+    "description": "The low vee neck line, dramatic sleeve detail and airy silhouette make the Cybele Blouse a dream to wear. Crafted in breezy linen with extra long ties.",
+    "url": "https://fildevie.com/collections/tops-auto/products/cybele-blouse",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Nomadic Volume",
+      "Linear Motif",
+      "Breezy Linen",
+      "Dramatic Drape"
+    ]
+  },
+  {
+    "database_match_key": "look:fdv:daradressfurstole:bone:black.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Dara Dress & Fur Stole",
+    "color": "Bone/Black",
+    "sizes": [
+      "S",
+      "M",
+      "L & O/S"
+    ],
+    "price": "$860 / $780",
+    "price_numeric": 860,
+    "description": "Heavy weight silk fluid dress with elongated sleeves & faux fur stole. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Fluid Silk",
+      "High-Contrast Texture",
+      "Sculptural Warmth",
+      "Evening Armor"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FDV:DIANADRES:STRIPE.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Diana Dress",
+    "color": "Ivory/Navy Stripe",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$475",
+    "price_numeric": 475,
+    "description": "Linen sundress with adjustable ties and generous sweep. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Generous Sweep",
+      "Resort Linen",
+      "Nautical Heritage",
+      "Effortless Volume"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:FDV:HERADRESS:IVORY.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Hera Dress",
     "color": "Ivory",
     "sizes": [
-      "32-44"
+      "2-12"
     ],
-    "price": "$1200",
-    "price_numeric": 1200,
-    "description": "Shirt in linen with button fastening collar. The boyish, generous fit is emphasised by a box pleat at the back which adds gentle volume. Coming soon.",
-    "url": "www.phoebephilo.com",
-    "shop_status": "live",
+    "price": "$860",
+    "price_numeric": 860,
+    "description": "silk jacquard draped dress. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
     "wellspring_atelier_codes": [
-      "Tactile Linen",
-      "Generous Volume",
-      "Minimalist Shirting",
-      "Desert Neutral"
+      "Grecian Architecture",
+      "Silk Jacquard",
+      "Fluid Drape",
+      "Antiquity Modernism"
     ]
   },
   {
-    "database_match_key": "look:phoebephilo:cashmereovercoat:tobacco.jpg",
+    "database_match_key": "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg",
     "category": "LOOK",
     "brand": "Phoebe Philo",
-    "name": "Cashmere overcoat",
-    "color": "Tobacco",
+    "name": "Ankle Boot",
+    "color": "Black",
+    "sizes": [
+      "6-12"
+    ],
+    "price": "$1650",
+    "price_numeric": 1650,
+    "description": "Goatskin glove leather ankle boot with 90mm heel.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Architectural Stiletto",
+      "Glove Leather",
+      "Minimalist Armor",
+      "Sculptural Square Toe"
+    ]
+  },
+  {
+    "database_match_key": "look:alai:desertcoat:blush.jpg",
+    "category": "LOOK",
+    "brand": "Alaïa",
+    "name": "Desert Coat & Pant",
+    "color": "Blush",
     "sizes": [
       "S",
       "M",
       "L"
     ],
-    "price": "$5900",
-    "price_numeric": 5900,
-    "description": "Man\u2019s coat in tobacco cashmere wool blend. Double breasted, the coat has inverted sleeves, a lightly structured shoulder, dropped contour waist and slits towards the front. Pressed and partially lined, with a double face construction and a glossy satin finish.",
-    "url": "https://us.phoebephilo.com/products/mans-coat-tobacco-cashmere",
-    "shop_status": "live",
+    "price": "$1500/$650",
+    "price_numeric": 1500,
+    "description": "oversized breezy warm weather coat and barrel shaped trousers in gabardine. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
     "wellspring_atelier_codes": [
-      "Menswear Tailoring",
-      "Tobacco Cashmere",
-      "Slouchy Architecture",
-      "Satin Finish"
+      "Voluminous Gabardine",
+      "Nomadic Tailoring",
+      "Blush Monotone",
+      "Structural Breeze"
     ]
   },
   {
-    "database_match_key": "look:swimsuit:eres:asym.jpg",
+    "database_match_key": "look:dress:dries.jpg",
+    "category": "LOOK",
+    "brand": "Dries Van Noten",
+    "name": "Layered Viscose Silk Dress",
+    "color": "Black and Bone",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "price": "$1350",
+    "price_numeric": 1350,
+    "description": "Relaxed draped sleeveless dress with scarf collar, in viscose silk. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Fluid Layering",
+      "Scarf Collar Architecture",
+      "Black and Bone Contrast",
+      "Effortless Silk"
+    ]
+  },
+  {
+    "database_match_key": "look:eres:swimsuit.jpg",
     "category": "LOOK",
     "brand": "Eres",
     "name": "Asia Swimsuit",
@@ -1692,86 +1622,530 @@
     ]
   },
   {
-    "database_match_key": "look:ysl:jumsuit.jpg",
+    "database_match_key": "fil de vie look grecian dress.jpg",
     "category": "LOOK",
-    "brand": "Yves Saint Laurent",
-    "name": "Cut Away Jumpsuit",
+    "brand": "FIL DE VIE",
+    "name": "Isabelle Coat",
     "color": "Black",
     "sizes": [
       "S",
       "M",
       "L"
     ],
-    "price": "$2300",
-    "price_numeric": 2300,
-    "description": "Cotton gabardine cut away jumpsuit with wide leg and adjustable straps. Coming soon.",
+    "price": "$2100",
+    "price_numeric": 2100,
+    "description": "Dramatic long faux fur coat. Coming soon.",
     "url": null,
     "shop_status": "coming_soon",
     "wellspring_atelier_codes": [
-      "Sculptural Cut-Out",
-      "Gabardine Utility",
-      "Nocturnal Bohemia",
-      "Wide Leg Architecture"
+      "Draped Fluidity",
+      "Grecian Architecture",
+      "Desert Neutral",
+      "Nomadic Elegance"
     ]
   },
   {
-    "database_match_key": "paco rabanne pailette bag.jpg",
+    "database_match_key": "footwear, amery kit sandal.jpg",
+    "category": "FOOTWEAR",
+    "brand": "A Emery",
+    "name": "Kir Sandal",
+    "color": "Black",
+    "sizes": [
+      "7-10"
+    ],
+    "price": "$185",
+    "price_numeric": 185,
+    "description": "Flat leather wrap around sandal",
+    "url": "https://aemery.com/products/the-kir-sandal-black",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Utilitarian Elegance",
+      "Strappy Minimal",
+      "Matte Leather",
+      "Gladiator Heritage"
+    ]
+  },
+  {
+    "database_match_key": "FOOTWEAR:ALAIA:BLACK.jpg",
+    "category": "FOOTWEAR",
+    "brand": "Alaïa",
+    "name": "HEEL THONG MULES IN VELVET",
+    "color": "Black",
+    "sizes": [
+      "7-10"
+    ],
+    "price": "$1450",
+    "price_numeric": 1450,
+    "description": "Thong mules with stiletto heels Padded straps, 3D effect Velvet covering the heel, the straps & the insole",
+    "url": "https://www.maxfieldla.com/products/alaia-heel-thong-mules-in-velvetalaia%20sandals",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Tactile Velvet",
+      "Sculptural Heel",
+      "90s Minimalism",
+      "Elevated Thong"
+    ]
+  },
+  {
+    "database_match_key": "FOOTWEAR:FERRAGAMO:LOLYSANDAL:BLACK.jpg",
+    "category": "FOOTWEAR",
+    "brand": "Ferragamo",
+    "name": "Loly Fur Leather Thong Sandals",
+    "color": "Black",
+    "sizes": [
+      "7-11"
+    ],
+    "price": "$490",
+    "price_numeric": 490,
+    "description": "leather sandals adorned with soft, fluffy dyed goat fur (Italy) along the strap Flat heel Squared open toe Thong strap Slip-on style Padded insole.",
+    "url": "https://www.bergdorfgoodman.com/p/ferragamo-loly-fur-leather-thong-sandals-prod193820095",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Tactile Fur",
+      "Squared Toe",
+      "Unexpected Texture",
+      "Minimalist Base"
+    ]
+  },
+  {
+    "database_match_key": "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
+    "category": "FOOTWEAR",
+    "brand": "Khaite",
+    "name": "Otto Leather Slippers",
+    "color": "White",
+    "sizes": [
+      "7-10"
+    ],
+    "price": "$595",
+    "price_numeric": 595,
+    "description": "White leather flat slippers",
+    "url": "https://www.mytheresa.com/us/en/women/khaite-otto-leather-slippers-white-p00883068",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Architectural Slip-On",
+      "Matte White Leather",
+      "Elevated Loungewear",
+      "Purist Form"
+    ]
+  },
+  {
+    "database_match_key": "BEAUTY:FDV:TRAVELMIST.jpg",
+    "category": "ACCESSORY",
+    "brand": "FIL DE VIE",
+    "name": "Travel Mist",
+    "color": "",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$75.00",
+    "price_numeric": 75,
+    "description": "a refreshing and indulgent experience on the go. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Nomadic Refresh",
+      "Tactile Opaque Glass",
+      "On-The-Go Ritual",
+      "Sensory Utility"
+    ]
+  },
+  {
+    "database_match_key": "BEAUTY:POPPYKING:SINLIPSTICK:RED.jpg",
+    "category": "BEAUTY",
+    "brand": "Poppy King",
+    "name": "Exclusive Original Sin Lipstick",
+    "color": "Red",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$34",
+    "price_numeric": 34,
+    "description": "a glamorous look that still feels casual because of its balm-like formula.",
+    "url": "https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Iconic Crimson",
+      "Balm-Like Yield",
+      "Effortless Glamour",
+      "Cult Heritage"
+    ]
+  },
+  {
+    "database_match_key": "BEAUTY:RITUELGEINSHA.jpg",
+    "category": "BEAUTY",
+    "brand": "Bienaime",
+    "name": "Rituel De Geisha Papers",
+    "color": "",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$23",
+    "price_numeric": 23,
+    "description": "Made in Japan using ancestral processes, this mattifying paper, made of natural fiber, inspired by the beauty rituals of Geishas, will help you keep a porcelain complexion throughout the day",
+    "url": "https://www.beautyhabit.com/products/bienaime-the-",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Ancestral Process",
+      "Natural Fiber",
+      "Porcelain Complexion",
+      "Tactile Ephemera"
+    ]
+  },
+  {
+    "database_match_key": "BEAUTY:SAINJANE:SUNRITUAL.jpg",
+    "category": "BEAUTY",
+    "brand": "Saint Jane",
+    "name": "Sun Ritual Mineral SPF 30",
+    "color": "",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$38",
+    "price_numeric": 38,
+    "description": "his luxuriously clean, mineral SPF30 sunscreen beautifully blurs the look of pores. Perfect on all skin tones, this multitasking powerhouse is your primer, hydrator, pore minimizer, and sun protection in one. Infused with nutrient-rich flowers like Desert Rose, Jasmine and Hibiscus that thrive in sun-drenched climates, the texture is silky with florals renowned for their natural SPF boosting benefits and antioxidant properties.",
+    "url": "https://saintjanebeauty.com/collections/sun-protection-spf/products/luxury-sun-ritual",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Mineral Shield",
+      "Botanical Efficacy",
+      "Pore-Blurring Canvas",
+      "Multitasking Sun-Care"
+    ]
+  },
+  {
+    "database_match_key": "BEAUTY:VIOLETTEFR:NECATRLIPSTAIN.jpg",
+    "category": "BEAUTY",
+    "brand": "Violette_FR",
+    "name": "Nectar Lip Stain",
+    "color": "",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$29",
+    "price_numeric": 29,
+    "description": "An innovative high-shine, long-wear lip stain that provides rich hydration and buildable, lasting color",
+    "url": "https://www.violettefr.com/products/lip-nectar-souci-d-automne",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "High-Shine Pigment",
+      "Lasting Wash",
+      "Buildable Color",
+      "French Girl Effortless"
+    ]
+  },
+  {
+    "database_match_key": "accessory:sunglasses:fildevie:sunglasses.jpg",
+    "category": "ACCESSORY: SUNGLASSES",
+    "brand": "FIL DE VIE",
+    "name": "Mallorca Sunglasses",
+    "color": "Black",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$475",
+    "price_numeric": 475,
+    "description": "chunky cat eye sunglasses. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Chunky Acetate",
+      "Resort Noir",
+      "Modernist Cat-Eye",
+      "Opaque Silhouette"
+    ]
+  },
+  {
+    "database_match_key": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg",
+    "category": "ACCESSORY: SUNGLASSES",
+    "brand": "Phoebe Philo",
+    "name": "Cruise Sunglasses",
+    "color": "Tawny Tortoisshell",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$490",
+    "price_numeric": 490,
+    "description": "Cruise sunglasses with sharp tortoiseshell acetate frames, exaggerated angular temples and laurel lenses.",
+    "url": "https://us.phoebephilo.com/products/cruise-sunglasses-tawny-tortoiseshell-acetate",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Angular Architecture",
+      "Tortoiseshell Heritage",
+      "Exaggerated Temple",
+      "Sculptural Shield"
+    ]
+  },
+  {
+    "database_match_key": "BEAUTY:AMANESSENTIALS:JADESET.jpg",
+    "category": "BEAUTY",
+    "brand": "Aman Essentials",
+    "name": "Ritual Gift Set",
+    "color": "",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$410",
+    "price_numeric": 410,
+    "description": "A collection of hero Aman Essentials products that work together to promote optimal wellbeing in an enhanced ritual of self-care.",
+    "url": "https://shop.aman.com/skincare/face-body-jade-ritual-set/",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Holistic Ritual",
+      "Jade Tooling",
+      "Resort Spa",
+      "Elevated Wellbeing"
+    ]
+  },
+  {
+    "database_match_key": "BEAUTY:FDV:PARFUM.jpg",
+    "category": "BEAUTY",
+    "brand": "FIL DE VIE",
+    "name": "Parfum",
+    "color": "",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$475",
+    "price_numeric": 475,
+    "description": "a scent reminiscent of a a day at the beach. Coming Soon",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Olfactive Memory",
+      "Sun-Drenched",
+      "Coastal Nostalgia",
+      "Tactile Frosted Glass"
+    ]
+  },
+  {
+    "database_match_key": "ACCESSORY:BULGAR:SERPENTI:BLK.jpg",
+    "category": "ACCESSORY",
+    "brand": "Bulgari",
+    "name": "Serpenti watch",
+    "color": "Black/Rose Gold",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$13,200",
+    "price_numeric": 13200,
+    "description": "Serpenti Spiga Lady watch, 35 mm black ceramic curved case, 18 kt rose gold bezel set with diamonds",
+    "url": "https://www.bulgari.com/en-us/watches/womens/serpenti-spiga-watch-rose-gold-ceramic-black-102532",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Serpentine Architecture",
+      "Ceramic Armor",
+      "Horological Heritage",
+      "Diamond Bezel"
+    ]
+  },
+  {
+    "database_match_key": "ACCESSORY:GABRIELLAHEARST:WELFATCHASHMERE:SAND.jpg",
+    "category": "ACCESSORY",
+    "brand": "Gabriella Hearst",
+    "name": "Lauren Knit Wrap",
+    "color": "Black",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$3170",
+    "price_numeric": 3170,
+    "description": "Oatmeal Welfat Cashmere",
+    "url": "https://gabrielahearst.com/products/lauren-knit-wrap-oatmeal",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Tactile Cashmere",
+      "Nomadic Wrap",
+      "Fringed Fluidity",
+      "Earthy Neutral"
+    ]
+  },
+  {
+    "database_match_key": "ACCESSORY:JEWELRY:BULGARI:CABACHON NECKLACE.jpg",
+    "category": "ACCESSORY: JEWELRY",
+    "brand": "1st Dibs",
+    "name": "Lapis cabachon necklace",
+    "color": "Gold/Blue",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$50,000",
+    "price_numeric": 50000,
+    "description": "Bvlgari 1980s Unheated Sapphire and Gold Necklace",
+    "url": "https://www.1stdibs.com/jewelry/necklaces/pendant-necklaces/bvlgari-1980s-unheated-sapphire-gold-necklace/id-j_28202612/",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Archival Estate",
+      "Lapis Cabochon",
+      "1980s Maximalism",
+      "Heavy Gold Chain"
+    ]
+  },
+  {
+    "database_match_key": "accessory:jewelry:fildevie:silverlinknecklace.jpg",
+    "category": "ACCESSORY",
+    "brand": "FIL DE VIE",
+    "name": "Link Necklace",
+    "color": "Silver",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$475",
+    "price_numeric": 475,
+    "description": "Chunky link necklace - adjustable. Coming soon.",
+    "url": null,
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Industrial Scale",
+      "Silver Link",
+      "Sculptural Neckline",
+      "Liquid Metal"
+    ]
+  },
+  {
+    "database_match_key": "ACCESSORY:SMYTHSON:CHELSEANOTEBOOK:RED.jpg",
+    "category": "ACCESSORY",
+    "brand": "Smythson",
+    "name": "Chelsea Notebook",
+    "color": "Red",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$165",
+    "price_numeric": 165,
+    "description": "The Chelsea notebook was made for notes-on-the-go. The perfect size for an everyday bag but large enough for your daily plots and plans, this notebook is brimming with our lined Featherweight paper and bound in a tactile crossgrain calf leather.",
+    "url": "https://www.smythson.com/us/scarlet-red-chelsea-notebook-in-panama-1204738.html",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Stationery Heritage",
+      "Crossgrain Leather",
+      "Scarlet Pop",
+      "Analog Luxury"
+    ]
+  },
+  {
+    "database_match_key": "ACCESS:SUGNLASSES:LOEWE:BLACK.jpg",
+    "category": "ACCESSORY: SUNGLASSES",
+    "brand": "Loewe",
+    "name": "Inflated Cat Eye Sunglasses",
+    "color": "Black",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$440",
+    "price_numeric": 440,
+    "description": "Inflated gold-tone embellished cat-eye acetate sunglasses",
+    "url": "https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Inflated Acetate",
+      "Modernist Cat-Eye",
+      "Sculptural Form",
+      "Gold Hardware"
+    ]
+  },
+  {
+    "database_match_key": "ACCESSORY:BAG:BOTTEGA:KALIMERO:BLACK.jpg",
     "category": "ACCESSORY: BAG",
-    "brand": "Paco Rabanne",
-    "name": "Gold Pailette Handbag",
-    "color": "Gold",
+    "brand": "Bottega Veneta",
+    "name": "Kalimero Bag",
+    "color": "Black",
     "sizes": [
       "O/S"
     ],
-    "price": "$1490",
-    "price_numeric": 1490,
-    "description": "Gold Pailette evening bag with chain soulder strap",
-    "url": "https://fashion.rabanne.com/en-us/products/26pss0548emb025-p710/",
+    "price": "$4100",
+    "price_numeric": 4100,
+    "description": "Shoulder bag in soft foulard Intreccio leather with sliding shoulder strap, metallic ring, and knot detail.",
+    "url": "https://www.bottegaveneta.com/en-us/small-kalimero-citta-fondant-813744715.html",
     "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Kinetic Reflection",
-      "Evening Armor",
-      "Metallic Heritage"
+      "Intrecciato Heritage",
+      "Woven Texture",
+      "Tactile Fluidity",
+      "Slouchy Structure"
     ]
   },
   {
-    "database_match_key": "phoebe philo earrings dropped.jpg",
-    "category": "ACCESSORY: Jewelry",
-    "brand": "Phoebe Philo",
-    "name": "Gold Drop Earrings",
-    "color": "Gold",
+    "database_match_key": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
+    "category": "ACCESSORY: BAG",
+    "brand": "Demellier London",
+    "name": "Santorini Basket Bag",
+    "color": "Natural",
     "sizes": [
       "O/S"
     ],
-    "price": "$1050",
-    "price_numeric": 1050,
-    "description": "Drop earrings in 24-karat gold-plated sterling silver. Designed for a textured finish, irregularly shaped droplets are suspended from studs. For pierced ears.",
-    "url": "https://us.phoebephilo.com/products/double-ball-earrings-in-gold-plated-sterling-silver",
+    "price": "$355",
+    "price_numeric": 355,
+    "description": "Ethically handwoven in Morocco from 100% natural palm leaves. Each bag is a unique creation.",
+    "url": "https://demellierlondon.com/products/the-santorini-natural-basket-black",
     "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Organic Modernism",
-      "Textured Gold",
-      "Liquid Form"
+      "Artisanal Weave",
+      "Resort Utility",
+      "Natural Palm",
+      "Woven Basket"
     ]
   },
   {
-    "database_match_key": "phoebe philo hallmark earrings.jpg",
-    "category": "ACCESSORY: Jewelry",
-    "brand": "Phoebe Philo",
-    "name": "Hallmark Earrings",
-    "color": "Gold",
+    "database_match_key": "ACCESSORY:BAG:DRIESVANNOTEN:BLACK.jpg",
+    "category": "ACCESSORY: BAG",
+    "brand": "Dries Van Noten",
+    "name": "Embellished Evening Bag",
+    "color": "Black",
     "sizes": [
       "O/S"
     ],
-    "price": "$450",
-    "price_numeric": 450,
-    "description": "Curved plate earrings in 24-karat gold-plated sterling silver with decorative hallmark detailing.",
-    "url": "https://us.phoebephilo.com/products/hallmark-earrings-gold-plated-sterling-silver",
+    "price": "$1640",
+    "price_numeric": 1640,
+    "description": "Satin jacquard embellished evening bag.",
+    "url": "https://www.parlourx.com/products/envelope-embroidered-clutch-on-chain-black-gold-1",
     "shop_status": "live",
     "wellspring_atelier_codes": [
-      "Architectural Metal",
-      "Minimalist Heritage",
-      "Gilded Curve"
+      "Nocturnal Opulence",
+      "Artisanal Jacquard",
+      "Evening Embellishment",
+      "Tapestry"
+    ]
+  },
+  {
+    "database_match_key": "ACCESSORY:BAG:PHOEBEPHILO:DRIVEBAG.jpg",
+    "category": "ACCESSORY: BAG",
+    "brand": "Phoebe Philo",
+    "name": "Drive Bag",
+    "color": "Black",
+    "sizes": [
+      "O/S"
+    ],
+    "price": "$6200",
+    "price_numeric": 6200,
+    "description": "Drive bag in vertically quilted black leather with tonal leather lining. The structured bag has tonal stitching and silver tone clasp closure.",
+    "url": "https://us.phoebephilo.com/products/drive-bag-black-leather",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Architectural Quilting",
+      "Utilitarian Elegance",
+      "Structured Volume",
+      "Minimalist Hardware"
+    ]
+  },
+  {
+    "database_match_key": "LOOK:PHOEBEPHILO:ROBECOAT:BLACK.jpg",
+    "category": "LOOK",
+    "brand": "Phoebe Philo",
+    "name": "Robe Coat",
+    "color": "Black",
+    "sizes": [
+      "XS-XL"
+    ],
+    "price": "$5900",
+    "price_numeric": 5900,
+    "description": "Robe coat in black cashmere. A quiet, enveloping silhouette for evening.",
+    "url": "https://us.phoebephilo.com/products/robe-coat-black-cashmere",
+    "shop_status": "live",
+    "wellspring_atelier_codes": [
+      "Oversized Drape",
+      "Cashmere Robe",
+      "Evening Silhouette",
+      "Minimalist Closure"
     ]
   }
 ]
