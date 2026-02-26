@@ -40,7 +40,7 @@ const CAROUSEL_ASSET_KEYS: Record<string, string> = {
   "retreat-7": "retreat-tile-3",
   "retreat-8": "retreat-tile-4",
   "retreat-10": "retreat-object-1",
-  "retreat-11": "retreat-style-1",
+  "retreat-11": "retreat-object-1",
   // New York
   "ny-2": "ny-tile-2",
   "ny-7": "ny-tile-4",
@@ -1512,13 +1512,10 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <ShopTheStory
           onOpenDetail={handleOpenDetail}
           sourceStory="Morocco"
-          tiles={[
-            ...getCarouselItems('morocco').map(c => {
+          tiles={getCarouselItems('morocco').map(c => {
               const t = getTile('morocco', c.tileId);
               return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand, genomeKey: c.genomeKey };
-            }),
-            ...getMoroccoItineraryTiles(),
-          ]}
+            })}
         />
       </section>
 
