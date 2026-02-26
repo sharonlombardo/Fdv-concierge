@@ -11,6 +11,80 @@ import { IMAGE_SLOTS } from "@shared/image-slots";
 import { LoadingImage } from "@/components/loading-image";
 import { ITINERARY_DATA, type DayPage } from "@shared/itinerary-data";
 import { getProductByKey, getProductDisplayName, isShoppable, getProductMapDays, getSlotProducts, getProductImageUrl, findProductByPartialKey, getAllProducts, SECTION_LOOK_GENOME_KEY, type BrandGenomeProduct } from "@/lib/brand-genome";
+import editorialMap from "@/data/editorial_product_map.json";
+
+// Maps carousel tileIds to their correct IMAGE_SLOTS assetKey
+const CAROUSEL_ASSET_KEYS: Record<string, string> = {
+  // Morocco
+  "morocco-1": "morocco-tile-1",
+  "morocco-3": "morocco-tile-3",
+  "morocco-5": "morocco-tile-5",
+  "morocco-11": "morocco-experience-1",
+  // Hydra
+  "hydra-4": "hydra-tile-4",
+  "hydra-6": "hydra-tile-6",
+  "hydra-8": "hydra-tile-5",
+  "hydra-10": "hydra-object-1",
+  "hydra-12": "hydra-light-2",
+  "hydra-13": "hydra-ritual-1",
+  // Spain (IMAGE_SLOTS uses slow- prefix)
+  "spain-2": "slow-culture-1",
+  "spain-5": "slow-tile-2",
+  "spain-6": "slow-tile-1",
+  "spain-8": "slow-tile-3",
+  "spain-10": "slow-tile-5",
+  "spain-12": "slow-object-1",
+  // Retreat
+  "retreat-5": "retreat-tile-5",
+  "retreat-6": "retreat-tile-6",
+  "retreat-7": "retreat-tile-3",
+  "retreat-8": "retreat-tile-4",
+  "retreat-10": "retreat-object-1",
+  "retreat-11": "retreat-style-1",
+  // New York
+  "ny-2": "ny-tile-2",
+  "ny-7": "ny-tile-4",
+  "ny-8": "ny-tile-5",
+  "ny-9": "ny-tile-6",
+  "ny-11": "ny-culture-1",
+  "ny-13": "newyork-object-1",
+  "ny-15": "ny-reset-2",
+  "ny-16": "ny-reset-3",
+  "ny-17": "ny-reset-4",
+};
+
+// --- EDITORIAL PRODUCT MAP HELPERS ---
+// Single source of truth for every tile's genomeKey, pinType, brand, etc.
+type TileMapEntry = {
+  position: number;
+  component: string;
+  isProduct: boolean;
+  pinType: string;
+  brand?: string;
+  productName?: string;
+  genomeKey?: string;
+  caption?: string;
+  brandLine?: string;
+  shopUrl?: string;
+  bookUrl?: string;
+  title?: string;
+  correction?: string;
+  note?: string;
+};
+
+function getTile(storyKey: string, tileId: string): TileMapEntry | null {
+  const story = (editorialMap as Record<string, any>)[storyKey];
+  if (!story || typeof story !== 'object') return null;
+  return story[tileId] || null;
+}
+
+function getCarouselItems(storyKey: string) {
+  const items = (editorialMap as Record<string, any>).carousels?.[storyKey] || [];
+  return items.map((item: any) => ({
+    ...item,
+    assetKey: CAROUSEL_ASSET_KEYS[item.tileId] || item.tileId
+  }));
+}
 
 type GetImageUrlFn = (assetKey: string) => string;
 const ImageContext = createContext<GetImageUrlFn>((key) => "");
@@ -1075,7 +1149,9 @@ function ShopTheStory({ tiles, sourceStory, onOpenDetail }: ShopTheStoryProps) {
         <style>{`.shop-scroll::-webkit-scrollbar { display: none; }`}</style>
         <div className="shop-scroll flex gap-4 px-6 pb-2" style={{ minWidth: "max-content", overflowX: "auto", scrollbarWidth: "none" }}>
           {shopTiles.map((tile) => {
-            const imageUrl = getImageUrl(tile.assetKey) || tile.imageUrl || "";
+            const productImg = tile.genomeKey ? getProductImageUrl(tile.genomeKey) : "";
+            const isPlaceholder = !productImg || productImg.includes("placeholder");
+            const imageUrl = (!isPlaceholder ? productImg : "") || tile.imageUrl || getImageUrl(tile.assetKey) || "";
             return (
               <div
                 key={tile.id}
@@ -1343,8 +1419,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="Morocco"
           imagePosition="left"
-          brand="Yves Saint Laurent"
-          genomeKey="LOOK:YSL:BIKINI:BLACK.jpg"
+          brand={getTile('morocco', 'morocco-7')?.brand || "Yves Saint Laurent"}
+          genomeKey={getTile('morocco', 'morocco-7')?.genomeKey}
         />
 
         <MomentBlock
@@ -1366,12 +1442,12 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           title="Pattern and Pleasure"
           sourceStory="Morocco"
           tiles={[
-            { id: "morocco-1", assetKey: "morocco-tile-1", caption: "Amanjena, Marrakech. Terracotta heat. Crisp black cotton. The contrast is the point. Gaia Dress by Phoebe Philo — Coming Soon", bucket: "Your Style", pinType: "look", title: "Gaia Dress", brand: "Phoebe Philo", genomeKey: "look:phoebephilo:gaiadress:black.jpg" },
-            { id: "morocco-2", assetKey: "morocco-tile-2", caption: "Glossy mint tile, carved plaster, filtered light. The kind of green that feels completely natural and completely surreal at the same time.", bucket: "Travel & Experiences", pinType: "place" },
-            { id: "morocco-3", assetKey: "morocco-tile-3", caption: "Blush pink against sun-warmed clay. Soft, but never sweet. The color almost disappears into the earth — and that's the beauty of it. Look by Alaïa — Coming Soon", bucket: "Your Style", pinType: "look", brand: "Alaïa", genomeKey: "LOOK:ALAIA:DRAPEDTOP:BLACK.jpg" },
-            { id: "morocco-4", assetKey: "morocco-tile-4", caption: "El Fenn. Layered ruby red, saffron, emerald, tile, velvet. It's saturated and fearless, but somehow still composed.", bucket: "Travel & Experiences", pinType: "place", bookUrl: "https://el-fenn.com/" },
-            { id: "morocco-5", assetKey: "morocco-tile-5", caption: "Black against warm limestone — a long, clean silhouette moving through arches. The dress absorbs the light instead of competing with it. Dress by FIL DE VIE — Coming Soon", bucket: "Your Style", pinType: "look", brand: "Fil de Vie", genomeKey: "LOOK:FDV:CALYPSODRESS:BLACK.jpg" },
-            { id: "morocco-6", assetKey: "morocco-tile-6", caption: "Orange blossom in bloom. That faint citrus-sweet scent in the air — orange blossom drifting through the heat. Color everywhere, but the fragrance is what lingers.", bucket: "Travel & Experiences", pinType: "place" },
+            { id: "morocco-1", assetKey: "morocco-tile-1", caption: getTile('morocco', 'morocco-1')?.caption || "", bucket: "Your Style", pinType: getTile('morocco', 'morocco-1')?.pinType || "style", title: getTile('morocco', 'morocco-1')?.productName, brand: getTile('morocco', 'morocco-1')?.brand, genomeKey: getTile('morocco', 'morocco-1')?.genomeKey },
+            { id: "morocco-2", assetKey: "morocco-tile-2", caption: getTile('morocco', 'morocco-2')?.caption || "", bucket: "Travel & Experiences", pinType: getTile('morocco', 'morocco-2')?.pinType || "place" },
+            { id: "morocco-3", assetKey: "morocco-tile-3", caption: getTile('morocco', 'morocco-3')?.caption || "", bucket: "Your Style", pinType: getTile('morocco', 'morocco-3')?.pinType || "style", brand: getTile('morocco', 'morocco-3')?.brand, genomeKey: getTile('morocco', 'morocco-3')?.genomeKey },
+            { id: "morocco-4", assetKey: "morocco-tile-4", caption: getTile('morocco', 'morocco-4')?.caption || "", bucket: "Travel & Experiences", pinType: getTile('morocco', 'morocco-4')?.pinType || "place", bookUrl: getTile('morocco', 'morocco-4')?.bookUrl },
+            { id: "morocco-5", assetKey: "morocco-tile-5", caption: getTile('morocco', 'morocco-5')?.caption || "", bucket: "Your Style", pinType: getTile('morocco', 'morocco-5')?.pinType || "style", brand: getTile('morocco', 'morocco-5')?.brand, genomeKey: getTile('morocco', 'morocco-5')?.genomeKey },
+            { id: "morocco-6", assetKey: "morocco-tile-6", caption: getTile('morocco', 'morocco-6')?.caption || "", bucket: "Travel & Experiences", pinType: getTile('morocco', 'morocco-6')?.pinType || "place" },
           ]}
         />
 
@@ -1387,8 +1463,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="Morocco"
           imagePosition="left"
-          brand="Fil de Vie"
-          genomeKey="look:fildevie:rheadress:black.jpg"
+          brand={getTile('morocco', 'morocco-9')?.brand || "FIL DE VIE"}
+          genomeKey={getTile('morocco', 'morocco-9')?.genomeKey}
         />
 
         <MomentBlock
@@ -1413,8 +1489,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           id="morocco-motion-1"
           sourceStory="Morocco"
           caption="El Fenn. A flash of red against layered tile. Pattern on pattern — and then that one bold interruption. Dress by FIL DE VIE. Coming soon."
-          brand="Fil de Vie"
-          genomeKey="look:fildevie:longcaftandress:red.jpg"
+          brand={getTile('morocco', 'morocco-11')?.brand || "FIL DE VIE"}
+          genomeKey={getTile('morocco', 'morocco-11')?.genomeKey}
         />
 
         <MomentBlock
@@ -1437,9 +1513,10 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           onOpenDetail={handleOpenDetail}
           sourceStory="Morocco"
           tiles={[
-            { id: "morocco-1", assetKey: "morocco-tile-1", caption: "Gaia Dress", bucket: "Your Style", pinType: "look", title: "Gaia Dress", brand: "Phoebe Philo", genomeKey: "look:phoebephilo:gaiadress:black.jpg" },
-            { id: "morocco-3", assetKey: "morocco-tile-3", caption: "Blush pink against sun-warmed clay", bucket: "Your Style", pinType: "look", brand: "Alaïa", genomeKey: "LOOK:ALAIA:DRAPEDTOP:BLACK.jpg" },
-            { id: "morocco-5", assetKey: "morocco-tile-5", caption: "Black against warm limestone", bucket: "Your Style", pinType: "look", brand: "Fil de Vie", genomeKey: "LOOK:FDV:CALYPSODRESS:BLACK.jpg" },
+            ...getCarouselItems('morocco').map(c => {
+              const t = getTile('morocco', c.tileId);
+              return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand, genomeKey: c.genomeKey };
+            }),
             ...getMoroccoItineraryTiles(),
           ]}
         />
@@ -1476,8 +1553,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="Hydra"
           imagePosition="left"
-          genomeKey="LOOK:YSL:JUMPSUIT:BLACK.jpg"
-          brand="YSL"
+          genomeKey={getTile('hydra', 'hydra-2')?.genomeKey}
+          brand={getTile('hydra', 'hydra-2')?.brand || "YSL"}
         />
 
         {/* #3 — MomentBlock: Stone, Water, Skin */}
@@ -1501,12 +1578,12 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           title="Essentials Only"
           sourceStory="Hydra"
           tiles={[
-            { id: "hydra-4", assetKey: "hydra-tile-1", caption: "Wind off the harbor, oversized tailoring thrown over bare skin. Hydra makes even structure feel relaxed. Shirt by Jil Sander. Coming Soon.", bucket: "Your Style", pinType: "style", brand: "Jil Sander", genomeKey: "LOOK:JILSANDER:TRENCHCOAT:WHITE.jpg" },
-            { id: "hydra-5", assetKey: "hydra-tile-2", caption: "Port-side, midday. Shutters, stone, a table for one. Hydra doesn't ask you to perform leisure — it just happens.", bucket: "Travel & Experiences", pinType: "place" },
-            { id: "hydra-6", assetKey: "hydra-tile-3", caption: "White against deeper blue. Fabric moving in the breeze. It's less about the outfit and more about how it catches air. Look by Jil Sander. Coming Soon.", bucket: "Your Style", pinType: "style", brand: "Jil Sander", genomeKey: "LOOK:JILSANDER:SILKFLUIDSET:BLACK.jpg" },
-            { id: "hydra-7", assetKey: "hydra-tile-4", caption: "Stone stacked into cliff. No symmetry, just instinct and time. Hydra feels built by hand.", bucket: "Travel & Experiences", pinType: "place" },
-            { id: "hydra-8", assetKey: "hydra-tile-5", caption: "Black swimwear against chalk-white stone. Clean and unfussy. Swimwear by Eres.", bucket: "Your Style", pinType: "style", brand: "Eres", shopUrl: "https://www.eresparis.com/us/en-US/swimwear-2/011401-3333.html", genomeKey: "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg" },
-            { id: "hydra-9", assetKey: "hydra-tile-6", caption: "Water so clear it feels architectural. You see every movement, every ripple.", bucket: "Travel & Experiences", pinType: "place" },
+            { id: "hydra-4", assetKey: "hydra-tile-1", caption: getTile('hydra', 'hydra-4')?.caption || "", bucket: "Your Style", pinType: getTile('hydra', 'hydra-4')?.pinType || "style", brand: getTile('hydra', 'hydra-4')?.brand, genomeKey: getTile('hydra', 'hydra-4')?.genomeKey },
+            { id: "hydra-5", assetKey: "hydra-tile-2", caption: getTile('hydra', 'hydra-5')?.caption || "", bucket: "Travel & Experiences", pinType: getTile('hydra', 'hydra-5')?.pinType || "place" },
+            { id: "hydra-6", assetKey: "hydra-tile-3", caption: getTile('hydra', 'hydra-6')?.caption || "", bucket: "Your Style", pinType: getTile('hydra', 'hydra-6')?.pinType || "style", brand: getTile('hydra', 'hydra-6')?.brand, genomeKey: getTile('hydra', 'hydra-6')?.genomeKey },
+            { id: "hydra-7", assetKey: "hydra-tile-4", caption: getTile('hydra', 'hydra-7')?.caption || "", bucket: "Travel & Experiences", pinType: getTile('hydra', 'hydra-7')?.pinType || "place" },
+            { id: "hydra-8", assetKey: "hydra-tile-5", caption: getTile('hydra', 'hydra-8')?.caption || "", bucket: "Your Style", pinType: getTile('hydra', 'hydra-8')?.pinType || "style", brand: getTile('hydra', 'hydra-8')?.brand, shopUrl: getTile('hydra', 'hydra-8')?.shopUrl, genomeKey: getTile('hydra', 'hydra-8')?.genomeKey },
+            { id: "hydra-9", assetKey: "hydra-tile-6", caption: getTile('hydra', 'hydra-9')?.caption || "", bucket: "Travel & Experiences", pinType: getTile('hydra', 'hydra-9')?.pinType || "place" },
           ]}
         />
 
@@ -1528,8 +1605,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="Hydra"
           imagePosition="left"
-          genomeKey="look:phoebephilo:buttondownshirt.jpg"
-          brand="Phoebe Philo"
+          genomeKey={getTile('hydra', 'hydra-10')?.genomeKey}
+          brand={getTile('hydra', 'hydra-10')?.brand || "Phoebe Philo"}
         />
 
         {/* #11 — MomentBlock: place */}
@@ -1559,8 +1636,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           sourceStory="Hydra"
           imagePosition="left"
           shopUrl="https://www.eresparis.com/us/en-US/swimwear-2/011401-3333.html"
-          genomeKey="LOOK:ERES:ASIA:SWIMSUIT:BLACK.jpg"
-          brand="Eres"
+          genomeKey={getTile('hydra', 'hydra-12')?.genomeKey}
+          brand={getTile('hydra', 'hydra-12')?.brand || "Eres"}
         />
 
         {/* #13 — MomentBlock: The Daily Flow */}
@@ -1576,8 +1653,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="Hydra"
           imagePosition="right"
-          genomeKey="LOOK:DRIESVANNOTEN:LAYEREDSILKDRESS:BLACK.jpg"
-          brand="Dries Van Noten"
+          genomeKey={getTile('hydra', 'hydra-13')?.genomeKey}
+          brand={getTile('hydra', 'hydra-13')?.brand || "Dries Van Noten"}
         />
 
         <ClosingLine text="Save what steadies you. Return when you need it." id="hydra-closing" sourceStory="Hydra" />
@@ -1585,15 +1662,10 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <ShopTheStory
           onOpenDetail={handleOpenDetail}
           sourceStory="Hydra"
-          tiles={[
-            { id: "hydra-style-1", assetKey: "hydra-style-1", caption: "YSL Jumpsuit", bucket: "Your Style", pinType: "style", brand: "YSL", genomeKey: "LOOK:YSL:JUMPSUIT:BLACK.jpg" },
-            { id: "hydra-4", assetKey: "hydra-tile-1", caption: "Jil Sander Trench Coat", bucket: "Your Style", pinType: "style", brand: "Jil Sander", genomeKey: "LOOK:JILSANDER:TRENCHCOAT:WHITE.jpg" },
-            { id: "hydra-6", assetKey: "hydra-tile-3", caption: "Jil Sander Silk Fluid Set", bucket: "Your Style", pinType: "style", brand: "Jil Sander", genomeKey: "LOOK:JILSANDER:SILKFLUIDSET:BLACK.jpg" },
-            { id: "hydra-8", assetKey: "hydra-tile-5", caption: "Eres Effigie Swimsuit", bucket: "Your Style", pinType: "style", brand: "Eres", genomeKey: "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg" },
-            { id: "hydra-object-1", assetKey: "hydra-object-1", caption: "PP Button Down Shirt", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", genomeKey: "look:phoebephilo:buttondownshirt.jpg" },
-            { id: "hydra-light-2", assetKey: "hydra-light-2", caption: "Eres Asia Swimsuit", bucket: "Your Style", pinType: "style", brand: "Eres", genomeKey: "LOOK:ERES:ASIA:SWIMSUIT:BLACK.jpg" },
-            { id: "hydra-ritual-1", assetKey: "hydra-ritual-1", caption: "DVN Layered Silk Dress", bucket: "Your Style", pinType: "style", brand: "Dries Van Noten", genomeKey: "LOOK:DRIESVANNOTEN:LAYEREDSILKDRESS:BLACK.jpg" },
-          ]}
+          tiles={getCarouselItems('hydra').map(c => {
+            const t = getTile('hydra', c.tileId);
+            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand, genomeKey: c.genomeKey };
+          })}
         />
       </section>
 
@@ -1627,8 +1699,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="Spain"
           imagePosition="left"
-          genomeKey="access:jewelry:phoebephilo:silvercuff.jpg"
-          brand="Phoebe Philo"
+          genomeKey={getTile('spain', 'spain-2')?.genomeKey}
+          brand={getTile('spain', 'spain-2')?.brand || "Phoebe Philo"}
         />
 
         {/* #3 — MomentBlock: Stone & Horizon */}
@@ -1658,8 +1730,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="Spain"
           imagePosition="left"
-          genomeKey="LOOK:FILDEVIE:STRAPLESSSWIMSUIT:BLACK.jpg"
-          brand="FIL DE VIE"
+          genomeKey={getTile('spain', 'spain-4')?.genomeKey}
+          brand={getTile('spain', 'spain-4')?.brand || "FIL DE VIE"}
         />
 
         {/* #5 — MomentBlock: Open water, Loro Piana */}
@@ -1675,8 +1747,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="Spain"
           imagePosition="right"
-          genomeKey="LOOK:LOROPIANA:SLIPDRESS:BLACK.jpg"
-          brand="Loro Piana"
+          genomeKey={getTile('spain', 'spain-5')?.genomeKey}
+          brand={getTile('spain', 'spain-5')?.brand || "Loro Piana"}
         />
 
         {/* Section header: EDITING IS INTELLIGENCE */}
@@ -1690,12 +1762,12 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           title="Editing is Intelligence"
           sourceStory="Spain"
           tiles={[
-            { id: "spain-6", assetKey: "slow-tile-1", caption: "Minimal swim, clean cut, nothing ornamental. The body becomes part of the landscape. Sweater by Phoebe Philo.", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", genomeKey: "LOOK:PHOEBEPHILO:POLOSWEATER:BLACK.jpg" },
-            { id: "spain-7", assetKey: "slow-style-1", caption: "A path carved through stone toward the sea. You walk slower without deciding to.", bucket: "Travel & Experiences", pinType: "place" },
-            { id: "spain-8", assetKey: "slow-tile-3", caption: "Salt hair, narrow deck, strong sun. Pieces that hold their shape against wind matter here. Swimwear by Eres. Coming soon.", bucket: "Your Style", pinType: "style", brand: "Eres", genomeKey: "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg" },
-            { id: "spain-9", assetKey: "slow-tile-4", caption: "Heat. Salt. Open sea.", bucket: "Travel & Experiences", pinType: "place" },
-            { id: "spain-10", assetKey: "slow-tile-5", caption: "Dark lenses against white sky. The light is unforgiving here — the accessories shouldn't be. Sunglasses by Phoebe Philo.", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", shopUrl: "https://us.phoebephilo.com/products/bombe-sunglasses-fume-acetate", genomeKey: "LOOK:PHOEBEPHILO:BOMBESUNGLASSES:BROWN.jpg" },
-            { id: "spain-11", assetKey: "slow-tile-6", caption: "A cove tucked into rock. Shade feels earned. Water feels earned.", bucket: "Travel & Experiences", pinType: "place" },
+            { id: "spain-6", assetKey: "slow-tile-1", caption: getTile('spain', 'spain-6')?.caption || "Minimal swim, clean cut, nothing ornamental. The body becomes part of the landscape. Sweater by Phoebe Philo.", bucket: "Your Style", pinType: getTile('spain', 'spain-6')?.pinType || "style", brand: getTile('spain', 'spain-6')?.brand || "Phoebe Philo", genomeKey: getTile('spain', 'spain-6')?.genomeKey },
+            { id: "spain-7", assetKey: "slow-style-1", caption: getTile('spain', 'spain-7')?.caption || "A path carved through stone toward the sea. You walk slower without deciding to.", bucket: "Travel & Experiences", pinType: getTile('spain', 'spain-7')?.pinType || "place" },
+            { id: "spain-8", assetKey: "slow-tile-3", caption: getTile('spain', 'spain-8')?.caption || "Salt hair, narrow deck, strong sun. Pieces that hold their shape against wind matter here. Swimwear by Eres. Coming soon.", bucket: "Your Style", pinType: getTile('spain', 'spain-8')?.pinType || "style", brand: getTile('spain', 'spain-8')?.brand || "Eres", genomeKey: getTile('spain', 'spain-8')?.genomeKey },
+            { id: "spain-9", assetKey: "slow-tile-4", caption: getTile('spain', 'spain-9')?.caption || "Heat. Salt. Open sea.", bucket: "Travel & Experiences", pinType: getTile('spain', 'spain-9')?.pinType || "place" },
+            { id: "spain-10", assetKey: "slow-tile-5", caption: getTile('spain', 'spain-10')?.caption || "Dark lenses against white sky. The light is unforgiving here — the accessories shouldn't be. Sunglasses by Phoebe Philo.", bucket: "Your Style", pinType: getTile('spain', 'spain-10')?.pinType || "style", brand: getTile('spain', 'spain-10')?.brand || "Phoebe Philo", shopUrl: getTile('spain', 'spain-10')?.shopUrl || "https://us.phoebephilo.com/products/bombe-sunglasses-fume-acetate", genomeKey: getTile('spain', 'spain-10')?.genomeKey },
+            { id: "spain-11", assetKey: "slow-tile-6", caption: getTile('spain', 'spain-11')?.caption || "A cove tucked into rock. Shade feels earned. Water feels earned.", bucket: "Travel & Experiences", pinType: getTile('spain', 'spain-11')?.pinType || "place" },
           ]}
         />
 
@@ -1717,9 +1789,9 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="Spain"
           imagePosition="left"
-          shopUrl="https://www.ray-ban.com/usa/sunglasses/RB4940wayfarer%20puffer-black/8056262910863"
-          genomeKey="LOOK:RAYBAN:PUFFEDWAYFARER:BLACK.jpg"
-          brand="RayBan"
+          shopUrl={getTile('spain', 'spain-12')?.shopUrl || "https://www.ray-ban.com/usa/sunglasses/RB4940wayfarer%20puffer-black/8056262910863"}
+          genomeKey={getTile('spain', 'spain-12')?.genomeKey}
+          brand={getTile('spain', 'spain-12')?.brand || "RayBan"}
         />
 
         {/* #13 — MomentBlock: style */}
@@ -1741,15 +1813,10 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <ShopTheStory
           onOpenDetail={handleOpenDetail}
           sourceStory="Spain"
-          tiles={[
-            { id: "slow-culture-1", assetKey: "slow-culture-1", caption: "PP Silver Cuff", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", genomeKey: "access:jewelry:phoebephilo:silvercuff.jpg" },
-            { id: "slow-museum", assetKey: "slow-museum", caption: "FDV Strapless Swimsuit", bucket: "Your Style", pinType: "style", brand: "FIL DE VIE", genomeKey: "LOOK:FILDEVIE:STRAPLESSSWIMSUIT:BLACK.jpg" },
-            { id: "slow-tile-2", assetKey: "slow-tile-2", caption: "Loro Piana Slip Dress", bucket: "Your Style", pinType: "style", brand: "Loro Piana", genomeKey: "LOOK:LOROPIANA:SLIPDRESS:BLACK.jpg" },
-            { id: "spain-6", assetKey: "slow-tile-1", caption: "PP Polo Sweater", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", genomeKey: "LOOK:PHOEBEPHILO:POLOSWEATER:BLACK.jpg" },
-            { id: "spain-8", assetKey: "slow-tile-3", caption: "Eres Effigie Swimsuit", bucket: "Your Style", pinType: "style", brand: "Eres", genomeKey: "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg" },
-            { id: "spain-10", assetKey: "slow-tile-5", caption: "Bombe Sunglasses", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", title: "Bombe Sunglasses", shopUrl: "https://us.phoebephilo.com/products/bombe-sunglasses-fume-acetate", genomeKey: "LOOK:PHOEBEPHILO:BOMBESUNGLASSES:BROWN.jpg" },
-            { id: "slow-object-1", assetKey: "slow-object-1", caption: "RayBan Puffed Wayfarer", bucket: "Your Style", pinType: "style", brand: "RayBan", title: "Puffed Wayfarer", shopUrl: "https://www.ray-ban.com/usa/sunglasses/RB4940wayfarer%20puffer-black/8056262910863", genomeKey: "LOOK:RAYBAN:PUFFEDWAYFARER:BLACK.jpg" },
-          ]}
+          tiles={getCarouselItems('spain').map(c => {
+            const t = getTile('spain', c.tileId);
+            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand, shopUrl: t?.shopUrl, genomeKey: c.genomeKey };
+          })}
         />
       </section>
 
@@ -1812,12 +1879,12 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           title="Desert Essentials"
           sourceStory="Retreat"
           tiles={[
-            { id: "retreat-1", assetKey: "retreat-tile-1", caption: "A room that opens onto rock and sky. Bare walls. Nothing competing with the view. Look by The Row. Coming soon.", bucket: "Your Style", pinType: "style", brand: "The Row", genomeKey: "LOOK:THEROW:CASHMERETRACKSUIT:CREAM.jpg" },
-            { id: "retreat-2", assetKey: "retreat-tile-2", caption: "Clean lines. Technical fabric. Modern pieces that make sense against ancient land. Look by Fear Of God. Coming soon.", bucket: "Your Style", pinType: "style", brand: "Fear Of God", genomeKey: "LOOK:FEAROFGOD:LEATHERCOAT:ESPRESSO.jpg" },
-            { id: "retreat-3", assetKey: "retreat-tile-3", caption: "Late afternoon, stretched out in the sun. The desert has a way of softening you. Cashmere set by Phoebe Philo. Coming soon.", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", genomeKey: "LOOK:PHOEBEPHILO:CASHMERETRACKSUIT:ESPRESSO.jpg" },
-            { id: "retreat-4", assetKey: "retreat-tile-4", caption: "Warm stone. Soft light. The kind of quiet you don't rush. Look by Aimé Leon Dore. Coming soon.", bucket: "Your Style", pinType: "style", brand: "Aimé Leon Dore", genomeKey: "LOOK:AIMELEONDORE:QUARTERZIPSET:BLACK.jpg" },
-            { id: "retreat-5", assetKey: "retreat-tile-5", caption: "Red rock and still water. Everything blends. Nothing shouts.", bucket: "Travel & Experiences", pinType: "place" },
-            { id: "retreat-6", assetKey: "retreat-tile-6", caption: "A long dark line against open desert. Simple. Strong. Enough. Look by Jil Sander. Coming soon.", bucket: "Your Style", pinType: "style", brand: "Jil Sander", genomeKey: "LOOK:JILSANDER:TRENCHCOAT:WHITE.jpg" },
+            { id: "retreat-5", assetKey: "retreat-tile-1", caption: getTile('retreat', 'retreat-5')?.caption || "", bucket: "Your Style", pinType: getTile('retreat', 'retreat-5')?.pinType || "style", brand: getTile('retreat', 'retreat-5')?.brand, genomeKey: getTile('retreat', 'retreat-5')?.genomeKey },
+            { id: "retreat-6", assetKey: "retreat-tile-2", caption: getTile('retreat', 'retreat-6')?.caption || "", bucket: "Your Style", pinType: getTile('retreat', 'retreat-6')?.pinType || "style", brand: getTile('retreat', 'retreat-6')?.brand, genomeKey: getTile('retreat', 'retreat-6')?.genomeKey },
+            { id: "retreat-7", assetKey: "retreat-tile-3", caption: getTile('retreat', 'retreat-7')?.caption || "", bucket: "Your Style", pinType: getTile('retreat', 'retreat-7')?.pinType || "style", brand: getTile('retreat', 'retreat-7')?.brand, genomeKey: getTile('retreat', 'retreat-7')?.genomeKey },
+            { id: "retreat-8", assetKey: "retreat-tile-4", caption: getTile('retreat', 'retreat-8')?.caption || "", bucket: "Your Style", pinType: getTile('retreat', 'retreat-8')?.pinType || "style", brand: getTile('retreat', 'retreat-8')?.brand, genomeKey: getTile('retreat', 'retreat-8')?.genomeKey },
+            { id: "retreat-9", assetKey: "retreat-tile-5", caption: getTile('retreat', 'retreat-9')?.caption || "Red rock and still water. Everything blends. Nothing shouts.", bucket: "Travel & Experiences", pinType: getTile('retreat', 'retreat-9')?.pinType || "place" },
+            { id: "retreat-10", assetKey: "retreat-tile-6", caption: getTile('retreat', 'retreat-10')?.caption || "", bucket: "Your Style", pinType: getTile('retreat', 'retreat-10')?.pinType || "style", brand: getTile('retreat', 'retreat-10')?.brand, genomeKey: getTile('retreat', 'retreat-10')?.genomeKey },
           ]}
         />
 
@@ -1825,32 +1892,32 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           onOpenDetail={handleOpenDetail}
           title="Midday Settles In"
           paragraphs={[
-            "Midday settles in. Shade becomes the luxury.",
-            "Swimwear by Eres. Coming soon."
+            getTile('retreat', 'retreat-11')?.caption || "Midday settles in. Shade becomes the luxury.",
+            getTile('retreat', 'retreat-11')?.brandLine || "Swimwear by Eres. Coming soon."
           ]}
           assetKey="retreat-object-1"
           bucket="Your Style"
-          pinType="style"
+          pinType={getTile('retreat', 'retreat-11')?.pinType || "style"}
           sourceStory="Retreat"
           imagePosition="left"
-          genomeKey="LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg"
-          brand="Eres"
+          genomeKey={getTile('retreat', 'retreat-11')?.genomeKey}
+          brand={getTile('retreat', 'retreat-11')?.brand || "Eres"}
         />
 
         <MomentBlock
           onOpenDetail={handleOpenDetail}
           title="Inside, Cool Stone"
           paragraphs={[
-            "Inside, cool stone. Outside, endless heat. That edge between the two is the whole mood.",
-            "Look by Fear Of God. Coming soon."
+            getTile('retreat', 'retreat-12')?.caption || "Inside, cool stone. Outside, endless heat. That edge between the two is the whole mood.",
+            getTile('retreat', 'retreat-12')?.brandLine || "Look by Fear Of God. Coming soon."
           ]}
           assetKey="retreat-style-1"
           bucket="Your Style"
-          pinType="style"
+          pinType={getTile('retreat', 'retreat-12')?.pinType || "style"}
           sourceStory="Retreat"
           imagePosition="right"
-          genomeKey="LOOK:FEAROFGOD:LEATHERCOAT:ESPRESSO.jpg"
-          brand="Fear Of God"
+          genomeKey={getTile('retreat', 'retreat-12')?.genomeKey}
+          brand={getTile('retreat', 'retreat-12')?.brand || "Fear Of God"}
         />
 
         <ClosingLine text="Keep what you want to remember." id="retreat-closing" sourceStory="Retreat" />
@@ -1858,15 +1925,10 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <ShopTheStory
           onOpenDetail={handleOpenDetail}
           sourceStory="Retreat"
-          tiles={[
-            { id: "retreat-1", assetKey: "retreat-tile-1", caption: "The Row Cashmere Tracksuit", bucket: "Your Style", pinType: "style", brand: "The Row", genomeKey: "LOOK:THEROW:CASHMERETRACKSUIT:CREAM.jpg" },
-            { id: "retreat-2", assetKey: "retreat-tile-2", caption: "FOG Leather Robe Coat", bucket: "Your Style", pinType: "style", brand: "Fear Of God", genomeKey: "LOOK:FEAROFGOD:LEATHERCOAT:ESPRESSO.jpg" },
-            { id: "retreat-3", assetKey: "retreat-tile-3", caption: "PP Cashmere Tracksuit", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", genomeKey: "LOOK:PHOEBEPHILO:CASHMERETRACKSUIT:ESPRESSO.jpg" },
-            { id: "retreat-4", assetKey: "retreat-tile-4", caption: "ALD Quarter Zip Set", bucket: "Your Style", pinType: "style", brand: "Aimé Leon Dore", genomeKey: "LOOK:AIMELEONDORE:QUARTERZIPSET:BLACK.jpg" },
-            { id: "retreat-6", assetKey: "retreat-tile-6", caption: "Jil Sander Trench Coat", bucket: "Your Style", pinType: "style", brand: "Jil Sander", genomeKey: "LOOK:JILSANDER:TRENCHCOAT:WHITE.jpg" },
-            { id: "retreat-object-1", assetKey: "retreat-object-1", caption: "Eres Effigie Swimsuit", bucket: "Your Style", pinType: "style", brand: "Eres", genomeKey: "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg" },
-            { id: "retreat-style-1", assetKey: "retreat-style-1", caption: "FOG Leather Robe Coat", bucket: "Your Style", pinType: "style", brand: "Fear Of God", genomeKey: "LOOK:FEAROFGOD:LEATHERCOAT:ESPRESSO.jpg" },
-          ]}
+          tiles={getCarouselItems('retreat').map(c => {
+            const t = getTile('retreat', c.tileId);
+            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand, genomeKey: c.genomeKey };
+          })}
         />
       </section>
 
@@ -1898,9 +1960,9 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="New York"
           imagePosition="left"
-          shopUrl="https://us.phoebephilo.com/products/mans-coat-tobacco-cashmere"
-          genomeKey="look:phoebephilo:cashmereovercoat:tobacco.jpg"
-          brand="Phoebe Philo"
+          shopUrl={getTile('newyork', 'ny-2')?.shopUrl}
+          genomeKey={getTile('newyork', 'ny-2')?.genomeKey}
+          brand={getTile('newyork', 'ny-2')?.brand || "Phoebe Philo"}
         />
 
         {/* #3 — MomentBlock: Washington Square Park */}
@@ -1923,12 +1985,12 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           title="Night Plan"
           sourceStory="New York"
           tiles={[
-            { id: "ny-1", assetKey: "ny-tile-1", caption: "The Swan Bar, Lower East Side. One of those rooms where the lighting is perfect and no one is in a rush. Order a martini. Stay for dessert.", bucket: "Travel & Experiences", pinType: "experience", bookUrl: "https://swanroomnyc.com/" },
-            { id: "ny-2", assetKey: "ny-tile-2", caption: "Le CouCou. Soho. White tablecloths, chandeliers, a little bit of drama. New York still knows how to do glamour.", bucket: "Travel & Experiences", pinType: "experience", bookUrl: "https://lecoucou.com/" },
-            { id: "ny-3", assetKey: "ny-tile-3", caption: "Downtown at night is a different city. Neon, bikes, music leaking out of somewhere you want to go.", bucket: "Travel & Experiences", pinType: "experience" },
-            { id: "ny-4", assetKey: "ny-tile-4", caption: "Long black fur coat under concrete columns. The city loves a strong silhouette. Coat by FIL DE VIE. Coming soon.", bucket: "Your Style", pinType: "style", brand: "FIL DE VIE", genomeKey: "LOOK:FDV:MIRACOAT:BLACK.jpg" },
-            { id: "ny-5", assetKey: "ny-tile-5", caption: "A sharp black boot that can handle pavement, gallery floors, and a late-night walk home. Boot by Phoebe Philo.", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", shopUrl: "https://us.phoebephilo.com/products/soft-pump-cream-patent-leather", genomeKey: "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg" },
-            { id: "ny-6", assetKey: "ny-tile-6", caption: "Waiting for the train, headphones in, coat moving in the draft. It's cinematic even when it's ordinary. Dress & Stole by FIL DE VIE. Coming soon.", bucket: "Your Style", pinType: "style", brand: "FIL DE VIE", genomeKey: "look:fdv:daradressfurstole:bone:black.jpg" },
+            { id: "ny-1", assetKey: "ny-tile-1", caption: getTile('newyork', 'ny-4')?.caption || "The Swan Bar, Lower East Side. One of those rooms where the lighting is perfect and no one is in a rush. Order a martini. Stay for dessert.", bucket: "Travel & Experiences", pinType: getTile('newyork', 'ny-4')?.pinType || "experience", bookUrl: getTile('newyork', 'ny-4')?.bookUrl },
+            { id: "ny-2", assetKey: "ny-tile-2", caption: getTile('newyork', 'ny-5')?.caption || "Le CouCou. Soho. White tablecloths, chandeliers, a little bit of drama. New York still knows how to do glamour.", bucket: "Travel & Experiences", pinType: getTile('newyork', 'ny-5')?.pinType || "experience", bookUrl: getTile('newyork', 'ny-5')?.bookUrl },
+            { id: "ny-3", assetKey: "ny-tile-3", caption: getTile('newyork', 'ny-6')?.caption || "Downtown at night is a different city. Neon, bikes, music leaking out of somewhere you want to go.", bucket: "Travel & Experiences", pinType: getTile('newyork', 'ny-6')?.pinType || "experience" },
+            { id: "ny-4", assetKey: "ny-tile-4", caption: getTile('newyork', 'ny-7')?.caption || "Long black fur coat under concrete columns. The city loves a strong silhouette. Coat by FIL DE VIE. Coming soon.", bucket: "Your Style", pinType: getTile('newyork', 'ny-7')?.pinType || "style", brand: getTile('newyork', 'ny-7')?.brand, genomeKey: getTile('newyork', 'ny-7')?.genomeKey },
+            { id: "ny-5", assetKey: "ny-tile-5", caption: getTile('newyork', 'ny-8')?.caption || "A sharp black boot that can handle pavement, gallery floors, and a late-night walk home. Boot by Phoebe Philo.", bucket: "Your Style", pinType: getTile('newyork', 'ny-8')?.pinType || "style", brand: getTile('newyork', 'ny-8')?.brand, shopUrl: getTile('newyork', 'ny-8')?.shopUrl, genomeKey: getTile('newyork', 'ny-8')?.genomeKey },
+            { id: "ny-6", assetKey: "ny-tile-6", caption: getTile('newyork', 'ny-9')?.caption || "Waiting for the train, headphones in, coat moving in the draft. It's cinematic even when it's ordinary. Dress & Stole by FIL DE VIE. Coming soon.", bucket: "Your Style", pinType: getTile('newyork', 'ny-9')?.pinType || "style", brand: getTile('newyork', 'ny-9')?.brand, genomeKey: getTile('newyork', 'ny-9')?.genomeKey },
           ]}
         />
 
@@ -1963,8 +2025,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="New York"
           imagePosition="left"
-          genomeKey="LOOK:FILDEVIE:HERADRESS:BONE.jpg"
-          brand="FIL DE VIE"
+          genomeKey={getTile('newyork', 'ny-11')?.genomeKey}
+          brand={getTile('newyork', 'ny-11')?.brand || "FIL DE VIE"}
         />
 
         {/* #12 — MomentBlock: Guggenheim with Visit link */}
@@ -1996,9 +2058,9 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="New York"
           imagePosition="left"
-          shopUrl="https://us.phoebephilo.com/products/drive-bag-black-leather"
-          genomeKey="ACCESSORY:BAG:PHOEBEPHILO:DRIVEBAG.jpg"
-          brand="Phoebe Philo"
+          shopUrl={getTile('newyork', 'ny-13')?.shopUrl}
+          genomeKey={getTile('newyork', 'ny-13')?.genomeKey}
+          brand={getTile('newyork', 'ny-13')?.brand || "Phoebe Philo"}
         />
 
         {/* Editorial Scroll — positions 14-16 */}
@@ -2007,9 +2069,9 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           title="Sunday Details"
           sourceStory="New York"
           tiles={[
-            { id: "ny-reset-1", assetKey: "ny-reset-1", caption: "Carnegie Hill stoops in late afternoon. It feels like you've stepped into someone's movie.", bucket: "Travel & Experiences", pinType: "place" },
-            { id: "ny-reset-2", assetKey: "ny-reset-2", caption: "A red notebook in your bag. New York gives you ideas whether you ask for them or not. Smythson Chelsea Notebook.", bucket: "Objects of Desire", pinType: "object", brand: "Smythson", genomeKey: "ACCESSORY:SMYTHSON:CHELSEANOTEBOOK:RED.jpg" },
-            { id: "ny-reset-3", assetKey: "ny-reset-3", caption: "Good sunglasses are non-negotiable here. Even in winter. Phoebe Philo Peak Sunglasses.", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", shopUrl: "https://us.phoebephilo.com/products/peak-sunglasses-black-acetate", genomeKey: "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg" },
+            { id: "ny-reset-1", assetKey: "ny-reset-1", caption: getTile('newyork', 'ny-14')?.caption || "Carnegie Hill stoops in late afternoon. It feels like you've stepped into someone's movie.", bucket: "Travel & Experiences", pinType: getTile('newyork', 'ny-14')?.pinType || "place" },
+            { id: "ny-reset-2", assetKey: "ny-reset-2", caption: getTile('newyork', 'ny-15')?.caption || "A red notebook in your bag. New York gives you ideas whether you ask for them or not. Smythson Chelsea Notebook.", bucket: "Objects of Desire", pinType: getTile('newyork', 'ny-15')?.pinType || "object", brand: getTile('newyork', 'ny-15')?.brand, genomeKey: getTile('newyork', 'ny-15')?.genomeKey },
+            { id: "ny-reset-3", assetKey: "ny-reset-3", caption: getTile('newyork', 'ny-16')?.caption || "Good sunglasses are non-negotiable here. Even in winter. Phoebe Philo Peak Sunglasses.", bucket: "Your Style", pinType: getTile('newyork', 'ny-16')?.pinType || "style", brand: getTile('newyork', 'ny-16')?.brand, shopUrl: getTile('newyork', 'ny-16')?.shopUrl, genomeKey: getTile('newyork', 'ny-16')?.genomeKey },
           ]}
         />
 
@@ -2026,9 +2088,9 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           pinType="style"
           sourceStory="New York"
           imagePosition="left"
-          shopUrl="https://us.phoebephilo.com/products/robe-coat-black-cashmere"
-          genomeKey="LOOK:PHOEBEPHILO:ROBECOAT:BLACK.jpg"
-          brand="Phoebe Philo"
+          shopUrl={getTile('newyork', 'ny-17')?.shopUrl}
+          genomeKey={getTile('newyork', 'ny-17')?.genomeKey}
+          brand={getTile('newyork', 'ny-17')?.brand || "Phoebe Philo"}
         />
 
         {/* #18 — MomentBlock: Central Park Sunday */}
@@ -2050,18 +2112,10 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <ShopTheStory
           onOpenDetail={handleOpenDetail}
           sourceStory="New York"
-          tiles={[
-            { id: "newyork-style-1", assetKey: "newyork-style-1", caption: "PP Cashmere Overcoat", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", genomeKey: "look:phoebephilo:cashmereovercoat:tobacco.jpg" },
-            { id: "ny-4", assetKey: "ny-tile-4", caption: "FDV Mira Coat", bucket: "Your Style", pinType: "style", brand: "FIL DE VIE", genomeKey: "LOOK:FDV:MIRACOAT:BLACK.jpg" },
-            { id: "ny-5", assetKey: "ny-tile-5", caption: "PP Ankle Boot", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", genomeKey: "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg" },
-            { id: "ny-6", assetKey: "ny-tile-6", caption: "FDV Dara Dress & Fur Stole", bucket: "Your Style", pinType: "style", brand: "FIL DE VIE", genomeKey: "look:fdv:daradressfurstole:bone:black.jpg" },
-            { id: "ny-culture-1", assetKey: "ny-culture-1", caption: "FDV Hera Dress", bucket: "Your Style", pinType: "style", brand: "FIL DE VIE", genomeKey: "LOOK:FILDEVIE:HERADRESS:BONE.jpg" },
-            { id: "newyork-object-1", assetKey: "newyork-object-1", caption: "PP Drive Bag", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", genomeKey: "ACCESSORY:BAG:PHOEBEPHILO:DRIVEBAG.jpg" },
-            { id: "ny-reset-2", assetKey: "ny-reset-2", caption: "Smythson Chelsea Notebook", bucket: "Objects of Desire", pinType: "object", brand: "Smythson", genomeKey: "ACCESSORY:SMYTHSON:CHELSEANOTEBOOK:RED.jpg" },
-            { id: "ny-reset-3", assetKey: "ny-reset-3", caption: "PP Peak Sunglasses", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", genomeKey: "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg" },
-            { id: "ny-reset-4", assetKey: "ny-reset-4", caption: "PP Robe Coat", bucket: "Your Style", pinType: "style", brand: "Phoebe Philo", genomeKey: "LOOK:PHOEBEPHILO:ROBECOAT:BLACK.jpg" },
-            { id: "ny-carousel-column", assetKey: "ny-tile-6", caption: "FDV Column Dress & Fur Stole", bucket: "Your Style", pinType: "style", brand: "FIL DE VIE", genomeKey: "LOOK:FILDEVIE:COLUMNDRESS:FURSTOLE:BONE:BLACK.jpg" },
-          ]}
+          tiles={getCarouselItems('newyork').map(c => {
+            const t = getTile('newyork', c.tileId);
+            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand, genomeKey: c.genomeKey };
+          })}
         />
       </section>
 
