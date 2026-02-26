@@ -1,0 +1,760 @@
+{
+  "_README": "Master tile-to-product map for ALL editorial stories in The Current. Each tile has a unique ID, its story, position number, whether it's a product (clickable) or not, and if product — the exact genomeKey to use. This is the SINGLE SOURCE OF TRUTH. The React code should import this file and look up tile data by ID. Last updated: Feb 25, 2026 — includes all Sharon screenshot corrections.",
+
+  "morocco": {
+    "morocco-1": {
+      "position": 1,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Phoebe Philo",
+      "productName": "Gaia Dress",
+      "genomeKey": "LOOK:PHOEBEPHILO:GAIADRESS:BLACK.jpg",
+      "caption": "Amanjena, Marrakech. Terracotta heat. Crisp black cotton. The contrast is the point.",
+      "brandLine": "Gaia Dress by Phoebe Philo — Coming Soon"
+    },
+    "morocco-2": {
+      "position": 2,
+      "component": "EditorialScroll",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Glossy mint tile, carved plaster, filtered light. The kind of green that feels completely natural and completely surreal at the same time."
+    },
+    "morocco-3": {
+      "position": 3,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Alaïa",
+      "productName": "Look",
+      "genomeKey": "LOOK:ALAIA:DRAPEDTOP:BLACK.jpg",
+      "caption": "Blush pink against sun-warmed clay. Soft, but never sweet. The color almost disappears into the earth — and that's the beauty of it.",
+      "brandLine": "Look by Alaïa — Coming Soon",
+      "note": "ALAIA:DRAPEDTOP may not be in genome — falls back to brand match for Alaïa"
+    },
+    "morocco-4": {
+      "position": 4,
+      "component": "EditorialScroll",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "El Fenn. Layered ruby red, saffron, emerald, tile, velvet. It's saturated and fearless, but somehow still composed.",
+      "bookUrl": "https://el-fenn.com/"
+    },
+    "morocco-5": {
+      "position": 5,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "FIL DE VIE",
+      "productName": "Este Dress",
+      "genomeKey": "look:fildevie:estedress:black.jpg",
+      "caption": "Black against warm limestone — a long, clean silhouette moving through arches. The dress absorbs the light instead of competing with it.",
+      "brandLine": "Este Dress by FIL DE VIE — Coming Soon",
+      "correction": "Sharon correction — was Column Dress & Fur Stole, should be Este Dress"
+    },
+    "morocco-6": {
+      "position": 6,
+      "component": "EditorialScroll",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Orange blossom in bloom. That faint citrus-sweet scent in the air — orange blossom drifting through the heat. Color everywhere, but the fragrance is what lingers."
+    },
+    "morocco-7": {
+      "position": 7,
+      "component": "MomentBlock",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Yves Saint Laurent",
+      "productName": "Swimwear",
+      "genomeKey": "LOOK:YSL:JUMPSUIT:BLACK.jpg",
+      "caption": "Amanjena, just outside Marrakech. Desert-toned walls, long shadows, stillness. A black bathing suit against all that sand and clay feels moody and intentional.",
+      "brandLine": "Swimwear by Yves Saint Laurent. Coming Soon.",
+      "note": "Mapped to YSL Jumpsuit as closest match — no YSL swimwear in genome"
+    },
+    "morocco-8": {
+      "position": 8,
+      "component": "MomentBlock",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "El Fenn Hotel. Graphic tile, citrus trees overhead. Pattern here is rhythmic.",
+      "bookUrl": "https://el-fenn.com/"
+    },
+    "morocco-9": {
+      "position": 9,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "FIL DE VIE",
+      "productName": "Cecily Dress",
+      "genomeKey": "look:fildevie:cecilydress:black.jpg",
+      "caption": "What travels well here. Choose pieces that feel intentional, not precious. A simple black column dress, a sandal you can walk up the stairs in.",
+      "brandLine": "Cecily Dress by FIL DE VIE. Coming soon.",
+      "correction": "Sharon correction — was Hera Dress, should be Cecily Dress"
+    },
+    "morocco-10": {
+      "position": 10,
+      "component": "TextImage",
+      "isProduct": false,
+      "pinType": "place",
+      "title": "SHADES OF NEUTRAL",
+      "caption": "Terracotta walls, late afternoon sunlight on a single plane of red clay. You start noticing how many shades of 'neutral' exist here."
+    },
+    "morocco-11": {
+      "position": 11,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "FIL DE VIE",
+      "productName": "Long Caftan Dress",
+      "genomeKey": "look:fildevie:longcaftandress:red.jpg",
+      "caption": "El Fenn. A flash of red against layered tile. Pattern on pattern — and then that one bold interruption.",
+      "brandLine": "Long Caftan Dress by FIL DE VIE. Coming soon.",
+      "correction": "Sharon correction — was Mira Coat, should be Long Caftan Dress (red)"
+    },
+    "morocco-12": {
+      "position": 12,
+      "component": "TextImage",
+      "isProduct": false,
+      "pinType": "place",
+      "title": "EVENINGS DONE PROPERLY",
+      "caption": "El Fenn. Gold light pooling over stone and olive branches. At night the color softens, but it never disappears.",
+      "bookUrl": "https://el-fenn.com/"
+    }
+  },
+
+  "hydra": {
+    "hydra-1": {
+      "position": 1,
+      "component": "Hero",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "There are no cars waiting. No rush to check in. You step off the ferry and the island lowers the volume for you."
+    },
+    "hydra-2": {
+      "position": 2,
+      "component": "MomentBlock",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "YSL",
+      "productName": "Cut Away Jumpsuit",
+      "genomeKey": "LOOK:YSL:JUMPSUIT:BLACK.jpg",
+      "caption": "Hydra favors clean lines and bare ankles. Nothing that competes with the light. You dress once and repeat without thinking.",
+      "brandLine": "Jumpsuit by FIL DE VIE. Coming soon.",
+      "note": "Tile says FDV but no FDV jumpsuit in genome. Mapped to YSL Jumpsuit."
+    },
+    "hydra-3": {
+      "position": 3,
+      "component": "MomentBlock",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Rooftops baked in sun. Boats tucked into narrow slips. Salt air everywhere."
+    },
+    "hydra-4": {
+      "position": 4,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Jil Sander",
+      "productName": "Button Down Shirt",
+      "genomeKey": "look:jilsander:buttondownshirt:bluestripe.jpg",
+      "caption": "Wind off the harbor, oversized tailoring thrown over bare skin. Hydra makes even structure feel relaxed.",
+      "brandLine": "Shirt by Jil Sander. Coming Soon.",
+      "correction": "Sharon correction — was Trench Coat, should be Button Down Shirt (blue stripe)"
+    },
+    "hydra-5": {
+      "position": 5,
+      "component": "EditorialScroll",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Lunch is simple. Bread, tomatoes, cold wine, the harbor in front of you."
+    },
+    "hydra-6": {
+      "position": 6,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Jil Sander",
+      "productName": "Trench Coat",
+      "genomeKey": "LOOK:JILSANDER:TRENCHCOAT:WHITE.jpg",
+      "caption": "White against deeper blue. Fabric moving in the breeze. It's less about the outfit and more about how it catches air.",
+      "brandLine": "Look by Jil Sander. Coming Soon.",
+      "shopUrl": "https://www.farfetch.com/shopping/women/jil-sander-belted-single-breasted-coat-item-18804208.aspx",
+      "correction": "Sharon correction — was Silk Fluid Set (black), should be Trench Coat (white, $1230)"
+    },
+    "hydra-7": {
+      "position": 7,
+      "component": "EditorialScroll",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Stone stacked into cliff. No symmetry, just instinct and time. Hydra feels built by hand."
+    },
+    "hydra-8": {
+      "position": 8,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Eres",
+      "productName": "Effigie Swimsuit",
+      "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg",
+      "caption": "Black swimwear against chalk-white stone. Clean and unfussy.",
+      "brandLine": "Swimwear by Eres.",
+      "shopUrl": "https://www.eresparis.com/us/en-US/swimwear-2/011401-3333.html",
+      "correction": "Sharon screenshot 2:02 — should be Effigie Suit, not generic Eres"
+    },
+    "hydra-9": {
+      "position": 9,
+      "component": "EditorialScroll",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Water so clear it feels architectural. You see every movement, every ripple."
+    },
+    "hydra-10": {
+      "position": 10,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Phoebe Philo",
+      "productName": "Linen Relaxed Button Down Shirt",
+      "genomeKey": "look:phoebephilo:buttondownshirt.jpg",
+      "caption": "Bring objects that disappear when worn. A sandal you forget you're wearing. A shirt that flies in the wind.",
+      "brandLine": "Blouse by Phoebe Philo. Coming soon.",
+      "correction": "Sharon screenshot 1:58 — should be PP Button Down Shirt, was showing old format"
+    },
+    "hydra-11": {
+      "position": 11,
+      "component": "TextImage",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Harbor below, stone house above, sea wrapping everything."
+    },
+    "hydra-12": {
+      "position": 12,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Eres",
+      "productName": "Asia Swimsuit",
+      "genomeKey": "look:eres:swimsuit.jpg",
+      "caption": "Salt, sun, then immersion. Nothing feels more right here than disappearing into water.",
+      "brandLine": "Swimwear by Eres.",
+      "shopUrl": "https://www.eresparis.com/us/en-US/swimwear-2/011401-3333.html",
+      "correction": "Sharon correction — genomeKey was LOOK:ERES:ASIA:SWIMSUIT:BLACK.jpg (maps to 'Asymetric One Piece'), corrected to look:eres:swimsuit.jpg which has name 'Asia Swimsuit'"
+    },
+    "hydra-13": {
+      "position": 13,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Dries Van Noten",
+      "productName": "Layered Silk Dress",
+      "genomeKey": "LOOK:DRIESVANNOTEN:LAYEREDSILKDRESS:BLACK.jpg",
+      "caption": "Morning is for water. Midday belongs to shade, conversation and a glass of cold wine. Evening arrives without ceremony.",
+      "brandLine": "Look by Dries Van Noten. Coming soon.",
+      "correction": "Sharon screenshot 1:59 — should be DVN Layered Silk Dress"
+    }
+  },
+
+  "spain": {
+    "spain-1": {
+      "position": 1,
+      "component": "Hero",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Black against stone. Skin warmed by late afternoon. Spain isn't about urgency — it's about letting the day stretch."
+    },
+    "spain-2": {
+      "position": 2,
+      "component": "MomentBlock",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Phoebe Philo",
+      "productName": "Silver Cuff",
+      "genomeKey": "access:jewelry:phoebephilo:silvercuff.jpg",
+      "caption": "Bare shoulders. A single cuff. Clean lines that don't compete with light. Spain rewards restraint — even in heat.",
+      "brandLine": "Cuff by Phoebe Philo. Coming Soon.",
+      "correction": "Sharon screenshot 2:02 — should be PP Silver Cuff, not generic PP"
+    },
+    "spain-3": {
+      "position": 3,
+      "component": "MomentBlock",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Vertical cliff, striped lighthouse, sea moving slowly below. The landscape feels elemental, almost graphic."
+    },
+    "spain-4": {
+      "position": 4,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "FIL DE VIE",
+      "productName": "Strapless Swimsuit",
+      "genomeKey": "LOOK:FILDEVIE:STRAPLESSSWIMSUIT:BLACK.jpg",
+      "caption": "Black swim against pale water and tree shade. The silhouette stays sharp, even when everything else is soft.",
+      "brandLine": "Swimwear by FIL DE VIE. Coming soon."
+    },
+    "spain-5": {
+      "position": 5,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Loro Piana",
+      "productName": "Slip Dress",
+      "genomeKey": "LOOK:LOROPIANA:SLIPDRESS:BLACK.jpg",
+      "caption": "Open water. No soundtrack but wind and distant boats. Spain feels expansive without trying.",
+      "brandLine": "Look by Loro Piana. Coming soon.",
+      "correction": "Sharon screenshot 2:03 — was listed as travel/place, should be STYLE so modal opens. Loro Piana Slip Dress."
+    },
+    "spain-6": {
+      "position": 6,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Phoebe Philo",
+      "productName": "Polo Sweater",
+      "genomeKey": "LOOK:PHOEBEPHILO:POLOSWEATER:BLACK.jpg",
+      "caption": "Minimal swim, clean cut, nothing ornamental. The body becomes part of the landscape.",
+      "brandLine": "Sweater by Phoebe Philo.",
+      "correction": "Sharon screenshot 2:04 — was showing Gaia Dress, should be PP Polo Sweater"
+    },
+    "spain-7": {
+      "position": 7,
+      "component": "EditorialScroll",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "A path carved through stone toward the sea. You walk slower without deciding to.",
+      "correction": "Sharon screenshot 2:05 — REMOVE 'Dress by FIL DE VIE. Coming soon.' from caption. Keep as place/not clickable."
+    },
+    "spain-8": {
+      "position": 8,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Eres",
+      "productName": "Effigie Swimsuit",
+      "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg",
+      "caption": "Salt hair, narrow deck, strong sun. Pieces that hold their shape against wind matter here.",
+      "brandLine": "Swimwear by Eres. Coming soon."
+    },
+    "spain-9": {
+      "position": 9,
+      "component": "EditorialScroll",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Heat. Salt. Open sea."
+    },
+    "spain-10": {
+      "position": 10,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Phoebe Philo",
+      "productName": "Bombe Sunglasses",
+      "genomeKey": "LOOK:PHOEBEPHILO:BOMBESUNGLASSES:BROWN.jpg",
+      "caption": "Dark lenses against white sky. The light is unforgiving here — the accessories shouldn't be.",
+      "brandLine": "Sunglasses by Phoebe Philo.",
+      "shopUrl": "https://us.phoebephilo.com/products/bombe-sunglasses-fume-acetate",
+      "correction": "Sharon screenshot 2:06 — should be PP Bombe Sunglasses"
+    },
+    "spain-11": {
+      "position": 11,
+      "component": "TextImage",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "A cove tucked into rock. Shade feels earned. Water feels earned."
+    },
+    "spain-12": {
+      "position": 12,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "RayBan",
+      "productName": "Puffed Wayfarer",
+      "genomeKey": "LOOK:RAYBAN:PUFFEDWAYFARER:BLACK.jpg",
+      "caption": "Gold at the waterline. Sun, salt, skin. That's enough.",
+      "brandLine": "Sunglasses by RayBan.",
+      "shopUrl": "https://www.ray-ban.com/usa/sunglasses/RB4940wayfarer%20puffer-black/8056262910863",
+      "correction": "Sharon screenshot 2:07 — should be RayBan Puffed Wayfarer"
+    },
+    "spain-13": {
+      "position": 13,
+      "component": "TextImage",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Late afternoon. Linen, sunglasses, a glass in hand. Spain doesn't perform — it lingers.",
+      "correction": "Sharon screenshot 2:08 — NOT clickable, travel/destination shot. No product."
+    }
+  },
+
+  "retreat": {
+    "retreat-1": {
+      "position": 1,
+      "component": "Hero",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Blending into red-rock country, this is the kind of place that doesn't compete with the landscape — it disappears into it."
+    },
+    "retreat-2": {
+      "position": 2,
+      "component": "MomentBlock",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Sandstone and sky. The quiet hits first."
+    },
+    "retreat-3": {
+      "position": 3,
+      "component": "MomentBlock",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Early yoga. Morning swim. Breakfast in the sun. A rhythm that feels easy to keep."
+    },
+    "retreat-4": {
+      "position": 4,
+      "component": "MomentBlock",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "A pool carved straight into the rock. Float. Look up. Let the sky take over."
+    },
+    "retreat-5": {
+      "position": 5,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "The Row",
+      "productName": "Cashmere Tracksuit",
+      "genomeKey": "LOOK:THEROW:CASHMERETRACKSUIT:CREAM.jpg",
+      "caption": "A room that opens onto rock and sky. Bare walls. Nothing competing with the view.",
+      "brandLine": "Look by The Row. Coming soon."
+    },
+    "retreat-6": {
+      "position": 6,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Fear Of God",
+      "productName": "Leather Robe Coat",
+      "genomeKey": "LOOK:FEAROFGOD:LEATHERCOAT:ESPRESSO.jpg",
+      "caption": "Clean lines. Technical fabric. Modern pieces that make sense against sun-warmed land.",
+      "brandLine": "Look by Fear Of God. Coming soon.",
+      "correction": "Sharon screenshot 2:10 — should be Fear of God Leather Robe Coat"
+    },
+    "retreat-7": {
+      "position": 7,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Phoebe Philo",
+      "productName": "Cashmere Sweater and Track Pant",
+      "genomeKey": "LOOK:PHOEBEPHILO:CASHMERETRACKSUIT:ESPRESSO.jpg",
+      "caption": "Late afternoon, stretched out in the sun. The desert has a way of softening you.",
+      "brandLine": "Cashmere set by Phoebe Philo. Coming soon.",
+      "correction": "Sharon screenshot 2:10 — should be PP Cashmere Sweater and Track Pant in Espresso"
+    },
+    "retreat-8": {
+      "position": 8,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Aimé Leon Dore",
+      "productName": "Quarter Zip Set",
+      "genomeKey": "LOOK:AIMELEONDORE:QUARTERZIPSET:BLACK.jpg",
+      "caption": "Warm stone. Soft light. The kind of quiet you don't rush.",
+      "brandLine": "Look by Aimé Leon Dore. Coming soon."
+    },
+    "retreat-9": {
+      "position": 9,
+      "component": "EditorialScroll",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Red rock and still water. Everything blends. Nothing shouts."
+    },
+    "retreat-10": {
+      "position": 10,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Jil Sander",
+      "productName": "Silk Fluid Set",
+      "genomeKey": "LOOK:JILSANDER:SILKFLUIDSET:BLACK.jpg",
+      "correction": "Sharon correction — was Trench Coat (white), should be Silk Fluid Set (black)",
+      "caption": "A long dark line against open desert. Simple. Strong. Moving through.",
+      "brandLine": "Look by Jil Sander. Coming soon."
+    },
+    "retreat-11": {
+      "position": 11,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Eres",
+      "productName": "Effigie Swimsuit",
+      "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg",
+      "caption": "Midday settles in. Shade becomes the luxury.",
+      "brandLine": "Swimwear by Eres. Coming soon.",
+      "correction": "Sharon screenshot 2:11 — should be Effigie Swimsuit (NOT Asia)"
+    },
+    "retreat-12": {
+      "position": 12,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Fear Of God",
+      "productName": "Leather Robe Coat",
+      "genomeKey": "LOOK:FEAROFGOD:LEATHERCOAT:ESPRESSO.jpg",
+      "caption": "Inside, cool stone. Outside, endless heat. That edge between the two is the whole mood.",
+      "brandLine": "Look by Fear Of God. Coming soon.",
+      "note": "Same product as retreat-6 — appears twice in story"
+    }
+  },
+
+  "newyork": {
+    "ny-1": {
+      "position": 1,
+      "component": "Hero",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Golden hour in Midtown never gets old. It lasts maybe ten minutes. That's the magic."
+    },
+    "ny-2": {
+      "position": 2,
+      "component": "MomentBlock",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Phoebe Philo",
+      "productName": "Cashmere Overcoat",
+      "genomeKey": "look:phoebephilo:cashmereovercoat:tobacco.jpg",
+      "caption": "New York is made for tailoring. A long coat, sharp trousers, nothing complicated. It always works here.",
+      "brandLine": "Look by Phoebe Philo.",
+      "shopUrl": "https://us.phoebephilo.com/products/mans-coat-tobacco-cashmere"
+    },
+    "ny-3": {
+      "position": 3,
+      "component": "MomentBlock",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Washington Square Park on a warm afternoon. Musicians, chess players, flowers, and that arch framing everything like a movie set."
+    },
+    "ny-4": {
+      "position": 4,
+      "component": "EditorialScroll",
+      "isProduct": false,
+      "pinType": "culture",
+      "caption": "The Swan Bar, Lower East Side. One of those rooms where the lighting is perfect and no one is in a rush.",
+      "bookUrl": "https://swanroomnyc.com/",
+      "note": "Venue — NOT clickable for product. Book button only."
+    },
+    "ny-5": {
+      "position": 5,
+      "component": "EditorialScroll",
+      "isProduct": false,
+      "pinType": "culture",
+      "caption": "Le CouCou. Soho. White tablecloths, chandeliers, a little bit of drama.",
+      "bookUrl": "https://lecoucou.com/",
+      "note": "Venue — NOT clickable for product."
+    },
+    "ny-6": {
+      "position": 6,
+      "component": "EditorialScroll",
+      "isProduct": false,
+      "pinType": "culture",
+      "caption": "Downtown at night is a different city. Neon, bikes, music leaking out of somewhere you want to go."
+    },
+    "ny-7": {
+      "position": 7,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "FIL DE VIE",
+      "productName": "Isabelle Coat",
+      "genomeKey": "fil de vie look grecian dress.jpg",
+      "caption": "Long black fur coat under concrete columns. The city loves a strong silhouette.",
+      "brandLine": "Isabelle Coat by FIL DE VIE. Coming soon.",
+      "correction": "Sharon correction — was Mira Coat, should be Isabelle Coat. Genome key is 'fil de vie look grecian dress.jpg' (misnamed in genome but name field is correct)"
+    },
+    "ny-8": {
+      "position": 8,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Phoebe Philo",
+      "productName": "Ankle Boot",
+      "genomeKey": "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg",
+      "caption": "A sharp black boot that can handle pavement, gallery floors, and a late-night walk home.",
+      "brandLine": "Boot by Phoebe Philo.",
+      "shopUrl": "https://us.phoebephilo.com/products/soft-pump-cream-patent-leather",
+      "correction": "Sharon screenshot 2:15 — should be PP Boot"
+    },
+    "ny-9": {
+      "position": 9,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "FIL DE VIE",
+      "productName": "Dara Dress & Fur Stole",
+      "genomeKey": "look:fdv:daradressfurstole:bone:black.jpg",
+      "caption": "Waiting for the train, headphones in, coat moving in the draft. It's cinematic even when it's ordinary.",
+      "brandLine": "Dress & Stole by FIL DE VIE. Coming soon."
+    },
+    "ny-10": {
+      "position": 10,
+      "component": "TextImage",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "The Plaza lit up at night. Touristy? Maybe. Still iconic? Always.",
+      "bookUrl": "https://www.theplazany.com/history/"
+    },
+    "ny-11": {
+      "position": 11,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "FIL DE VIE",
+      "productName": "Hera Dress",
+      "genomeKey": "LOOK:FILDEVIE:HERADRESS:BONE.jpg",
+      "caption": "The Tomb of Perneb at The Met. A museum afternoon is mandatory. Clean lines, good art, and an outfit that belongs there.",
+      "brandLine": "Look by FIL DE VIE. Coming soon.",
+      "bookUrl": "https://www.metmuseum.org/art/collection/search/100000099",
+      "correction": "Sharon screenshot 2:15 — was travel/not clicking. MUST be pinType style. Hera Dress."
+    },
+    "ny-12": {
+      "position": 12,
+      "component": "TextImage",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "The Guggenheim never disappoints. Walk the spiral slowly. Look up.",
+      "bookUrl": "https://www.guggenheim.org/"
+    },
+    "ny-13": {
+      "position": 13,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Phoebe Philo",
+      "productName": "Drive Bag",
+      "genomeKey": "ACCESSORY:BAG:PHOEBEPHILO:DRIVEBAG.jpg",
+      "caption": "A bag that stays close. Sunglasses for the morning after. One piece of jewelry that works everywhere. New York asks for objects that keep up — not slow you down.",
+      "brandLine": "Drive Bag by Phoebe Philo.",
+      "shopUrl": "https://us.phoebephilo.com/products/drive-bag-black-leather",
+      "correction": "Sharon screenshot 2:16 — was not opening. Must be pinType style and clickable."
+    },
+    "ny-14": {
+      "position": 14,
+      "component": "TextImage",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Carnegie Hill stoops in late afternoon. It feels like you've stepped into someone's movie."
+    },
+    "ny-15": {
+      "position": 15,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Smythson",
+      "productName": "Chelsea Notebook",
+      "genomeKey": "ACCESSORY:SMYTHSON:CHELSEANOTEBOOK:RED.jpg",
+      "caption": "A red notebook in your bag. New York gives you ideas whether you ask for them or not.",
+      "brandLine": "Smythson Chelsea Notebook.",
+      "correction": "Sharon screenshot 2:16 — was listed as Cartier Diary. Corrected to Smythson Chelsea Notebook."
+    },
+    "ny-16": {
+      "position": 16,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Phoebe Philo",
+      "productName": "Peak Sunglasses",
+      "genomeKey": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg",
+      "caption": "Good sunglasses are non-negotiable here. Even in winter.",
+      "brandLine": "Phoebe Philo Peak Sunglasses.",
+      "shopUrl": "https://us.phoebephilo.com/products/peak-sunglasses-black-acetate",
+      "correction": "Sharon screenshot 2:17 — modal was showing incorrect info."
+    },
+    "ny-17": {
+      "position": 17,
+      "component": "TextImage",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "FIL DE VIE",
+      "productName": "Mira Coat",
+      "genomeKey": "LOOK:FDV:MIRACOAT:BLACK.jpg",
+      "caption": "Evening walk, collar up, traffic behind you. This is the version of you the city likes best.",
+      "brandLine": "Mira Coat by FIL DE VIE. Coming soon.",
+      "correction": "Sharon correction — was PP Robe Coat (showing as Gaia Dress), should be FDV Mira Coat"
+    },
+    "ny-18": {
+      "position": 18,
+      "component": "TextImage",
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "Central Park on a Sunday morning is for walking. No destination. No performance. Coffee in hand. Coat open. The city exhales with you."
+    }
+  },
+
+  "carousels": {
+    "_README": "SHOP THE STORY carousel items for each story. Only includes products (isProduct: true). Each entry references the tile ID + genomeKey. Claude Code should build each carousel from this list.",
+
+    "morocco": [
+      {"tileId": "morocco-1", "genomeKey": "LOOK:PHOEBEPHILO:GAIADRESS:BLACK.jpg", "label": "Phoebe Philo — Gaia Dress"},
+      {"tileId": "morocco-3", "genomeKey": "LOOK:ALAIA:DRAPEDTOP:BLACK.jpg", "label": "Alaïa — Look"},
+      {"tileId": "morocco-5", "genomeKey": "look:fildevie:estedress:black.jpg", "label": "FIL DE VIE — Este Dress"},
+      {"tileId": "morocco-carousel-4", "genomeKey": "LOOK:FILDEVIE:COLUMNDRESS:BLACK.jpg", "label": "FIL DE VIE — Column Dress"},
+      {"tileId": "morocco-11", "genomeKey": "look:fildevie:longcaftandress:red.jpg", "label": "FIL DE VIE — Long Caftan Dress"}
+    ],
+    "_morocco_note": "Column Dress (LOOK:FILDEVIE:COLUMNDRESS:BLACK.jpg) must be ADDED to fdv_brand_genome.json: brand FIL DE VIE, name Column Dress, color Black, sizes S/M/L, price $760, coming_soon. Also: carousel currently shows editorial-only items. Itinerary items will be added separately.",
+
+    "hydra": [
+      {"tileId": "hydra-carousel-1", "genomeKey": "LOOK:YSL:JUMPSUIT:BLACK.jpg", "label": "YSL — Jumpsuit"},
+      {"tileId": "hydra-4", "genomeKey": "look:jilsander:buttondownshirt:bluestripe.jpg", "label": "Jil Sander — Button Down Shirt"},
+      {"tileId": "hydra-6", "genomeKey": "LOOK:JILSANDER:TRENCHCOAT:WHITE.jpg", "label": "Jil Sander — Trench Coat"},
+      {"tileId": "hydra-8", "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg", "label": "Eres — Effigie Swimsuit"},
+      {"tileId": "hydra-10", "genomeKey": "look:phoebephilo:buttondownshirt.jpg", "label": "Phoebe Philo — Linen Relaxed Button Down Shirt"},
+      {"tileId": "hydra-12", "genomeKey": "look:eres:swimsuit.jpg", "label": "Eres — Asia Swimsuit"},
+      {"tileId": "hydra-13", "genomeKey": "LOOK:DRIESVANNOTEN:LAYEREDSILKDRESS:BLACK.jpg", "label": "Dries Van Noten — Layered Silk Dress"}
+    ],
+
+    "spain": [
+      {"tileId": "spain-2", "genomeKey": "ACCESSORY:PHOEBEPHILO:SILVERCUFF:SILVER.jpg", "label": "Phoebe Philo — Silver Cuff"},
+      {"tileId": "spain-carousel-2", "genomeKey": "LOOK:FILDEVIE:STRAPLESSSWIMSUIT:BLACK.jpg", "label": "FIL DE VIE — Strapless Swimsuit"},
+      {"tileId": "spain-5", "genomeKey": "LOOK:LOROPIANA:SLIPDRESS:CAMEL.jpg", "label": "Loro Piana — Slip Dress"},
+      {"tileId": "spain-6", "genomeKey": "LOOK:PHOEBEPHILO:POLOSWEATER:CREAM.jpg", "label": "Phoebe Philo — Polo Sweater"},
+      {"tileId": "spain-8", "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg", "label": "Eres — Effigie Swimsuit"},
+      {"tileId": "spain-10", "genomeKey": "ACCESSORY:PHOEBEPHILO:BOMBESUNGLASSES:FUME.jpg", "label": "Phoebe Philo — Bombe Sunglasses"},
+      {"tileId": "spain-12", "genomeKey": "LOOK:RAYBAN:PUFFEDWAYFARER:BLACK.jpg", "label": "RayBan — Puffed Wayfarer"}
+    ],
+
+    "retreat": [
+      {"tileId": "retreat-5", "genomeKey": "LOOK:THEROW:CASHMERETRACKSUIT:CREAM.jpg", "label": "The Row — Cashmere Tracksuit"},
+      {"tileId": "retreat-6", "genomeKey": "LOOK:FEAROFGOD:LEATHERCOAT:ESPRESSO.jpg", "label": "Fear Of God — Leather Robe Coat"},
+      {"tileId": "retreat-7", "genomeKey": "LOOK:PHOEBEPHILO:CASHMERETRACKSUIT:ESPRESSO.jpg", "label": "Phoebe Philo — Cashmere Sweater & Track Pant"},
+      {"tileId": "retreat-8", "genomeKey": "LOOK:AIMELEONDORE:QUARTERZIPSET:BLACK.jpg", "label": "Aimé Leon Dore — Quarter Zip Set"},
+      {"tileId": "retreat-10", "genomeKey": "LOOK:JILSANDER:SILKFLUIDSET:BLACK.jpg", "label": "Jil Sander — Silk Fluid Set"},
+      {"tileId": "retreat-11", "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg", "label": "Eres — Effigie Swimsuit"}
+    ],
+
+    "newyork": [
+      {"tileId": "ny-2", "genomeKey": "look:phoebephilo:cashmereovercoat:tobacco.jpg", "label": "Phoebe Philo — Cashmere Overcoat"},
+      {"tileId": "ny-7", "genomeKey": "fil de vie look grecian dress.jpg", "label": "FIL DE VIE — Isabelle Coat"},
+      {"tileId": "ny-8", "genomeKey": "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg", "label": "Phoebe Philo — Ankle Boot"},
+      {"tileId": "ny-9", "genomeKey": "look:fdv:daradressfurstole:bone:black.jpg", "label": "FIL DE VIE — Dara Dress & Fur Stole"},
+      {"tileId": "ny-11", "genomeKey": "LOOK:FILDEVIE:HERADRESS:BONE.jpg", "label": "FIL DE VIE — Hera Dress"},
+      {"tileId": "ny-13", "genomeKey": "ACCESSORY:BAG:PHOEBEPHILO:DRIVEBAG.jpg", "label": "Phoebe Philo — Drive Bag"},
+      {"tileId": "ny-15", "genomeKey": "ACCESSORY:SMYTHSON:CHELSEANOTEBOOK:RED.jpg", "label": "Smythson — Chelsea Notebook"},
+      {"tileId": "ny-16", "genomeKey": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg", "label": "Phoebe Philo — Peak Sunglasses"},
+      {"tileId": "ny-17", "genomeKey": "LOOK:FDV:MIRACOAT:BLACK.jpg", "label": "FIL DE VIE — Mira Coat"}
+    ]
+  },
+
+  "closingLines": {
+    "morocco": "Save what delights you.",
+    "hydra": "Save what the island gave you.",
+    "spain": "Save what lingers.",
+    "retreat": "Save what brought you back to yourself.",
+    "newyork": "Save what you'll return to."
+  },
+
+  "storyMeta": {
+    "morocco": {"displayName": "Morocco", "coverName": "Morocco", "quoteCard": "In Morocco, beauty is not decoration — it's architecture."},
+    "hydra": {"displayName": "Hydra", "coverName": "Hydra", "quoteCard": "Salt air first. Everything else after."},
+    "spain": {"displayName": "Spain", "coverName": "Mallorca", "quoteCard": "In Mallorca, afternoon is a state of mind."},
+    "retreat": {"displayName": "Retreat", "coverName": "Utah", "quoteCard": "Stillness is the real luxury."},
+    "newyork": {"displayName": "New York", "coverName": "New York", "quoteCard": "You don't visit New York. You return to it."}
+  }
+}
