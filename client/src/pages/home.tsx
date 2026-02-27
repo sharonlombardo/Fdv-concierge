@@ -1111,7 +1111,7 @@ export default function Home() {
   const editorialData = extractEditorialData();
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-foreground selection:text-background transition-colors duration-500 overflow-x-hidden">
+    <div className="min-h-screen pb-[80px] bg-background text-foreground font-sans selection:bg-foreground selection:text-background transition-colors duration-500 overflow-x-hidden">
       
       <GlobalNav
         variant="fixed"

@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { Briefcase } from "lucide-react";
+import BottomNav from "@/components/bottom-nav";
 import NotFound from "@/pages/not-found";
 import Threshold from "@/pages/threshold";
 import Concierge from "@/pages/home";
@@ -128,6 +129,7 @@ function App() {
           <Toaster />
           <StickyLogo />
           <Router />
+          <BottomNav />
           <FloatingSuitcase />
         </TooltipProvider>
       </ThemeProvider>

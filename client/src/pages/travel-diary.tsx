@@ -88,7 +88,7 @@ export default function TravelDiary() {
     : dayPages;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen pb-[80px] bg-background">
       <GlobalNav variant="fixed" />
       
       <div className="pt-20 pb-12">

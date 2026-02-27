@@ -545,7 +545,7 @@ export default function PackingList() {
   const packedCount = packedItems.size;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen pb-[80px] bg-background">
       <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="max-w-lg mx-auto px-5 py-6 text-center">
           <Link href="/">

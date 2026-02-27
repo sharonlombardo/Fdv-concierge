@@ -4,7 +4,7 @@ import { Link } from "wouter";
 import { ChevronRight, Pin } from "lucide-react";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { queryClient } from "@/lib/queryClient";
 
 const MOOD_KEYS = [
@@ -180,8 +180,6 @@ function CategoryNav() {
 
 export default function Threshold() {
   const { data: imageSlotsData } = useImageSlots();
-  const videoRef = useRef<HTMLVideoElement>(null);
-
   const getImageUrl = (assetKey: string): string => {
     if (imageSlotsData?.slots) {
       const slot = imageSlotsData.slots.find(s => s.key === assetKey);
@@ -194,40 +192,6 @@ export default function Threshold() {
   };
 
   const heroImage = getImageUrl("landing-hero");
-
-  // Programmatic autoplay — handles Chrome autoplay policy
-  const attemptPlay = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    // Ensure muted (required for autoplay in most browsers)
-    video.muted = true;
-    video.play().catch(() => {
-      // Silently fail — poster image is the graceful fallback
-    });
-  }, []);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    // Try to play once metadata is loaded
-    if (video.readyState >= 2) {
-      attemptPlay();
-    } else {
-      video.addEventListener("loadeddata", attemptPlay, { once: true });
-    }
-
-    // Also try on visibility change (tab becomes focused)
-    const onVisible = () => {
-      if (document.visibilityState === "visible") attemptPlay();
-    };
-    document.addEventListener("visibilitychange", onVisible);
-
-    return () => {
-      video.removeEventListener("loadeddata", attemptPlay);
-      document.removeEventListener("visibilitychange", onVisible);
-    };
-  }, [attemptPlay]);
 
   const handleScrollToContent = () => {
     const contentSection = document.getElementById('current-content');
@@ -244,16 +208,12 @@ export default function Threshold() {
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center bg-black">
         {/* Video background with static image fallback poster */}
         <video
-          ref={videoRef}
-          src="/landing-video.mp4"
           autoPlay
           muted
           loop
           playsInline
-          preload="auto"
-          poster={heroImage}
-          onCanPlay={attemptPlay}
           className="absolute inset-0 w-full h-full object-cover"
+          src="/landing-video.mp4"
         />
         <div className="absolute inset-0 bg-black/60" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#fafaf9]" />

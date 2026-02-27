@@ -96,9 +96,9 @@ export default function Destinations() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen pb-[80px] bg-background">
       <GlobalNav />
-      
+
       <div className="max-w-6xl mx-auto px-6 py-12">
         <header className="text-center mb-16">
           <p className="text-xs font-medium tracking-[0.3em] uppercase text-muted-foreground mb-4">

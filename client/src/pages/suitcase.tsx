@@ -539,7 +539,7 @@ export default function SuitcasePage() {
   const filteredSaves = filterSaves(saves, activeTab);
 
   return (
-    <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
+    <div className="min-h-screen pb-[80px] bg-[#fafaf9] dark:bg-background">
       <GlobalNav />
       <div className="max-w-6xl mx-auto px-4 py-8">
         <header className="text-center mb-10">
