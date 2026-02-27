@@ -17,10 +17,13 @@ import editorialMap from "@/data/editorial_product_map.json";
 const CAROUSEL_ASSET_KEYS: Record<string, string> = {
   // Morocco
   "morocco-1": "morocco-tile-1",
+  "morocco-2": "morocco-tile-2",
   "morocco-3": "morocco-tile-3",
   "morocco-5": "morocco-tile-5",
+  "morocco-7": "morocco-style-1",
   "morocco-11": "morocco-experience-1",
   // Hydra
+  "hydra-carousel-1": "hydra-style-1",
   "hydra-4": "hydra-tile-4",
   "hydra-6": "hydra-tile-6",
   "hydra-8": "hydra-tile-5",
@@ -28,6 +31,7 @@ const CAROUSEL_ASSET_KEYS: Record<string, string> = {
   "hydra-12": "hydra-light-2",
   "hydra-13": "hydra-ritual-1",
   // Spain (IMAGE_SLOTS uses slow- prefix)
+  "spain-carousel-2": "slow-museum",
   "spain-2": "slow-culture-1",
   "spain-5": "slow-tile-2",
   "spain-6": "slow-tile-1",
@@ -1149,9 +1153,11 @@ function ShopTheStory({ tiles, sourceStory, onOpenDetail }: ShopTheStoryProps) {
         <style>{`.shop-scroll::-webkit-scrollbar { display: none; }`}</style>
         <div className="shop-scroll flex gap-4 px-6 pb-2" style={{ minWidth: "max-content", overflowX: "auto", scrollbarWidth: "none" }}>
           {shopTiles.map((tile) => {
+            // Priority: editorial image first (assetKey), then product image from Blob storage
+            const editorialImg = tile.assetKey ? getImageUrl(tile.assetKey) : "";
             const productImg = tile.genomeKey ? getProductImageUrl(tile.genomeKey) : "";
             const isPlaceholder = !productImg || productImg.includes("placeholder");
-            const imageUrl = (!isPlaceholder ? productImg : "") || tile.imageUrl || getImageUrl(tile.assetKey) || "";
+            const imageUrl = editorialImg || (!isPlaceholder ? productImg : "") || tile.imageUrl || "";
             return (
               <div
                 key={tile.id}
@@ -1408,18 +1414,17 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
         <MomentBlock
           onOpenDetail={handleOpenDetail}
-          title="Dressing into the scene"
+          title="What travels well here"
           paragraphs={[
-            "Amanjena, just outside Marrakech.",
-            "Desert-toned walls, long shadows, stillness. A black bathing suit against all that sand and clay feels moody and intentional — like ink dropped into sun.",
-            "Swimwear by Yves Saint Laurent. Coming Soon."
+            "Choose pieces that feel intentional, not precious. A simple black column dress, a sandal you can walk up the stairs in.",
+            "Column Dress by FIL DE VIE — Coming Soon"
           ]}
           assetKey="morocco-style-1"
           bucket="Your Style"
           pinType="style"
           sourceStory="Morocco"
           imagePosition="left"
-          brand={getTile('morocco', 'morocco-7')?.brand || "Yves Saint Laurent"}
+          brand={getTile('morocco', 'morocco-7')?.brand || "FIL DE VIE"}
           genomeKey={getTile('morocco', 'morocco-7')?.genomeKey}
         />
 
@@ -1443,7 +1448,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           sourceStory="Morocco"
           tiles={[
             { id: "morocco-1", assetKey: "morocco-tile-1", caption: getTile('morocco', 'morocco-1')?.caption || "", bucket: "Your Style", pinType: getTile('morocco', 'morocco-1')?.pinType || "style", title: getTile('morocco', 'morocco-1')?.productName, brand: getTile('morocco', 'morocco-1')?.brand, genomeKey: getTile('morocco', 'morocco-1')?.genomeKey },
-            { id: "morocco-2", assetKey: "morocco-tile-2", caption: getTile('morocco', 'morocco-2')?.caption || "", bucket: "Travel & Experiences", pinType: getTile('morocco', 'morocco-2')?.pinType || "place" },
+            { id: "morocco-2", assetKey: "morocco-tile-2", caption: getTile('morocco', 'morocco-2')?.caption || "", bucket: "Your Style", pinType: getTile('morocco', 'morocco-2')?.pinType || "style", title: getTile('morocco', 'morocco-2')?.productName, brand: getTile('morocco', 'morocco-2')?.brand, genomeKey: getTile('morocco', 'morocco-2')?.genomeKey },
             { id: "morocco-3", assetKey: "morocco-tile-3", caption: getTile('morocco', 'morocco-3')?.caption || "", bucket: "Your Style", pinType: getTile('morocco', 'morocco-3')?.pinType || "style", brand: getTile('morocco', 'morocco-3')?.brand, genomeKey: getTile('morocco', 'morocco-3')?.genomeKey },
             { id: "morocco-4", assetKey: "morocco-tile-4", caption: getTile('morocco', 'morocco-4')?.caption || "", bucket: "Travel & Experiences", pinType: getTile('morocco', 'morocco-4')?.pinType || "place", bookUrl: getTile('morocco', 'morocco-4')?.bookUrl },
             { id: "morocco-5", assetKey: "morocco-tile-5", caption: getTile('morocco', 'morocco-5')?.caption || "", bucket: "Your Style", pinType: getTile('morocco', 'morocco-5')?.pinType || "style", brand: getTile('morocco', 'morocco-5')?.brand, genomeKey: getTile('morocco', 'morocco-5')?.genomeKey },
@@ -1455,16 +1460,13 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           onOpenDetail={handleOpenDetail}
           title="What travels well here"
           paragraphs={[
-            "Choose pieces that feel intentional, not precious. A simple black column dress, a sandal you can walk up the stairs in. A bag to throw over your shoulder. Jewelry that feels like armor.",
-            "Dress by FIL DE VIE. Coming soon."
+            "Choose pieces that feel intentional, not precious."
           ]}
           assetKey="morocco-object-1"
-          bucket="Your Style"
-          pinType="style"
+          bucket="Travel & Experiences"
+          pinType={getTile('morocco', 'morocco-9')?.pinType || "place"}
           sourceStory="Morocco"
           imagePosition="left"
-          brand={getTile('morocco', 'morocco-9')?.brand || "FIL DE VIE"}
-          genomeKey={getTile('morocco', 'morocco-9')?.genomeKey}
         />
 
         <MomentBlock

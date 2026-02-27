@@ -2,23 +2,40 @@
   "_README": "Master tile-to-product map for ALL editorial stories in The Current. Each tile has a unique ID, its story, position number, whether it's a product (clickable) or not, and if product — the exact genomeKey to use. This is the SINGLE SOURCE OF TRUTH. The React code should import this file and look up tile data by ID. Last updated: Feb 25, 2026 — includes all Sharon screenshot corrections.",
 
   "morocco": {
+    "_correction_note": "REBUILT Feb 26, 2026 from Sharon's definitive layout. Key changes: pos 1 is YSL LouLou Bikini (was Gaia Dress), pos 2 is Gaia Dress (was place), pos 3 name corrected to Souk Coat/Desert Pant, pos 7 is FDV Column Dress (was YSL Swimwear), pos 9 changed from Cecily Dress to place (Column Dress moved to pos 7). 6 style products total: positions 1, 2, 3, 5, 7, 11.",
     "morocco-1": {
       "position": 1,
+      "component": "EditorialScroll",
+      "isProduct": true,
+      "pinType": "style",
+      "brand": "Yves Saint Laurent",
+      "productName": "LouLou Bikini",
+      "genomeKey": "LOOK:YSL:LOULOUBIKINI:BLACK.jpg",
+      "caption": "Amanjena, Marrakech. Desert-toned walls, long shadows, stillness. A black bathing suit against all that sand and clay feels moody and intentional.",
+      "brandLine": "LouLou Bikini by Yves Saint Laurent — Coming Soon",
+      "price": "$795",
+      "sizes": "36-42",
+      "color": "Black",
+      "description": "Two piece swimsuit in black",
+      "shopUrl": "https://www.ysl.com",
+      "correction": "Feb 26 correction — was Phoebe Philo Gaia Dress, should be YSL LouLou Bikini (bathing suit is the FIRST image)"
+    },
+    "morocco-2": {
+      "position": 2,
       "component": "EditorialScroll",
       "isProduct": true,
       "pinType": "style",
       "brand": "Phoebe Philo",
       "productName": "Gaia Dress",
       "genomeKey": "LOOK:PHOEBEPHILO:GAIADRESS:BLACK.jpg",
-      "caption": "Amanjena, Marrakech. Terracotta heat. Crisp black cotton. The contrast is the point.",
-      "brandLine": "Gaia Dress by Phoebe Philo — Coming Soon"
-    },
-    "morocco-2": {
-      "position": 2,
-      "component": "EditorialScroll",
-      "isProduct": false,
-      "pinType": "place",
-      "caption": "Glossy mint tile, carved plaster, filtered light. The kind of green that feels completely natural and completely surreal at the same time."
+      "caption": "Crisp black cotton against terracotta. The contrast is the point.",
+      "brandLine": "Gaia Dress by Phoebe Philo — Coming Soon",
+      "price": "$2360",
+      "sizes": "36-42",
+      "color": "Black",
+      "description": "Crisp lightweight cotton long dress with side slit panels and low neckline",
+      "shopUrl": "https://www.phoebephilo.com",
+      "correction": "Feb 26 correction — was a place, is actually a product (Gaia Dress)"
     },
     "morocco-3": {
       "position": 3,
@@ -26,11 +43,17 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "Alaïa",
-      "productName": "Look",
+      "productName": "Souk Coat / Desert Pant",
       "genomeKey": "LOOK:ALAIA:DRAPEDTOP:BLACK.jpg",
       "caption": "Blush pink against sun-warmed clay. Soft, but never sweet. The color almost disappears into the earth — and that's the beauty of it.",
-      "brandLine": "Look by Alaïa — Coming Soon",
-      "note": "ALAIA:DRAPEDTOP may not be in genome — falls back to brand match for Alaïa"
+      "brandLine": "Souk Coat / Desert Pant by Alaïa — Coming Soon",
+      "price": "$1200 / $760",
+      "sizes": "36-42",
+      "color": "Black",
+      "description": "Cotton viscose gabardine half lightweight coat with cotton viscose gabardine full pants with layered leg and layered waist",
+      "shopUrl": "https://www.alaia.com",
+      "note": "genomeKey still uses DRAPEDTOP — closest match in genome. Product name corrected Feb 26.",
+      "correction": "Feb 26 correction — product name was 'Look', should be 'Souk Coat / Desert Pant'"
     },
     "morocco-4": {
       "position": 4,
@@ -50,7 +73,10 @@
       "genomeKey": "look:fildevie:estedress:black.jpg",
       "caption": "Black against warm limestone — a long, clean silhouette moving through arches. The dress absorbs the light instead of competing with it.",
       "brandLine": "Este Dress by FIL DE VIE — Coming Soon",
-      "correction": "Sharon correction — was Column Dress & Fur Stole, should be Este Dress"
+      "price": "$675",
+      "sizes": "0-12",
+      "color": "Black",
+      "shopUrl": "https://www.fildevie.com"
     },
     "morocco-6": {
       "position": 6,
@@ -64,12 +90,17 @@
       "component": "MomentBlock",
       "isProduct": true,
       "pinType": "style",
-      "brand": "Yves Saint Laurent",
-      "productName": "Swimwear",
-      "genomeKey": "LOOK:YSL:JUMPSUIT:BLACK.jpg",
-      "caption": "Amanjena, just outside Marrakech. Desert-toned walls, long shadows, stillness. A black bathing suit against all that sand and clay feels moody and intentional.",
-      "brandLine": "Swimwear by Yves Saint Laurent. Coming Soon.",
-      "note": "Mapped to YSL Jumpsuit as closest match — no YSL swimwear in genome"
+      "brand": "FIL DE VIE",
+      "productName": "Column Dress",
+      "genomeKey": "LOOK:FILDEVIE:COLUMNDRESS:BLACK.jpg",
+      "caption": "What travels well here. Choose pieces that feel intentional, not precious. A simple black column dress, a sandal you can walk up the stairs in.",
+      "brandLine": "Column Dress by FIL DE VIE — Coming Soon",
+      "price": "$745",
+      "sizes": "0-12",
+      "color": "Black",
+      "description": "Viscose knit long black dress",
+      "shopUrl": "https://www.fildevie.com",
+      "correction": "Feb 26 correction — was YSL Swimwear, should be FDV Column Dress"
     },
     "morocco-8": {
       "position": 8,
@@ -82,14 +113,10 @@
     "morocco-9": {
       "position": 9,
       "component": "TextImage",
-      "isProduct": true,
-      "pinType": "style",
-      "brand": "FIL DE VIE",
-      "productName": "Cecily Dress",
-      "genomeKey": "look:fildevie:cecilydress:black.jpg",
-      "caption": "What travels well here. Choose pieces that feel intentional, not precious. A simple black column dress, a sandal you can walk up the stairs in.",
-      "brandLine": "Cecily Dress by FIL DE VIE. Coming soon.",
-      "correction": "Sharon correction — was Hera Dress, should be Cecily Dress"
+      "isProduct": false,
+      "pinType": "place",
+      "caption": "What travels well here. Choose pieces that feel intentional, not precious.",
+      "correction": "Feb 26 correction — was Cecily Dress (style), now place. Column Dress product moved to position 7."
     },
     "morocco-10": {
       "position": 10,
@@ -108,8 +135,12 @@
       "productName": "Long Caftan Dress",
       "genomeKey": "look:fildevie:longcaftandress:red.jpg",
       "caption": "El Fenn. A flash of red against layered tile. Pattern on pattern — and then that one bold interruption.",
-      "brandLine": "Long Caftan Dress by FIL DE VIE. Coming soon.",
-      "correction": "Sharon correction — was Mira Coat, should be Long Caftan Dress (red)"
+      "brandLine": "Long Caftan Dress by FIL DE VIE — Coming Soon",
+      "price": "$825",
+      "sizes": "0-12",
+      "color": "Red",
+      "description": "Long caftan dress in red",
+      "shopUrl": "https://www.fildevie.com"
     },
     "morocco-12": {
       "position": 12,
@@ -692,13 +723,14 @@
     "_README": "SHOP THE STORY carousel items for each story. Only includes products (isProduct: true). Each entry references the tile ID + genomeKey. Claude Code should build each carousel from this list.",
 
     "morocco": [
-      {"tileId": "morocco-1", "genomeKey": "LOOK:PHOEBEPHILO:GAIADRESS:BLACK.jpg", "label": "Phoebe Philo — Gaia Dress"},
-      {"tileId": "morocco-3", "genomeKey": "LOOK:ALAIA:DRAPEDTOP:BLACK.jpg", "label": "Alaïa — Look"},
-      {"tileId": "morocco-5", "genomeKey": "look:fildevie:estedress:black.jpg", "label": "FIL DE VIE — Este Dress"},
-      {"tileId": "morocco-carousel-4", "genomeKey": "LOOK:FILDEVIE:COLUMNDRESS:BLACK.jpg", "label": "FIL DE VIE — Column Dress"},
-      {"tileId": "morocco-11", "genomeKey": "look:fildevie:longcaftandress:red.jpg", "label": "FIL DE VIE — Long Caftan Dress"}
+      {"tileId": "morocco-1", "genomeKey": "LOOK:YSL:LOULOUBIKINI:BLACK.jpg", "label": "Yves Saint Laurent — LouLou Bikini", "price": "$795"},
+      {"tileId": "morocco-2", "genomeKey": "LOOK:PHOEBEPHILO:GAIADRESS:BLACK.jpg", "label": "Phoebe Philo — Gaia Dress", "price": "$2360"},
+      {"tileId": "morocco-3", "genomeKey": "LOOK:ALAIA:DRAPEDTOP:BLACK.jpg", "label": "Alaïa — Souk Coat / Desert Pant", "price": "$1200 / $760"},
+      {"tileId": "morocco-5", "genomeKey": "look:fildevie:estedress:black.jpg", "label": "FIL DE VIE — Este Dress", "price": "$675"},
+      {"tileId": "morocco-7", "genomeKey": "LOOK:FILDEVIE:COLUMNDRESS:BLACK.jpg", "label": "FIL DE VIE — Column Dress", "price": "$745"},
+      {"tileId": "morocco-11", "genomeKey": "look:fildevie:longcaftandress:red.jpg", "label": "FIL DE VIE — Long Caftan Dress", "price": "$825"}
     ],
-    "_morocco_note": "Column Dress (LOOK:FILDEVIE:COLUMNDRESS:BLACK.jpg) must be ADDED to fdv_brand_genome.json: brand FIL DE VIE, name Column Dress, color Black, sizes S/M/L, price $760, coming_soon. Also: carousel currently shows editorial-only items. Itinerary items will be added separately.",
+    "_morocco_note": "REBUILT Feb 26. All 6 carousel items now use REAL editorial positions (no synthetic IDs). YSL LouLou Bikini and Column Dress need to be ADDED to fdv_brand_genome.json.",
 
     "hydra": [
       {"tileId": "hydra-carousel-1", "genomeKey": "LOOK:YSL:JUMPSUIT:BLACK.jpg", "label": "YSL — Jumpsuit"},
