@@ -340,9 +340,34 @@ const PRODUCT_PLACEHOLDER = "/product-placeholder.svg";
 /** Vercel Blob base URL for wardrobe images */
 const BLOB_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2";
 
+/**
+ * Flow IDs that have verified wardrobe images in Blob storage.
+ * Only main outfit looks have uploaded photos — accessories (footwear, bags, jewelry) do not.
+ * This prevents getProductImageUrl from returning URLs that 404.
+ */
+const VERIFIED_BLOB_FLOW_IDS = new Set([
+  "d1-1", "d1-3", "d1-6",
+  "d2-1", "d2-4", "d2-7",
+  "d3-1", "d3-5", "d3-9",
+  "d4-1", "d4-4", "d4-9",
+  "d5-1", "d5-7",
+  "d6-1", "d6-4", "d6-8",
+  "d7-1", "d7-4", "d7-7",
+  "d8-1",
+]);
+
 /** Reverse lookup: genome database_match_key → flow ID for wardrobe image resolution */
-/** Keeps FIRST occurrence only when same genome key maps to multiple flow IDs */
+/** Prioritizes FLOW_LOOK_GENOME_KEY (event-based, matching Blob filenames) over
+ *  SECTION_LOOK_GENOME_KEY (packing-grid-based) for image URL construction. */
 const GENOME_KEY_TO_FLOW = new Map<string, string>();
+// First: add FLOW_LOOK_GENOME_KEY entries (these match actual Blob image filenames)
+for (const [flowId, genomeKey] of Object.entries(FLOW_LOOK_GENOME_KEY)) {
+  const normalizedKey = genomeKey.toLowerCase();
+  if (!GENOME_KEY_TO_FLOW.has(normalizedKey)) {
+    GENOME_KEY_TO_FLOW.set(normalizedKey, flowId);
+  }
+}
+// Second: add remaining SECTION_LOOK_GENOME_KEY entries (packing grid accessories)
 for (const [flowId, genomeKey] of Object.entries(SECTION_LOOK_GENOME_KEY)) {
   const normalizedKey = genomeKey.toLowerCase();
   if (!GENOME_KEY_TO_FLOW.has(normalizedKey)) {
@@ -365,16 +390,17 @@ for (const [aliasKey, realKey] of Object.entries(ITINERARY_KEY_ALIAS)) {
  * Get the best available image URL for a genome product.
  * For look items: resolves genome key → flow ID → Blob wardrobe image.
  * For accessories: uses fallbackFlowId to get the parent slot's wardrobe image.
+ * Only returns Blob URLs for verified flow IDs that actually have images.
  * Returns placeholder SVG only as last resort.
  */
 export function getProductImageUrl(genomeKey: string, fallbackFlowId?: string): string {
   // First try direct genome key → flow ID mapping (for look items)
   const flowId = GENOME_KEY_TO_FLOW.get(genomeKey.toLowerCase());
-  if (flowId) {
+  if (flowId && VERIFIED_BLOB_FLOW_IDS.has(flowId)) {
     return `${BLOB_BASE}/${flowId}-wardrobe`;
   }
-  // For accessories: use the parent slot's wardrobe image
-  if (fallbackFlowId) {
+  // For accessories: use the parent slot's wardrobe image (only if verified)
+  if (fallbackFlowId && VERIFIED_BLOB_FLOW_IDS.has(fallbackFlowId)) {
     return `${BLOB_BASE}/${fallbackFlowId}-wardrobe`;
   }
   return PRODUCT_PLACEHOLDER;

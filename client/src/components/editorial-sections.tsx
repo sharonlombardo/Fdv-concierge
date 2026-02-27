@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { ITINERARY_DATA, DayPage, FlowItem } from "@shared/itinerary-data";
 import { PinButton } from "@/components/pin-button";
-import { getProductByKey, FLOW_LOOK_GENOME_KEY } from "@/lib/brand-genome";
+import { getProductByKey, getProductDisplayName, isShoppable, getSlotProducts, FLOW_LOOK_GENOME_KEY } from "@/lib/brand-genome";
 
 export interface DayEditorial {
   dayNumber: number;
@@ -29,6 +29,8 @@ export interface FlowEditorial {
   wardrobeImageKey: string | null;
   wardrobeImageDefault: string | null;
   wardrobeExtras: WardrobeExtra[];
+  dayNumber: number;
+  timeOfDay: "morning" | "afternoon" | "evening";
 }
 
 export function extractEditorialData(): DayEditorial[] {
@@ -48,7 +50,16 @@ export function extractEditorialData(): DayEditorial[] {
             imageDefault: '',
           });
         }
-        
+
+        // Determine time-of-day for packing grid product resolution
+        const timeLower = (flow.time || '').toLowerCase();
+        let timeOfDay: "morning" | "afternoon" | "evening" = "afternoon";
+        if (timeLower.includes('morning') || (timeLower.match(/\d/) && parseInt(timeLower) < 12)) {
+          timeOfDay = "morning";
+        } else if (timeLower.includes('evening') || timeLower.includes('night')) {
+          timeOfDay = "evening";
+        }
+
         return {
           id: flow.id,
           time: flow.time,
@@ -58,6 +69,8 @@ export function extractEditorialData(): DayEditorial[] {
           wardrobeImageKey: flow.commercialWardrobe ? `${flow.id}-wardrobe` : null,
           wardrobeImageDefault: flow.commercialWardrobe || null,
           wardrobeExtras: extras,
+          dayNumber: dayPage.day,
+          timeOfDay,
         };
       });
       
@@ -320,23 +333,40 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                         />
                       );
                     })()}
-                    {hasAccessories && (
+                    {hasAccessories && (() => {
+                      // Resolve accessory products from packing grid: idx 0=footwear, 1=handbag, 2=jewelry, 3=accessory
+                      const positionNames = ['footwear', 'handbag', 'jewelry', 'accessory'] as const;
+                      const positionLabels = ['Footwear', 'Handbag', 'Jewelry', 'Accessory'];
+                      const slotProducts = getSlotProducts(flow.dayNumber, flow.timeOfDay);
+
+                      return (
                       <div className="grid grid-cols-4 gap-2">
                         {flow.wardrobeExtras.map((extra, idx) => {
                           if (!hasCustomImage(extra.imageKey)) return null;
                           const extraImage = getImageUrl(extra.imageKey, extra.imageDefault);
+
+                          // Resolve product data from packing grid position
+                          const position = positionNames[idx];
+                          const mapEntry = slotProducts.find(s => s.position === position);
+                          const extraGenome = mapEntry?.product;
+                          const extraName = extraGenome ? getProductDisplayName(extraGenome) : `${flow.title} ${positionLabels[idx]}`;
+                          const extraGenomeKey = mapEntry?.key || undefined;
+
                           return (
                             <div key={idx} className="aspect-square overflow-hidden rounded-sm bg-muted relative group">
                               <img
                                 src={extraImage}
-                                alt={`Accessory ${idx + 1}`}
+                                alt={extraName}
                                 className={`w-full h-full object-cover ${onOpenProductModal ? 'cursor-pointer' : ''}`}
                                 onClick={onOpenProductModal ? () => onOpenProductModal({
-                                  title: `${flow.title} Accessory ${idx + 1}`,
+                                  title: extraName,
                                   imageUrl: extraImage,
                                   itemId: extra.imageKey,
-                                  pinType: "product",
-                                  genomeKey: extraImage?.split('/').pop()?.split('?')[0] || undefined,
+                                  brand: extraGenome?.brand || undefined,
+                                  description: extraGenome?.description || undefined,
+                                  shopUrl: extraGenome && isShoppable(extraGenome) ? extraGenome.url : undefined,
+                                  pinType: "style",
+                                  genomeKey: extraGenomeKey,
                                 }) : undefined}
                               />
                               <div className="absolute top-1 right-1 flex flex-col gap-0.5">
@@ -344,7 +374,7 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                                   itemType="accessory"
                                   itemId={extra.imageKey}
                                   itemData={{
-                                    title: `${flow.title} Accessory ${idx + 1}`,
+                                    title: extraName,
                                     imageUrl: extraImage,
                                     sourceStory: "morocco-2026",
                                     issueNumber: 1,
@@ -364,7 +394,8 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                           );
                         })}
                       </div>
-                    )}
+                      );
+                    })()}
                   </div>
                 )}
               </div>
