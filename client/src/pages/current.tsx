@@ -24,8 +24,8 @@ const CAROUSEL_ASSET_KEYS: Record<string, string> = {
   "morocco-11": "morocco-experience-1",
   // Hydra
   "hydra-2": "hydra-style-1",
-  "hydra-4": "hydra-tile-4",
-  "hydra-6": "hydra-tile-6",
+  "hydra-4": "hydra-tile-1",
+  "hydra-6": "hydra-tile-3",
   "hydra-8": "hydra-tile-5",
   "hydra-10": "hydra-object-1",
   "hydra-13": "hydra-ritual-1",
