@@ -1460,13 +1460,16 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           onOpenDetail={handleOpenDetail}
           title="What travels well here"
           paragraphs={[
-            "Choose pieces that feel intentional, not precious."
+            "Choose pieces that feel intentional, not precious. A black column dress against adobe. The simplicity is the point.",
+            "Column Dress by FIL DE VIE — Coming Soon"
           ]}
           assetKey="morocco-object-1"
-          bucket="Travel & Experiences"
-          pinType={getTile('morocco', 'morocco-9')?.pinType || "place"}
+          bucket="Your Style"
+          pinType="style"
           sourceStory="Morocco"
           imagePosition="left"
+          brand="FIL DE VIE"
+          genomeKey="LOOK:FILDEVIE:COLUMNDRESS:BLACK.jpg"
         />
 
         <MomentBlock
