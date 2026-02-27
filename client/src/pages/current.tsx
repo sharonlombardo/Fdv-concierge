@@ -1514,9 +1514,10 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <ShopTheStory
           onOpenDetail={handleOpenDetail}
           sourceStory="Morocco"
-          tiles={getCarouselItems('morocco').map(c => {
+          tiles={getCarouselItems('morocco').map((c: any) => {
               const t = getTile('morocco', c.tileId);
-              return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand, genomeKey: c.genomeKey };
+              const brandFromLabel = c.label?.split('—')[0]?.split('–')[0]?.trim();
+              return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, genomeKey: c.genomeKey, price: c.price };
             })}
         />
       </section>
@@ -1661,9 +1662,10 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <ShopTheStory
           onOpenDetail={handleOpenDetail}
           sourceStory="Hydra"
-          tiles={getCarouselItems('hydra').map(c => {
+          tiles={getCarouselItems('hydra').map((c: any) => {
             const t = getTile('hydra', c.tileId);
-            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand, genomeKey: c.genomeKey };
+            const brandFromLabel = c.label?.split('—')[0]?.split('–')[0]?.trim();
+            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, genomeKey: c.genomeKey, price: c.price };
           })}
         />
       </section>
@@ -1812,9 +1814,10 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <ShopTheStory
           onOpenDetail={handleOpenDetail}
           sourceStory="Spain"
-          tiles={getCarouselItems('spain').map(c => {
+          tiles={getCarouselItems('spain').map((c: any) => {
             const t = getTile('spain', c.tileId);
-            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand, shopUrl: t?.shopUrl, genomeKey: c.genomeKey };
+            const brandFromLabel = c.label?.split('—')[0]?.split('–')[0]?.trim();
+            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, shopUrl: t?.shopUrl, genomeKey: c.genomeKey, price: c.price };
           })}
         />
       </section>
@@ -1924,9 +1927,10 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <ShopTheStory
           onOpenDetail={handleOpenDetail}
           sourceStory="Retreat"
-          tiles={getCarouselItems('retreat').map(c => {
+          tiles={getCarouselItems('retreat').map((c: any) => {
             const t = getTile('retreat', c.tileId);
-            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand, genomeKey: c.genomeKey };
+            const brandFromLabel = c.label?.split('—')[0]?.split('–')[0]?.trim();
+            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, genomeKey: c.genomeKey, price: c.price };
           })}
         />
       </section>
@@ -2111,9 +2115,10 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         <ShopTheStory
           onOpenDetail={handleOpenDetail}
           sourceStory="New York"
-          tiles={getCarouselItems('newyork').map(c => {
+          tiles={getCarouselItems('newyork').map((c: any) => {
             const t = getTile('newyork', c.tileId);
-            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand, genomeKey: c.genomeKey };
+            const brandFromLabel = c.label?.split('—')[0]?.split('–')[0]?.trim();
+            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, genomeKey: c.genomeKey, price: c.price };
           })}
         />
       </section>
