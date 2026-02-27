@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { ITINERARY_DATA, DayPage, FlowItem } from "@shared/itinerary-data";
 import { PinButton } from "@/components/pin-button";
-import { getProductByKey, SECTION_LOOK_GENOME_KEY } from "@/lib/brand-genome";
+import { getProductByKey, FLOW_LOOK_GENOME_KEY } from "@/lib/brand-genome";
 
 export interface DayEditorial {
   dayNumber: number;
@@ -297,7 +297,7 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                 {hasWardrobeContent && (
                   <div className="space-y-4">
                     {wardrobeImage && flow.wardrobeImageKey && (() => {
-                      const lookGenomeKey = SECTION_LOOK_GENOME_KEY[flow.id];
+                      const lookGenomeKey = FLOW_LOOK_GENOME_KEY[flow.id];
                       const lookProduct = lookGenomeKey ? getProductByKey(lookGenomeKey) : undefined;
                       return (
                         <ImageCard

@@ -883,14 +883,64 @@
     "_README": "SHOP THE STORY carousel items for each story. Only includes products (isProduct: true). Each entry references the tile ID + genomeKey. Claude Code should build each carousel from this list.",
 
     "morocco": [
-      {"tileId": "morocco-1", "genomeKey": "LOOK:YSL:LOULOUBIKINI:BLACK.jpg", "label": "Yves Saint Laurent — LouLou Bikini", "price": "$795"},
-      {"tileId": "morocco-2", "genomeKey": "LOOK:PHOEBEPHILO:GAIADRESS:BLACK.jpg", "label": "Phoebe Philo — Gaia Dress", "price": "$2360"},
-      {"tileId": "morocco-3", "genomeKey": "LOOK:ALAIA:DRAPEDTOP:BLACK.jpg", "label": "Alaïa — Souk Coat / Desert Pant", "price": "$1200 / $760"},
-      {"tileId": "morocco-5", "genomeKey": "look:fildevie:estedress:black.jpg", "label": "FIL DE VIE — Este Dress", "price": "$675"},
-      {"tileId": "morocco-7", "genomeKey": "LOOK:FILDEVIE:COLUMNDRESS:BLACK.jpg", "label": "FIL DE VIE — Column Dress", "price": "$745"},
-      {"tileId": "morocco-11", "genomeKey": "look:fildevie:longcaftandress:red.jpg", "label": "FIL DE VIE — Long Caftan Dress", "price": "$825"}
+      {"tileId": "morocco-1", "genomeKey": "LOOK:YSL:LOULOUBIKINI:BLACK.jpg", "label": "Yves Saint Laurent — LouLou Bikini", "price": "$795", "source": "editorial"},
+      {"tileId": "morocco-2", "genomeKey": "LOOK:PHOEBEPHILO:GAIADRESS:BLACK.jpg", "label": "Phoebe Philo — Gaia Dress", "price": "$2,360", "source": "editorial"},
+      {"tileId": "morocco-3", "genomeKey": "LOOK:ALAIA:DRAPEDTOP:BLACK.jpg", "label": "Alaïa — Souk Coat / Desert Pant", "price": "$1,200 / $760", "source": "editorial"},
+      {"tileId": "morocco-5", "genomeKey": "look:fildevie:estedress:black.jpg", "label": "FIL DE VIE — Este Dress", "price": "$675", "source": "editorial"},
+      {"tileId": "morocco-7", "genomeKey": "LOOK:FILDEVIE:COLUMNDRESS:BLACK.jpg", "label": "FIL DE VIE — Column Dress", "price": "$745", "source": "editorial"},
+      {"tileId": "morocco-11", "genomeKey": "look:fildevie:longcaftandress:red.jpg", "label": "FIL DE VIE — Long Caftan Dress", "price": "$825", "source": "editorial"},
+
+      {"tileId": "morocco-itin-1", "genomeKey": "LOOK:FDV:PHILOMENACAFTAN:SAND.jpg", "label": "FIL DE VIE — Philomena Caftan", "price": "$1,250", "source": "itinerary"},
+      {"tileId": "morocco-itin-2", "genomeKey": "LOOK:FDV:CYBELBLOUSE:STRIPE.jpg", "label": "FIL DE VIE — Cybel Blouse & Marrakech Pants", "price": "$395 / $350", "source": "itinerary"},
+      {"tileId": "morocco-itin-3", "genomeKey": "LOOK:FDV:VIRGINIADRESS:EMERALD.jpg", "label": "FIL DE VIE — Virginia Dress", "price": "$700", "source": "itinerary"},
+      {"tileId": "morocco-itin-4", "genomeKey": "LOOK:FDV:JUNOBLOUSE:MARRAKECHPANT:STRIPE.jpg", "label": "FIL DE VIE — Juno Blouse & Marrakech Pants", "price": "$258 / $350", "source": "itinerary"},
+      {"tileId": "morocco-itin-5", "genomeKey": "LOOK:FDV:DIANADRES:STRIPE.jpg", "label": "FIL DE VIE — Diana Dress", "price": "$475", "source": "itinerary"},
+      {"tileId": "morocco-itin-6", "genomeKey": "LOOK:FDV:HONORADRESS:FLORAL.jpg", "label": "FIL DE VIE — Honora Dress", "price": "$528", "source": "itinerary"},
+      {"tileId": "morocco-itin-7", "genomeKey": "LOOK:FDV:BELLACAFTANMINI:IVORY.jpg", "label": "FIL DE VIE — Bella Caftan Mini", "price": "$475", "source": "itinerary"},
+      {"tileId": "morocco-itin-8", "genomeKey": "LOOK:FDV:LUCINABLOUSE:BLACK.jpg", "label": "FIL DE VIE — Lucina Blouse & Marrakech Pants", "price": "$575 / $350", "source": "itinerary"},
+      {"tileId": "morocco-itin-9", "genomeKey": "LOOK:FDV:CALYPSODRESS:BLACK.jpg", "label": "FIL DE VIE — Calypso Dress", "price": "$600", "source": "itinerary"},
+      {"tileId": "morocco-itin-10", "genomeKey": "LOOK:FDV:LILLITHCAFTAN:IVORY.jpg", "label": "FIL DE VIE — Lillith Caftan", "price": "$475", "source": "itinerary"},
+      {"tileId": "morocco-itin-11", "genomeKey": "LOOK:FDV:JUNOBLOUSE:BLK.jpg", "label": "FIL DE VIE — Juno Blouse", "price": "$268", "source": "itinerary"},
+      {"tileId": "morocco-itin-12", "genomeKey": "LOOK:FDV:ISADORADRESS:BLK.jpg", "label": "FIL DE VIE — Isadora Dress", "price": "$795", "source": "itinerary"},
+      {"tileId": "morocco-itin-13", "genomeKey": "LOOK:FDV:STEVIECAFTAN:BLACK.jpg", "label": "FIL DE VIE — Stevie Caftan", "price": "$825", "source": "itinerary"},
+      {"tileId": "morocco-itin-14", "genomeKey": "LOOK:FDV:ASTRIDBLOUSE:BLK.jpg", "label": "FIL DE VIE — Astrid Blouse", "price": "$475", "source": "itinerary"},
+      {"tileId": "morocco-itin-15", "genomeKey": "LOOK:FDV:ATLASSCARF:IVORY.jpg", "label": "FIL DE VIE — Atlas Scarf", "price": "$275", "source": "itinerary"},
+      {"tileId": "morocco-itin-16", "genomeKey": "LOOK:FDV:MEDINADRESS:BLK.jpg", "label": "FIL DE VIE — Medina Dress", "price": "$650", "source": "itinerary"},
+
+      {"tileId": "morocco-itin-17", "genomeKey": "FOOTWEAR:KHAITE:OTTO:WHT.jpg", "label": "Khaite — Otto Leather Slippers", "price": "$595", "source": "itinerary"},
+      {"tileId": "morocco-itin-18", "genomeKey": "footwear, amery kit sandal.jpg", "label": "A Emery — Kir Sandal", "price": "$185", "source": "itinerary"},
+      {"tileId": "morocco-itin-19", "genomeKey": "FOOTWEAR:ALAIA:BLACK.jpg", "label": "Alaïa — Heel Thong Mules", "price": "$1,450", "source": "itinerary"},
+      {"tileId": "morocco-itin-20", "genomeKey": "FOOTWEAR:FERRAGAMO:LOLYSANDAL:BLACK.jpg", "label": "Ferragamo — Loly Fur Leather Thong Sandals", "price": "$490", "source": "itinerary"},
+
+      {"tileId": "morocco-itin-21", "genomeKey": "access:bag:bottega:hobo.jpg", "label": "Bottega Veneta — Solstice Bag", "price": "$4,200", "source": "itinerary"},
+      {"tileId": "morocco-itin-22", "genomeKey": "ACCESS:BAG:CHLOE:WRISTLETTE:BLACK.jpg", "label": "Chloe — Wristlette", "price": "$4,200", "source": "itinerary"},
+      {"tileId": "morocco-itin-23", "genomeKey": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg", "label": "DeMellier London — Santorini Basket Bag", "price": "$355", "source": "itinerary"},
+      {"tileId": "morocco-itin-24", "genomeKey": "ACCESS:BAG:TOWEL:FDV:POOLESSENTIALS:OLIVE.jpg", "label": "FIL DE VIE — Pool Essentials", "price": "$600", "source": "itinerary"},
+      {"tileId": "morocco-itin-25", "genomeKey": "paco rabanne pailette bag.jpg", "label": "Paco Rabanne — Gold Pailette Handbag", "price": "$1,490", "source": "itinerary"},
+      {"tileId": "morocco-itin-26", "genomeKey": "ACCESSORY:BAG:DRIESVANNOTEN:BLACK.jpg", "label": "Dries Van Noten — Embellished Evening Bag", "price": "$1,640", "source": "itinerary"},
+      {"tileId": "morocco-itin-27", "genomeKey": "ACCESSORY:BAG:BOTTEGA:KALIMERO:BLACK.jpg", "label": "Bottega Veneta — Kalimero Bag", "price": "$4,100", "source": "itinerary"},
+
+      {"tileId": "morocco-itin-28", "genomeKey": "ACCESSORY:BULGAR:SERPENTI:BLK.jpg", "label": "Bulgari — Serpenti Watch", "price": "$13,200", "source": "itinerary"},
+      {"tileId": "morocco-itin-29", "genomeKey": "ACCESSORY:JEWELRY:BULGARI:CABACHON NECKLACE.jpg", "label": "Bulgari — Lapis Cabachon Necklace", "price": "$50,000", "source": "itinerary"},
+      {"tileId": "morocco-itin-30", "genomeKey": "access:jewlery:phoebephilo:hoops.jpg", "label": "Phoebe Philo — Gold Studded Hoops", "price": "$550", "source": "itinerary"},
+      {"tileId": "morocco-itin-31", "genomeKey": "phoebe philo earrings dropped.jpg", "label": "Phoebe Philo — Gold Drop Earrings", "price": "$1,050", "source": "itinerary"},
+      {"tileId": "morocco-itin-32", "genomeKey": "phoebe philo hallmark earrings.jpg", "label": "Phoebe Philo — Hallmark Earrings", "price": "$450", "source": "itinerary"},
+
+      {"tileId": "morocco-itin-33", "genomeKey": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg", "label": "Phoebe Philo — Cruise Sunglasses", "price": "$490", "source": "itinerary"},
+      {"tileId": "morocco-itin-34", "genomeKey": "ACCESS:SUGNLASSES:LOEWE:BLACK.jpg", "label": "Loewe — Inflated Cat Eye Sunglasses", "price": "$440", "source": "itinerary"},
+
+      {"tileId": "morocco-itin-35", "genomeKey": "ACCESSORY:GABRIELLAHEARST:WELFATCHASHMERE:SAND.jpg", "label": "Gabriella Hearst — Lauren Knit Wrap", "price": "$3,170", "source": "itinerary"},
+
+      {"tileId": "morocco-itin-36", "genomeKey": "BEAUTY:FDV:PARFUM.jpg", "label": "FIL DE VIE — Parfum", "price": "$475", "source": "itinerary"},
+      {"tileId": "morocco-itin-37", "genomeKey": "beauty:imortelle oil.jpg", "label": "Hildegaard — Immortelle Facial Oil", "price": "$375", "source": "itinerary"},
+      {"tileId": "morocco-itin-38", "genomeKey": "BEAUTY:AMANESSENTIALS:JADESET.jpg", "label": "Aman Essentials — Ritual Gift Set", "price": "$410", "source": "itinerary"},
+      {"tileId": "morocco-itin-39", "genomeKey": "BEAUTY:FDV:TRAVELMIST.jpg", "label": "FIL DE VIE — Travel Mist", "price": "$75", "source": "itinerary"},
+      {"tileId": "morocco-itin-40", "genomeKey": "BEAUTY:POPPYKING:SINLIPSTICK:RED.jpg", "label": "Poppy King — Original Sin Lipstick", "price": "$34", "source": "itinerary"},
+      {"tileId": "morocco-itin-41", "genomeKey": "BEAUTY:VIOLETTEFR:NECATRLIPSTAIN.jpg", "label": "Violette FR — Nectar Lip Stain", "price": "$29", "source": "itinerary"},
+      {"tileId": "morocco-itin-42", "genomeKey": "BEAUTY:RITUELGEINSHA.jpg", "label": "Bienaime — Rituel De Geisha Papers", "price": "$23", "source": "itinerary"},
+      {"tileId": "morocco-itin-43", "genomeKey": "BEAUTY:SAINJANE:SUNRITUAL.jpg", "label": "Saint Jane — Sun Ritual SPF 30", "price": "$38", "source": "itinerary"}
     ],
-    "_morocco_note": "REBUILT Feb 26. All 6 carousel items now use REAL editorial positions (no synthetic IDs). YSL LouLou Bikini and Column Dress need to be ADDED to fdv_brand_genome.json.",
+    "_morocco_note": "EXPANDED Feb 27. 6 editorial items (from scroll-block map) + 43 itinerary items (from morocco_itinerary_product_map.json). Itinerary items grouped: looks (1-16), footwear (17-20), bags (21-27), jewelry/watches (28-32), sunglasses (33-34), wraps (35), beauty (36-43). Source field distinguishes editorial vs itinerary origin.",
 
     "hydra": [
       {"tileId": "hydra-2", "genomeKey": "LOOK:YSL:JUMPSUIT:BLACK.jpg", "label": "YSL — Jumpsuit", "price": "$1,230"},

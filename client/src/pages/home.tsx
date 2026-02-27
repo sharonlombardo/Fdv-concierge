@@ -57,7 +57,7 @@ import {
   EditorialDaySection
 } from '@/components/editorial-sections';
 import { LoadingImage } from '@/components/loading-image';
-import { getProductByKey, getProductDisplayName, isShoppable, SECTION_LOOK_GENOME_KEY } from '@/lib/brand-genome';
+import { getProductByKey, getProductDisplayName, isShoppable, SECTION_LOOK_GENOME_KEY, FLOW_LOOK_GENOME_KEY } from '@/lib/brand-genome';
 
 function isDayPage(page: ItineraryPage): page is DayPage {
   return 'day' in page;
@@ -465,7 +465,7 @@ function ItemDetailDrawer({
                   className="w-full max-w-xs mx-auto rounded-md relative cursor-pointer"
                   onClick={() => {
                     if (onOpenProductModal) {
-                      const lookGenomeKey = SECTION_LOOK_GENOME_KEY[item.id];
+                      const lookGenomeKey = FLOW_LOOK_GENOME_KEY[item.id] || SECTION_LOOK_GENOME_KEY[item.id];
                       const gp = lookGenomeKey ? getProductByKey(lookGenomeKey) : undefined;
                       onOpenProductModal({
                         title: gp?.name || `${item.title} - The Look`,
@@ -496,7 +496,7 @@ function ItemDetailDrawer({
                   />
                   <div className="absolute top-3 right-3 z-10">
                     {(() => {
-                      const pinGenomeKey = SECTION_LOOK_GENOME_KEY[item.id];
+                      const pinGenomeKey = FLOW_LOOK_GENOME_KEY[item.id] || SECTION_LOOK_GENOME_KEY[item.id];
                       const pinProduct = pinGenomeKey ? getProductByKey(pinGenomeKey) : undefined;
                       return (
                         <PinButton
@@ -1078,7 +1078,7 @@ export default function Home() {
     let resolvedGenomeKey = data.genomeKey;
     if (!resolvedGenomeKey && data.itemId) {
       const flowId = data.itemId.replace(/-(look|wardrobe)$/, '');
-      const mapKey = SECTION_LOOK_GENOME_KEY[flowId];
+      const mapKey = FLOW_LOOK_GENOME_KEY[flowId] || SECTION_LOOK_GENOME_KEY[flowId];
       if (mapKey) resolvedGenomeKey = mapKey;
     }
     // Try genome lookup for rich product data
@@ -1238,7 +1238,7 @@ export default function Home() {
                             className="w-16 h-16 md:w-20 md:h-20 rounded-md overflow-hidden bg-muted shrink-0 ring-1 ring-border hover:ring-foreground transition-all"
                             onClick={(e) => {
                               e.stopPropagation();
-                              const tlGenomeKey = SECTION_LOOK_GENOME_KEY[item.id];
+                              const tlGenomeKey = FLOW_LOOK_GENOME_KEY[item.id] || SECTION_LOOK_GENOME_KEY[item.id];
                               const tlProduct = tlGenomeKey ? getProductByKey(tlGenomeKey) : undefined;
                               openProductModal({
                                 title: tlProduct?.name || `${item.title} - The Look`,

@@ -274,6 +274,44 @@ export const SECTION_LOOK_GENOME_KEY: Record<string, string> = {
 };
 
 /**
+ * Maps itinerary event flow IDs to their corresponding LOOK genome keys.
+ * SECTION_LOOK_GENOME_KEY uses packing-grid numbering (d1-1=look, d1-2=shoe, d1-3=bag...)
+ * but itinerary flows use event numbering (d1-1=airport, d1-2=transfer, d1-3=checkin...).
+ * This map resolves the collision so EditorialOverview shows the correct look.
+ */
+export const FLOW_LOOK_GENOME_KEY: Record<string, string> = {
+  // Day 1
+  "d1-1": "LOOK:FDV:PHILOMENACAFTAN:SAND.jpg",
+  "d1-3": "LOOK:FDV:CYBELBLOUSE:STRIPE.jpg",
+  "d1-6": "LOOK:FDV:VIRGINIADRESS:EMERALD.jpg",
+  // Day 2
+  "d2-1": "LOOK:FDV:JUNOBLOUSE:MARRAKECHPANT:STRIPE.jpg",
+  "d2-4": "LOOK:FDV:DIANADRES:STRIPE.jpg",
+  "d2-7": "LOOK:FDV:HONORADRESS:FLORAL.jpg",
+  // Day 3
+  "d3-1": "LOOK:FDV:BELLACAFTANMINI:IVORY.jpg",
+  "d3-5": "LOOK:FDV:LUCINABLOUSE:BLACK.jpg",
+  "d3-9": "LOOK:FDV:CALYPSODRESS:BLACK.jpg",
+  // Day 4
+  "d4-1": "LOOK:FDV:LILLITHCAFTAN:IVORY.jpg",
+  "d4-4": "LOOK:FDV:JUNOBLOUSE:BLK.jpg",
+  "d4-9": "LOOK:FDV:ISADORADRESS:BLK.jpg",
+  // Day 5
+  "d5-1": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
+  "d5-3": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
+  "d5-7": "look:fdv:crepesilkset:black.jpg",
+  // Day 6
+  "d6-1": "LOOK:FDV:LUCINABLOUSE:BLACK.jpg",
+  "d6-4": "LOOK:FDV:CALYPSODRESS:BLACK.jpg",
+  "d6-8": "LOOK:FDV:STEVIECAFTAN:BLACK.jpg",
+  // Day 7
+  "d7-1": "LOOK:FDV:HONORADRESS:FLORAL.jpg",
+  "d7-4": "LOOK:FDV:ASTRIDBLOUSE:BLK.jpg",
+  // Day 8
+  "d8-4": "LOOK:FDV:ATLASSCARF:IVORY.jpg",
+};
+
+/**
  * Alias map for itinerary keys that don't exactly match genome database_match_key values.
  * Maps the itinerary key to the correct genome entry.
  */
