@@ -320,6 +320,7 @@
   },
 
   "spain": {
+    "_correction_note": "REBUILT Feb 27, 2026 from Sharon's definitive Mallorca layout + Gemini scroll-block map. Story display name: 'Mallorca. Stay a Little Longer.' Internal key remains 'spain'. 13 scroll blocks: 7 products, 4 travel transitions + hero + finale. Carousel has 7 items.",
     "spain-1": {
       "position": 1,
       "component": "Hero",
@@ -337,7 +338,13 @@
       "genomeKey": "access:jewelry:phoebephilo:silvercuff.jpg",
       "caption": "Bare shoulders. A single cuff. Clean lines that don't compete with light. Spain rewards restraint — even in heat.",
       "brandLine": "Cuff by Phoebe Philo. Coming Soon.",
-      "correction": "Sharon screenshot 2:02 — should be PP Silver Cuff, not generic PP"
+      "price": "$395",
+      "sizes": "O/S",
+      "color": "Silver",
+      "description": "Wide polished silver metal cuff bracelet.",
+      "shopUrl": "https://www.phoebephilo.com",
+      "shopStatus": "coming_soon",
+      "correction": "Feb 27 — price $395, size, color, description added from Gemini source of truth"
     },
     "spain-3": {
       "position": 3,
@@ -355,7 +362,14 @@
       "productName": "Strapless Swimsuit",
       "genomeKey": "LOOK:FILDEVIE:STRAPLESSSWIMSUIT:BLACK.jpg",
       "caption": "Black swim against pale water and tree shade. The silhouette stays sharp, even when everything else is soft.",
-      "brandLine": "Swimwear by FIL DE VIE. Coming soon."
+      "brandLine": "Swimwear by FIL DE VIE. Coming soon.",
+      "price": "$395",
+      "sizes": "S, M, L",
+      "color": "Black",
+      "description": "Strapless swimsuit with asymmetric cutout. Coming soon.",
+      "shopUrl": "https://www.fildevie.com",
+      "shopStatus": "coming_soon",
+      "correction": "Feb 27 — price $395, size, color, description added from Gemini source of truth"
     },
     "spain-5": {
       "position": 5,
@@ -367,7 +381,13 @@
       "genomeKey": "LOOK:LOROPIANA:SLIPDRESS:BLACK.jpg",
       "caption": "Open water. No soundtrack but wind and distant boats. Spain feels expansive without trying.",
       "brandLine": "Look by Loro Piana. Coming soon.",
-      "correction": "Sharon screenshot 2:03 — was listed as travel/place, should be STYLE so modal opens. Loro Piana Slip Dress."
+      "price": "$1,300",
+      "sizes": "32-42",
+      "color": "Black",
+      "description": "Viscose minimalist slip dress with skinny straps and flared hem. Coming soon.",
+      "shopUrl": "https://us.loropiana.com/en/c/woman/dresses",
+      "shopStatus": "coming_soon",
+      "correction": "Feb 27 — price $1,300, size, color, description, URL added from Gemini source of truth"
     },
     "spain-6": {
       "position": 6,
@@ -379,15 +399,20 @@
       "genomeKey": "LOOK:PHOEBEPHILO:POLOSWEATER:BLACK.jpg",
       "caption": "Minimal swim, clean cut, nothing ornamental. The body becomes part of the landscape.",
       "brandLine": "Sweater by Phoebe Philo.",
-      "correction": "Sharon screenshot 2:04 — was showing Gaia Dress, should be PP Polo Sweater"
+      "price": "$990",
+      "sizes": "S, M, L",
+      "color": "Black",
+      "description": "Cashmere polo sweater with short sleeves and button placket. Coming soon.",
+      "shopUrl": "https://www.phoebephilo.com",
+      "shopStatus": "coming_soon",
+      "correction": "Feb 27 — price $990, size, color, description added from Gemini source of truth"
     },
     "spain-7": {
       "position": 7,
       "component": "EditorialScroll",
       "isProduct": false,
       "pinType": "place",
-      "caption": "A path carved through stone toward the sea. You walk slower without deciding to.",
-      "correction": "Sharon screenshot 2:05 — REMOVE 'Dress by FIL DE VIE. Coming soon.' from caption. Keep as place/not clickable."
+      "caption": "A path carved through stone toward the sea. You walk slower without deciding to."
     },
     "spain-8": {
       "position": 8,
@@ -398,7 +423,13 @@
       "productName": "Effigie Swimsuit",
       "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg",
       "caption": "Salt hair, narrow deck, strong sun. Pieces that hold their shape against wind matter here.",
-      "brandLine": "Swimwear by Eres. Coming soon."
+      "brandLine": "Swimwear by Eres. Coming soon.",
+      "price": "$545",
+      "sizes": "38-44",
+      "color": "Black",
+      "description": "One shoulder one piece swimsuit.",
+      "shopUrl": "https://www.eresparis.com/us/en-US/swimwear-2/012110-01564.html",
+      "correction": "Feb 27 — price $545, size, description, URL added from Gemini. Note: DIFFERENT Eres product than Hydra ($460 Asymmetric One Piece). This is Effigie at $545, different URL."
     },
     "spain-9": {
       "position": 9,
@@ -417,8 +448,12 @@
       "genomeKey": "LOOK:PHOEBEPHILO:BOMBESUNGLASSES:BROWN.jpg",
       "caption": "Dark lenses against white sky. The light is unforgiving here — the accessories shouldn't be.",
       "brandLine": "Sunglasses by Phoebe Philo.",
-      "shopUrl": "https://us.phoebephilo.com/products/bombe-sunglasses-fume-acetate",
-      "correction": "Sharon screenshot 2:06 — should be PP Bombe Sunglasses"
+      "price": "$750",
+      "sizes": "O/S",
+      "color": "Black",
+      "description": "Bombé sunglasses with brown acetate frames, extra-wide, angular temples and dark brown lenses.",
+      "shopUrl": "https://us.phoebephilo.com/products/bombe-sunglasses-brown-acetate",
+      "correction": "Feb 27 — price $750, size, description, URL updated from Gemini source of truth"
     },
     "spain-11": {
       "position": 11,
@@ -437,16 +472,19 @@
       "genomeKey": "LOOK:RAYBAN:PUFFEDWAYFARER:BLACK.jpg",
       "caption": "Gold at the waterline. Sun, salt, skin. That's enough.",
       "brandLine": "Sunglasses by RayBan.",
-      "shopUrl": "https://www.ray-ban.com/usa/sunglasses/RB4940wayfarer%20puffer-black/8056262910863",
-      "correction": "Sharon screenshot 2:07 — should be RayBan Puffed Wayfarer"
+      "price": "$202",
+      "sizes": "O/S",
+      "color": "Black",
+      "description": "Special edition of the classic wayfarer with puffed extra large frame.",
+      "shopUrl": "https://www.ray-ban.com/usa/sunglasses/RB4940wayfarer%20puffer-black/8056262848777",
+      "correction": "Feb 27 — price $202, size, description added, URL updated from Gemini source of truth"
     },
     "spain-13": {
       "position": 13,
       "component": "TextImage",
       "isProduct": false,
       "pinType": "place",
-      "caption": "Late afternoon. Linen, sunglasses, a glass in hand. Spain doesn't perform — it lingers.",
-      "correction": "Sharon screenshot 2:08 — NOT clickable, travel/destination shot. No product."
+      "caption": "Late afternoon. Linen, sunglasses, a glass in hand. Spain doesn't perform — it lingers."
     }
   },
 
@@ -777,14 +815,15 @@
     "_hydra_note": "REBUILT Feb 27. 6 unique carousel items. Eres swimsuit appears twice in editorial (hydra-8 and hydra-12) but only ONCE in carousel. Synthetic hydra-carousel-1 replaced with real hydra-2.",
 
     "spain": [
-      {"tileId": "spain-2", "genomeKey": "ACCESSORY:PHOEBEPHILO:SILVERCUFF:SILVER.jpg", "label": "Phoebe Philo — Silver Cuff"},
-      {"tileId": "spain-carousel-2", "genomeKey": "LOOK:FILDEVIE:STRAPLESSSWIMSUIT:BLACK.jpg", "label": "FIL DE VIE — Strapless Swimsuit"},
-      {"tileId": "spain-5", "genomeKey": "LOOK:LOROPIANA:SLIPDRESS:CAMEL.jpg", "label": "Loro Piana — Slip Dress"},
-      {"tileId": "spain-6", "genomeKey": "LOOK:PHOEBEPHILO:POLOSWEATER:CREAM.jpg", "label": "Phoebe Philo — Polo Sweater"},
-      {"tileId": "spain-8", "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg", "label": "Eres — Effigie Swimsuit"},
-      {"tileId": "spain-10", "genomeKey": "ACCESSORY:PHOEBEPHILO:BOMBESUNGLASSES:FUME.jpg", "label": "Phoebe Philo — Bombe Sunglasses"},
-      {"tileId": "spain-12", "genomeKey": "LOOK:RAYBAN:PUFFEDWAYFARER:BLACK.jpg", "label": "RayBan — Puffed Wayfarer"}
+      {"tileId": "spain-2", "genomeKey": "access:jewelry:phoebephilo:silvercuff.jpg", "label": "Phoebe Philo — Silver Cuff", "price": "$395"},
+      {"tileId": "spain-4", "genomeKey": "LOOK:FILDEVIE:STRAPLESSSWIMSUIT:BLACK.jpg", "label": "FIL DE VIE — Strapless Swimsuit", "price": "$395"},
+      {"tileId": "spain-5", "genomeKey": "LOOK:LOROPIANA:SLIPDRESS:BLACK.jpg", "label": "Loro Piana — Slip Dress", "price": "$1,300"},
+      {"tileId": "spain-6", "genomeKey": "LOOK:PHOEBEPHILO:POLOSWEATER:BLACK.jpg", "label": "Phoebe Philo — Polo Sweater", "price": "$990"},
+      {"tileId": "spain-8", "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg", "label": "Eres — Effigie Swimsuit", "price": "$545"},
+      {"tileId": "spain-10", "genomeKey": "LOOK:PHOEBEPHILO:BOMBESUNGLASSES:BROWN.jpg", "label": "Phoebe Philo — Bombe Sunglasses", "price": "$750"},
+      {"tileId": "spain-12", "genomeKey": "LOOK:RAYBAN:PUFFEDWAYFARER:BLACK.jpg", "label": "RayBan — Puffed Wayfarer", "price": "$202"}
     ],
+    "_spain_note": "REBUILT Feb 27. 7 carousel items. Synthetic spain-carousel-2 replaced with real spain-4. Loro Piana color fixed CAMEL→BLACK. Polo Sweater color fixed CREAM→BLACK. Bombe genomeKey unified with tile (BROWN). All prices added.",
 
     "retreat": [
       {"tileId": "retreat-5", "genomeKey": "LOOK:THEROW:CASHMERETRACKSUIT:CREAM.jpg", "label": "The Row — Cashmere Tracksuit"},

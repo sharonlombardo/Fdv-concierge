@@ -30,7 +30,7 @@ const CAROUSEL_ASSET_KEYS: Record<string, string> = {
   "hydra-10": "hydra-object-1",
   "hydra-13": "hydra-ritual-1",
   // Spain (IMAGE_SLOTS uses slow- prefix)
-  "spain-carousel-2": "slow-museum",
+  "spain-4": "slow-museum",
   "spain-2": "slow-culture-1",
   "spain-5": "slow-tile-2",
   "spain-6": "slow-tile-1",
