@@ -651,12 +651,14 @@
   },
 
   "newyork": {
+    "_correction_note": "REBUILT Feb 27, 2026 from Sharon's Gemini scroll-block data (New York, Always). All prices, sizes, colors, descriptions, URLs added. 9 unique products + 8 atmospheric/destination blocks. Carousel: 9 items with prices.",
     "ny-1": {
       "position": 1,
       "component": "Hero",
       "isProduct": false,
       "pinType": "place",
-      "caption": "Golden hour in Midtown never gets old. It lasts maybe ten minutes. That's the magic."
+      "caption": "Golden hour in Midtown never gets old. It lasts maybe ten minutes. That's the magic.",
+      "editorialOverlay": "NEW YORK, ALWAYS"
     },
     "ny-2": {
       "position": 2,
@@ -667,8 +669,13 @@
       "productName": "Cashmere Overcoat",
       "genomeKey": "look:phoebephilo:cashmereovercoat:tobacco.jpg",
       "caption": "New York is made for tailoring. A long coat, sharp trousers, nothing complicated. It always works here.",
-      "brandLine": "Look by Phoebe Philo.",
-      "shopUrl": "https://us.phoebephilo.com/products/mans-coat-tobacco-cashmere"
+      "brandLine": "Phoebe Philo — Cashmere Overcoat. Coming soon.",
+      "price": "$3,500",
+      "sizes": "S, M, L",
+      "color": "Tobacco",
+      "description": "Double breasted cashmere blend overcoat with structured shoulders.",
+      "shopUrl": "http://www.phoebephilo.com/",
+      "status": "Coming Soon"
     },
     "ny-3": {
       "position": 3,
@@ -711,8 +718,14 @@
       "productName": "Isabelle Coat",
       "genomeKey": "fil de vie look grecian dress.jpg",
       "caption": "Long black fur coat under concrete columns. The city loves a strong silhouette.",
-      "brandLine": "Isabelle Coat by FIL DE VIE. Coming soon.",
-      "correction": "Sharon correction — was Mira Coat, should be Isabelle Coat. Genome key is 'fil de vie look grecian dress.jpg' (misnamed in genome but name field is correct)"
+      "brandLine": "FIL DE VIE — Isabelle Coat. Coming soon.",
+      "price": "$1,250",
+      "sizes": "S, M, L",
+      "color": "Black",
+      "description": "Fluid silk and wool blend coat with dramatic drape.",
+      "shopUrl": "http://www.fildevie.com/",
+      "status": "Coming Soon",
+      "note": "Genome key is 'fil de vie look grecian dress.jpg' (misnamed in genome but name field is correct)"
     },
     "ny-8": {
       "position": 8,
@@ -720,12 +733,16 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "Phoebe Philo",
-      "productName": "Ankle Boot",
+      "productName": "Ankle Boots",
       "genomeKey": "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg",
       "caption": "A sharp black boot that can handle pavement, gallery floors, and a late-night walk home.",
-      "brandLine": "Boot by Phoebe Philo.",
-      "shopUrl": "https://us.phoebephilo.com/products/soft-pump-cream-patent-leather",
-      "correction": "Sharon screenshot 2:15 — should be PP Boot"
+      "brandLine": "Phoebe Philo — Ankle Boots. Coming soon.",
+      "price": "$1,200",
+      "sizes": "36-41",
+      "color": "Black Leather",
+      "description": "Smooth calfskin leather ankle boot with angled block heel.",
+      "shopUrl": "http://www.phoebephilo.com/",
+      "status": "Coming Soon"
     },
     "ny-9": {
       "position": 9,
@@ -733,10 +750,16 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "FIL DE VIE",
-      "productName": "Dara Dress & Fur Stole",
+      "productName": "Dara Dress and Fur Stole",
       "genomeKey": "look:fdv:daradressfurstole:bone:black.jpg",
       "caption": "Waiting for the train, headphones in, coat moving in the draft. It's cinematic even when it's ordinary.",
-      "brandLine": "Dress & Stole by FIL DE VIE. Coming soon."
+      "brandLine": "FIL DE VIE — Dara Dress and Fur Stole. Coming soon.",
+      "price": "$1,850",
+      "sizes": "S, M, L",
+      "color": "Bone/Black",
+      "description": "Silk georgette evening gown paired with an ethically sourced shearling fur stole.",
+      "shopUrl": "http://www.fildevie.com/",
+      "status": "Coming Soon"
     },
     "ny-10": {
       "position": 10,
@@ -755,9 +778,14 @@
       "productName": "Hera Dress",
       "genomeKey": "LOOK:FILDEVIE:HERADRESS:BONE.jpg",
       "caption": "The Tomb of Perneb at The Met. A museum afternoon is mandatory. Clean lines, good art, and an outfit that belongs there.",
-      "brandLine": "Look by FIL DE VIE. Coming soon.",
-      "bookUrl": "https://www.metmuseum.org/art/collection/search/100000099",
-      "correction": "Sharon screenshot 2:15 — was travel/not clicking. MUST be pinType style. Hera Dress."
+      "brandLine": "FIL DE VIE — Hera Dress. Coming soon.",
+      "price": "$850",
+      "sizes": "S, M, L",
+      "color": "Ivory",
+      "description": "Silk jacquard draped dress.",
+      "shopUrl": "http://www.fildevie.com/",
+      "status": "Coming Soon",
+      "bookUrl": "https://www.metmuseum.org/art/collection/search/100000099"
     },
     "ny-12": {
       "position": 12,
@@ -776,9 +804,13 @@
       "productName": "Drive Bag",
       "genomeKey": "ACCESSORY:BAG:PHOEBEPHILO:DRIVEBAG.jpg",
       "caption": "A bag that stays close. Sunglasses for the morning after. One piece of jewelry that works everywhere. New York asks for objects that keep up — not slow you down.",
-      "brandLine": "Drive Bag by Phoebe Philo.",
-      "shopUrl": "https://us.phoebephilo.com/products/drive-bag-black-leather",
-      "correction": "Sharon screenshot 2:16 — was not opening. Must be pinType style and clickable."
+      "brandLine": "Phoebe Philo — Drive Bag. Coming soon.",
+      "price": "$4,500",
+      "sizes": "O/S",
+      "color": "Black",
+      "description": "Large structured top-handle leather tote.",
+      "shopUrl": "http://www.phoebephilo.com/",
+      "status": "Coming Soon"
     },
     "ny-14": {
       "position": 14,
@@ -791,13 +823,18 @@
       "position": 15,
       "component": "TextImage",
       "isProduct": true,
-      "pinType": "style",
+      "pinType": "object",
       "brand": "Smythson",
       "productName": "Chelsea Notebook",
       "genomeKey": "ACCESSORY:SMYTHSON:CHELSEANOTEBOOK:RED.jpg",
       "caption": "A red notebook in your bag. New York gives you ideas whether you ask for them or not.",
-      "brandLine": "Smythson Chelsea Notebook.",
-      "correction": "Sharon screenshot 2:16 — was listed as Cartier Diary. Corrected to Smythson Chelsea Notebook."
+      "brandLine": "Smythson — Chelsea Notebook.",
+      "price": "$85",
+      "sizes": "O/S",
+      "color": "Red",
+      "description": "Cross-grain leather notebook with pale blue gilt-edged featherweight paper.",
+      "shopUrl": "http://www.smythson.com/",
+      "status": "Coming Soon"
     },
     "ny-16": {
       "position": 16,
@@ -808,9 +845,13 @@
       "productName": "Peak Sunglasses",
       "genomeKey": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg",
       "caption": "Good sunglasses are non-negotiable here. Even in winter.",
-      "brandLine": "Phoebe Philo Peak Sunglasses.",
-      "shopUrl": "https://us.phoebephilo.com/products/peak-sunglasses-black-acetate",
-      "correction": "Sharon screenshot 2:17 — modal was showing incorrect info."
+      "brandLine": "Phoebe Philo — Peak Sunglasses. Coming soon.",
+      "price": "$750",
+      "sizes": "O/S",
+      "color": "Black",
+      "description": "Sharp angular frames in black acetate.",
+      "shopUrl": "http://www.phoebephilo.com/",
+      "status": "Coming Soon"
     },
     "ny-17": {
       "position": 17,
@@ -821,8 +862,13 @@
       "productName": "Mira Coat",
       "genomeKey": "LOOK:FDV:MIRACOAT:BLACK.jpg",
       "caption": "Evening walk, collar up, traffic behind you. This is the version of you the city likes best.",
-      "brandLine": "Mira Coat by FIL DE VIE. Coming soon.",
-      "correction": "Sharon correction — was PP Robe Coat (showing as Gaia Dress), should be FDV Mira Coat"
+      "brandLine": "FIL DE VIE — Mira Coat. Coming soon.",
+      "price": "$1,150",
+      "sizes": "S, M, L",
+      "color": "Black",
+      "description": "Heavyweight linen and silk duster coat.",
+      "shopUrl": "http://www.fildevie.com/",
+      "status": "Coming Soon"
     },
     "ny-18": {
       "position": 18,
@@ -878,16 +924,17 @@
     "_retreat_note": "REBUILT Feb 27. 6 unique carousel items with prices. Fear of God appears twice in editorial (retreat-6 + retreat-12) but only ONCE in carousel. Product names corrected to match Gemini exactly.",
 
     "newyork": [
-      {"tileId": "ny-2", "genomeKey": "look:phoebephilo:cashmereovercoat:tobacco.jpg", "label": "Phoebe Philo — Cashmere Overcoat"},
-      {"tileId": "ny-7", "genomeKey": "fil de vie look grecian dress.jpg", "label": "FIL DE VIE — Isabelle Coat"},
-      {"tileId": "ny-8", "genomeKey": "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg", "label": "Phoebe Philo — Ankle Boot"},
-      {"tileId": "ny-9", "genomeKey": "look:fdv:daradressfurstole:bone:black.jpg", "label": "FIL DE VIE — Dara Dress & Fur Stole"},
-      {"tileId": "ny-11", "genomeKey": "LOOK:FILDEVIE:HERADRESS:BONE.jpg", "label": "FIL DE VIE — Hera Dress"},
-      {"tileId": "ny-13", "genomeKey": "ACCESSORY:BAG:PHOEBEPHILO:DRIVEBAG.jpg", "label": "Phoebe Philo — Drive Bag"},
-      {"tileId": "ny-15", "genomeKey": "ACCESSORY:SMYTHSON:CHELSEANOTEBOOK:RED.jpg", "label": "Smythson — Chelsea Notebook"},
-      {"tileId": "ny-16", "genomeKey": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg", "label": "Phoebe Philo — Peak Sunglasses"},
-      {"tileId": "ny-17", "genomeKey": "LOOK:FDV:MIRACOAT:BLACK.jpg", "label": "FIL DE VIE — Mira Coat"}
-    ]
+      {"tileId": "ny-2", "genomeKey": "look:phoebephilo:cashmereovercoat:tobacco.jpg", "label": "Phoebe Philo — Cashmere Overcoat", "price": "$3,500"},
+      {"tileId": "ny-7", "genomeKey": "fil de vie look grecian dress.jpg", "label": "FIL DE VIE — Isabelle Coat", "price": "$1,250"},
+      {"tileId": "ny-8", "genomeKey": "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg", "label": "Phoebe Philo — Ankle Boots", "price": "$1,200"},
+      {"tileId": "ny-9", "genomeKey": "look:fdv:daradressfurstole:bone:black.jpg", "label": "FIL DE VIE — Dara Dress and Fur Stole", "price": "$1,850"},
+      {"tileId": "ny-11", "genomeKey": "LOOK:FILDEVIE:HERADRESS:BONE.jpg", "label": "FIL DE VIE — Hera Dress", "price": "$850"},
+      {"tileId": "ny-13", "genomeKey": "ACCESSORY:BAG:PHOEBEPHILO:DRIVEBAG.jpg", "label": "Phoebe Philo — Drive Bag", "price": "$4,500"},
+      {"tileId": "ny-15", "genomeKey": "ACCESSORY:SMYTHSON:CHELSEANOTEBOOK:RED.jpg", "label": "Smythson — Chelsea Notebook", "price": "$85"},
+      {"tileId": "ny-16", "genomeKey": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg", "label": "Phoebe Philo — Peak Sunglasses", "price": "$750"},
+      {"tileId": "ny-17", "genomeKey": "LOOK:FDV:MIRACOAT:BLACK.jpg", "label": "FIL DE VIE — Mira Coat", "price": "$1,150"}
+    ],
+    "_newyork_note": "REBUILT Feb 27. 9 carousel items with prices. Product names corrected to match Gemini exactly (Ankle Boot→Boots, Dara Dress & Fur Stole→and). All prices/sizes/descriptions added to tiles."
   },
 
   "closingLines": {
