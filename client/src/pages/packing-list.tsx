@@ -143,12 +143,14 @@ function extractPackingData(): DayData[] {
             });
           } else if (genome) {
             // No editorial extra, but product map has a genome entry for this position
+            // Pass the direct flow-extra key to avoid GENOME_KEY_TO_EXTRA collision
+            const directExtra = `${flow.id}-extra-${i}`;
             items.push({
               id: `${flow.id}-extra-${i}`,
               imageKey: `${flow.id}-extra-${i}`,
               name: getProductDisplayName(genome),
               brand: genome.brand,
-              image: getProductImageUrl(genome.database_match_key),
+              image: getProductImageUrl(genome.database_match_key, undefined, directExtra),
               context: `${timeCategory} • ${flow.title}`,
               whyText: genome.description || `${positionLabels[i]} for ${flow.title.toLowerCase()}.`,
               dayNumber: dayPage.day,

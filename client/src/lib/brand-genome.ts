@@ -330,7 +330,6 @@ export const ITINERARY_KEY_ALIAS: Record<string, string> = {
  * Returns minimal product info for display.
  */
 export const MANUAL_FALLBACK: Record<string, { brand: string; name: string }> = {
-  "le prunier sunscreen.jpg": { brand: "Le Prunier", name: "Plum Beauty Oil SPF" },
   "look:fdv:crepesilkset:black.jpg": { brand: "FIL DE VIE", name: "Crepe Silk Set" },
 };
 
@@ -426,7 +425,12 @@ for (const [aliasKey, realKey] of Object.entries(ITINERARY_KEY_ALIAS)) {
  * 3. fallbackFlowId — parent slot's wardrobe image (for items not in the above maps).
  * 4. Placeholder SVG as last resort.
  */
-export function getProductImageUrl(genomeKey: string, fallbackFlowId?: string): string {
+export function getProductImageUrl(genomeKey: string, fallbackFlowId?: string, directFlowExtra?: string): string {
+  // 0. Direct flow-specific extra key — bypasses static map for repeating products
+  if (directFlowExtra) {
+    return `${BLOB_BASE}/${directFlowExtra}`;
+  }
+
   const normalizedKey = genomeKey.toLowerCase();
 
   // 1. Check for individual product photo (accessories, footwear, bags, beauty)
