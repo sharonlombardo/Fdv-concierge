@@ -154,6 +154,7 @@
   },
 
   "hydra": {
+    "_correction_note": "REBUILT Feb 27, 2026 from Sharon's definitive Hydra layout + Gemini scroll-block map. 11 scroll blocks: 7 products (6 unique — Eres swimsuit appears twice), 4 atmospheric transitions. Carousel has 6 unique items.",
     "hydra-1": {
       "position": 1,
       "component": "Hero",
@@ -167,11 +168,16 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "YSL",
-      "productName": "Cut Away Jumpsuit",
+      "productName": "Jumpsuit",
       "genomeKey": "LOOK:YSL:JUMPSUIT:BLACK.jpg",
       "caption": "Hydra favors clean lines and bare ankles. Nothing that competes with the light. You dress once and repeat without thinking.",
-      "brandLine": "Jumpsuit by FIL DE VIE. Coming soon.",
-      "note": "Tile says FDV but no FDV jumpsuit in genome. Mapped to YSL Jumpsuit."
+      "brandLine": "Jumpsuit by YSL.",
+      "price": "$1,230",
+      "sizes": "36-42",
+      "color": "Black",
+      "description": "Cotton viscose gabardine jumpsuit with cut away details and wide leg.",
+      "shopUrl": "https://www.fwrd.com/product-saint-laurent-sleeveless-jumpsuit-in-gris-fonce/SLAU-WC19/",
+      "correction": "Feb 27 — name corrected from 'Cut Away Jumpsuit' to 'Jumpsuit', brand corrected from FDV to YSL, price added"
     },
     "hydra-3": {
       "position": 3,
@@ -186,11 +192,17 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "Jil Sander",
-      "productName": "Button Down Shirt",
+      "productName": "Relaxed Button Down Shirt",
       "genomeKey": "look:jilsander:buttondownshirt:bluestripe.jpg",
       "caption": "Wind off the harbor, oversized tailoring thrown over bare skin. Hydra makes even structure feel relaxed.",
       "brandLine": "Shirt by Jil Sander. Coming Soon.",
-      "correction": "Sharon correction — was Trench Coat, should be Button Down Shirt (blue stripe)"
+      "price": "$780",
+      "sizes": "S, M, L",
+      "color": "Black/Striped",
+      "description": "A classic, oversized menswear-inspired shirt with a single front pocket. Made from organic cotton poplin with a washer finish, relaxed fit with curved hems, single box pleat at back yoke.",
+      "shopUrl": "https://www.jilsander.com",
+      "shopStatus": "coming_soon",
+      "correction": "Feb 27 — name corrected from 'Button Down Shirt' to 'Relaxed Button Down Shirt', price $780 added"
     },
     "hydra-5": {
       "position": 5,
@@ -208,9 +220,12 @@
       "productName": "Trench Coat",
       "genomeKey": "LOOK:JILSANDER:TRENCHCOAT:WHITE.jpg",
       "caption": "White against deeper blue. Fabric moving in the breeze. It's less about the outfit and more about how it catches air.",
-      "brandLine": "Look by Jil Sander. Coming Soon.",
-      "shopUrl": "https://www.farfetch.com/shopping/women/jil-sander-belted-single-breasted-coat-item-18804208.aspx",
-      "correction": "Sharon correction — was Silk Fluid Set (black), should be Trench Coat (white, $1230)"
+      "brandLine": "Trench Coat by Jil Sander. Coming Soon.",
+      "price": "$1,230",
+      "sizes": "36-42",
+      "color": "White",
+      "description": "Belted single-breasted coat white cotton gabardine. Classic lapels button fastening long sleeves mid-length belted waist. Made in Italy.",
+      "shopUrl": "https://www.farfetch.com/shopping/women/jil-sander-belted-single-breasted-coat-item-18804208.aspx"
     },
     "hydra-7": {
       "position": 7,
@@ -225,12 +240,16 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "Eres",
-      "productName": "Effigie Swimsuit",
+      "productName": "Asymmetric One Piece",
       "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg",
       "caption": "Black swimwear against chalk-white stone. Clean and unfussy.",
       "brandLine": "Swimwear by Eres.",
-      "shopUrl": "https://www.eresparis.com/us/en-US/swimwear-2/011401-3333.html",
-      "correction": "Sharon screenshot 2:02 — should be Effigie Suit, not generic Eres"
+      "price": "$460",
+      "sizes": "36-42",
+      "color": "Black",
+      "description": "Asymmetrical one piece suit.",
+      "shopUrl": "https://www.eresparis.com/us/en-US/swimwear-2/011401-01062.html",
+      "correction": "Feb 27 — name corrected from 'Effigie Swimsuit' to 'Asymmetric One Piece', price $460 added, URL corrected"
     },
     "hydra-9": {
       "position": 9,
@@ -248,8 +267,13 @@
       "productName": "Linen Relaxed Button Down Shirt",
       "genomeKey": "look:phoebephilo:buttondownshirt.jpg",
       "caption": "Bring objects that disappear when worn. A sandal you forget you're wearing. A shirt that flies in the wind.",
-      "brandLine": "Blouse by Phoebe Philo. Coming soon.",
-      "correction": "Sharon screenshot 1:58 — should be PP Button Down Shirt, was showing old format"
+      "brandLine": "Shirt by Phoebe Philo. Coming soon.",
+      "price": "$1,200",
+      "sizes": "32-44",
+      "color": "White",
+      "description": "Shirt in linen with button fastening collar. The boyish, generous fit is emphasised by a box pleat at the back which adds gentle volume.",
+      "shopUrl": "https://www.phoebephilo.com",
+      "shopStatus": "coming_soon"
     },
     "hydra-11": {
       "position": 11,
@@ -264,12 +288,17 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "Eres",
-      "productName": "Asia Swimsuit",
-      "genomeKey": "look:eres:swimsuit.jpg",
+      "productName": "Asymmetric One Piece",
+      "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg",
       "caption": "Salt, sun, then immersion. Nothing feels more right here than disappearing into water.",
       "brandLine": "Swimwear by Eres.",
-      "shopUrl": "https://www.eresparis.com/us/en-US/swimwear-2/011401-3333.html",
-      "correction": "Sharon correction — genomeKey was LOOK:ERES:ASIA:SWIMSUIT:BLACK.jpg (maps to 'Asymetric One Piece'), corrected to look:eres:swimsuit.jpg which has name 'Asia Swimsuit'"
+      "price": "$460",
+      "sizes": "36-42",
+      "color": "Black",
+      "description": "Asymmetrical one piece suit.",
+      "shopUrl": "https://www.eresparis.com/us/en-US/swimwear-2/011401-01062.html",
+      "note": "Same product as hydra-8 — Eres Asymmetric One Piece appears twice in editorial. Only listed ONCE in carousel.",
+      "correction": "Feb 27 — name corrected from 'Asia Swimsuit' to 'Asymmetric One Piece', genomeKey unified with hydra-8"
     },
     "hydra-13": {
       "position": 13,
@@ -280,8 +309,13 @@
       "productName": "Layered Silk Dress",
       "genomeKey": "LOOK:DRIESVANNOTEN:LAYEREDSILKDRESS:BLACK.jpg",
       "caption": "Morning is for water. Midday belongs to shade, conversation and a glass of cold wine. Evening arrives without ceremony.",
-      "brandLine": "Look by Dries Van Noten. Coming soon.",
-      "correction": "Sharon screenshot 1:59 — should be DVN Layered Silk Dress"
+      "brandLine": "Dress by Dries Van Noten. Coming soon.",
+      "price": "$750",
+      "sizes": "32-42",
+      "color": "Black",
+      "description": "Layered viscose and silk dress.",
+      "shopUrl": "https://www.driesvannoten.com",
+      "shopStatus": "coming_soon"
     }
   },
 
@@ -733,14 +767,14 @@
     "_morocco_note": "REBUILT Feb 26. All 6 carousel items now use REAL editorial positions (no synthetic IDs). YSL LouLou Bikini and Column Dress need to be ADDED to fdv_brand_genome.json.",
 
     "hydra": [
-      {"tileId": "hydra-carousel-1", "genomeKey": "LOOK:YSL:JUMPSUIT:BLACK.jpg", "label": "YSL — Jumpsuit"},
-      {"tileId": "hydra-4", "genomeKey": "look:jilsander:buttondownshirt:bluestripe.jpg", "label": "Jil Sander — Button Down Shirt"},
-      {"tileId": "hydra-6", "genomeKey": "LOOK:JILSANDER:TRENCHCOAT:WHITE.jpg", "label": "Jil Sander — Trench Coat"},
-      {"tileId": "hydra-8", "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg", "label": "Eres — Effigie Swimsuit"},
-      {"tileId": "hydra-10", "genomeKey": "look:phoebephilo:buttondownshirt.jpg", "label": "Phoebe Philo — Linen Relaxed Button Down Shirt"},
-      {"tileId": "hydra-12", "genomeKey": "look:eres:swimsuit.jpg", "label": "Eres — Asia Swimsuit"},
-      {"tileId": "hydra-13", "genomeKey": "LOOK:DRIESVANNOTEN:LAYEREDSILKDRESS:BLACK.jpg", "label": "Dries Van Noten — Layered Silk Dress"}
+      {"tileId": "hydra-2", "genomeKey": "LOOK:YSL:JUMPSUIT:BLACK.jpg", "label": "YSL — Jumpsuit", "price": "$1,230"},
+      {"tileId": "hydra-4", "genomeKey": "look:jilsander:buttondownshirt:bluestripe.jpg", "label": "Jil Sander — Relaxed Button Down Shirt", "price": "$780"},
+      {"tileId": "hydra-6", "genomeKey": "LOOK:JILSANDER:TRENCHCOAT:WHITE.jpg", "label": "Jil Sander — Trench Coat", "price": "$1,230"},
+      {"tileId": "hydra-8", "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg", "label": "Eres — Asymmetric One Piece", "price": "$460"},
+      {"tileId": "hydra-10", "genomeKey": "look:phoebephilo:buttondownshirt.jpg", "label": "Phoebe Philo — Linen Relaxed Button Down Shirt", "price": "$1,200"},
+      {"tileId": "hydra-13", "genomeKey": "LOOK:DRIESVANNOTEN:LAYEREDSILKDRESS:BLACK.jpg", "label": "Dries Van Noten — Layered Silk Dress", "price": "$750"}
     ],
+    "_hydra_note": "REBUILT Feb 27. 6 unique carousel items. Eres swimsuit appears twice in editorial (hydra-8 and hydra-12) but only ONCE in carousel. Synthetic hydra-carousel-1 replaced with real hydra-2.",
 
     "spain": [
       {"tileId": "spain-2", "genomeKey": "ACCESSORY:PHOEBEPHILO:SILVERCUFF:SILVER.jpg", "label": "Phoebe Philo — Silver Cuff"},

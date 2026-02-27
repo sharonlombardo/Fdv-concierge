@@ -23,12 +23,11 @@ const CAROUSEL_ASSET_KEYS: Record<string, string> = {
   "morocco-7": "morocco-style-1",
   "morocco-11": "morocco-experience-1",
   // Hydra
-  "hydra-carousel-1": "hydra-style-1",
+  "hydra-2": "hydra-style-1",
   "hydra-4": "hydra-tile-4",
   "hydra-6": "hydra-tile-6",
   "hydra-8": "hydra-tile-5",
   "hydra-10": "hydra-object-1",
-  "hydra-12": "hydra-light-2",
   "hydra-13": "hydra-ritual-1",
   // Spain (IMAGE_SLOTS uses slow- prefix)
   "spain-carousel-2": "slow-museum",
