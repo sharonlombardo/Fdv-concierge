@@ -11,7 +11,7 @@
           "footwear": "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
           "handbag": "access:bag:bottega:hobo.jpg",
           "jewelry": "ACCESSORY:BULGAR:SERPENTI:BLK.jpg",
-          "accessory": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg"
+          "accessory": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg"
         },
         "afternoon": {
           "look": "LOOK:FDV:CYBELBLOUSE:STRIPE.jpg",
@@ -37,7 +37,7 @@
           "footwear": "footwear, amery kit sandal.jpg",
           "handbag": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
           "jewelry": null,
-          "accessory": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg"
+          "accessory": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg"
         },
         "afternoon": {
           "look": "LOOK:FDV:DIANADRES:STRIPE.jpg",
@@ -143,14 +143,14 @@
           "footwear": "footwear, amery kit sandal.jpg",
           "handbag": "access:bag:bottega:hobo.jpg",
           "jewelry": "ACCESSORY:JEWELRY:BULGARI:CABACHON NECKLACE.jpg",
-          "accessory": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg"
+          "accessory": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg"
         },
         "afternoon": {
           "look": "LOOK:FDV:CALYPSODRESS:BLACK.jpg",
           "footwear": "footwear, amery kit sandal.jpg",
           "handbag": "access:bag:bottega:hobo.jpg",
           "jewelry": "ACCESSORY:JEWELRY:BULGARI:CABACHON NECKLACE.jpg",
-          "accessory": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg"
+          "accessory": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg"
         },
         "evening": {
           "look": "LOOK:FDV:STEVIECAFTAN:BLACK.jpg",

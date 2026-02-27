@@ -60,6 +60,8 @@ function extractPackingData(): DayData[] {
       const morningRows: WardrobeRow[] = [];
       const afternoonRows: WardrobeRow[] = [];
       const eveningRows: WardrobeRow[] = [];
+      // Track look genome keys within this day to skip duplicate outfits (e.g., Day 8 morning = afternoon)
+      const seenLookKeys = new Set<string>();
 
       const getTimeCategory = (time: string): 'Morning' | 'Afternoon' | 'Evening' => {
         const lower = time.toLowerCase();
@@ -79,6 +81,11 @@ function extractPackingData(): DayData[] {
         const slotProducts = getSlotProducts(dayPage.day, slotName);
         const lookProduct = slotProducts.find(s => s.position === 'look');
         const lookGenome = lookProduct?.product;
+
+        // Skip fully duplicate slot data within the same day (e.g., Day 8 morning = afternoon identical)
+        const slotFingerprint = slotProducts.map(s => s.key?.toLowerCase() || 'null').join('|');
+        if (seenLookKeys.has(slotFingerprint)) return null;
+        seenLookKeys.add(slotFingerprint);
 
         items.push({
           id: `${flow.id}-look`,

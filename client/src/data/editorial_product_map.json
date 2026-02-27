@@ -926,7 +926,7 @@
       {"tileId": "morocco-itin-31", "genomeKey": "phoebe philo earrings dropped.jpg", "label": "Phoebe Philo — Gold Drop Earrings", "price": "$1,050", "source": "itinerary"},
       {"tileId": "morocco-itin-32", "genomeKey": "phoebe philo hallmark earrings.jpg", "label": "Phoebe Philo — Hallmark Earrings", "price": "$450", "source": "itinerary"},
 
-      {"tileId": "morocco-itin-33", "genomeKey": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg", "label": "Phoebe Philo — Cruise Sunglasses", "price": "$490", "source": "itinerary"},
+      {"tileId": "morocco-itin-33", "genomeKey": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg", "label": "Phoebe Philo — Peak Sunglasses", "price": "$460", "source": "itinerary"},
       {"tileId": "morocco-itin-34", "genomeKey": "ACCESS:SUGNLASSES:LOEWE:BLACK.jpg", "label": "Loewe — Inflated Cat Eye Sunglasses", "price": "$440", "source": "itinerary"},
 
       {"tileId": "morocco-itin-35", "genomeKey": "ACCESSORY:GABRIELLAHEARST:WELFATCHASHMERE:SAND.jpg", "label": "Gabriella Hearst — Lauren Knit Wrap", "price": "$3,170", "source": "itinerary"},

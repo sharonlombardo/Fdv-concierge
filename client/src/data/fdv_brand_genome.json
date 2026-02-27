@@ -2168,5 +2168,19 @@
       "Evening Silhouette",
       "Minimalist Closure"
     ]
+  },
+  {
+    "database_match_key": "le prunier sunscreen.jpg",
+    "category": "BEAUTY",
+    "brand": "Le Prunier",
+    "name": "Plumscreen Sunscreen",
+    "color": null,
+    "sizes": ["50ml"],
+    "price": "$80",
+    "price_numeric": 80,
+    "description": "Our 7x award-winning Plumscreen combines broad spectrum UVA/UVB/HEV sun protection with the skincare benefits of Le Prunier's cult-favorite Plum Beauty Oil.",
+    "url": "https://www.leprunier.com",
+    "shop_status": "live",
+    "wellspring_atelier_codes": ["Clean Beauty", "French Pharmacy", "Sun Protection"]
   }
 ]

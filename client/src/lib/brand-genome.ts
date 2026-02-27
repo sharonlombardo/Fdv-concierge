@@ -167,7 +167,7 @@ export const SECTION_LOOK_GENOME_KEY: Record<string, string> = {
   "d1-2": "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
   "d1-3": "access:bag:bottega:hobo.jpg",
   "d1-4": "ACCESSORY:BULGAR:SERPENTI:BLK.jpg",
-  "d1-5": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg",
+  "d1-5": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg",
   // Afternoon
   "d1-6": "LOOK:FDV:CYBELBLOUSE:STRIPE.jpg",
   "d1-7": "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
@@ -184,7 +184,7 @@ export const SECTION_LOOK_GENOME_KEY: Record<string, string> = {
   "d2-1": "LOOK:FDV:JUNOBLOUSE:MARRAKECHPANT:STRIPE.jpg",
   "d2-2": "footwear, amery kit sandal.jpg",
   "d2-3": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
-  "d2-5": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg",
+  "d2-5": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg",
   // Afternoon
   "d2-4": "LOOK:FDV:DIANADRES:STRIPE.jpg",
   "d2-6": "ACCESS:BAG:TOWEL:FDV:POOLESSENTIALS:OLIVE.jpg",
@@ -243,12 +243,12 @@ export const SECTION_LOOK_GENOME_KEY: Record<string, string> = {
   "d6-2": "footwear, amery kit sandal.jpg",
   "d6-3": "access:bag:bottega:hobo.jpg",
   "d6-4": "ACCESSORY:JEWELRY:BULGARI:CABACHON NECKLACE.jpg",
-  "d6-5": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg",
+  "d6-5": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg",
   "d6-6": "LOOK:FDV:CALYPSODRESS:BLACK.jpg",
   "d6-7": "footwear, amery kit sandal.jpg",
   "d6-8": "access:bag:bottega:hobo.jpg",
   "d6-9": "ACCESSORY:JEWELRY:BULGARI:CABACHON NECKLACE.jpg",
-  "d6-10": "ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg",
+  "d6-10": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg",
   "d6-11": "LOOK:FDV:STEVIECAFTAN:BLACK.jpg",
   "d6-12": "footwear, amery kit sandal.jpg",
   "d6-13": "ACCESS:BAG:CHLOE:WRISTLETTE:BLACK.jpg",
@@ -307,8 +307,8 @@ export const FLOW_LOOK_GENOME_KEY: Record<string, string> = {
   // Day 7
   "d7-1": "LOOK:FDV:HONORADRESS:FLORAL.jpg",
   "d7-4": "LOOK:FDV:ASTRIDBLOUSE:BLK.jpg",
-  // Day 8
-  "d8-4": "LOOK:FDV:ATLASSCARF:IVORY.jpg",
+  // Day 8 — d8-1 only (d8-4 afternoon is same outfit, skip to avoid duplicate)
+  "d8-1": "LOOK:FDV:ATLASSCARF:IVORY.jpg",
 };
 
 /**
@@ -351,7 +351,7 @@ const GENOME_KEY_TO_EXTRA: Record<string, string> = {
   "footwear:khaite:otto:wht.jpg": "d1-1-extra-0",
   "access:bag:bottega:hobo.jpg": "d1-1-extra-1",
   "accessory:bulgar:serpenti:blk.jpg": "d1-1-extra-2",
-  "accessory:sunglasses:phoebephilo:cruisesunglasses:tawny.jpg": "d1-1-extra-3",
+  "accessory:phoebephilo:peaksunglasses:black.jpg": "d1-1-extra-3",
   "footwear, amery kit sandal.jpg": "d1-6-extra-0",
   "access:bag:chloe:wristlette:black.jpg": "d1-6-extra-1",
   "accessory:jewelry:bulgari:cabachon necklace.jpg": "d1-6-extra-2",

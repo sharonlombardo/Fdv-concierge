@@ -102,8 +102,8 @@ function getMoroccoItineraryTiles(): PinTile[] {
   for (const page of ITINERARY_DATA) {
     if ('day' in page) {
       const dayPage = page as DayPage;
-      // Track which time slots we've seen for product map lookups
-      const timeSlotCount: Record<string, number> = {};
+      // Track looks seen within this day to skip duplicates (e.g., Day 8 morning = afternoon)
+      const daySeenLooks = new Set<string>();
 
       for (const item of dayPage.flow) {
         if (item.commercialWardrobe) {
@@ -115,11 +115,14 @@ function getMoroccoItineraryTiles(): PinTile[] {
           const timeKey = item.time?.toLowerCase() || '';
           const slotName = timeKey.includes('evening') || timeKey.includes('night') ? 'evening' as const
             : timeKey.includes('afternoon') ? 'afternoon' as const : 'morning' as const;
-          // Use getSlotProducts to find the look genome key for this day/slot
-          if (!timeSlotCount[slotName]) timeSlotCount[slotName] = 0;
           const slotProds = getSlotProducts(dayPage.day, slotName);
           const lookEntry = slotProds.find(s => s.position === 'look');
           const lookGenome = lookEntry?.product;
+
+          // Skip duplicate looks within the same day
+          const lookFingerprint = slotProds.map(s => s.key?.toLowerCase() || 'null').join('|');
+          if (daySeenLooks.has(lookFingerprint)) continue;
+          daySeenLooks.add(lookFingerprint);
 
           tiles.push({
             id: tileId,
