@@ -275,6 +275,27 @@
     ]
   },
   {
+    "database_match_key": "LOOK:FILDEVIE:COLUMNDRESS:BLACK.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Column Dress",
+    "color": "Black",
+    "sizes": [
+      "0-12"
+    ],
+    "price": "$745",
+    "price_numeric": 745,
+    "description": "Viscose knit long black dress. Coming soon.",
+    "url": "https://www.fildevie.com",
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": [
+      "Knit Column",
+      "Viscose Fluid",
+      "Minimal Black",
+      "Desert Modernism"
+    ]
+  },
+  {
     "database_match_key": "LOOK:FILDEVIE:COLUMNDRESS:FURSTOLE:BONE:BLACK.jpg",
     "category": "LOOK",
     "brand": "FIL DE VIE",
