@@ -489,12 +489,14 @@
   },
 
   "retreat": {
+    "_correction_note": "REBUILT Feb 27, 2026 from Sharon's Gemini scroll-block data (Utah. Into the Desert). Key changes: product names corrected to match Gemini exactly, all prices/sizes/colors/descriptions/URLs added. 6 unique products, Fear of God appears twice in editorial (blocks 5+11), once in carousel.",
     "retreat-1": {
       "position": 1,
       "component": "Hero",
       "isProduct": false,
       "pinType": "place",
-      "caption": "Blending into red-rock country, this is the kind of place that doesn't compete with the landscape — it disappears into it."
+      "caption": "Blending into red-rock country, this is the kind of place that doesn't compete with the landscape — it disappears into it.",
+      "editorialOverlay": "UTAH. INTO THE DESERT"
     },
     "retreat-2": {
       "position": 2,
@@ -523,22 +525,34 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "The Row",
-      "productName": "Cashmere Tracksuit",
+      "productName": "Cashmere Track Suit",
       "genomeKey": "LOOK:THEROW:CASHMERETRACKSUIT:CREAM.jpg",
       "caption": "A room that opens onto rock and sky. Bare walls. Nothing competing with the view.",
-      "brandLine": "Look by The Row. Coming soon."
+      "brandLine": "The Row — Cashmere Track Suit. Coming soon.",
+      "editorialOverlay": "Carved Into Rock",
+      "price": "$2,370",
+      "sizes": "2-12",
+      "color": "Cream",
+      "description": "Pure cashmere track suit. Coming soon.",
+      "shopUrl": "http://www.therow.com/",
+      "status": "Coming Soon"
     },
     "retreat-6": {
       "position": 6,
       "component": "EditorialScroll",
       "isProduct": true,
       "pinType": "style",
-      "brand": "Fear Of God",
+      "brand": "Fear of God",
       "productName": "Leather Robe Coat",
       "genomeKey": "LOOK:FEAROFGOD:LEATHERCOAT:ESPRESSO.jpg",
       "caption": "Clean lines. Technical fabric. Modern pieces that make sense against sun-warmed land.",
-      "brandLine": "Look by Fear Of God. Coming soon.",
-      "correction": "Sharon screenshot 2:10 — should be Fear of God Leather Robe Coat"
+      "brandLine": "Fear of God — Leather Robe Coat. Coming soon.",
+      "price": "$2,370",
+      "sizes": "2-12",
+      "color": "Black",
+      "description": "The Leather Robe Coat is crafted in Italy with an unstructured design that enhances the fabric's drape. Coming soon.",
+      "shopUrl": "http://www.fearofgod.com/",
+      "status": "Coming Soon"
     },
     "retreat-7": {
       "position": 7,
@@ -546,11 +560,17 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "Phoebe Philo",
-      "productName": "Cashmere Sweater and Track Pant",
+      "productName": "Cashmere Tracksuit",
       "genomeKey": "LOOK:PHOEBEPHILO:CASHMERETRACKSUIT:ESPRESSO.jpg",
       "caption": "Late afternoon, stretched out in the sun. The desert has a way of softening you.",
-      "brandLine": "Cashmere set by Phoebe Philo. Coming soon.",
-      "correction": "Sharon screenshot 2:10 — should be PP Cashmere Sweater and Track Pant in Espresso"
+      "brandLine": "Phoebe Philo — Cashmere Tracksuit. Coming soon.",
+      "price": "$3,100",
+      "priceBreakdown": "$1,900 Top / $1,200 Bottom",
+      "sizes": "S, M, L",
+      "color": "Neutral/Grey",
+      "description": "Cashmere relaxed tracksuit set.",
+      "shopUrl": "http://www.phoebephilo.com/",
+      "status": "Coming Soon"
     },
     "retreat-8": {
       "position": 8,
@@ -558,10 +578,17 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "Aimé Leon Dore",
-      "productName": "Quarter Zip Set",
+      "productName": "Quarter Zip Pullover & Track Pant",
       "genomeKey": "LOOK:AIMELEONDORE:QUARTERZIPSET:BLACK.jpg",
       "caption": "Warm stone. Soft light. The kind of quiet you don't rush.",
-      "brandLine": "Look by Aimé Leon Dore. Coming soon."
+      "brandLine": "Aimé Leon Dore — Quarter Zip Pullover & Track Pant. Coming soon.",
+      "price": "$440",
+      "priceBreakdown": "$200 Top / $240 Bottom",
+      "sizes": "XS-XXL",
+      "color": "Black",
+      "description": "Sport-inspired quarter zip pullover and matching track pant.",
+      "shopUrl": "http://www.aimeleondore.com/",
+      "status": "Coming Soon"
     },
     "retreat-9": {
       "position": 9,
@@ -576,11 +603,16 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "Jil Sander",
-      "productName": "Silk Fluid Set",
+      "productName": "Silk Button Down Shirt & Fluid Pant",
       "genomeKey": "LOOK:JILSANDER:SILKFLUIDSET:BLACK.jpg",
-      "correction": "Sharon correction — was Trench Coat (white), should be Silk Fluid Set (black)",
       "caption": "A long dark line against open desert. Simple. Strong. Moving through.",
-      "brandLine": "Look by Jil Sander. Coming soon."
+      "brandLine": "Jil Sander — Silk Button Down Shirt & Fluid Pant. Coming soon.",
+      "price": "$2,100",
+      "sizes": "34-42",
+      "color": "Neutral",
+      "description": "Lightweight silk matching set featuring a relaxed button-down and wide fluid pant.",
+      "shopUrl": "http://www.jilsander.com/",
+      "status": "Coming Soon"
     },
     "retreat-11": {
       "position": 11,
@@ -588,23 +620,33 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "Eres",
-      "productName": "Effigie Swimsuit",
+      "productName": "Effigie Suit",
       "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg",
       "caption": "Midday settles in. Shade becomes the luxury.",
-      "brandLine": "Swimwear by Eres. Coming soon.",
-      "correction": "Sharon screenshot 2:11 — should be Effigie Swimsuit (NOT Asia)"
+      "brandLine": "Eres — Effigie Suit.",
+      "price": "$545",
+      "sizes": "38-44",
+      "color": "Black",
+      "description": "One shoulder one piece swimsuit.",
+      "shopUrl": "https://www.eresparis.com/us/en-US/swimwear-2/012110-01564.html"
     },
     "retreat-12": {
       "position": 12,
       "component": "TextImage",
       "isProduct": true,
       "pinType": "style",
-      "brand": "Fear Of God",
+      "brand": "Fear of God",
       "productName": "Leather Robe Coat",
       "genomeKey": "LOOK:FEAROFGOD:LEATHERCOAT:ESPRESSO.jpg",
       "caption": "Inside, cool stone. Outside, endless heat. That edge between the two is the whole mood.",
-      "brandLine": "Look by Fear Of God. Coming soon.",
-      "note": "Same product as retreat-6 — appears twice in story"
+      "brandLine": "Fear of God — Leather Robe Coat. Coming soon.",
+      "price": "$2,370",
+      "sizes": "2-12",
+      "color": "Black",
+      "description": "The Leather Robe Coat is crafted in Italy with an unstructured design that enhances the fabric's drape. Coming soon.",
+      "shopUrl": "http://www.fearofgod.com/",
+      "status": "Coming Soon",
+      "note": "Same product as retreat-6 — appears twice in editorial, once in carousel"
     }
   },
 
@@ -826,13 +868,14 @@
     "_spain_note": "REBUILT Feb 27. 7 carousel items. Synthetic spain-carousel-2 replaced with real spain-4. Loro Piana color fixed CAMEL→BLACK. Polo Sweater color fixed CREAM→BLACK. Bombe genomeKey unified with tile (BROWN). All prices added.",
 
     "retreat": [
-      {"tileId": "retreat-5", "genomeKey": "LOOK:THEROW:CASHMERETRACKSUIT:CREAM.jpg", "label": "The Row — Cashmere Tracksuit"},
-      {"tileId": "retreat-6", "genomeKey": "LOOK:FEAROFGOD:LEATHERCOAT:ESPRESSO.jpg", "label": "Fear Of God — Leather Robe Coat"},
-      {"tileId": "retreat-7", "genomeKey": "LOOK:PHOEBEPHILO:CASHMERETRACKSUIT:ESPRESSO.jpg", "label": "Phoebe Philo — Cashmere Sweater & Track Pant"},
-      {"tileId": "retreat-8", "genomeKey": "LOOK:AIMELEONDORE:QUARTERZIPSET:BLACK.jpg", "label": "Aimé Leon Dore — Quarter Zip Set"},
-      {"tileId": "retreat-10", "genomeKey": "LOOK:JILSANDER:SILKFLUIDSET:BLACK.jpg", "label": "Jil Sander — Silk Fluid Set"},
-      {"tileId": "retreat-11", "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg", "label": "Eres — Effigie Swimsuit"}
+      {"tileId": "retreat-5", "genomeKey": "LOOK:THEROW:CASHMERETRACKSUIT:CREAM.jpg", "label": "The Row — Cashmere Track Suit", "price": "$2,370"},
+      {"tileId": "retreat-6", "genomeKey": "LOOK:FEAROFGOD:LEATHERCOAT:ESPRESSO.jpg", "label": "Fear of God — Leather Robe Coat", "price": "$2,370"},
+      {"tileId": "retreat-7", "genomeKey": "LOOK:PHOEBEPHILO:CASHMERETRACKSUIT:ESPRESSO.jpg", "label": "Phoebe Philo — Cashmere Tracksuit", "price": "$3,100"},
+      {"tileId": "retreat-8", "genomeKey": "LOOK:AIMELEONDORE:QUARTERZIPSET:BLACK.jpg", "label": "Aimé Leon Dore — Quarter Zip Pullover & Track Pant", "price": "$440"},
+      {"tileId": "retreat-10", "genomeKey": "LOOK:JILSANDER:SILKFLUIDSET:BLACK.jpg", "label": "Jil Sander — Silk Button Down Shirt & Fluid Pant", "price": "$2,100"},
+      {"tileId": "retreat-11", "genomeKey": "LOOK:ERES:EFFIGIESWIMSUIT:BLACK.jpg", "label": "Eres — Effigie Suit", "price": "$545"}
     ],
+    "_retreat_note": "REBUILT Feb 27. 6 unique carousel items with prices. Fear of God appears twice in editorial (retreat-6 + retreat-12) but only ONCE in carousel. Product names corrected to match Gemini exactly.",
 
     "newyork": [
       {"tileId": "ny-2", "genomeKey": "look:phoebephilo:cashmereovercoat:tobacco.jpg", "label": "Phoebe Philo — Cashmere Overcoat"},

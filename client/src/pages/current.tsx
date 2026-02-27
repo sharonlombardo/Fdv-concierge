@@ -38,11 +38,11 @@ const CAROUSEL_ASSET_KEYS: Record<string, string> = {
   "spain-10": "slow-tile-5",
   "spain-12": "slow-object-1",
   // Retreat
-  "retreat-5": "retreat-tile-5",
-  "retreat-6": "retreat-tile-6",
+  "retreat-5": "retreat-tile-1",
+  "retreat-6": "retreat-tile-2",
   "retreat-7": "retreat-tile-3",
   "retreat-8": "retreat-tile-4",
-  "retreat-10": "retreat-object-1",
+  "retreat-10": "retreat-tile-6",
   "retreat-11": "retreat-object-1",
   // New York
   "ny-2": "ny-tile-2",
