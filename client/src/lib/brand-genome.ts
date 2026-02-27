@@ -341,20 +341,50 @@ const PRODUCT_PLACEHOLDER = "/product-placeholder.svg";
 const BLOB_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2";
 
 /**
- * Flow IDs that have verified wardrobe images in Blob storage.
- * Only main outfit looks have uploaded photos — accessories (footwear, bags, jewelry) do not.
- * This prevents getProductImageUrl from returning URLs that 404.
+ * Maps accessory genome keys to their custom-uploaded Blob image keys.
+ * These are the individual product photos (footwear, bags, jewelry, beauty)
+ * stored as {flowId}-extra-{index} in Vercel Blob storage.
+ * Generated from the packing list's working image resolution path.
  */
-const VERIFIED_BLOB_FLOW_IDS = new Set([
-  "d1-1", "d1-3", "d1-6",
-  "d2-1", "d2-4", "d2-7",
-  "d3-1", "d3-5", "d3-9",
-  "d4-1", "d4-4", "d4-9",
-  "d5-1", "d5-7",
-  "d6-1", "d6-4", "d6-8",
-  "d7-1", "d7-4", "d7-7",
-  "d8-1",
-]);
+const GENOME_KEY_TO_EXTRA: Record<string, string> = {
+  // Day 1
+  "footwear:khaite:otto:wht.jpg": "d1-1-extra-0",
+  "access:bag:bottega:hobo.jpg": "d1-1-extra-1",
+  "accessory:bulgar:serpenti:blk.jpg": "d1-1-extra-2",
+  "accessory:sunglasses:phoebephilo:cruisesunglasses:tawny.jpg": "d1-1-extra-3",
+  "footwear, amery kit sandal.jpg": "d1-6-extra-0",
+  "access:bag:chloe:wristlette:black.jpg": "d1-6-extra-1",
+  "accessory:jewelry:bulgari:cabachon necklace.jpg": "d1-6-extra-2",
+  "access:jewlery:phoebephilo:hoops.jpg": "d1-6-extra-3",
+  "beauty:fdv:parfum.jpg": "d1-3-extra-3",
+  // Day 2
+  "accessory:bag:demelier:santorini.jpg": "d2-1-extra-1",
+  "access:bag:towel:fdv:poolessentials:olive.jpg": "d2-4-extra-1",
+  "beauty:fdv:travelmist.jpg": "d2-4-extra-3",
+  "phoebe philo earrings dropped.jpg": "d2-7-extra-2",
+  "beauty:violettefr:necatrlipstain.jpg": "d2-7-extra-3",
+  // Day 3
+  "access:sugnlasses:loewe:black.jpg": "d3-1-extra-3",
+  "phoebe philo hallmark earrings.jpg": "d3-5-extra-2",
+  "beauty sandwich serum.jpg": "d3-5-extra-3",
+  "footwear:alaia:black.jpg": "d3-9-extra-0",
+  "paco rabanne pailette bag.jpg": "d3-9-extra-1",
+  "immortelle oil.jpg": "d3-9-extra-3",
+  // Day 4
+  "le prunier sunscreen.jpg": "d4-1-extra-3",
+  "beauty:rituelgeinsha.jpg": "d4-4-extra-3",
+  "accessory:bag:driesvannoten:black.jpg": "d4-9-extra-1",
+  "beauty:poppyking:sinlipstick:red.jpg": "d4-9-extra-3",
+  // Day 5
+  "beauty:sainjane:sunritual.jpg": "d5-3-extra-3",
+  "accessory:bag:bottega:kalimero:black.jpg": "d5-7-extra-1",
+  // Day 6
+  "beauty:amanessentials:jadeset.jpg": "d6-8-extra-3",
+  // Day 7
+  "footwear:ferragamo:lolysandal:black.jpg": "d7-4-extra-0",
+  "accessory:gabriellahearst:welfatchashmere:sand.jpg": "d7-4-extra-3",
+  // Day 8
+};
 
 /** Reverse lookup: genome database_match_key → flow ID for wardrobe image resolution */
 /** Prioritizes FLOW_LOOK_GENOME_KEY (event-based, matching Blob filenames) over
@@ -388,21 +418,34 @@ for (const [aliasKey, realKey] of Object.entries(ITINERARY_KEY_ALIAS)) {
 
 /**
  * Get the best available image URL for a genome product.
- * For look items: resolves genome key → flow ID → Blob wardrobe image.
- * For accessories: uses fallbackFlowId to get the parent slot's wardrobe image.
- * Only returns Blob URLs for verified flow IDs that actually have images.
- * Returns placeholder SVG only as last resort.
+ *
+ * Resolution order:
+ * 1. GENOME_KEY_TO_EXTRA — individual product photos (accessories, footwear, bags, beauty)
+ *    stored at {flowId}-extra-{index} in Blob. These are the same images the packing list uses.
+ * 2. GENOME_KEY_TO_FLOW — look/outfit wardrobe images stored at {flowId}-wardrobe in Blob.
+ * 3. fallbackFlowId — parent slot's wardrobe image (for items not in the above maps).
+ * 4. Placeholder SVG as last resort.
  */
 export function getProductImageUrl(genomeKey: string, fallbackFlowId?: string): string {
-  // First try direct genome key → flow ID mapping (for look items)
-  const flowId = GENOME_KEY_TO_FLOW.get(genomeKey.toLowerCase());
-  if (flowId && VERIFIED_BLOB_FLOW_IDS.has(flowId)) {
+  const normalizedKey = genomeKey.toLowerCase();
+
+  // 1. Check for individual product photo (accessories, footwear, bags, beauty)
+  const extraKey = GENOME_KEY_TO_EXTRA[normalizedKey];
+  if (extraKey) {
+    return `${BLOB_BASE}/${extraKey}`;
+  }
+
+  // 2. Check for look/outfit wardrobe image
+  const flowId = GENOME_KEY_TO_FLOW.get(normalizedKey);
+  if (flowId) {
     return `${BLOB_BASE}/${flowId}-wardrobe`;
   }
-  // For accessories: use the parent slot's wardrobe image (only if verified)
-  if (fallbackFlowId && VERIFIED_BLOB_FLOW_IDS.has(fallbackFlowId)) {
+
+  // 3. Fallback to parent slot's wardrobe image
+  if (fallbackFlowId) {
     return `${BLOB_BASE}/${fallbackFlowId}-wardrobe`;
   }
+
   return PRODUCT_PLACEHOLDER;
 }
 

@@ -1105,8 +1105,7 @@ function ShopTheStory({ tiles, sourceStory, onOpenDetail }: ShopTheStoryProps) {
   const getImageUrl = useGetImageUrl();
   const isProductType = (pt: string) => ["style", "object", "look", "product", "item"].includes(pt);
 
-  // Only show shoppable products with VERIFIED images — no broken/placeholder items
-  // DEDUPLICATE by genome key so each product appears only once in carousel
+  // Only show shoppable products, deduplicated by genome key
   const seenGenomeKeys = new Set<string>();
   const shopTiles = tiles.filter(t => {
     if (!isProductType(t.pinType)) return false;
@@ -1116,11 +1115,6 @@ function ShopTheStory({ tiles, sourceStory, onOpenDetail }: ShopTheStoryProps) {
       if (seenGenomeKeys.has(key)) return false;
       seenGenomeKeys.add(key);
     }
-    // Verify this item has a real image (editorial or verified Blob)
-    const editImg = t.assetKey ? getImageUrl(t.assetKey) : "";
-    const prodImg = t.genomeKey ? getProductImageUrl(t.genomeKey) : "";
-    const hasImage = !!editImg || (!!prodImg && !prodImg.includes("placeholder"));
-    if (!hasImage && !t.imageUrl) return false;
     return true;
   });
   if (shopTiles.length === 0) return null;
