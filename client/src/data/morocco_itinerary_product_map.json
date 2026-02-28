@@ -117,14 +117,7 @@
           "jewelry": null,
           "accessory": "le prunier sunscreen.jpg"
         },
-        "afternoon": {
-          "_note": "Same as morning",
-          "look": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
-          "footwear": "footwear, amery kit sandal.jpg",
-          "handbag": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
-          "jewelry": null,
-          "accessory": "BEAUTY:SAINJANE:SUNRITUAL.jpg"
-        },
+        "afternoon": null,
         "evening": {
           "look": "look:fdv:crepesilkset:black.jpg",
           "footwear": "FOOTWEAR:ALAIA:BLACK.jpg",

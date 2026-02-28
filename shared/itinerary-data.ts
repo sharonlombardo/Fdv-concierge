@@ -533,7 +533,6 @@ export const ITINERARY_DATA: ItineraryPage[] = [
         image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200',
         description: 'Fresh seafood and Moroccan classics in a charming medina setting.',
         wardrobe: 'Continue in coastal attire. Light layers.',
-        commercialWardrobe: 'https://images.unsplash.com/photo-1577900232427-18219b9166a3?auto=format&fit=crop&q=80&w=800',
         address: 'Rue Youssef el Fassi, Essaouira Medina',
         notes: 'Fresh seafood, rooftop terrace available',
         map: 'https://www.google.com/maps/search/Dar+Baba+Essaouira'
