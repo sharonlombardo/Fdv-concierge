@@ -231,7 +231,7 @@ export const SECTION_LOOK_GENOME_KEY: Record<string, string> = {
   "d5-1": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
   "d5-2": "footwear, amery kit sandal.jpg",
   "d5-3": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
-  "d5-4": "ACCESS:SUGNLASSES:LOEWE:BLACK.jpg",
+  "d5-4": "le prunier sunscreen.jpg",
   "d5-5": "BEAUTY:SAINJANE:SUNRITUAL.jpg",
   "d5-6": "look:fdv:crepesilkset:black.jpg",
   "d5-7": "FOOTWEAR:ALAIA:BLACK.jpg",
