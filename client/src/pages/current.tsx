@@ -15,13 +15,13 @@ import editorialMap from "@/data/editorial_product_map.json";
 
 // Maps carousel tileIds to their correct IMAGE_SLOTS assetKey
 const CAROUSEL_ASSET_KEYS: Record<string, string> = {
-  // Morocco
-  "morocco-1": "morocco-tile-1",
-  "morocco-2": "morocco-tile-2",
-  "morocco-3": "morocco-tile-3",
-  "morocco-5": "morocco-tile-5",
-  "morocco-7": "morocco-style-1",
-  "morocco-11": "morocco-experience-1",
+  // Morocco — asset keys matched to actual Blob images
+  "morocco-1": "morocco-style-1",     // YSL Bikini → bikini photo
+  "morocco-2": "morocco-tile-1",      // Gaia Dress → Gaia Dress photo
+  "morocco-3": "morocco-tile-3",      // Alaïa
+  "morocco-5": "morocco-tile-5",      // Este Dress
+  "morocco-7": "morocco-object-1",    // Column Dress → Column Dress photo
+  "morocco-11": "morocco-motion-1",   // Red Caftan → Red Caftan photo
   // Hydra
   "hydra-2": "hydra-style-1",
   "hydra-4": "hydra-tile-1",
@@ -1417,16 +1417,16 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           onOpenDetail={handleOpenDetail}
           title="What travels well here"
           paragraphs={[
-            "Choose pieces that feel intentional, not precious. A simple black column dress, a sandal you can walk up the stairs in.",
-            "Column Dress by FIL DE VIE — Coming Soon"
+            "Amanjena, Marrakech. Desert-toned walls, long shadows, stillness. A black bathing suit against all that sand and clay feels moody and intentional.",
+            "LouLou Bikini by Yves Saint Laurent — Coming Soon"
           ]}
           assetKey="morocco-style-1"
           bucket="Your Style"
           pinType="style"
           sourceStory="Morocco"
           imagePosition="left"
-          brand={getTile('morocco', 'morocco-7')?.brand || "FIL DE VIE"}
-          genomeKey={getTile('morocco', 'morocco-7')?.genomeKey}
+          brand={getTile('morocco', 'morocco-1')?.brand || "Yves Saint Laurent"}
+          genomeKey={getTile('morocco', 'morocco-1')?.genomeKey}
         />
 
         <MomentBlock
@@ -1448,8 +1448,8 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           title="Pattern and Pleasure"
           sourceStory="Morocco"
           tiles={[
-            { id: "morocco-1", assetKey: "morocco-tile-1", caption: getTile('morocco', 'morocco-1')?.caption || "", bucket: "Your Style", pinType: getTile('morocco', 'morocco-1')?.pinType || "style", title: getTile('morocco', 'morocco-1')?.productName, brand: getTile('morocco', 'morocco-1')?.brand, genomeKey: getTile('morocco', 'morocco-1')?.genomeKey },
-            { id: "morocco-2", assetKey: "morocco-tile-2", caption: getTile('morocco', 'morocco-2')?.caption || "", bucket: "Your Style", pinType: getTile('morocco', 'morocco-2')?.pinType || "style", title: getTile('morocco', 'morocco-2')?.productName, brand: getTile('morocco', 'morocco-2')?.brand, genomeKey: getTile('morocco', 'morocco-2')?.genomeKey },
+            { id: "morocco-2", assetKey: "morocco-tile-1", caption: getTile('morocco', 'morocco-2')?.caption || "", bucket: "Your Style", pinType: getTile('morocco', 'morocco-2')?.pinType || "style", title: getTile('morocco', 'morocco-2')?.productName, brand: getTile('morocco', 'morocco-2')?.brand, genomeKey: getTile('morocco', 'morocco-2')?.genomeKey },
+            { id: "morocco-arch", assetKey: "morocco-tile-2", caption: "Sun-warmed archways and afternoon light. The geometry is quiet and precise.", bucket: "Travel & Experiences", pinType: "place" },
             { id: "morocco-3", assetKey: "morocco-tile-3", caption: getTile('morocco', 'morocco-3')?.caption || "", bucket: "Your Style", pinType: getTile('morocco', 'morocco-3')?.pinType || "style", brand: getTile('morocco', 'morocco-3')?.brand, genomeKey: getTile('morocco', 'morocco-3')?.genomeKey },
             { id: "morocco-4", assetKey: "morocco-tile-4", caption: getTile('morocco', 'morocco-4')?.caption || "", bucket: "Travel & Experiences", pinType: getTile('morocco', 'morocco-4')?.pinType || "place", bookUrl: getTile('morocco', 'morocco-4')?.bookUrl },
             { id: "morocco-5", assetKey: "morocco-tile-5", caption: getTile('morocco', 'morocco-5')?.caption || "", bucket: "Your Style", pinType: getTile('morocco', 'morocco-5')?.pinType || "style", brand: getTile('morocco', 'morocco-5')?.brand, genomeKey: getTile('morocco', 'morocco-5')?.genomeKey },

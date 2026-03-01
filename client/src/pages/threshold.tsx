@@ -212,6 +212,8 @@ export default function Threshold() {
           muted
           loop
           playsInline
+          preload="auto"
+          poster={heroImage}
           className="absolute inset-0 w-full h-full object-cover"
           src="/landing-video.mp4"
         />
