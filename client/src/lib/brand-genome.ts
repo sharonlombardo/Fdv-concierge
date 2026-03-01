@@ -369,6 +369,7 @@ const GENOME_KEY_TO_EXTRA: Record<string, string> = {
   "footwear:alaia:black.jpg": "d3-9-extra-0",
   "paco rabanne pailette bag.jpg": "d3-9-extra-1",
   "immortelle oil.jpg": "d3-9-extra-3",
+  "beauty:imortelle oil.jpg": "d3-9-extra-3",
   // Day 4
   "le prunier sunscreen.jpg": "d4-1-extra-3",
   "beauty:rituelgeinsha.jpg": "d4-4-extra-3",

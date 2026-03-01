@@ -4,7 +4,7 @@ import { Link } from "wouter";
 import { ChevronRight, Pin } from "lucide-react";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { queryClient } from "@/lib/queryClient";
 
 const MOOD_KEYS = [
@@ -192,6 +192,14 @@ export default function Threshold() {
   };
 
   const heroImage = getImageUrl("landing-hero");
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (v) {
+      v.play().catch(() => {});
+    }
+  }, []);
 
   const handleScrollToContent = () => {
     const contentSection = document.getElementById('current-content');
@@ -208,6 +216,7 @@ export default function Threshold() {
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center bg-black">
         {/* Video background with static image fallback poster */}
         <video
+          ref={videoRef}
           autoPlay
           muted
           loop
@@ -215,8 +224,9 @@ export default function Threshold() {
           preload="auto"
           poster={heroImage}
           className="absolute inset-0 w-full h-full object-cover"
-          src="/landing-video.mp4"
-        />
+        >
+          <source src="/landing-video.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-black/60" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#fafaf9]" />
 
