@@ -1,0 +1,587 @@
+import './morocco-guide.css';
+
+const IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco';
+
+export default function MoroccoGuide() {
+  return (
+    <div className="morocco-guide">
+
+      {/* ═══ HERO ═══ */}
+      <div className="guide-hero">
+        <h1>MARRAKECH</h1>
+        <div className="curator">A FIL DE VIE GUIDE</div>
+        <div className="subtitle">Curated by Sharon Lombardo</div>
+      </div>
+
+      <div className="divider-double" />
+
+      {/* HERO IMAGE */}
+      <div className="hero-image">
+        <img src={`${IMG}/hero.jpg`} alt="Marrakech" />
+      </div>
+
+      {/* ═══ INTRO ═══ */}
+      <div className="quote-block">
+        <div className="intro-text">
+          <p>Marrakech is one of my favorite places in the world.</p>
+          <p>I&rsquo;ve been coming here for years &mdash; for Fil de Vie shoots, for sourcing, for long conversations in tiled courtyards that somehow stretch into evening. It&rsquo;s a city I return to again and again, and it never feels exhausted. It feels layered.</p>
+          <p>There&rsquo;s a rhythm to it I love: the chaos of the medina, the quiet of a riad courtyard, the sharp desert light just outside the city. It&rsquo;s theatrical and intimate at the same time. If you let it.</p>
+          <p>These are not the &ldquo;top 10 must-sees.&rdquo; They&rsquo;re the places I go back to &mdash; the gardens I still walk, the rooftops I still book, the shops I still browse, the rooms I still love staying in.</p>
+          <p>Marrakech rewards curiosity. And return visits.</p>
+        </div>
+        <p className="bio">Sharon Lombardo is the founder of Fil De Vie and your host here at Fil De Vie Concierge</p>
+      </div>
+
+      <hr className="divider" />
+
+      {/* ═══ SECTION: THE EXPERIENCE ═══ */}
+      <div className="divider-double" />
+      <div className="section-header">
+        <h2>THE EXPERIENCE</h2>
+      </div>
+      <div className="section-sub">Things to see and do</div>
+      <div className="divider-double" />
+
+      {/* Experience 1: Badi Palace */}
+      <div className="place-block">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/exp-1-large.jpg`} alt="Badi Palace" /></div>
+          <div className="img-small"><img src={`${IMG}/exp-1-small1.jpg`} alt="Badi Palace detail" /></div>
+          <div className="img-small"><img src={`${IMG}/exp-1-small2.jpg`} alt="Badi Palace moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Badi Palace</h3>
+          <div className="tagline">Ruins, scale, silence.</div>
+          <div className="description">The 16th-century El Badi Palace is mostly ruins now &mdash; which is exactly why it&rsquo;s powerful. Vast sun-warmed walls, stork nests perched high above, and open courtyards that feel almost surreal against the blue sky. Go late afternoon when the light softens and the crowds thin. It&rsquo;s less about what&rsquo;s left and more about the space it creates.</div>
+          <div className="address">Ksibat Nhass, Marrakech 40000</div>
+          <div className="icons">
+            <a href="http://www.badipalace.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      <div className="full-image"><img src={`${IMG}/exp-1-break.jpg`} alt="" /></div>
+
+      {/* Experience 2: Jardin Secret */}
+      <div className="place-block reverse">
+        <div className="place-images layout-c">
+          <div className="img-slot"><img src={`${IMG}/exp-2-left.jpg`} alt="Jardin Secret" /></div>
+          <div className="img-slot"><img src={`${IMG}/exp-2-right.jpg`} alt="Jardin Secret" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Jardin Secret</h3>
+          <div className="tagline">A quiet medina escape.</div>
+          <div className="description">Hidden within the medina walls, Le Jardin Secret feels like stepping into a private courtyard from another century. Islamic architecture, carved cedar ceilings, and restored gardens that feel calm compared to the surrounding chaos. Climb the tower for a panoramic view &mdash; it&rsquo;s one of the most beautiful in the city.</div>
+          <div className="address">121 Rue Mouassine, Marrakech 40030</div>
+          <div className="icons">
+            <a href="http://lejardinsecretmarrakech.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      {/* Experience 3: Agafay Desert Camp */}
+      <div className="place-block">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/exp-3-large.jpg`} alt="Agafay Desert Camp" /></div>
+          <div className="img-small"><img src={`${IMG}/exp-3-small1.jpg`} alt="Agafay detail" /></div>
+          <div className="img-small"><img src={`${IMG}/exp-3-small2.jpg`} alt="Agafay moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Agafay Desert Camp</h3>
+          <div className="tagline">Desert drama without the five-hour drive.</div>
+          <div className="description">Agafay isn&rsquo;t the Sahara &mdash; it&rsquo;s stone desert &mdash; but that&rsquo;s its appeal. Less clich&eacute;, more lunar landscape. An overnight camp gives you that endless horizon feeling without committing to a multi-day trek. Go for sunset. Stay for dinner under the stars. It&rsquo;s theatrical in the best way.</div>
+          <div className="address">Agafay Desert, approx. 45 minutes from Marrakech</div>
+          <div className="icons">
+            <a href="#" title="Various camps — choose one with smaller capacity for intimacy">&#x2139;&#xFE0F;</a>
+          </div>
+        </div>
+      </div>
+
+      <div className="full-image"><img src={`${IMG}/exp-3-break.jpg`} alt="" /></div>
+
+      {/* Experience 4: Jardin Majorelle */}
+      <div className="place-block reverse">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/exp-4-large.jpg`} alt="Jardin Majorelle" /></div>
+          <div className="img-small"><img src={`${IMG}/exp-4-small1.jpg`} alt="Majorelle detail" /></div>
+          <div className="img-small"><img src={`${IMG}/exp-4-small2.jpg`} alt="Majorelle moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Jardin Majorelle</h3>
+          <div className="tagline">Cobalt blue and exquisite beauty with a side of Saint Laurent</div>
+          <div className="description">Yes, it&rsquo;s popular. Yes, it&rsquo;s worth it. The Yves Saint Laurent&ndash;owned garden is an immersion in electric Majorelle blue, lush cactus forms, and quiet pathways. Book the first entry time of the day &mdash; it gets crowded quickly. Pair it with the YSL Museum next door if you have even a passing interest in fashion or design.</div>
+          <div className="address">Rue Yves St Laurent, Marrakech 40090</div>
+          <div className="icons">
+            <a href="http://jardinmajorelle.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      <hr className="divider" />
+
+      {/* ═══ SECTION: EAT & DRINK ═══ */}
+      <div className="divider-double" />
+      <div className="section-header">
+        <h2>EAT &amp; DRINK</h2>
+      </div>
+      <div className="section-sub">Restaurants, caf&eacute;s, bars</div>
+      <div className="divider-double" />
+
+      {/* Eat 1: Nomad */}
+      <div className="place-block">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/eat-1-large.jpg`} alt="Nomad" /></div>
+          <div className="img-small"><img src={`${IMG}/eat-1-small1.jpg`} alt="Nomad detail" /></div>
+          <div className="img-small"><img src={`${IMG}/eat-1-small2.jpg`} alt="Nomad moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Nomad</h3>
+          <div className="tagline">Rooftop views and modern Moroccan.</div>
+          <div className="description">Nomad balances local flavors with modern presentation. It&rsquo;s popular but reliable. Sit upstairs. Order small plates and watch the medina shift into evening.</div>
+          <div className="address">1 Derb Aarjane, Rahba Lakdima, Marrakech 40000</div>
+          <div className="icons">
+            <a href="http://nomadmarrakech.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      {/* Eat 2: Cafe Bacha */}
+      <div className="place-block reverse">
+        <div className="place-images layout-c">
+          <div className="img-slot"><img src={`${IMG}/eat-2-left.jpg`} alt="Cafe Bacha" /></div>
+          <div className="img-slot"><img src={`${IMG}/eat-2-right.jpg`} alt="Cafe Bacha" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Caf&eacute; Bacha</h3>
+          <div className="tagline">Decadent morning ritual.</div>
+          <div className="description">Located inside Dar el Bacha Palace, Caf&eacute; Bacha is all marble, gold accents, and endless coffee options. It&rsquo;s theatrical &mdash; but charming. Go early to avoid lines and sit inside if you can. Order the pastries and commit.</div>
+          <div className="address">Dar El Bacha Palace, Rue Fatima Zahra, Medina, Marrakech 40570</div>
+          <div className="icons">
+            <a href="http://bachacoffee.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      <div className="full-image"><img src={`${IMG}/eat-2-break.jpg`} alt="" /></div>
+
+      {/* Eat 3: La Famille */}
+      <div className="place-block">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/eat-3-large.jpg`} alt="La Famille" /></div>
+          <div className="img-small"><img src={`${IMG}/eat-3-small1.jpg`} alt="La Famille detail" /></div>
+          <div className="img-small"><img src={`${IMG}/eat-3-small2.jpg`} alt="La Famille moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>La Famille</h3>
+          <div className="tagline">Vegetarian and unexpectedly chic.</div>
+          <div className="description">Tucked away in the medina, La Famille feels like a secret garden lunch. The menu is seasonal, simple, and beautiful. It&rsquo;s light, fresh, and a welcome pause from heavier meals.</div>
+          <div className="address">34 Derb Jdid, Sidi Abdelaziz, Medina, Marrakesh 40500</div>
+          <div className="icons">
+            <a href="https://instagram.com/lafamillemarrakech" target="_blank" rel="noopener noreferrer">&#x1F4F7;</a>
+          </div>
+        </div>
+      </div>
+
+      {/* Eat 4: Le Jardin de Lotus */}
+      <div className="place-block reverse">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/eat-4-large.jpg`} alt="Le Jardin de Lotus" /></div>
+          <div className="img-small"><img src={`${IMG}/eat-4-small1.jpg`} alt="Le Jardin de Lotus detail" /></div>
+          <div className="img-small"><img src={`${IMG}/eat-4-small2.jpg`} alt="Le Jardin de Lotus moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Le Jardin de Lotus</h3>
+          <div className="tagline">Relaxed glamour</div>
+          <div className="description">A more contemporary rooftop option with cocktails and Moroccan-Asian fusion plates. Come at sunset. Stay if the mood is right.</div>
+          <div className="address">Dar el Bacha District, 9 Derb Sidi Ali Ben Hamdouche, Medina, Marrakesh 40000</div>
+          <div className="icons">
+            <a href="https://lejardindelotus.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      {/* Eat 5: La Mamounia */}
+      <div className="place-block">
+        <div className="place-images layout-c">
+          <div className="img-slot"><img src={`${IMG}/eat-5-left.jpg`} alt="La Mamounia" /></div>
+          <div className="img-slot"><img src={`${IMG}/eat-5-right.jpg`} alt="La Mamounia" /></div>
+        </div>
+        <div className="place-info">
+          <h3>La Mamounia &mdash; Evening Drinks</h3>
+          <div className="tagline">Golden hour, perfected.</div>
+          <div className="description">You don&rsquo;t have to stay here to enjoy it. Come for a pre-dinner drink in the Churchill Bar or on the terrace. It&rsquo;s polished, yes &mdash; but the atmosphere is undeniable. Lean into it.</div>
+          <div className="address">Avenue Bab Jdid, Marrakesh 40040</div>
+          <div className="icons">
+            <a href="http://www.mamounia.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      <div className="full-image"><img src={`${IMG}/eat-5-break.jpg`} alt="" /></div>
+
+      {/* Eat 6: Dar Yacout */}
+      <div className="place-block reverse">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/eat-6-large.jpg`} alt="Dar Yacout" /></div>
+          <div className="img-small"><img src={`${IMG}/eat-6-small1.jpg`} alt="Dar Yacout detail" /></div>
+          <div className="img-small"><img src={`${IMG}/eat-6-small2.jpg`} alt="Dar Yacout moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Dar Yacout</h3>
+          <div className="tagline">Traditional Moroccan, done properly.</div>
+          <div className="description">A multi-course feast in a traditional riad setting &mdash; lantern light, tiled courtyards, live musicians. It&rsquo;s over-the-top in the very best way. Go hungry. Don&rsquo;t rush.</div>
+          <div className="address">79 Derb Sidi Ahmed Soussi, Bab Doukkala, Marrakesh 40000</div>
+          <div className="icons">
+            <a href="#" title="Reservations typically via concierge or phone">&#x260E;&#xFE0F;</a>
+          </div>
+        </div>
+      </div>
+
+      <hr className="divider" />
+
+      {/* ═══ SECTION: SHOP LOCAL ═══ */}
+      <div className="divider-double" />
+      <div className="section-header">
+        <h2>SHOP LOCAL</h2>
+      </div>
+      <div className="section-sub">Artisans, boutiques, makers</div>
+      <div className="divider-double" />
+
+      {/* Shop 1: The Souks */}
+      <div className="place-block">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/shop-1-large.jpg`} alt="The Souks" /></div>
+          <div className="img-small"><img src={`${IMG}/shop-1-small1.jpg`} alt="The Souks detail" /></div>
+          <div className="img-small"><img src={`${IMG}/shop-1-small2.jpg`} alt="The Souks moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>The Souks &mdash; Of Course</h3>
+          <div className="tagline">Start here. Then wander.</div>
+          <div className="description">
+            The souks aren&rsquo;t something to check off &mdash; they&rsquo;re something to get lost in. Brass hammered by hand. Baskets woven floor to ceiling. Leather dyed in colors you&rsquo;ll wish you wore more often. If you want to narrow it down:
+            <ul>
+              <li>Souk Semmarine for textiles and leather.</li>
+              <li>Souk El Attarine for spices and perfume.</li>
+              <li>Souk Haddadine for metalwork.</li>
+              <li>Souk Cherratine for serious leather goods.</li>
+            </ul>
+            Don&rsquo;t rush. Don&rsquo;t panic. Let it feel overwhelming for a minute. Then it starts to make sense.
+          </div>
+          <div className="address">Medina of Marrakesh, near Jemaa el-Fnaa Square</div>
+        </div>
+      </div>
+
+      {/* Shop 2: El Fenn Gift Shop */}
+      <div className="place-block reverse">
+        <div className="place-images layout-c">
+          <div className="img-slot"><img src={`${IMG}/shop-2-left.jpg`} alt="El Fenn Gift Shop" /></div>
+          <div className="img-slot"><img src={`${IMG}/shop-2-right.jpg`} alt="El Fenn Gift Shop" /></div>
+        </div>
+        <div className="place-info">
+          <h3>El Fenn Gift Shop</h3>
+          <div className="tagline">Actually chic souvenirs.</div>
+          <div className="description">Not the usual tourist trinkets. The El Fenn boutique curates ceramics, textiles, books, and home pieces that feel elevated. It&rsquo;s where you find something you&rsquo;ll genuinely keep &mdash; not just pack.</div>
+          <div className="address">2 Derb Moulay Abdellah Ben Hezzian, Medina, Marrakesh 40000</div>
+          <div className="icons">
+            <a href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      <div className="full-image"><img src={`${IMG}/shop-2-break.jpg`} alt="" /></div>
+
+      {/* Shop 3: Mustapha Blaoui */}
+      <div className="place-block">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/shop-3-large.jpg`} alt="Mustapha Blaoui" /></div>
+          <div className="img-small"><img src={`${IMG}/shop-3-small1.jpg`} alt="Mustapha Blaoui detail" /></div>
+          <div className="img-small"><img src={`${IMG}/shop-3-small2.jpg`} alt="Mustapha Blaoui moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Mustapha Blaoui</h3>
+          <div className="tagline">Treasure hunting at scale.</div>
+          <div className="description">If you love objects &mdash; lamps, ceramics, carved doors, vintage finds &mdash; this is the place. It&rsquo;s layered and slightly dusty and entirely addictive. You&rsquo;ll want to ship things home. You probably should.</div>
+          <div className="address">144 Arset Aouzal Rd, Bab Doukkala, Marrakesh 40000</div>
+        </div>
+      </div>
+
+      {/* Shop 4: Max & Jan */}
+      <div className="place-block reverse">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/shop-4-large.jpg`} alt="Max & Jan" /></div>
+          <div className="img-small"><img src={`${IMG}/shop-4-small1.jpg`} alt="Max & Jan detail" /></div>
+          <div className="img-small"><img src={`${IMG}/shop-4-small2.jpg`} alt="Max & Jan moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Max &amp; Jan</h3>
+          <div className="tagline">Modern Marrakech.</div>
+          <div className="description">A contemporary boutique blending Moroccan craftsmanship with European silhouettes. Graphic prints, sharp tailoring, and pieces that travel well. It&rsquo;s a smart edit if you want something local but wearable back home.</div>
+          <div className="address">14 Rue Amsefah, Marrakech 40000</div>
+          <div className="icons">
+            <a href="http://www.maxandjan.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      <hr className="divider" />
+
+      {/* ═══ SECTION: THE STAY ═══ */}
+      <div className="divider-double" />
+      <div className="section-header">
+        <h2>THE STAY</h2>
+      </div>
+      <div className="section-sub">Hotels, riads, retreats</div>
+      <div className="divider-double" />
+
+      {/* Stay 1: El Fenn */}
+      <div className="place-block">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/stay-1-large.jpg`} alt="El Fenn" /></div>
+          <div className="img-small"><img src={`${IMG}/stay-1-small1.jpg`} alt="El Fenn detail" /></div>
+          <div className="img-small"><img src={`${IMG}/stay-1-small2.jpg`} alt="El Fenn moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>El Fenn</h3>
+          <div className="tagline">Color, art, and rooftop sunsets.</div>
+          <div className="description">Owned by Vanessa Branson, El Fenn is Marrakech at its most curated &mdash; bold colors, modern art, layered textiles. The rooftop pool at sunset is reason enough to stay. It&rsquo;s lively but intimate, and the design feels intentional without being overly staged. <em>My favorite place to stay &mdash; close to everything you&rsquo;ll want to do.</em></div>
+          <div className="address">2 Derb Moulay Abdellah Ben Hezzian, Marrakech 40000</div>
+          <div className="icons">
+            <a href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      {/* Stay 2: Riad Jardin Secret */}
+      <div className="place-block reverse">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/stay-2-large.jpg`} alt="Riad Jardin Secret" /></div>
+          <div className="img-small"><img src={`${IMG}/stay-2-small1.jpg`} alt="Riad Jardin Secret detail" /></div>
+          <div className="img-small"><img src={`${IMG}/stay-2-small2.jpg`} alt="Riad Jardin Secret moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Riad Jardin Secret</h3>
+          <div className="tagline">Intimate, traditional, serene.</div>
+          <div className="description">Tucked inside the medina, this riad offers the opposite of hotel grandeur &mdash; quiet courtyards, carved wood, and a sense of privacy. It feels personal and atmospheric. Perfect if you want immersion over spectacle.</div>
+          <div className="address">43-46 Arset Aouzal Road, Bab Doukkala, Medina, Marrakesh 40000</div>
+          <div className="icons">
+            <a href="http://www.riad-jardinsecret.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      <div className="full-image"><img src={`${IMG}/stay-2-break.jpg`} alt="" /></div>
+
+      {/* Stay 3: La Mamounia */}
+      <div className="place-block">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/stay-3-large.jpg`} alt="La Mamounia" /></div>
+          <div className="img-small"><img src={`${IMG}/stay-3-small1.jpg`} alt="La Mamounia detail" /></div>
+          <div className="img-small"><img src={`${IMG}/stay-3-small2.jpg`} alt="La Mamounia moment" /></div>
+        </div>
+        <div className="place-info">
+          <h3>La Mamounia</h3>
+          <div className="tagline">Iconic. Unapologetically grand.</div>
+          <div className="description">La Mamounia is not understated &mdash; it&rsquo;s cinematic, historic, and slightly over the top in the best way. The gardens alone are worth walking through. Stay if you want full classic Moroccan luxury. Or just come for drinks at sunset and let the tiled corridors and candlelight do the rest.</div>
+          <div className="address">Avenue Bab Jdid, Marrakech 40040</div>
+          <div className="icons">
+            <a href="http://mamounia.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      {/* Full-width break — transition to wardrobe */}
+      <div className="full-image"><img src={`${IMG}/wardrobe-break.jpg`} alt="" /></div>
+
+      <hr className="divider" />
+
+      {/* ═══ SECTION: THE WARDROBE ═══ */}
+      <div className="divider-double" />
+      <div className="section-header">
+        <h2>THE WARDROBE</h2>
+      </div>
+      <div className="section-sub">What to wear &mdash; curated looks + shoppable pieces</div>
+      <div className="divider-double" />
+
+      {/* Wardrobe 1: Day in the Medina */}
+      <div className="place-block">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/ward-1-large.jpg`} alt="Day in the Medina look" /></div>
+          <div className="img-small"><img src={`${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`} alt="Bottega Veneta Kalimero Bag" /></div>
+          <div className="img-small"><img src={`${IMG}/ward-1-small2_bulgari_necklace.jpg`} alt="Bulgari Necklace" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Day in the Medina</h3>
+          <div className="tagline">Medina uniform.</div>
+          <div className="description">Linen you can breathe in. Stripes that feel intentional but not precious. Flat sandals because you&rsquo;ll be walking more than you expect. Gold, but not too much. Hair slightly undone. It moves with you &mdash; which is the whole point.</div>
+        </div>
+      </div>
+
+      {/* CAROUSEL: Shop Day Look */}
+      <div className="carousel-section">
+        <div className="carousel-label">Shop the Look</div>
+        <div className="carousel-title">Day in the Medina &mdash; Every Piece</div>
+        <div className="carousel-track">
+          <div className="carousel-item">
+            <a href="http://www.fildevie.com" target="_blank" rel="noopener noreferrer">
+              <div className="item-brand">Fil de Vie</div>
+              <div className="item-name">Juno Blouse &amp; Marrakech Pants</div>
+              <div className="shop-link">Shop</div>
+            </a>
+          </div>
+          <div className="carousel-item">
+            <a href="https://www.bottegaveneta.com/en-us/small-kalimero-citta-fondant-813744715.html" target="_blank" rel="noopener noreferrer">
+              <div className="item-brand">Bottega Veneta</div>
+              <div className="item-name">Kalimero Bag</div>
+              <div className="item-price">$4,100</div>
+              <div className="shop-link">Shop</div>
+            </a>
+          </div>
+          <div className="carousel-item">
+            <a href="https://aemery.com/products/the-kir-sandal-black" target="_blank" rel="noopener noreferrer">
+              <div className="item-brand">A Emery</div>
+              <div className="item-name">Kir Sandal</div>
+              <div className="item-price">$185</div>
+              <div className="shop-link">Shop</div>
+            </a>
+          </div>
+          <div className="carousel-item">
+            <a href="https://www.1stdibs.com/jewelry/necklaces/pendant-necklaces/bvlgari-1980s-unheated-sapphire-gold-necklace/id-j_28202612/" target="_blank" rel="noopener noreferrer">
+              <div className="item-brand">Bulgari via 1st Dibs</div>
+              <div className="item-name">Lapis Cabachon Necklace</div>
+              <div className="item-price">$50,000</div>
+              <div className="shop-link">Shop</div>
+            </a>
+          </div>
+          <div className="carousel-item">
+            <a href="https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html" target="_blank" rel="noopener noreferrer">
+              <div className="item-brand">Loewe</div>
+              <div className="item-name">Inflated Cat Eye Sunglasses</div>
+              <div className="item-price">$440</div>
+              <div className="shop-link">Shop</div>
+            </a>
+          </div>
+          <div className="carousel-item">
+            <a href="https://saintjanebeauty.com/collections/sun-protection-spf/products/luxury-sun-ritual" target="_blank" rel="noopener noreferrer">
+              <div className="item-brand">Saint Jane</div>
+              <div className="item-name">Sunscreen</div>
+              <div className="item-price">$38</div>
+              <div className="shop-link">Shop</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Wardrobe 2: Riad Evenings */}
+      <div className="place-block reverse">
+        <div className="place-images layout-b">
+          <div className="img-large"><img src={`${IMG}/ward-2-large_fdv_isadora_dress.jpg`} alt="Riad Evenings look" /></div>
+          <div className="img-small"><img src={`${IMG}/ward-2-small1_chloe_wristless_bag.jpg`} alt="Chloé Wristlette Bag" /></div>
+          <div className="img-small"><img src={`${IMG}/ward-2-small2_poppyking_red.jpg`} alt="PoppyKing Lipstick" /></div>
+        </div>
+        <div className="place-info">
+          <h3>Riad Evenings</h3>
+          <div className="tagline">Marrakech does drama. You might as well participate.</div>
+          <div className="description">Lantern light, warm stone, a drink resting on the table while you lean in. Black feels intentional here. Slightly dangerous in candlelight. In a good way. You&rsquo;ll stay longer than planned. You won&rsquo;t regret it.</div>
+        </div>
+      </div>
+
+      {/* CAROUSEL: Shop Evening Look */}
+      <div className="carousel-section">
+        <div className="carousel-label">Shop the Look</div>
+        <div className="carousel-title">Riad Evenings &mdash; Every Piece</div>
+        <div className="carousel-track">
+          <div className="carousel-item">
+            <a href="http://www.fildevie.com" target="_blank" rel="noopener noreferrer">
+              <div className="item-brand">FDV</div>
+              <div className="item-name">Isadora Dress</div>
+              <div className="item-price">$795</div>
+              <div className="shop-link">Shop</div>
+            </a>
+          </div>
+          <div className="carousel-item">
+            <a href="https://www.bergdorfgoodman.com/p/alaia-velvet-kitten-heel-thong-sandals-prodt196740019" target="_blank" rel="noopener noreferrer">
+              <div className="item-brand">Ala&iuml;a</div>
+              <div className="item-name">Velvet Thongs</div>
+              <div className="item-price">$1,450</div>
+              <div className="shop-link">Shop</div>
+            </a>
+          </div>
+          <div className="carousel-item">
+            <a href="https://www.chloe.com/en-us/p/bags/shoulder-bag/CH5US623P57001.html" target="_blank" rel="noopener noreferrer">
+              <div className="item-brand">Chlo&eacute;</div>
+              <div className="item-name">Wristlette Bag</div>
+              <div className="item-price">$4,200</div>
+              <div className="shop-link">Shop</div>
+            </a>
+          </div>
+          <div className="carousel-item">
+            <a href="https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver" target="_blank" rel="noopener noreferrer">
+              <div className="item-brand">Phoebe Philo</div>
+              <div className="item-name">Gold Studded Mini Hoops</div>
+              <div className="item-price">$550</div>
+              <div className="shop-link">Shop</div>
+            </a>
+          </div>
+          <div className="carousel-item">
+            <a href="https://hildegaard.com/products/immortelle" target="_blank" rel="noopener noreferrer">
+              <div className="item-brand">Hildegard</div>
+              <div className="item-name">Immortelle Oil</div>
+              <div className="item-price">$375</div>
+              <div className="shop-link">Shop</div>
+            </a>
+          </div>
+          <div className="carousel-item">
+            <a href="https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622" target="_blank" rel="noopener noreferrer">
+              <div className="item-brand">PoppyKing</div>
+              <div className="item-name">Original Sin Lipstick</div>
+              <div className="item-price">$34</div>
+              <div className="shop-link">Shop</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <hr className="divider" />
+
+      {/* ═══ GUIDE MAP ═══ */}
+      <div className="divider-double" />
+      <div className="section-header">
+        <h2>GUIDE MAP</h2>
+      </div>
+      <div className="divider-double" />
+
+      <div className="guide-map">
+        <div className="map-placeholder">
+          <span>Interactive map &mdash; all 17 locations pinned</span>
+        </div>
+      </div>
+
+      <hr className="divider" />
+
+      {/* ═══ ITINERARY TEASER ═══ */}
+      <div className="itinerary-teaser">
+        <div className="teaser-label">The Full Journey</div>
+        <h3>Your 8-Day Morocco Itinerary</h3>
+        <p className="teaser-desc">Day-by-day packing, reservations, and the details no one tells you &mdash; from what to wear to the medina to where to watch the sun go down in the desert.</p>
+        <div className="teaser-days">
+          <div className="day-pill active">Day 1</div>
+          <div className="day-pill">Day 2</div>
+          <div className="day-pill">Day 3</div>
+          <div className="day-pill">Day 4</div>
+          <div className="day-pill">Day 5</div>
+          <div className="day-pill">Day 6</div>
+          <div className="day-pill">Day 7</div>
+          <div className="day-pill">Day 8</div>
+        </div>
+        <a href="/packing" className="cta-button">Go Gold to Unlock</a>
+      </div>
+
+      {/* ═══ FOOTER ═══ */}
+      <div className="guide-footer">
+        <div className="closing">Some places don&rsquo;t need to be explained. They need to be felt.</div>
+        <div className="brand-mark">FDV Destination Guide &mdash; Fil de Vie Concierge</div>
+      </div>
+
+    </div>
+  );
+}

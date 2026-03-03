@@ -24,6 +24,7 @@ import TodaysEdit from "@/pages/todays-edit";
 import Destinations from "@/pages/destinations";
 import ComingSoon from "@/pages/coming-soon";
 import TravelDiary from "@/pages/travel-diary";
+import MoroccoGuide from "@/pages/guides/morocco";
 
 function Router() {
   return (
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/destinations/slow-travel" component={ComingSoon} />
       <Route path="/destinations/retreat" component={ComingSoon} />
       <Route path="/destinations/new-york" component={ComingSoon} />
+      <Route path="/guides/morocco" component={MoroccoGuide} />
       <Route path="/coming-soon/:page" component={ComingSoon} />
       <Route path="/concierge" component={Concierge} />
       <Route path="/itinerary/morocco" component={Concierge} />

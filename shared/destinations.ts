@@ -17,7 +17,7 @@ export const DESTINATIONS: Destination[] = [
     summary: "A curated journey through Marrakech, the Atlas Mountains, and Essaouira",
     imageSlotKey: "destination-morocco",
     defaultImage: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1200",
-    route: "/concierge",
+    route: "/guides/morocco",
     available: true
   },
   {
