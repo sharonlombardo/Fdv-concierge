@@ -1,8 +1,88 @@
+import { useState } from 'react';
+import { ItemModal, type ItemModalData } from '@/components/item-modal';
+import { PinButton } from '@/components/pin-button';
 import './morocco-guide.css';
 
 const IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco';
+const BLOB = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2';
+const CAROUSEL = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/carousel-morocco';
+
+type CarouselProduct = {
+  id: string;
+  brand: string;
+  name: string;
+  price: string | null;
+  shopUrl: string;
+  imageUrl: string;
+};
+
+const DAY_PRODUCTS: CarouselProduct[] = [
+  { id: 'guide-day-1', brand: 'Fil de Vie', name: 'Juno Blouse & Marrakech Pants', price: null, shopUrl: 'http://www.fildevie.com', imageUrl: `${CAROUSEL}/01_fdv_juno.jpg` },
+  { id: 'guide-day-2', brand: 'Bottega Veneta', name: 'Kalimero Bag', price: '$4,100', shopUrl: 'https://www.bottegaveneta.com/en-us/small-kalimero-citta-fondant-813744715.html', imageUrl: `${CAROUSEL}/02_bottega_kalimero.jpg` },
+  { id: 'guide-day-3', brand: 'A Emery', name: 'Kir Sandal', price: '$185', shopUrl: 'https://aemery.com/products/the-kir-sandal-black', imageUrl: `${CAROUSEL}/03_aemery_kir_sandal.jpg` },
+  { id: 'guide-day-4', brand: 'Bulgari via 1st Dibs', name: 'Lapis Cabachon Necklace', price: '$50,000', shopUrl: 'https://www.1stdibs.com/jewelry/necklaces/pendant-necklaces/bvlgari-1980s-unheated-sapphire-gold-necklace/id-j_28202612/', imageUrl: `${CAROUSEL}/04_bulgari_necklace.jpg` },
+  { id: 'guide-day-5', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: `${CAROUSEL}/05_loewe_sunglasses.jpg` },
+  { id: 'guide-day-6', brand: 'Saint Jane', name: 'Sunscreen', price: '$38', shopUrl: 'https://saintjanebeauty.com/collections/sun-protection-spf/products/luxury-sun-ritual', imageUrl: `${CAROUSEL}/06_saintjane_sunscreen.jpg` },
+];
+
+const EVE_PRODUCTS: CarouselProduct[] = [
+  { id: 'guide-eve-1', brand: 'FDV', name: 'Isadora Dress', price: '$795', shopUrl: 'http://www.fildevie.com', imageUrl: `${CAROUSEL}/07_fdv_isadora.jpg` },
+  { id: 'guide-eve-2', brand: 'Ala\u00efa', name: 'Velvet Thongs', price: '$1,450', shopUrl: 'https://www.bergdorfgoodman.com/p/alaia-velvet-kitten-heel-thong-sandals-prodt196740019', imageUrl: `${CAROUSEL}/08_alaia_thongs.jpg` },
+  { id: 'guide-eve-3', brand: 'Chlo\u00e9', name: 'Wristlette Bag', price: '$4,200', shopUrl: 'https://www.chloe.com/en-us/p/bags/shoulder-bag/CH5US623P57001.html', imageUrl: `${CAROUSEL}/09_chloe_bag.jpg` },
+  { id: 'guide-eve-4', brand: 'Phoebe Philo', name: 'Gold Studded Mini Hoops', price: '$550', shopUrl: 'https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver', imageUrl: `${CAROUSEL}/10_phoebephilo_hoops.jpg` },
+  { id: 'guide-eve-5', brand: 'Hildegard', name: 'Immortelle Oil', price: '$375', shopUrl: 'https://hildegaard.com/products/immortelle', imageUrl: `${CAROUSEL}/11_hildegard_oil.jpg` },
+  { id: 'guide-eve-6', brand: 'PoppyKing', name: 'Original Sin Lipstick', price: '$34', shopUrl: 'https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622', imageUrl: `${CAROUSEL}/12_poppyking_lipstick.jpg` },
+];
+
+function CarouselItem({ product, onOpenModal }: { product: CarouselProduct; onOpenModal: (p: CarouselProduct) => void }) {
+  return (
+    <div className="carousel-item" onClick={() => onOpenModal(product)} style={{ cursor: 'pointer' }}>
+      <div className="item-image" style={{ position: 'relative' }}>
+        <img src={product.imageUrl} alt={`${product.brand} ${product.name}`} />
+        <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: 6, right: 6 }}>
+          <PinButton
+            itemType="style"
+            itemId={product.id}
+            itemData={{
+              title: `${product.brand} — ${product.name}`,
+              imageUrl: product.imageUrl,
+              storyTag: 'morocco',
+            }}
+            sourceContext="morocco-guide-carousel"
+            aestheticTags={['wardrobe', 'style', 'morocco']}
+            size="sm"
+          />
+        </div>
+      </div>
+      <div className="item-brand">{product.brand}</div>
+      <div className="item-name">{product.name}</div>
+      {product.price && <div className="item-price">{product.price}</div>}
+      <div className="shop-link">View</div>
+    </div>
+  );
+}
 
 export default function MoroccoGuide() {
+  const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const openModal = (p: CarouselProduct) => {
+    setSelectedItem({
+      id: p.id,
+      title: p.name,
+      bucket: 'wardrobe',
+      pinType: 'style',
+      assetKey: p.id,
+      storyTag: 'morocco',
+      imageUrl: p.imageUrl,
+      brand: p.brand,
+      price: p.price ?? undefined,
+      shopUrl: p.shopUrl,
+      shopStatus: 'live',
+    });
+    setDrawerOpen(true);
+  };
+
   return (
     <div className="morocco-guide">
 
@@ -97,7 +177,7 @@ export default function MoroccoGuide() {
         </div>
       </div>
 
-      <div className="full-image"><img src={`${IMG}/exp-3-break.jpg`} alt="" /></div>
+      <div className="full-image"><img src={`${IMG}/exp-3-break-v2.jpeg`} alt="" /></div>
 
       {/* Experience 4: Jardin Majorelle */}
       <div className="place-block reverse">
@@ -421,53 +501,9 @@ export default function MoroccoGuide() {
         <div className="carousel-label">Shop the Look</div>
         <div className="carousel-title">Day in the Medina &mdash; Every Piece</div>
         <div className="carousel-track">
-          <div className="carousel-item">
-            <a href="http://www.fildevie.com" target="_blank" rel="noopener noreferrer">
-              <div className="item-brand">Fil de Vie</div>
-              <div className="item-name">Juno Blouse &amp; Marrakech Pants</div>
-              <div className="shop-link">Shop</div>
-            </a>
-          </div>
-          <div className="carousel-item">
-            <a href="https://www.bottegaveneta.com/en-us/small-kalimero-citta-fondant-813744715.html" target="_blank" rel="noopener noreferrer">
-              <div className="item-brand">Bottega Veneta</div>
-              <div className="item-name">Kalimero Bag</div>
-              <div className="item-price">$4,100</div>
-              <div className="shop-link">Shop</div>
-            </a>
-          </div>
-          <div className="carousel-item">
-            <a href="https://aemery.com/products/the-kir-sandal-black" target="_blank" rel="noopener noreferrer">
-              <div className="item-brand">A Emery</div>
-              <div className="item-name">Kir Sandal</div>
-              <div className="item-price">$185</div>
-              <div className="shop-link">Shop</div>
-            </a>
-          </div>
-          <div className="carousel-item">
-            <a href="https://www.1stdibs.com/jewelry/necklaces/pendant-necklaces/bvlgari-1980s-unheated-sapphire-gold-necklace/id-j_28202612/" target="_blank" rel="noopener noreferrer">
-              <div className="item-brand">Bulgari via 1st Dibs</div>
-              <div className="item-name">Lapis Cabachon Necklace</div>
-              <div className="item-price">$50,000</div>
-              <div className="shop-link">Shop</div>
-            </a>
-          </div>
-          <div className="carousel-item">
-            <a href="https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html" target="_blank" rel="noopener noreferrer">
-              <div className="item-brand">Loewe</div>
-              <div className="item-name">Inflated Cat Eye Sunglasses</div>
-              <div className="item-price">$440</div>
-              <div className="shop-link">Shop</div>
-            </a>
-          </div>
-          <div className="carousel-item">
-            <a href="https://saintjanebeauty.com/collections/sun-protection-spf/products/luxury-sun-ritual" target="_blank" rel="noopener noreferrer">
-              <div className="item-brand">Saint Jane</div>
-              <div className="item-name">Sunscreen</div>
-              <div className="item-price">$38</div>
-              <div className="shop-link">Shop</div>
-            </a>
-          </div>
+          {DAY_PRODUCTS.map((p) => (
+            <CarouselItem key={p.id} product={p} onOpenModal={openModal} />
+          ))}
         </div>
       </div>
 
@@ -490,54 +526,9 @@ export default function MoroccoGuide() {
         <div className="carousel-label">Shop the Look</div>
         <div className="carousel-title">Riad Evenings &mdash; Every Piece</div>
         <div className="carousel-track">
-          <div className="carousel-item">
-            <a href="http://www.fildevie.com" target="_blank" rel="noopener noreferrer">
-              <div className="item-brand">FDV</div>
-              <div className="item-name">Isadora Dress</div>
-              <div className="item-price">$795</div>
-              <div className="shop-link">Shop</div>
-            </a>
-          </div>
-          <div className="carousel-item">
-            <a href="https://www.bergdorfgoodman.com/p/alaia-velvet-kitten-heel-thong-sandals-prodt196740019" target="_blank" rel="noopener noreferrer">
-              <div className="item-brand">Ala&iuml;a</div>
-              <div className="item-name">Velvet Thongs</div>
-              <div className="item-price">$1,450</div>
-              <div className="shop-link">Shop</div>
-            </a>
-          </div>
-          <div className="carousel-item">
-            <a href="https://www.chloe.com/en-us/p/bags/shoulder-bag/CH5US623P57001.html" target="_blank" rel="noopener noreferrer">
-              <div className="item-brand">Chlo&eacute;</div>
-              <div className="item-name">Wristlette Bag</div>
-              <div className="item-price">$4,200</div>
-              <div className="shop-link">Shop</div>
-            </a>
-          </div>
-          <div className="carousel-item">
-            <a href="https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver" target="_blank" rel="noopener noreferrer">
-              <div className="item-brand">Phoebe Philo</div>
-              <div className="item-name">Gold Studded Mini Hoops</div>
-              <div className="item-price">$550</div>
-              <div className="shop-link">Shop</div>
-            </a>
-          </div>
-          <div className="carousel-item">
-            <a href="https://hildegaard.com/products/immortelle" target="_blank" rel="noopener noreferrer">
-              <div className="item-brand">Hildegard</div>
-              <div className="item-name">Immortelle Oil</div>
-              <div className="item-price">$375</div>
-              <div className="shop-link">Shop</div>
-            </a>
-          </div>
-          <div className="carousel-item">
-            <a href="https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622" target="_blank" rel="noopener noreferrer">
-              <div className="item-brand">PoppyKing</div>
-              <div className="item-name">Original Sin Lipstick</div>
-              <div className="item-price">$34</div>
-              <div className="shop-link">Shop</div>
-            </a>
-          </div>
+          {EVE_PRODUCTS.map((p) => (
+            <CarouselItem key={p.id} product={p} onOpenModal={openModal} />
+          ))}
         </div>
       </div>
 
@@ -582,6 +573,12 @@ export default function MoroccoGuide() {
         <div className="brand-mark">FDV Destination Guide &mdash; Fil de Vie Concierge</div>
       </div>
 
+      <ItemModal
+        item={selectedItem}
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        source="current"
+      />
     </div>
   );
 }

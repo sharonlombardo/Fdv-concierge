@@ -244,7 +244,7 @@ function ItemCard({ item, isPacked, onTogglePack, onOpenModal, getImageUrl, hasC
       onClick={onOpenModal}
       data-testid={`card-item-${item.id}`}
     >
-      <div className={`relative w-full ${isLarge ? 'aspect-[3/4]' : 'aspect-square'} bg-card rounded-md mb-2 overflow-hidden`}>
+      <div className={`relative w-full aspect-[3/4] bg-card rounded-md mb-2 overflow-hidden`}>
         {displayImage ? (
           <img 
             src={displayImage}

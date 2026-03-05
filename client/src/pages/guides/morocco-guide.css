@@ -365,7 +365,6 @@
 .morocco-guide .carousel-item .item-image {
   width: 180px;
   height: 240px;
-  background: var(--sand);
   overflow: hidden;
   margin-bottom: 10px;
 }
@@ -373,8 +372,7 @@
 .morocco-guide .carousel-item .item-image img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  background: #fff;
+  object-fit: cover;
 }
 
 .morocco-guide .carousel-item .item-brand {
