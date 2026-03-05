@@ -1170,7 +1170,7 @@ function ShopTheStory({ tiles, sourceStory, onOpenDetail }: ShopTheStoryProps) {
                     <img
                       src={imageUrl}
                       alt={tile.title || tile.caption}
-                      className="w-full h-full object-contain transition-transform group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform group-hover:scale-105"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
