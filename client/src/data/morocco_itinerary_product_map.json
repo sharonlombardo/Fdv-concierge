@@ -17,7 +17,7 @@
           "look": "LOOK:FDV:CYBELBLOUSE:STRIPE.jpg",
           "footwear": "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
           "handbag": "access:bag:bottega:hobo.jpg",
-          "jewelry": null,
+          "jewelry": "ACCESSORY:BULGAR:SERPENTI:BLK.jpg",
           "accessory": "BEAUTY:FDV:PARFUM.jpg"
         },
         "evening": {
@@ -36,12 +36,12 @@
           "look": "LOOK:FDV:JUNOBLOUSE:MARRAKECHPANT:STRIPE.jpg",
           "footwear": "footwear, amery kit sandal.jpg",
           "handbag": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
-          "jewelry": null,
+          "jewelry": "access:jewlery:phoebephilo:hoops.jpg",
           "accessory": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg"
         },
         "afternoon": {
           "look": "LOOK:FDV:DIANADRES:STRIPE.jpg",
-          "footwear": null,
+          "footwear": "footwear, amery kit sandal.jpg",
           "handbag": "ACCESS:BAG:TOWEL:FDV:POOLESSENTIALS:OLIVE.jpg",
           "jewelry": "access:jewlery:phoebephilo:hoops.jpg",
           "accessory": "BEAUTY:FDV:TRAVELMIST.jpg"
@@ -88,7 +88,7 @@
           "look": "LOOK:FDV:LILLITHCAFTAN:IVORY.jpg",
           "footwear": "footwear, amery kit sandal.jpg",
           "handbag": "access:bag:bottega:hobo.jpg",
-          "jewelry": null,
+          "jewelry": "access:jewlery:phoebephilo:hoops.jpg",
           "accessory": "le prunier sunscreen.jpg"
         },
         "afternoon": {
@@ -114,7 +114,7 @@
           "look": "LOOK:FDV:JUNOBLOUSE:STRIPE.jpg",
           "footwear": "footwear, amery kit sandal.jpg",
           "handbag": "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
-          "jewelry": null,
+          "jewelry": "access:jewlery:phoebephilo:hoops.jpg",
           "accessory": "le prunier sunscreen.jpg"
         },
         "afternoon": null,
