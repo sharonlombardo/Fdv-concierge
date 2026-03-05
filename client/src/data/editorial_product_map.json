@@ -905,7 +905,6 @@
       {"tileId": "morocco-itin-13", "genomeKey": "LOOK:FDV:STEVIECAFTAN:BLACK.jpg", "label": "FIL DE VIE — Stevie Caftan", "price": "$825", "source": "itinerary"},
       {"tileId": "morocco-itin-14", "genomeKey": "LOOK:FDV:ASTRIDBLOUSE:BLK.jpg", "label": "FIL DE VIE — Astrid Blouse", "price": "$475", "source": "itinerary"},
       {"tileId": "morocco-itin-15", "genomeKey": "LOOK:FDV:ATLASSCARF:IVORY.jpg", "label": "FIL DE VIE — Atlas Scarf", "price": "$275", "source": "itinerary"},
-      {"tileId": "morocco-itin-16", "genomeKey": "LOOK:FDV:MEDINADRESS:BLK.jpg", "label": "FIL DE VIE — Medina Dress", "price": "$650", "source": "itinerary"},
 
       {"tileId": "morocco-itin-17", "genomeKey": "FOOTWEAR:KHAITE:OTTO:WHT.jpg", "label": "Khaite — Otto Leather Slippers", "price": "$595", "source": "itinerary"},
       {"tileId": "morocco-itin-18", "genomeKey": "footwear, amery kit sandal.jpg", "label": "A Emery — Kir Sandal", "price": "$185", "source": "itinerary"},
