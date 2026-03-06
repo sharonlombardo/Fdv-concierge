@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { ItemModal, type ItemModalData } from '@/components/item-modal';
 import { PinButton } from '@/components/pin-button';
 import './morocco-guide.css';
@@ -58,6 +58,162 @@ function CarouselItem({ product, onOpenModal }: { product: CarouselProduct; onOp
       <div className="item-name">{product.name}</div>
       {product.price && <div className="item-price">{product.price}</div>}
       <div className="shop-link">View</div>
+    </div>
+  );
+}
+
+/* ── Day data for itinerary teaser ── */
+const DAY_THEMES: Record<number, string> = {
+  1: 'ARRIVAL',
+  2: 'THE ATLAS',
+  3: 'ATLAS TO MARRAKECH',
+  4: 'THE MEDINA',
+  5: 'THE SOUKS',
+  6: 'CULTURE & REST',
+  7: 'THE DESERT',
+  8: 'DEPARTURE',
+};
+
+type TimeSlot = {
+  time: string;
+  title: string;
+  description: string;
+  wardrobeKey: string; // e.g. "d1-1" → used to build blob URLs
+};
+
+const DAY1_SLOTS: TimeSlot[] = [
+  { time: 'Morning', title: 'Arrival at Marrakech Menara Airport', description: 'Arrival at Menara — a masterpiece of modern Islamic architecture. Private transfer to the Atlas Mountains.', wardrobeKey: 'd1-1' },
+  { time: 'Afternoon', title: 'Check-in at Kasbah Bab Ourika', description: 'Perched above the Ourika Valley with 360-degree Atlas views. Explore the grounds, organic gardens.', wardrobeKey: 'd1-3' },
+  { time: 'Evening', title: 'Dinner at the Kasbah', description: 'Organic cuisine from the Kasbah gardens. A quiet evening as the temperature drops in the valley.', wardrobeKey: 'd1-6' },
+];
+
+const DAY2_SLOTS: TimeSlot[] = [
+  { time: 'Morning', title: 'Breakfast & Village Walk', description: 'Fresh breakfast with Atlas views. Optional gentle hike through nearby Berber villages.', wardrobeKey: 'd2-1' },
+  { time: 'Afternoon', title: 'Lunch & Unstructured Time', description: 'Lunch from the gardens. The mountain midday sun is best enjoyed by the infinity pool.', wardrobeKey: 'd2-4' },
+  { time: 'Evening', title: 'Dinner at the Kasbah', description: 'Another quiet evening with mountain views and organic cuisine. Rest well before Marrakech.', wardrobeKey: 'd2-7' },
+];
+
+function WardrobeThumbs({ wardrobeKey }: { wardrobeKey: string }) {
+  const keys = [
+    `${wardrobeKey}-wardrobe`,
+    `${wardrobeKey}-extra-0`,
+    `${wardrobeKey}-extra-1`,
+    `${wardrobeKey}-extra-2`,
+  ];
+  return (
+    <div className="teaser-thumbs">
+      {keys.map((k) => (
+        <img key={k} src={`${BLOB}/${k}`} alt="" className="teaser-thumb" loading="lazy" />
+      ))}
+    </div>
+  );
+}
+
+function DaySection({ day, theme, slots }: { day: number; theme: string; slots: TimeSlot[] }) {
+  return (
+    <div className="teaser-day">
+      <div className="teaser-day-header">DAY {day} &middot; {theme}</div>
+      {slots.map((slot, i) => (
+        <div key={i} className="teaser-slot">
+          <div className="teaser-time">{slot.time}</div>
+          <div className="teaser-event-title">{slot.title}</div>
+          <div className="teaser-event-desc">{slot.description}</div>
+          <WardrobeThumbs wardrobeKey={slot.wardrobeKey} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ItineraryTeaser() {
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    try {
+      await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'itinerary_gate' }),
+      });
+      setSubmitted(true);
+    } catch {
+      // silently handle
+    }
+  };
+
+  return (
+    <div className="itinerary-teaser">
+      <div className="teaser-label">The Full Journey</div>
+      <h3>Your 8-Day Morocco Itinerary</h3>
+
+      {/* Day 1 — fully visible */}
+      <DaySection day={1} theme={DAY_THEMES[1]} slots={DAY1_SLOTS} />
+
+      {/* Day 2 — fully visible */}
+      <DaySection day={2} theme={DAY_THEMES[2]} slots={DAY2_SLOTS} />
+
+      {/* Days 3-8 — blurred gate */}
+      <div className="teaser-gate-wrapper">
+        <div className="teaser-blurred">
+          <div className="teaser-day">
+            <div className="teaser-day-header">DAY 3 &middot; {DAY_THEMES[3]}</div>
+            <div className="teaser-slot">
+              <div className="teaser-time">Morning</div>
+              <div className="teaser-event-title">Final Breakfast &amp; Departure</div>
+              <div className="teaser-event-desc">One last walk through the grounds before the journey to Marrakech.</div>
+              <WardrobeThumbs wardrobeKey="d3-1" />
+            </div>
+            <div className="teaser-slot">
+              <div className="teaser-time">Afternoon</div>
+              <div className="teaser-event-title">Arrive at El Fenn</div>
+              <div className="teaser-event-desc">Check in to Marrakech&rsquo;s most storied riad. Explore the courtyards and rooftop.</div>
+              <WardrobeThumbs wardrobeKey="d3-3" />
+            </div>
+            <div className="teaser-slot">
+              <div className="teaser-time">Evening</div>
+              <div className="teaser-event-title">Dinner at Dar Yacout</div>
+              <div className="teaser-event-desc">Traditional Moroccan fine dining in a centuries-old palace.</div>
+              <WardrobeThumbs wardrobeKey="d3-9" />
+            </div>
+          </div>
+        </div>
+
+        <div className="teaser-gate-overlay">
+          <div className="teaser-gate-label">THE FULL JOURNEY</div>
+          <div className="teaser-gate-headline">Your complete 8-day Morocco itinerary</div>
+          <div className="teaser-gate-sub">Day-by-day packing, reservations, and the details no one tells you.</div>
+
+          {!submitted ? (
+            <form className="teaser-gate-form" onSubmit={handleSubmit}>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="teaser-gate-input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <a href="/packing" className="teaser-gate-button" onClick={(e) => {
+                if (email) {
+                  e.preventDefault();
+                  handleSubmit(e as unknown as FormEvent);
+                  setTimeout(() => { window.location.href = '/packing'; }, 500);
+                }
+              }}>Go Gold to Unlock</a>
+            </form>
+          ) : (
+            <div className="teaser-gate-confirmed">
+              <span>We&rsquo;ll let you know.</span>
+              <a href="/packing" className="teaser-gate-button" style={{ marginTop: 16 }}>Go Gold to Unlock</a>
+            </div>
+          )}
+
+          <a href="/packing" className="teaser-bypass">For pilot testers: Continue without unlocking &rarr;</a>
+        </div>
+      </div>
     </div>
   );
 }
@@ -549,23 +705,8 @@ export default function MoroccoGuide() {
 
       <hr className="divider" />
 
-      {/* ═══ ITINERARY TEASER ═══ */}
-      <div className="itinerary-teaser">
-        <div className="teaser-label">The Full Journey</div>
-        <h3>Your 8-Day Morocco Itinerary</h3>
-        <p className="teaser-desc">Day-by-day packing, reservations, and the details no one tells you &mdash; from what to wear to the medina to where to watch the sun go down in the desert.</p>
-        <div className="teaser-days">
-          <div className="day-pill active">Day 1</div>
-          <div className="day-pill">Day 2</div>
-          <div className="day-pill">Day 3</div>
-          <div className="day-pill">Day 4</div>
-          <div className="day-pill">Day 5</div>
-          <div className="day-pill">Day 6</div>
-          <div className="day-pill">Day 7</div>
-          <div className="day-pill">Day 8</div>
-        </div>
-        <a href="/packing" className="cta-button">Go Gold to Unlock</a>
-      </div>
+      {/* ═══ ITINERARY TEASER (EXPANDED) ═══ */}
+      <ItineraryTeaser />
 
       {/* ═══ FOOTER ═══ */}
       <div className="guide-footer">

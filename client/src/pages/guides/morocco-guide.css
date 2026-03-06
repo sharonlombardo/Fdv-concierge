@@ -414,13 +414,12 @@
   padding-bottom: 1px;
 }
 
-/* ── ITINERARY TEASER ── */
+/* ── ITINERARY TEASER (EXPANDED) ── */
 .morocco-guide .itinerary-teaser {
   margin: 40px;
   padding: 60px 40px;
   background: var(--black-passport);
-  color: var(--white);
-  text-align: center;
+  color: #fff;
   position: relative;
   overflow: hidden;
 }
@@ -433,6 +432,7 @@
   text-transform: uppercase;
   color: var(--gold);
   margin-bottom: 16px;
+  text-align: center;
 }
 
 .morocco-guide .itinerary-teaser h3 {
@@ -442,44 +442,159 @@
   font-style: italic;
   line-height: 1.4;
   max-width: 600px;
-  margin: 0 auto 24px;
+  margin: 0 auto 40px;
+  text-align: center;
 }
 
-.morocco-guide .itinerary-teaser .teaser-desc {
-  font-family: 'Lora', Georgia, serif;
-  font-size: 17px;
-  font-style: italic;
-  color: rgba(255,255,255,0.7);
-  max-width: 550px;
-  margin: 0 auto 28px;
-  line-height: 1.6;
+/* Day sections */
+.morocco-guide .teaser-day {
+  margin-bottom: 40px;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.morocco-guide .itinerary-teaser .teaser-days {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 32px;
-  flex-wrap: wrap;
-}
-
-.morocco-guide .itinerary-teaser .day-pill {
+.morocco-guide .teaser-day-header {
   font-family: 'Inter', sans-serif;
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  padding: 8px 16px;
-  border: 1px solid rgba(255,255,255,0.3);
-  color: rgba(255,255,255,0.5);
-}
-
-.morocco-guide .itinerary-teaser .day-pill.active {
-  border-color: var(--gold);
   color: var(--gold);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.morocco-guide .itinerary-teaser .cta-button {
+.morocco-guide .teaser-slot {
+  margin-bottom: 28px;
+  padding-left: 16px;
+  border-left: 1px solid rgba(255,255,255,0.08);
+}
+
+.morocco-guide .teaser-time {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.morocco-guide .teaser-event-title {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.morocco-guide .teaser-event-desc {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 15px;
+  font-style: italic;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+/* Wardrobe thumbnails */
+.morocco-guide .teaser-thumbs {
+  display: flex;
+  gap: 8px;
+}
+
+.morocco-guide .teaser-thumb {
+  width: 60px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #2a2a2a;
+}
+
+/* Blurred gate */
+.morocco-guide .teaser-gate-wrapper {
+  position: relative;
+  margin-top: 20px;
+}
+
+.morocco-guide .teaser-blurred {
+  filter: blur(8px);
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}
+
+.morocco-guide .teaser-gate-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(to bottom, rgba(26,26,26,0.3) 0%, rgba(26,26,26,0.95) 60%);
+}
+
+.morocco-guide .teaser-gate-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+
+.morocco-guide .teaser-gate-headline {
+  font-family: 'Lora', Georgia, serif;
+  font-size: clamp(20px, 3.5vw, 28px);
+  font-style: italic;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.morocco-guide .teaser-gate-sub {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 15px;
+  font-style: italic;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 28px;
+  max-width: 400px;
+}
+
+.morocco-guide .teaser-gate-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.morocco-guide .teaser-gate-input {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  padding: 12px 16px;
+  width: 300px;
+  max-width: 90vw;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.morocco-guide .teaser-gate-input::placeholder {
+  color: rgba(255,255,255,0.4);
+}
+.morocco-guide .teaser-gate-input:focus {
+  border-color: var(--gold);
+}
+
+.morocco-guide .teaser-gate-button {
   display: inline-block;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
@@ -490,11 +605,39 @@
   background: var(--gold);
   color: var(--black-passport);
   text-decoration: none;
+  margin-top: 16px;
+  border-radius: 2px;
   transition: opacity 0.3s;
+  cursor: pointer;
+  border: none;
+}
+.morocco-guide .teaser-gate-button:hover {
+  opacity: 0.85;
 }
 
-.morocco-guide .itinerary-teaser .cta-button:hover {
-  opacity: 0.85;
+.morocco-guide .teaser-gate-confirmed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.morocco-guide .teaser-gate-confirmed span {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 15px;
+  font-style: italic;
+  color: var(--gold);
+}
+
+.morocco-guide .teaser-bypass {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.morocco-guide .teaser-bypass:hover {
+  color: rgba(255,255,255,0.7);
 }
 
 /* ── GUIDE MAP ── */
@@ -613,6 +756,13 @@
     margin: 16px;
     padding: 32px 16px;
   }
+  .morocco-guide .teaser-gate-input {
+    width: 100%;
+  }
+  .morocco-guide .teaser-thumb {
+    width: 50px;
+    height: 67px;
+  }
   .morocco-guide .guide-map { margin: 16px; }
 
   /* Image grids → single column on mobile */
@@ -681,9 +831,8 @@
     font-size: 18px;
   }
 
-  /* Itinerary day pills */
-  .morocco-guide .itinerary-teaser .day-pill {
-    font-size: 9px;
-    padding: 6px 10px;
+  /* Itinerary teaser mobile */
+  .morocco-guide .teaser-slot {
+    padding-left: 12px;
   }
 }
