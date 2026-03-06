@@ -1025,9 +1025,19 @@ export default function DailyFlowPage() {
                   : null;
 
                 return (
-                  <div key={i}>
+                  <div key={i} id={`flow-card-${item.id}`}>
                   <button
-                    onClick={() => setExpandedItemId(isExpanded ? null : item.id)}
+                    onClick={() => {
+                      const newId = isExpanded ? null : item.id;
+                      setExpandedItemId(newId);
+                      if (newId) {
+                        // Scroll the card to the top of the viewport after expansion renders
+                        setTimeout(() => {
+                          const el = document.getElementById(`flow-card-${item.id}`);
+                          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }, 50);
+                      }
+                    }}
                     style={{
                       display: "flex",
                       gap: 14,
