@@ -75,11 +75,15 @@ interface ItineraryTeaserProps {
 function ItineraryTeaser({ getImageUrl, hasCustomImage, onOpenProductModal }: ItineraryTeaserProps) {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
   const editorialData = extractEditorialData();
 
   const day1 = editorialData.find(d => d.dayNumber === 1);
   const day2 = editorialData.find(d => d.dayNumber === 2);
   const day3 = editorialData.find(d => d.dayNumber === 3);
+  const remainingDays = editorialData.filter(d => d.dayNumber >= 3);
+
+  const handleUnlock = () => setIsUnlocked(true);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -91,8 +95,9 @@ function ItineraryTeaser({ getImageUrl, hasCustomImage, onOpenProductModal }: It
         body: JSON.stringify({ email, source: 'itinerary_gate' }),
       });
       setSubmitted(true);
+      handleUnlock();
     } catch {
-      // silently handle
+      handleUnlock();
     }
   };
 
@@ -108,7 +113,7 @@ function ItineraryTeaser({ getImageUrl, hasCustomImage, onOpenProductModal }: It
         </h3>
       </div>
 
-      {/* Days 1 & 2 — identical to /concierge: same component, same hooks, same data */}
+      {/* Days 1 & 2 — always visible, identical to /concierge */}
       <div style={{ maxWidth: 1024, margin: '0 auto', padding: '0 16px' }}>
         {day1 && (
           <EditorialDaySection
@@ -128,95 +133,93 @@ function ItineraryTeaser({ getImageUrl, hasCustomImage, onOpenProductModal }: It
         )}
       </div>
 
-      {/* Day 3 — blurred preview + gate overlay (capped at ~1 screen height) */}
-      <div style={{ position: 'relative', marginTop: 20, maxHeight: 700, overflow: 'hidden' }}>
-        <div style={{ filter: 'blur(8px)', opacity: 0.5, pointerEvents: 'none', userSelect: 'none' }}>
-          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '0 16px' }}>
-            {day3 && (
-              <EditorialDaySection
-                day={day3}
-                getImageUrl={getImageUrl}
-                hasCustomImage={hasCustomImage}
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Gate overlay */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          background: 'rgba(250, 249, 246, 0.85)', padding: '40px 20px', textAlign: 'center', zIndex: 10,
-        }}>
-          <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 22, fontStyle: 'italic', color: '#2c2416', marginBottom: 12 }}>
-            Unlock your complete Morocco experience.
-          </div>
-          <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(44, 36, 22, 0.6)', marginBottom: 28, maxWidth: 440, lineHeight: 1.6 }}>
-            8 days of curated events, restaurants, and wardrobe — every detail planned so you don't have to.
-          </div>
-
-          {!submitted ? (
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                style={{
-                  background: 'transparent', border: '1px solid rgba(0,0,0,0.2)', color: '#2c2416',
-                  padding: '12px 16px', width: 300, maxWidth: '90vw', fontSize: 14,
-                  fontFamily: "'Inter', sans-serif", borderRadius: 0, outline: 'none',
-                }}
-              />
-              <a
-                href="/packing"
-                onClick={(e) => {
-                  if (email) {
-                    e.preventDefault();
-                    handleSubmit(e as unknown as FormEvent);
-                    setTimeout(() => { window.location.href = '/packing'; }, 500);
-                  }
-                }}
-                style={{
-                  display: 'inline-block', fontFamily: "'Inter', sans-serif", fontSize: 12,
-                  fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase',
-                  background: '#c9a84c', color: '#1a1a1a', padding: '14px 40px',
-                  textDecoration: 'none', marginTop: 12, transition: 'opacity 0.3s',
-                }}
-              >
-                Go Gold to Unlock
-              </a>
-            </form>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <span style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 15, fontStyle: 'italic', color: '#c9a84c' }}>
-                We'll let you know.
-              </span>
-              <a
-                href="/packing"
-                style={{
-                  display: 'inline-block', fontFamily: "'Inter', sans-serif", fontSize: 12,
-                  fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase',
-                  background: '#c9a84c', color: '#1a1a1a', padding: '14px 40px',
-                  textDecoration: 'none', marginTop: 16,
-                }}
-              >
-                Go Gold to Unlock
-              </a>
+      {/* LOCKED: Day 3 blurred + gate overlay (capped at ~1 screen height) */}
+      {!isUnlocked && (
+        <div style={{ position: 'relative', marginTop: 20, maxHeight: 700, overflow: 'hidden' }}>
+          <div style={{ filter: 'blur(8px)', opacity: 0.5, pointerEvents: 'none', userSelect: 'none' }}>
+            <div style={{ maxWidth: 1024, margin: '0 auto', padding: '0 16px' }}>
+              {day3 && (
+                <EditorialDaySection
+                  day={day3}
+                  getImageUrl={getImageUrl}
+                  hasCustomImage={hasCustomImage}
+                />
+              )}
             </div>
-          )}
+          </div>
 
-          <a
-            href="/packing"
-            style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: 'rgba(44, 36, 22, 0.4)', textDecoration: 'none', marginTop: 20, transition: 'color 0.3s' }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(44, 36, 22, 0.7)')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(44, 36, 22, 0.4)')}
-          >
-            For pilot testers: Continue without unlocking →
-          </a>
+          {/* Gate overlay */}
+          <div style={{
+            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(250, 249, 246, 0.85)', padding: '40px 20px', textAlign: 'center', zIndex: 10,
+          }}>
+            <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 22, fontStyle: 'italic', color: '#2c2416', marginBottom: 12 }}>
+              Unlock your complete Morocco experience.
+            </div>
+            <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(44, 36, 22, 0.6)', marginBottom: 28, maxWidth: 440, lineHeight: 1.6 }}>
+              8 days of curated events, restaurants, and wardrobe — every detail planned so you don't have to.
+            </div>
+
+            {!submitted ? (
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  style={{
+                    background: 'transparent', border: '1px solid rgba(0,0,0,0.2)', color: '#2c2416',
+                    padding: '12px 16px', width: 300, maxWidth: '90vw', fontSize: 14,
+                    fontFamily: "'Inter', sans-serif", borderRadius: 0, outline: 'none',
+                  }}
+                />
+                <button
+                  type="submit"
+                  style={{
+                    display: 'inline-block', fontFamily: "'Inter', sans-serif", fontSize: 12,
+                    fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase',
+                    background: '#c9a84c', color: '#1a1a1a', padding: '14px 40px',
+                    textDecoration: 'none', marginTop: 12, transition: 'opacity 0.3s',
+                    border: 'none', cursor: 'pointer',
+                  }}
+                >
+                  Go Gold to Unlock
+                </button>
+              </form>
+            ) : null}
+
+            <button
+              onClick={handleUnlock}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                fontFamily: "'Inter', sans-serif", fontSize: 12, color: 'rgba(44, 36, 22, 0.4)',
+                textDecoration: 'none', marginTop: 20, padding: 0, transition: 'color 0.3s',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(44, 36, 22, 0.7)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(44, 36, 22, 0.4)')}
+            >
+              For pilot testers: Continue without unlocking →
+            </button>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* UNLOCKED: Days 3-8 fully visible — identical to /concierge */}
+      {isUnlocked && (
+        <div style={{ maxWidth: 1024, margin: '0 auto', padding: '0 16px' }}>
+          {remainingDays.map(day => (
+            <EditorialDaySection
+              key={day.dayNumber}
+              day={day}
+              getImageUrl={getImageUrl}
+              hasCustomImage={hasCustomImage}
+              onOpenProductModal={onOpenProductModal}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
