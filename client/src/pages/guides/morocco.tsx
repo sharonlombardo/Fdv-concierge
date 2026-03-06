@@ -62,64 +62,122 @@ function CarouselItem({ product, onOpenModal }: { product: CarouselProduct; onOp
   );
 }
 
-/* ── Day data for itinerary teaser ── */
-const DAY_THEMES: Record<number, string> = {
-  1: 'ARRIVAL',
-  2: 'THE ATLAS',
-  3: 'ATLAS TO MARRAKECH',
-  4: 'THE MEDINA',
-  5: 'THE SOUKS',
-  6: 'CULTURE & REST',
-  7: 'THE DESERT',
-  8: 'DEPARTURE',
+/* ── Itinerary teaser data — event-led layout ── */
+
+type ProductThumb = {
+  blobKey: string;
+  brand: string;
+  name: string;
+  isLook?: boolean;  // true = larger thumbnail
 };
 
-type TimeSlot = {
+type EventSlot = {
   time: string;
   title: string;
   description: string;
-  wardrobeKey: string; // e.g. "d1-1" → used to build blob URLs
+  products: ProductThumb[];
 };
 
-const DAY1_SLOTS: TimeSlot[] = [
-  { time: 'Morning', title: 'Arrival at Marrakech Menara Airport', description: 'Arrival at Menara — a masterpiece of modern Islamic architecture. Private transfer to the Atlas Mountains.', wardrobeKey: 'd1-1' },
-  { time: 'Afternoon', title: 'Check-in at Kasbah Bab Ourika', description: 'Perched above the Ourika Valley with 360-degree Atlas views. Explore the grounds, organic gardens.', wardrobeKey: 'd1-3' },
-  { time: 'Evening', title: 'Dinner at the Kasbah', description: 'Organic cuisine from the Kasbah gardens. A quiet evening as the temperature drops in the valley.', wardrobeKey: 'd1-6' },
+const DAY1_EVENTS: EventSlot[] = [
+  {
+    time: 'Morning',
+    title: 'Arrival at Marrakech Menara Airport',
+    description: 'Arrival at Menara — a masterpiece of modern Islamic architecture. Private transfer to the Atlas Mountains.',
+    products: [
+      { blobKey: 'd1-1-wardrobe', brand: 'FDV', name: 'Philomena Caftan', isLook: true },
+      { blobKey: 'd1-1-extra-0', brand: 'Khaite', name: 'Otto Sandal' },
+      { blobKey: 'd1-1-extra-1', brand: 'Bottega Veneta', name: 'Hobo Bag' },
+      { blobKey: 'd1-1-extra-2', brand: 'Bulgari', name: 'Serpenti Watch' },
+      { blobKey: 'd1-1-extra-3', brand: 'Phoebe Philo', name: 'Cruise Sunglasses' },
+    ],
+  },
+  {
+    time: 'Afternoon',
+    title: 'Check-in at Kasbah Bab Ourika',
+    description: 'Perched above the Ourika Valley with 360-degree Atlas views. Explore the grounds, organic gardens.',
+    products: [
+      { blobKey: 'd1-3-wardrobe', brand: 'FDV', name: 'Cybel Blouse & Pant', isLook: true },
+      { blobKey: 'd1-3-extra-0', brand: 'Khaite', name: 'Otto Sandal' },
+      { blobKey: 'd1-3-extra-1', brand: 'Bottega Veneta', name: 'Hobo Bag' },
+      { blobKey: 'd1-3-extra-3', brand: 'FDV', name: 'Parfum' },
+    ],
+  },
+  {
+    time: 'Evening',
+    title: 'Dinner at the Kasbah',
+    description: 'Candlelit dinner under the stars at the Kasbah. Traditional Moroccan cuisine with Atlas Mountain views.',
+    products: [
+      { blobKey: 'd1-6-wardrobe', brand: 'FDV', name: 'Virginia Dress, Emerald', isLook: true },
+      { blobKey: 'd1-6-extra-0', brand: 'A Emery', name: 'Kir Sandal' },
+      { blobKey: 'd1-6-extra-1', brand: 'Chloé', name: 'Wristlette' },
+      { blobKey: 'd1-6-extra-2', brand: 'Bulgari', name: 'Cabachon Necklace' },
+      { blobKey: 'd1-6-extra-3', brand: 'Phoebe Philo', name: 'Mini Hoops' },
+    ],
+  },
 ];
 
-const DAY2_SLOTS: TimeSlot[] = [
-  { time: 'Morning', title: 'Breakfast & Village Walk', description: 'Fresh breakfast with Atlas views. Optional gentle hike through nearby Berber villages.', wardrobeKey: 'd2-1' },
-  { time: 'Afternoon', title: 'Lunch & Unstructured Time', description: 'Lunch from the gardens. The mountain midday sun is best enjoyed by the infinity pool.', wardrobeKey: 'd2-4' },
-  { time: 'Evening', title: 'Dinner at the Kasbah', description: 'Another quiet evening with mountain views and organic cuisine. Rest well before Marrakech.', wardrobeKey: 'd2-7' },
+const DAY2_EVENTS: EventSlot[] = [
+  {
+    time: 'Morning',
+    title: 'Breakfast at the Kasbah',
+    description: 'Morning light over the Atlas range. Fresh-pressed juices and msemen on the terrace.',
+    products: [
+      { blobKey: 'd2-1-wardrobe', brand: 'FDV', name: 'Juno Blouse & Marrakech Pant', isLook: true },
+      { blobKey: 'd2-1-extra-0', brand: 'A Emery', name: 'Kir Sandal' },
+      { blobKey: 'd2-1-extra-1', brand: 'DeMellier', name: 'Santorini Basket Bag' },
+      { blobKey: 'd2-1-extra-3', brand: 'Phoebe Philo', name: 'Cruise Sunglasses' },
+    ],
+  },
+  {
+    time: 'Afternoon',
+    title: 'Lunch at the Kasbah',
+    description: 'Long lunch by the pool. Tagine, olives, and slow afternoons.',
+    products: [
+      { blobKey: 'd2-4-wardrobe', brand: 'FDV', name: 'Diana Dress, Stripe', isLook: true },
+      { blobKey: 'd2-4-extra-1', brand: 'FDV', name: 'Pool Essentials Towel' },
+      { blobKey: 'd2-4-extra-2', brand: 'Phoebe Philo', name: 'Mini Hoops' },
+      { blobKey: 'd2-4-extra-3', brand: 'FDV', name: 'Travel Mist' },
+    ],
+  },
+  {
+    time: 'Evening',
+    title: 'Dinner at the Kasbah',
+    description: 'Garden-to-table dinner. The kind of evening you remember for years.',
+    products: [
+      { blobKey: 'd2-7-wardrobe', brand: 'FDV', name: 'Honora Dress, Floral', isLook: true },
+      { blobKey: 'd2-7-extra-0', brand: 'A Emery', name: 'Kir Sandal' },
+      { blobKey: 'd2-7-extra-1', brand: 'Chloé', name: 'Wristlette' },
+      { blobKey: 'd2-7-extra-2', brand: 'Phoebe Philo', name: 'Dropped Earrings' },
+      { blobKey: 'd2-7-extra-3', brand: 'Violette FR', name: 'Lip Stain' },
+    ],
+  },
 ];
 
-function WardrobeThumbs({ wardrobeKey }: { wardrobeKey: string }) {
-  const keys = [
-    `${wardrobeKey}-wardrobe`,
-    `${wardrobeKey}-extra-0`,
-    `${wardrobeKey}-extra-1`,
-    `${wardrobeKey}-extra-2`,
-  ];
+function EventCard({ slot }: { slot: EventSlot }) {
   return (
-    <div className="teaser-thumbs">
-      {keys.map((k) => (
-        <img key={k} src={`${BLOB}/${k}`} alt="" className="teaser-thumb" loading="lazy" />
-      ))}
+    <div className="teaser-event-card">
+      <div className="teaser-time">{slot.time}</div>
+      <div className="teaser-event-title">{slot.title}</div>
+      <div className="teaser-event-desc">{slot.description}</div>
+      <div className="teaser-look-label">YOUR LOOK</div>
+      <div className="teaser-look-row">
+        {slot.products.map((p) => (
+          <div key={p.blobKey} className={`teaser-product ${p.isLook ? 'is-look' : ''}`}>
+            <img src={`${BLOB}/${p.blobKey}`} alt={`${p.brand} ${p.name}`} loading="lazy" />
+            <div className="teaser-product-label">{p.brand}<br />{p.name}</div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
-function DaySection({ day, theme, slots }: { day: number; theme: string; slots: TimeSlot[] }) {
+function DaySection({ day, theme, events }: { day: number; theme: string; events: EventSlot[] }) {
   return (
     <div className="teaser-day">
       <div className="teaser-day-header">DAY {day} &middot; {theme}</div>
-      {slots.map((slot, i) => (
-        <div key={i} className="teaser-slot">
-          <div className="teaser-time">{slot.time}</div>
-          <div className="teaser-event-title">{slot.title}</div>
-          <div className="teaser-event-desc">{slot.description}</div>
-          <WardrobeThumbs wardrobeKey={slot.wardrobeKey} />
-        </div>
+      {events.map((slot, i) => (
+        <EventCard key={i} slot={slot} />
       ))}
     </div>
   );
@@ -150,41 +208,53 @@ function ItineraryTeaser() {
       <h3>Your 8-Day Morocco Itinerary</h3>
 
       {/* Day 1 — fully visible */}
-      <DaySection day={1} theme={DAY_THEMES[1]} slots={DAY1_SLOTS} />
+      <DaySection day={1} theme="ARRIVAL" events={DAY1_EVENTS} />
 
       {/* Day 2 — fully visible */}
-      <DaySection day={2} theme={DAY_THEMES[2]} slots={DAY2_SLOTS} />
+      <DaySection day={2} theme="THE MEDINA" events={DAY2_EVENTS} />
 
       {/* Days 3-8 — blurred gate */}
       <div className="teaser-gate-wrapper">
         <div className="teaser-blurred">
           <div className="teaser-day">
-            <div className="teaser-day-header">DAY 3 &middot; {DAY_THEMES[3]}</div>
-            <div className="teaser-slot">
+            <div className="teaser-day-header">DAY 3 &middot; ATLAS TO MARRAKECH</div>
+            <div className="teaser-event-card">
               <div className="teaser-time">Morning</div>
               <div className="teaser-event-title">Final Breakfast &amp; Departure</div>
               <div className="teaser-event-desc">One last walk through the grounds before the journey to Marrakech.</div>
-              <WardrobeThumbs wardrobeKey="d3-1" />
+              <div className="teaser-look-label">YOUR LOOK</div>
+              <div className="teaser-look-row">
+                <div className="teaser-product is-look"><img src={`${BLOB}/d3-1-wardrobe`} alt="" loading="lazy" /><div className="teaser-product-label">FDV<br />Juno Blouse</div></div>
+                <div className="teaser-product"><img src={`${BLOB}/d3-1-extra-0`} alt="" loading="lazy" /><div className="teaser-product-label">A Emery<br />Kir Sandal</div></div>
+                <div className="teaser-product"><img src={`${BLOB}/d3-1-extra-1`} alt="" loading="lazy" /><div className="teaser-product-label">DeMellier<br />Basket Bag</div></div>
+              </div>
             </div>
-            <div className="teaser-slot">
+            <div className="teaser-event-card">
               <div className="teaser-time">Afternoon</div>
               <div className="teaser-event-title">Arrive at El Fenn</div>
               <div className="teaser-event-desc">Check in to Marrakech&rsquo;s most storied riad. Explore the courtyards and rooftop.</div>
-              <WardrobeThumbs wardrobeKey="d3-3" />
+              <div className="teaser-look-label">YOUR LOOK</div>
+              <div className="teaser-look-row">
+                <div className="teaser-product is-look"><img src={`${BLOB}/d3-5-wardrobe`} alt="" loading="lazy" /><div className="teaser-product-label">FDV<br />Medina Dress</div></div>
+                <div className="teaser-product"><img src={`${BLOB}/d3-5-extra-0`} alt="" loading="lazy" /><div className="teaser-product-label">Khaite<br />Otto Sandal</div></div>
+              </div>
             </div>
-            <div className="teaser-slot">
+            <div className="teaser-event-card">
               <div className="teaser-time">Evening</div>
               <div className="teaser-event-title">Dinner at Dar Yacout</div>
               <div className="teaser-event-desc">Traditional Moroccan fine dining in a centuries-old palace.</div>
-              <WardrobeThumbs wardrobeKey="d3-9" />
+              <div className="teaser-look-label">YOUR LOOK</div>
+              <div className="teaser-look-row">
+                <div className="teaser-product is-look"><img src={`${BLOB}/d3-9-wardrobe`} alt="" loading="lazy" /><div className="teaser-product-label">FDV<br />Isadora Dress</div></div>
+                <div className="teaser-product"><img src={`${BLOB}/d3-9-extra-0`} alt="" loading="lazy" /><div className="teaser-product-label">Alaïa<br />Velvet Thongs</div></div>
+              </div>
             </div>
           </div>
         </div>
 
         <div className="teaser-gate-overlay">
-          <div className="teaser-gate-label">THE FULL JOURNEY</div>
-          <div className="teaser-gate-headline">Your complete 8-day Morocco itinerary</div>
-          <div className="teaser-gate-sub">Day-by-day packing, reservations, and the details no one tells you.</div>
+          <div className="teaser-gate-headline">Unlock your complete Morocco experience.</div>
+          <div className="teaser-gate-sub">8 days of curated events, restaurants, and wardrobe &mdash; every detail planned so you don&rsquo;t have to.</div>
 
           {!submitted ? (
             <form className="teaser-gate-form" onSubmit={handleSubmit}>
