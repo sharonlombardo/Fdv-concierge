@@ -1112,10 +1112,73 @@ export default function Home() {
 
   return (
     <div className="min-h-screen pb-[80px] bg-background text-foreground font-sans selection:bg-foreground selection:text-background transition-colors duration-500 overflow-x-hidden">
-      
+
       {/* GlobalNav removed — TopBar is now app-level in App.tsx */}
 
-      {/* Editorial Overview - Long-form narrative scroll (no interactive elements) */}
+      {/* STEP 1: Editorial Intro */}
+      <section
+        style={{
+          background: "#faf9f6",
+          padding: "48px 24px 32px",
+          textAlign: "center",
+          borderBottom: "1px solid #e8e0d4",
+        }}
+      >
+        <div style={{ maxWidth: 600, margin: "0 auto" }}>
+          <p
+            style={{
+              fontFamily: "Lora, serif",
+              fontSize: 14,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "#c9a84c",
+              marginBottom: 24,
+            }}
+          >
+            MOROCCO — 8 DAYS
+          </p>
+          <p
+            style={{
+              fontFamily: "Lora, serif",
+              fontSize: 19,
+              lineHeight: 1.65,
+              color: "#2c2416",
+              fontWeight: 400,
+            }}
+          >
+            A journey through Marrakech and the Atlas Mountains, curated for
+            someone who travels the way they dress — with intention.
+          </p>
+          <p
+            style={{
+              fontFamily: "Lora, serif",
+              fontSize: 19,
+              lineHeight: 1.65,
+              color: "#2c2416",
+              fontWeight: 400,
+              marginTop: 20,
+            }}
+          >
+            Every outfit has been considered for the moment it belongs to.
+            Every place was chosen because it's worth returning to.
+          </p>
+          <p
+            style={{
+              fontFamily: "Lora, serif",
+              fontSize: 17,
+              lineHeight: 1.65,
+              color: "rgba(44, 36, 22, 0.6)",
+              fontWeight: 400,
+              marginTop: 20,
+              fontStyle: "italic",
+            }}
+          >
+            Save the pieces that speak to you. They'll be waiting in your Suitcase.
+          </p>
+        </div>
+      </section>
+
+      {/* Editorial Overview - Days 1-8 summary (events + outfits) */}
       <div id="editorial-overview" className="scroll-mt-20" />
       <EditorialOverview
         getImageUrl={getImageUrl}
@@ -1128,149 +1191,111 @@ export default function Home() {
         <SaveTripButton />
       </div>
 
-      {/* Transition to Interactive Logistics */}
-      <div id="daily-flow" className="py-20 md:py-28 text-center px-4 border-t border-border scroll-mt-20">
-        <h2 className="text-[11px] font-bold tracking-[0.5em] uppercase text-muted-foreground mb-6">DETAILED ITINERARY</h2>
-        <p className="font-serif text-2xl md:text-3xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          Tap any event below to explore contacts, wardrobe notes, and your personal journal.
-        </p>
-      </div>
+      {/* STEP 3: Concierge Gate CTA */}
+      <section
+        style={{
+          background: "#faf9f6",
+          borderTop: "1px solid #f5f1e8",
+          padding: "64px 24px",
+          textAlign: "center",
+        }}
+      >
+        <div style={{ maxWidth: 600, margin: "0 auto" }}>
+          <p
+            style={{
+              fontFamily: "Lora, serif",
+              fontSize: 14,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "#c9a84c",
+              marginBottom: 24,
+            }}
+          >
+            YOUR FDV CONCIERGE
+          </p>
+          <p
+            style={{
+              fontFamily: "Lora, serif",
+              fontSize: 19,
+              lineHeight: 1.65,
+              color: "#2c2416",
+              fontWeight: 400,
+            }}
+          >
+            Everything above is your trip at a glance.
+            <br />
+            But a glance isn't a plan.
+          </p>
+          <p
+            style={{
+              fontFamily: "Lora, serif",
+              fontSize: 19,
+              lineHeight: 1.65,
+              color: "#2c2416",
+              fontWeight: 400,
+              marginTop: 20,
+            }}
+          >
+            Your FDV Concierge turns this overview into a fully orchestrated
+            experience — day-by-day logistics, pre-built packing lists,
+            restaurant reservations, and a Travel Diary to capture it all.
+          </p>
+          <div
+            style={{
+              display: "flex",
+              gap: 16,
+              justifyContent: "center",
+              marginTop: 36,
+              flexWrap: "wrap",
+            }}
+          >
+            <a
+              href="/daily-flow"
+              onClick={(e) => { e.preventDefault(); setLocation("/daily-flow"); }}
+              style={{
+                display: "inline-block",
+                padding: "14px 32px",
+                background: "#1a1a1a",
+                color: "#ffffff",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 13,
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                borderRadius: 4,
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Unlock Daily Flow
+            </a>
+            <a
+              href="/concierge-info"
+              onClick={(e) => { e.preventDefault(); setLocation("/concierge-info"); }}
+              style={{
+                display: "inline-block",
+                padding: "14px 32px",
+                background: "transparent",
+                color: "#1a1a1a",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 13,
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                borderRadius: 4,
+                border: "1.5px solid #1a1a1a",
+                cursor: "pointer",
+              }}
+            >
+              Learn More
+            </a>
+          </div>
+        </div>
+      </section>
 
-      <div className="pt-8 pb-48 px-6 md:px-12 max-w-5xl mx-auto">
-        
-        {/* Render only Day pages - Cover/Intro/FieldNotes are replaced by EditorialOverview above */}
-        {ITINERARY_DATA.filter(p => isDayPage(p)).map((p, pageIdx) => {
-          const dayPage = p as DayPage;
-          return (
-            <div key={pageIdx} className="py-32 animate-in fade-in duration-1000 border-t border-border first:border-t-0">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20 border-b border-border pb-16">
-                <div className="space-y-6">
-                  <p className="text-[12px] font-bold tracking-[0.5em] uppercase text-muted-foreground">
-                    DAY {dayPage.day} — {dayPage.date}
-                  </p>
-                  <h2 
-                    className="text-4xl md:text-6xl lg:text-8xl font-serif font-bold tracking-tighter leading-none m-0 uppercase"
-                    data-testid={`text-day-${dayPage.day}-title`}
-                  >
-                    {dayPage.title}
-                  </h2>
-                  <div className="flex items-center gap-4 text-[12px] font-bold uppercase tracking-[0.4em] text-muted-foreground">
-                    <MapPin className="w-4 h-4 text-foreground" /> {dayPage.location}
-                  </div>
-                </div>
-                <WeatherDisplay weather={dayPage.weather} />
-              </div>
-
-              <div className="mb-20 space-y-6">
-                <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] flex items-center gap-3">
-                  <Info className="w-4 h-4" /> FIELD NOTES
-                </h3>
-                <div className="text-xl md:text-2xl leading-relaxed text-muted-foreground font-serif italic border-l-2 border-border pl-10 opacity-90 whitespace-pre-wrap">
-                  {dayPage.fieldNotes}
-                </div>
-              </div>
-
-              <div className="mb-20">
-                <div className="aspect-[21/18] w-full overflow-hidden rounded-md shadow-xl bg-muted relative">
-                  <img 
-                    src={getImageUrl(`day-${dayPage.day}-hero`, dayPage.flow[0]?.image || '', { imageType: 'cover', title: dayPage.title, location: dayPage.location })} 
-                    className="w-full h-full object-cover" 
-                    alt={`Day ${dayPage.day}`}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200';
-                    }}
-                  />
-                  <div className="absolute top-3 right-3">
-                    <PinButton
-                      itemType="image"
-                      itemId={`d${dayPage.day}-cover`}
-                      itemData={{
-                        title: `Day ${dayPage.day}: ${dayPage.title}`,
-                        location: dayPage.location,
-                        imageUrl: getImageUrl(`day-${dayPage.day}-hero`, dayPage.flow[0]?.image || '', { imageType: 'cover', title: dayPage.title, location: dayPage.location }),
-                        editTag: 'morocco-edit',
-                        storyTag: 'morocco'
-                      }}
-                      sourceContext="morocco_itinerary"
-                      aestheticTags={['cover', 'day', dayPage.location?.toLowerCase() || '']}
-                      size="md"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-32">
-                <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] pb-4 border-b-2 border-foreground mb-16">SCHEDULE</h3>
-                <div className="space-y-6">
-                  {dayPage.flow.map((item, i) => {
-                    const wardrobeUrl = item.commercialWardrobe
-                      ? getImageUrl(`${item.id}-wardrobe`, item.commercialWardrobe, { imageType: 'wardrobe', title: item.title })
-                      : null;
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => setActiveItem(item)}
-                        className="group w-full text-left p-8 md:p-10 bg-card border border-border hover:border-foreground transition-all rounded-md flex gap-6 md:gap-10 items-start active:scale-[0.99]"
-                        data-testid={`button-flow-item-${item.id}`}
-                      >
-                        <div className="flex-1 space-y-4 min-w-0">
-                          <div className="flex items-center gap-4 flex-wrap">
-                            <h4 className="text-2xl md:text-3xl font-serif font-bold tracking-tight leading-none group-hover:opacity-70">
-                              {item.title}
-                            </h4>
-                            {journalEntries[item.id] && (
-                              <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-tighter bg-foreground text-background px-2 py-0.5 rounded-full">
-                                <CloudUpload className="w-2.5 h-2.5" /> Logged
-                              </div>
-                            )}
-                          </div>
-                          <p className="text-base md:text-lg text-muted-foreground line-clamp-2 italic font-serif leading-relaxed opacity-60 group-hover:opacity-100 transition-all">
-                            {item.description || item.body}
-                          </p>
-                        </div>
-                        {wardrobeUrl && (
-                          <div
-                            className="w-16 h-16 md:w-20 md:h-20 rounded-md overflow-hidden bg-muted shrink-0 ring-1 ring-border hover:ring-foreground transition-all"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const tlGenomeKey = FLOW_LOOK_GENOME_KEY[item.id] || SECTION_LOOK_GENOME_KEY[item.id];
-                              const tlProduct = tlGenomeKey ? getProductByKey(tlGenomeKey) : undefined;
-                              openProductModal({
-                                title: tlProduct?.name || `${item.title} - The Look`,
-                                imageUrl: wardrobeUrl,
-                                itemId: `${item.id}-look`,
-                                brand: tlProduct?.brand || undefined,
-                                description: tlProduct?.description || item.wardrobe,
-                                shopUrl: tlProduct?.url || undefined,
-                                pinType: "style",
-                                genomeKey: tlGenomeKey || undefined,
-                              });
-                            }}
-                          >
-                            <img
-                              src={wardrobeUrl}
-                              alt="Shop look"
-                              className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                            />
-                          </div>
-                        )}
-                        <ArrowRight className="w-6 h-6 text-muted-foreground/30 group-hover:text-foreground group-hover:translate-x-3 transition-all shrink-0" />
-                      </button>
-                    );
-                  })}
-                  </div>
-                </div>
-
-                <div className="pt-20 border-t-2 border-border flex flex-col items-center">
-                  <h3 className="text-[11px] font-bold uppercase tracking-[0.6em] mb-12">DAILY MANTRA</h3>
-                  <p className="text-xl md:text-2xl lg:text-3xl font-bold tracking-widest uppercase italic text-center max-w-2xl leading-relaxed font-serif">
-                    "{dayPage.mantra}"
-                  </p>
-                </div>
-              </div>
-            );
-        })}
-      </div>
+      {/* Daily Flow content removed — now at standalone /daily-flow page */}
 
       {activeItem && !isShareMode && (
         <ItemDetailDrawer
