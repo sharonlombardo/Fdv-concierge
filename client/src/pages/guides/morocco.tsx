@@ -128,8 +128,8 @@ function ItineraryTeaser({ getImageUrl, hasCustomImage, onOpenProductModal }: It
         )}
       </div>
 
-      {/* Day 3 — blurred preview + gate overlay */}
-      <div style={{ position: 'relative', marginTop: 20 }}>
+      {/* Day 3 — blurred preview + gate overlay (capped at ~1 screen height) */}
+      <div style={{ position: 'relative', marginTop: 20, maxHeight: 700, overflow: 'hidden' }}>
         <div style={{ filter: 'blur(8px)', opacity: 0.5, pointerEvents: 'none', userSelect: 'none' }}>
           <div style={{ maxWidth: 1024, margin: '0 auto', padding: '0 16px' }}>
             {day3 && (
@@ -146,7 +146,7 @@ function ItineraryTeaser({ getImageUrl, hasCustomImage, onOpenProductModal }: It
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          background: 'rgba(250, 249, 246, 0.85)', padding: '40px 20px', textAlign: 'center',
+          background: 'rgba(250, 249, 246, 0.85)', padding: '40px 20px', textAlign: 'center', zIndex: 10,
         }}>
           <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 22, fontStyle: 'italic', color: '#2c2416', marginBottom: 12 }}>
             Unlock your complete Morocco experience.
