@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
+import { useUser } from "@/contexts/user-context";
 
 const MENU_ITEMS = [
   { label: "Home", href: "/" },
@@ -25,6 +26,7 @@ interface HamburgerDrawerProps {
 export default function HamburgerDrawer({ open, onClose }: HamburgerDrawerProps) {
   const [location] = useLocation();
   const drawerRef = useRef<HTMLDivElement>(null);
+  const { isLoggedIn } = useUser();
 
   // Close on escape key
   useEffect(() => {
@@ -180,6 +182,18 @@ export default function HamburgerDrawer({ open, onClose }: HamburgerDrawerProps)
                     />
                   )}
                   {item.label}
+                  {item.label === "Profile" && isLoggedIn && (
+                    <span
+                      style={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        background: "#c9a84c",
+                        marginLeft: 8,
+                        display: "inline-block",
+                      }}
+                    />
+                  )}
                 </button>
               </Link>
             );

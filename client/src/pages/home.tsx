@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'wouter';
+import { useUser } from '@/contexts/user-context';
+import { LS_ITINERARY_EMAIL_SHOWN_KEY } from '@/contexts/user-context';
+import { EmailCaptureOverlay } from '@/components/email-capture-overlay';
 // GlobalNav removed — TopBar is now app-level in App.tsx
 import fdvLogo from '@assets/LOGO_1767219658929.png';
 import { 
@@ -991,6 +994,19 @@ export default function Home() {
   const [isShareMode, setIsShareMode] = useState(false);
   const [productModalItem, setProductModalItem] = useState<ItemModalData | null>(null);
   const [productModalOpen, setProductModalOpen] = useState(false);
+  const { email: userEmail } = useUser();
+  const [showItineraryGate, setShowItineraryGate] = useState(false);
+
+  // Show itinerary email gate once on first visit if no email
+  useEffect(() => {
+    if (userEmail) return;
+    try {
+      const shown = localStorage.getItem(LS_ITINERARY_EMAIL_SHOWN_KEY);
+      if (shown === "true") return;
+      setShowItineraryGate(true);
+      localStorage.setItem(LS_ITINERARY_EMAIL_SHOWN_KEY, "true");
+    } catch {}
+  }, [userEmail]);
 
   const { entries: journalEntries, saveEntry, status: saveStatus } = useJournal();
   const { getImageUrl, hasCustomImage, isLoading: isLoadingImages } = useCustomImages();
@@ -1113,13 +1129,22 @@ export default function Home() {
   return (
     <div className="min-h-screen pb-[80px] bg-background text-foreground font-sans selection:bg-foreground selection:text-background transition-colors duration-500 overflow-x-hidden">
 
+      {/* Itinerary email gate overlay */}
+      {showItineraryGate && (
+        <EmailCaptureOverlay
+          variant="itinerary"
+          onDismiss={() => setShowItineraryGate(false)}
+          onComplete={() => setShowItineraryGate(false)}
+        />
+      )}
+
       {/* GlobalNav removed — TopBar is now app-level in App.tsx */}
 
       {/* STEP 1: Editorial Intro */}
       <section
         style={{
           background: "#faf9f6",
-          padding: "48px 24px 32px",
+          padding: "80px 24px 32px",
           textAlign: "center",
           borderBottom: "1px solid #e8e0d4",
         }}

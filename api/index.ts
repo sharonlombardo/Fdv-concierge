@@ -8,6 +8,19 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
+// Run migrations on first request
+let migrated = false;
+async function runMigrations() {
+  if (migrated) return;
+  migrated = true;
+  try {
+    await pool.query('ALTER TABLE saves ADD COLUMN IF NOT EXISTS user_email TEXT');
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_saves_user_email ON saves(user_email)');
+  } catch (e) {
+    console.warn('Migration warning:', e);
+  }
+}
+
 // Image mappings from Vercel Blob (migrated from Replit)
 const EMBEDDED_IMAGE_MAPPINGS: Record<string, string> = {
   "opening-cover": "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/opening-cover",
@@ -295,6 +308,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    await runMigrations();
+
+    // POST /api/saves/associate-email — backfill anonymous saves with user email
+    if (path === '/api/saves/associate-email' && method === 'POST') {
+      const { email } = req.body || {};
+      if (!email) return res.status(400).json({ error: 'email is required' });
+      // Associate all saves that have no email with this user
+      const result = await pool.query(
+        'UPDATE saves SET user_email = $1 WHERE user_email IS NULL',
+        [email]
+      );
+      return res.status(200).json({ success: true, updated: result.rowCount });
+    }
+
+    // GET /api/saves/count?email=x — get save count for a user
+    if (path === '/api/saves/count' && method === 'GET') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const email = urlObj.searchParams.get('email');
+      let result;
+      if (email) {
+        result = await pool.query('SELECT COUNT(*) as count FROM saves WHERE user_email = $1', [email]);
+      } else {
+        result = await pool.query('SELECT COUNT(*) as count FROM saves');
+      }
+      return res.status(200).json({ count: parseInt(result.rows[0].count, 10) });
+    }
+
     // GET /api/images - Return embedded image mappings
     if (path === '/api/images' || path === '/api') {
       const images = Object.entries(EMBEDDED_IMAGE_MAPPINGS).map(([key, imageUrl]) => ({
@@ -392,7 +432,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // POST /api/saves — create a new save
     if (path === '/api/saves' && method === 'POST') {
       const body = req.body || {};
-      const { itemType, itemId, sourceContext, aestheticTags, savedAt, metadata, editionTag, storyTag, editTag, purchaseStatus, title, assetUrl, brand, price, shopUrl, bookUrl, detailDescription, category, isCurated } = body;
+      const { itemType, itemId, sourceContext, aestheticTags, savedAt, metadata, editionTag, storyTag, editTag, purchaseStatus, title, assetUrl, brand, price, shopUrl, bookUrl, detailDescription, category, isCurated, userEmail } = body;
 
       if (!itemType || !itemId) {
         return res.status(400).json({ error: 'itemType and itemId are required' });
@@ -405,8 +445,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       const result = await pool.query(
-        `INSERT INTO saves (item_type, item_id, source_context, aesthetic_tags, saved_at, metadata, edition_tag, story_tag, edit_tag, purchase_status, title, asset_url, brand, price, shop_url, book_url, detail_description, category, is_curated)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+        `INSERT INTO saves (item_type, item_id, source_context, aesthetic_tags, saved_at, metadata, edition_tag, story_tag, edit_tag, purchase_status, title, asset_url, brand, price, shop_url, book_url, detail_description, category, is_curated, user_email)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
          RETURNING *`,
         [
           itemType,
@@ -428,6 +468,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           detailDescription || null,
           category || null,
           isCurated || false,
+          userEmail || null,
         ]
       );
       const row = result.rows[0];

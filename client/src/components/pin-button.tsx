@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/contexts/user-context";
+import { triggerSaveEvent } from "./email-capture-manager";
 
 function PinIcon({ size = 18, fill = "none", className }: { size?: number; fill?: string; className?: string }) {
   return (
@@ -37,6 +39,7 @@ interface PinButtonProps {
   aestheticTags?: string[];
   className?: string;
   size?: "sm" | "md" | "lg";
+  onPinSuccess?: () => void;
 }
 
 export function PinButton({
@@ -46,10 +49,12 @@ export function PinButton({
   sourceContext,
   aestheticTags = [],
   className,
-  size = "md"
+  size = "md",
+  onPinSuccess
 }: PinButtonProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { email, incrementSaveCount } = useUser();
   
   const { data: isPinned } = useQuery({
     queryKey: ['/api/saves/check', itemId],
@@ -84,7 +89,8 @@ export function PinButton({
             storyTag: itemData.storyTag,
             editTag: itemData.editTag,
             title: itemData.title,
-            assetUrl: itemData.assetUrl || itemData.imageUrl
+            assetUrl: itemData.assetUrl || itemData.imageUrl,
+            userEmail: email || undefined
           })
         });
         // 400 = already pinned — treat as success (idempotent)
@@ -92,17 +98,23 @@ export function PinButton({
           return { action: 'pinned' };
         }
         if (!res.ok) throw new Error('Failed to pin');
+        incrementSaveCount();
         return { action: 'pinned' };
       }
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
       queryClient.invalidateQueries({ queryKey: ['/api/saves/check', itemId] });
-      
+
       toast({
         description: data.action === 'pinned' ? 'Saved to your Suitcase' : 'Removed from Suitcase',
         duration: 2000
       });
+
+      if (data.action === 'pinned') {
+        triggerSaveEvent();
+        if (onPinSuccess) onPinSuccess();
+      }
     }
   });
 
