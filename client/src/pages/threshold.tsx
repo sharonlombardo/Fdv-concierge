@@ -196,9 +196,15 @@ export default function Threshold() {
 
   useEffect(() => {
     const v = videoRef.current;
-    if (v) {
+    if (!v) return;
+    // Ensure video plays — Safari sometimes blocks even muted autoplay
+    const playVideo = () => {
       v.play().catch(() => {});
-    }
+    };
+    playVideo();
+    // Also try on user interaction as fallback
+    v.addEventListener("loadeddata", playVideo);
+    return () => v.removeEventListener("loadeddata", playVideo);
   }, []);
 
   const handleScrollToContent = () => {
@@ -214,7 +220,14 @@ export default function Threshold() {
 
       {/* LANDING HERO — video background with logo + wordmark */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center bg-black">
-        {/* Video background with static image fallback poster */}
+        {/* Static hero image as base layer (always visible as fallback) */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url('${heroImage || "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/landing-hero"}')`,
+          }}
+        />
+        {/* Video background — plays on top of static image */}
         <video
           ref={videoRef}
           autoPlay
@@ -222,13 +235,12 @@ export default function Threshold() {
           loop
           playsInline
           preload="auto"
-          poster={heroImage}
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source src="/landing-video.mp4" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#fafaf9]" />
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#fafaf9]" />
 
         <div className="relative z-10 w-full mx-auto flex flex-col items-center text-white flex-1 justify-center">
           {/* Wordmark logo image — white on transparent, HUGE like reference */}
