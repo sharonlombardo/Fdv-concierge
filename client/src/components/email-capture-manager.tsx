@@ -29,9 +29,8 @@ export function EmailCaptureManager() {
       if (shown === "true") return;
     } catch {}
 
-    // Trigger on 3rd or 4th save (saveCount is already incremented by the time this fires)
-    const count = saveCount; // current count after increment
-    if (count >= 3 && count <= 4) {
+    // Trigger on first save
+    if (saveCount >= 1) {
       setShowOverlay(true);
       try {
         localStorage.setItem(LS_EMAIL_PROMPT_SHOWN_KEY, "true");
