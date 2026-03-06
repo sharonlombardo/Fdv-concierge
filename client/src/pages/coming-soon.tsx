@@ -1,4 +1,4 @@
-import { GlobalNav } from "@/components/global-nav";
+// GlobalNav removed — TopBar is now app-level in App.tsx
 import { useRoute } from "wouter";
 import { Sparkles, Heart, Globe, Bell, MapPin } from "lucide-react";
 
@@ -53,7 +53,7 @@ export default function ComingSoon() {
 
   return (
     <div className="min-h-screen bg-background">
-      <GlobalNav />
+      {/* GlobalNav removed — TopBar is now app-level in App.tsx */}
       
       <div className="flex flex-col items-center justify-center min-h-[80vh] px-6 text-center">
         <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-8">

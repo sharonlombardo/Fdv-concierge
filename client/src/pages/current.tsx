@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PinButton } from "@/components/pin-button";
-import { GlobalNav } from "@/components/global-nav";
+
 import { ItemModal, type ItemModalData } from "@/components/item-modal";
 import type { EditorialItem } from "@/components/editorial-detail-drawer";
 import { useImageSlots } from "@/hooks/use-image-slot";
@@ -1389,11 +1389,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
       />
-      {!embedded && (
-        <>
-          <GlobalNav />
-        </>
-      )}
+      {/* TopBar handles navigation at app level */}
 
       {/* THE CURRENT — Magazine Cover Hero */}
       <CoverHero getImageUrl={getImageUrl} />

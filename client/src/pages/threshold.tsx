@@ -1,4 +1,4 @@
-import { GlobalNav } from "@/components/global-nav";
+
 import CurrentFeed from "./current";
 import { Link } from "wouter";
 import { ChevronRight, Pin } from "lucide-react";
@@ -210,7 +210,7 @@ export default function Threshold() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
-      <GlobalNav variant="overlay" />
+      {/* TopBar handles navigation at app level */}
 
       {/* LANDING HERO — video background with logo + wordmark */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center bg-black">

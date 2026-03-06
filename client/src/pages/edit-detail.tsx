@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, X, Package, Briefcase, Map, Loader2 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { GlobalNav } from "@/components/global-nav";
+// GlobalNav removed — TopBar is now app-level in App.tsx
 import { ItemModal, type ItemModalData } from "@/components/item-modal";
 import { deriveEditTag } from "@/lib/derive-edit-tag";
 
@@ -233,7 +233,7 @@ export default function EditDetailPage() {
 
   return (
     <div className="min-h-screen pb-[80px] bg-[#fafaf9] dark:bg-background">
-      <GlobalNav />
+      {/* GlobalNav removed — TopBar is now app-level in App.tsx */}
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-6">
           <Link href="/suitcase">

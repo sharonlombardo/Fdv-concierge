@@ -1,4 +1,4 @@
-import { GlobalNav } from "@/components/global-nav";
+// GlobalNav removed — TopBar is now app-level in App.tsx
 import { DESTINATIONS } from "@shared/destinations";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
@@ -97,7 +97,7 @@ export default function Destinations() {
 
   return (
     <div className="min-h-screen pb-[80px] bg-background">
-      <GlobalNav />
+      {/* GlobalNav removed — TopBar is now app-level in App.tsx */}
 
       <div className="max-w-6xl mx-auto px-6 py-12">
         <header className="text-center mb-16">

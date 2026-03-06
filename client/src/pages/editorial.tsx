@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { GlobalNav } from "@/components/global-nav";
+// GlobalNav removed — TopBar is now app-level in App.tsx
 import { PinButton } from "@/components/pin-button";
 
 interface DayEditorial {
@@ -460,7 +460,7 @@ export default function Editorial() {
 
   return (
     <div className="min-h-screen bg-background">
-      <GlobalNav variant="fixed" backHref="/concierge" />
+      {/* GlobalNav removed — TopBar is now app-level in App.tsx */}
 
       {/* Hero */}
       <HeroSection 

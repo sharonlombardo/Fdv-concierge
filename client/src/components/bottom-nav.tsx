@@ -6,30 +6,21 @@ export default function BottomNav() {
   // Don't render on landing page
   if (location === "/") return null;
 
-  const isHome = location === "/concierge" || location === "/itinerary/morocco";
   const isCurrent = location === "/current";
   const isSuitcase = location.startsWith("/suitcase");
-  const isMorocco = location === "/packing";
+  const isGuides = location.startsWith("/guides") || location === "/destinations";
+  const isShop = location === "/shop";
 
   const tabs = [
-    {
-      label: "HOME",
-      href: "/concierge",
-      active: isHome && !isMorocco,
-      icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M3 12l9-9 9 9" />
-          <path d="M5 10v10h14V10" />
-        </svg>
-      ),
-    },
     {
       label: "CURRENT",
       href: "/current",
       active: isCurrent,
       icon: (
+        // Compass icon
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M12 2l10 10-10 10L2 12z" />
+          <circle cx="12" cy="12" r="10" />
+          <path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36z" />
         </svg>
       ),
     },
@@ -45,13 +36,27 @@ export default function BottomNav() {
       ),
     },
     {
-      label: "MOROCCO",
-      href: "/packing",
-      active: isMorocco,
+      label: "GUIDES",
+      href: "/guides",
+      active: isGuides,
       icon: (
+        // Map/book icon
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36z" />
+          <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
+          <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
+        </svg>
+      ),
+    },
+    {
+      label: "SHOP",
+      href: "/shop",
+      active: isShop,
+      icon: (
+        // Shopping bag icon
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <path d="M16 10a4 4 0 01-8 0" />
         </svg>
       ),
     },
@@ -68,6 +73,7 @@ export default function BottomNav() {
             className="flex flex-col items-center justify-center gap-1 w-full h-full bg-transparent border-none cursor-pointer px-2"
             style={{
               color: tab.active ? "#1a1a1a" : "#999999",
+              fontFamily: "Inter, sans-serif",
             }}
           >
             {tab.icon}

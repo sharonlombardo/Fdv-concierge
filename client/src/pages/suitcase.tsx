@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { X, Briefcase, Package } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Link, useLocation } from "wouter";
-import { GlobalNav } from "@/components/global-nav";
+
 import { ItemModal, type ItemModalData } from "@/components/item-modal";
 import { deriveEditTag } from "@/lib/derive-edit-tag";
 import { useCustomImages } from "@/hooks/use-custom-images";
@@ -540,7 +540,7 @@ export default function SuitcasePage() {
 
   return (
     <div className="min-h-screen pb-[80px] bg-[#fafaf9] dark:bg-background">
-      <GlobalNav />
+      {/* TopBar handles navigation at app level */}
       <div className="max-w-6xl mx-auto px-4 py-8">
         <header className="text-center mb-10">
           <h1 className="font-serif text-3xl md:text-4xl font-medium tracking-tight mb-2" data-testid="text-suitcase-title">

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'wouter';
-import { GlobalNav } from '@/components/global-nav';
+// GlobalNav removed — TopBar is now app-level in App.tsx
 import { useJournal } from '@/hooks/use-journal';
 import { ITINERARY_DATA, DayPage, FlowItem } from '@shared/itinerary-data';
 import { BookOpen, Camera, MapPin, Calendar, ChevronRight } from 'lucide-react';
@@ -89,7 +89,7 @@ export default function TravelDiary() {
 
   return (
     <div className="min-h-screen pb-[80px] bg-background">
-      <GlobalNav variant="fixed" />
+      {/* GlobalNav removed — TopBar is now app-level in App.tsx */}
       
       <div className="pt-20 pb-12">
         <div className="max-w-3xl mx-auto px-4 md:px-6">

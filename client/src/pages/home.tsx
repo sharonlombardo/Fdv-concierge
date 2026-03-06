@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'wouter';
-import { GlobalNav } from '@/components/global-nav';
+// GlobalNav removed — TopBar is now app-level in App.tsx
 import fdvLogo from '@assets/LOGO_1767219658929.png';
 import { 
   ChevronRight, 
@@ -1113,12 +1113,7 @@ export default function Home() {
   return (
     <div className="min-h-screen pb-[80px] bg-background text-foreground font-sans selection:bg-foreground selection:text-background transition-colors duration-500 overflow-x-hidden">
       
-      <GlobalNav
-        variant="fixed"
-        showBack={true}
-        onBack={handleNavBack}
-        hideLogo={true}
-      />
+      {/* GlobalNav removed — TopBar is now app-level in App.tsx */}
 
       {/* Editorial Overview - Long-form narrative scroll (no interactive elements) */}
       <div id="editorial-overview" className="scroll-mt-20" />

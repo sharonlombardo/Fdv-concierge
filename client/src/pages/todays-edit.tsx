@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { GlobalNav } from "@/components/global-nav";
+// GlobalNav removed — TopBar is now app-level in App.tsx
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
 import { Link } from "wouter";
@@ -102,7 +102,7 @@ export default function TodaysEdit() {
 
   return (
     <div className="min-h-screen bg-background">
-      <GlobalNav />
+      {/* GlobalNav removed — TopBar is now app-level in App.tsx */}
       
       <div className="max-w-6xl mx-auto px-6 py-8">
         <Link href="/">
