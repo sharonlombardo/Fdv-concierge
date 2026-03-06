@@ -1,10 +1,12 @@
 import { useState, FormEvent } from 'react';
 import { ItemModal, type ItemModalData } from '@/components/item-modal';
 import { PinButton } from '@/components/pin-button';
+import { EditorialDaySection, extractEditorialData } from '@/components/editorial-sections';
+import { useCustomImages } from '@/hooks/use-custom-images';
+import { getProductByKey, getProductDisplayName, isShoppable, FLOW_LOOK_GENOME_KEY, SECTION_LOOK_GENOME_KEY } from '@/lib/brand-genome';
 import './morocco-guide.css';
 
 const IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco';
-const BLOB = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2';
 const CAROUSEL = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/carousel-morocco';
 
 type CarouselProduct = {
@@ -62,130 +64,22 @@ function CarouselItem({ product, onOpenModal }: { product: CarouselProduct; onOp
   );
 }
 
-/* ── Itinerary teaser data — event-led layout ── */
+/* ── Itinerary Teaser — uses same hooks + components as /concierge ── */
 
-type ProductThumb = {
-  blobKey: string;
-  brand: string;
-  name: string;
-  isLook?: boolean;  // true = larger thumbnail
-};
-
-type EventSlot = {
-  time: string;
-  title: string;
-  description: string;
-  products: ProductThumb[];
-};
-
-const DAY1_EVENTS: EventSlot[] = [
-  {
-    time: 'Morning',
-    title: 'Arrival at Marrakech Menara Airport',
-    description: 'Arrival at Menara — a masterpiece of modern Islamic architecture. Private transfer to the Atlas Mountains.',
-    products: [
-      { blobKey: 'd1-1-wardrobe', brand: 'FDV', name: 'Philomena Caftan', isLook: true },
-      { blobKey: 'd1-1-extra-0', brand: 'Khaite', name: 'Otto Sandal' },
-      { blobKey: 'd1-1-extra-1', brand: 'Bottega Veneta', name: 'Hobo Bag' },
-      { blobKey: 'd1-1-extra-2', brand: 'Bulgari', name: 'Serpenti Watch' },
-      { blobKey: 'd1-1-extra-3', brand: 'Phoebe Philo', name: 'Cruise Sunglasses' },
-    ],
-  },
-  {
-    time: 'Afternoon',
-    title: 'Check-in at Kasbah Bab Ourika',
-    description: 'Perched above the Ourika Valley with 360-degree Atlas views. Explore the grounds, organic gardens.',
-    products: [
-      { blobKey: 'd1-3-wardrobe', brand: 'FDV', name: 'Cybel Blouse & Pant', isLook: true },
-      { blobKey: 'd1-3-extra-0', brand: 'Khaite', name: 'Otto Sandal' },
-      { blobKey: 'd1-3-extra-1', brand: 'Bottega Veneta', name: 'Hobo Bag' },
-      { blobKey: 'd1-3-extra-3', brand: 'FDV', name: 'Parfum' },
-    ],
-  },
-  {
-    time: 'Evening',
-    title: 'Dinner at the Kasbah',
-    description: 'Candlelit dinner under the stars at the Kasbah. Traditional Moroccan cuisine with Atlas Mountain views.',
-    products: [
-      { blobKey: 'd1-6-wardrobe', brand: 'FDV', name: 'Virginia Dress, Emerald', isLook: true },
-      { blobKey: 'd1-6-extra-0', brand: 'A Emery', name: 'Kir Sandal' },
-      { blobKey: 'd1-6-extra-1', brand: 'Chloé', name: 'Wristlette' },
-      { blobKey: 'd1-6-extra-2', brand: 'Bulgari', name: 'Cabachon Necklace' },
-      { blobKey: 'd1-6-extra-3', brand: 'Phoebe Philo', name: 'Mini Hoops' },
-    ],
-  },
-];
-
-const DAY2_EVENTS: EventSlot[] = [
-  {
-    time: 'Morning',
-    title: 'Breakfast at the Kasbah',
-    description: 'Morning light over the Atlas range. Fresh-pressed juices and msemen on the terrace.',
-    products: [
-      { blobKey: 'd2-1-wardrobe', brand: 'FDV', name: 'Juno Blouse & Marrakech Pant', isLook: true },
-      { blobKey: 'd2-1-extra-0', brand: 'A Emery', name: 'Kir Sandal' },
-      { blobKey: 'd2-1-extra-1', brand: 'DeMellier', name: 'Santorini Basket Bag' },
-      { blobKey: 'd2-1-extra-3', brand: 'Phoebe Philo', name: 'Cruise Sunglasses' },
-    ],
-  },
-  {
-    time: 'Afternoon',
-    title: 'Lunch at the Kasbah',
-    description: 'Long lunch by the pool. Tagine, olives, and slow afternoons.',
-    products: [
-      { blobKey: 'd2-4-wardrobe', brand: 'FDV', name: 'Diana Dress, Stripe', isLook: true },
-      { blobKey: 'd2-4-extra-1', brand: 'FDV', name: 'Pool Essentials Towel' },
-      { blobKey: 'd2-4-extra-2', brand: 'Phoebe Philo', name: 'Mini Hoops' },
-      { blobKey: 'd2-4-extra-3', brand: 'FDV', name: 'Travel Mist' },
-    ],
-  },
-  {
-    time: 'Evening',
-    title: 'Dinner at the Kasbah',
-    description: 'Garden-to-table dinner. The kind of evening you remember for years.',
-    products: [
-      { blobKey: 'd2-7-wardrobe', brand: 'FDV', name: 'Honora Dress, Floral', isLook: true },
-      { blobKey: 'd2-7-extra-0', brand: 'A Emery', name: 'Kir Sandal' },
-      { blobKey: 'd2-7-extra-1', brand: 'Chloé', name: 'Wristlette' },
-      { blobKey: 'd2-7-extra-2', brand: 'Phoebe Philo', name: 'Dropped Earrings' },
-      { blobKey: 'd2-7-extra-3', brand: 'Violette FR', name: 'Lip Stain' },
-    ],
-  },
-];
-
-function EventCard({ slot }: { slot: EventSlot }) {
-  return (
-    <div className="teaser-event-card">
-      <div className="teaser-time">{slot.time}</div>
-      <div className="teaser-event-title">{slot.title}</div>
-      <div className="teaser-event-desc">{slot.description}</div>
-      <div className="teaser-look-label">YOUR LOOK</div>
-      <div className="teaser-look-row">
-        {slot.products.map((p) => (
-          <div key={p.blobKey} className={`teaser-product ${p.isLook ? 'is-look' : ''}`}>
-            <img src={`${BLOB}/${p.blobKey}`} alt={`${p.brand} ${p.name}`} loading="lazy" />
-            <div className="teaser-product-label">{p.brand}<br />{p.name}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+interface ItineraryTeaserProps {
+  getImageUrl: (key: string, defaultUrl: string) => string;
+  hasCustomImage: (key: string) => boolean;
+  onOpenProductModal: (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string; genomeKey?: string }) => void;
 }
 
-function DaySection({ day, theme, events }: { day: number; theme: string; events: EventSlot[] }) {
-  return (
-    <div className="teaser-day">
-      <div className="teaser-day-header">DAY {day} &middot; {theme}</div>
-      {events.map((slot, i) => (
-        <EventCard key={i} slot={slot} />
-      ))}
-    </div>
-  );
-}
-
-function ItineraryTeaser() {
+function ItineraryTeaser({ getImageUrl, hasCustomImage, onOpenProductModal }: ItineraryTeaserProps) {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const editorialData = extractEditorialData();
+
+  const day1 = editorialData.find(d => d.dayNumber === 1);
+  const day2 = editorialData.find(d => d.dayNumber === 2);
+  const day3 = editorialData.find(d => d.dayNumber === 3);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -203,94 +97,134 @@ function ItineraryTeaser() {
   };
 
   return (
-    <div className="itinerary-teaser">
-      <div className="teaser-label">The Full Journey</div>
-      <h3>Your 8-Day Morocco Itinerary</h3>
+    <section style={{ background: '#faf9f6', borderRadius: 12, overflow: 'hidden', margin: '40px 0' }}>
+      {/* Section header */}
+      <div style={{ textAlign: 'center', padding: '48px 16px 0' }}>
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: 12 }}>
+          The Full Journey
+        </p>
+        <h3 style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 400, fontStyle: 'italic', lineHeight: 1.4, color: '#2c2416', margin: 0 }}>
+          Your 8-Day Morocco Itinerary
+        </h3>
+      </div>
 
-      {/* Day 1 — fully visible */}
-      <DaySection day={1} theme="ARRIVAL" events={DAY1_EVENTS} />
+      {/* Days 1 & 2 — identical to /concierge: same component, same hooks, same data */}
+      <div style={{ maxWidth: 1024, margin: '0 auto', padding: '0 16px' }}>
+        {day1 && (
+          <EditorialDaySection
+            day={day1}
+            getImageUrl={getImageUrl}
+            hasCustomImage={hasCustomImage}
+            onOpenProductModal={onOpenProductModal}
+          />
+        )}
+        {day2 && (
+          <EditorialDaySection
+            day={day2}
+            getImageUrl={getImageUrl}
+            hasCustomImage={hasCustomImage}
+            onOpenProductModal={onOpenProductModal}
+          />
+        )}
+      </div>
 
-      {/* Day 2 — fully visible */}
-      <DaySection day={2} theme="THE MEDINA" events={DAY2_EVENTS} />
-
-      {/* Days 3-8 — blurred gate */}
-      <div className="teaser-gate-wrapper">
-        <div className="teaser-blurred">
-          <div className="teaser-day">
-            <div className="teaser-day-header">DAY 3 &middot; ATLAS TO MARRAKECH</div>
-            <div className="teaser-event-card">
-              <div className="teaser-time">Morning</div>
-              <div className="teaser-event-title">Final Breakfast &amp; Departure</div>
-              <div className="teaser-event-desc">One last walk through the grounds before the journey to Marrakech.</div>
-              <div className="teaser-look-label">YOUR LOOK</div>
-              <div className="teaser-look-row">
-                <div className="teaser-product is-look"><img src={`${BLOB}/d3-1-wardrobe`} alt="" loading="lazy" /><div className="teaser-product-label">FDV<br />Juno Blouse</div></div>
-                <div className="teaser-product"><img src={`${BLOB}/d3-1-extra-0`} alt="" loading="lazy" /><div className="teaser-product-label">A Emery<br />Kir Sandal</div></div>
-                <div className="teaser-product"><img src={`${BLOB}/d3-1-extra-1`} alt="" loading="lazy" /><div className="teaser-product-label">DeMellier<br />Basket Bag</div></div>
-              </div>
-            </div>
-            <div className="teaser-event-card">
-              <div className="teaser-time">Afternoon</div>
-              <div className="teaser-event-title">Arrive at El Fenn</div>
-              <div className="teaser-event-desc">Check in to Marrakech&rsquo;s most storied riad. Explore the courtyards and rooftop.</div>
-              <div className="teaser-look-label">YOUR LOOK</div>
-              <div className="teaser-look-row">
-                <div className="teaser-product is-look"><img src={`${BLOB}/d3-5-wardrobe`} alt="" loading="lazy" /><div className="teaser-product-label">FDV<br />Medina Dress</div></div>
-                <div className="teaser-product"><img src={`${BLOB}/d3-5-extra-0`} alt="" loading="lazy" /><div className="teaser-product-label">Khaite<br />Otto Sandal</div></div>
-              </div>
-            </div>
-            <div className="teaser-event-card">
-              <div className="teaser-time">Evening</div>
-              <div className="teaser-event-title">Dinner at Dar Yacout</div>
-              <div className="teaser-event-desc">Traditional Moroccan fine dining in a centuries-old palace.</div>
-              <div className="teaser-look-label">YOUR LOOK</div>
-              <div className="teaser-look-row">
-                <div className="teaser-product is-look"><img src={`${BLOB}/d3-9-wardrobe`} alt="" loading="lazy" /><div className="teaser-product-label">FDV<br />Isadora Dress</div></div>
-                <div className="teaser-product"><img src={`${BLOB}/d3-9-extra-0`} alt="" loading="lazy" /><div className="teaser-product-label">Alaïa<br />Velvet Thongs</div></div>
-              </div>
-            </div>
+      {/* Day 3 — blurred preview + gate overlay */}
+      <div style={{ position: 'relative', marginTop: 20 }}>
+        <div style={{ filter: 'blur(8px)', opacity: 0.5, pointerEvents: 'none', userSelect: 'none' }}>
+          <div style={{ maxWidth: 1024, margin: '0 auto', padding: '0 16px' }}>
+            {day3 && (
+              <EditorialDaySection
+                day={day3}
+                getImageUrl={getImageUrl}
+                hasCustomImage={hasCustomImage}
+              />
+            )}
           </div>
         </div>
 
-        <div className="teaser-gate-overlay">
-          <div className="teaser-gate-headline">Unlock your complete Morocco experience.</div>
-          <div className="teaser-gate-sub">8 days of curated events, restaurants, and wardrobe &mdash; every detail planned so you don&rsquo;t have to.</div>
+        {/* Gate overlay */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(250, 249, 246, 0.85)', padding: '40px 20px', textAlign: 'center',
+        }}>
+          <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 22, fontStyle: 'italic', color: '#2c2416', marginBottom: 12 }}>
+            Unlock your complete Morocco experience.
+          </div>
+          <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(44, 36, 22, 0.6)', marginBottom: 28, maxWidth: 440, lineHeight: 1.6 }}>
+            8 days of curated events, restaurants, and wardrobe — every detail planned so you don't have to.
+          </div>
 
           {!submitted ? (
-            <form className="teaser-gate-form" onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="teaser-gate-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                style={{
+                  background: 'transparent', border: '1px solid rgba(0,0,0,0.2)', color: '#2c2416',
+                  padding: '12px 16px', width: 300, maxWidth: '90vw', fontSize: 14,
+                  fontFamily: "'Inter', sans-serif", borderRadius: 0, outline: 'none',
+                }}
               />
-              <a href="/packing" className="teaser-gate-button" onClick={(e) => {
-                if (email) {
-                  e.preventDefault();
-                  handleSubmit(e as unknown as FormEvent);
-                  setTimeout(() => { window.location.href = '/packing'; }, 500);
-                }
-              }}>Go Gold to Unlock</a>
+              <a
+                href="/packing"
+                onClick={(e) => {
+                  if (email) {
+                    e.preventDefault();
+                    handleSubmit(e as unknown as FormEvent);
+                    setTimeout(() => { window.location.href = '/packing'; }, 500);
+                  }
+                }}
+                style={{
+                  display: 'inline-block', fontFamily: "'Inter', sans-serif", fontSize: 12,
+                  fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase',
+                  background: '#c9a84c', color: '#1a1a1a', padding: '14px 40px',
+                  textDecoration: 'none', marginTop: 12, transition: 'opacity 0.3s',
+                }}
+              >
+                Go Gold to Unlock
+              </a>
             </form>
           ) : (
-            <div className="teaser-gate-confirmed">
-              <span>We&rsquo;ll let you know.</span>
-              <a href="/packing" className="teaser-gate-button" style={{ marginTop: 16 }}>Go Gold to Unlock</a>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <span style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 15, fontStyle: 'italic', color: '#c9a84c' }}>
+                We'll let you know.
+              </span>
+              <a
+                href="/packing"
+                style={{
+                  display: 'inline-block', fontFamily: "'Inter', sans-serif", fontSize: 12,
+                  fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase',
+                  background: '#c9a84c', color: '#1a1a1a', padding: '14px 40px',
+                  textDecoration: 'none', marginTop: 16,
+                }}
+              >
+                Go Gold to Unlock
+              </a>
             </div>
           )}
 
-          <a href="/packing" className="teaser-bypass">For pilot testers: Continue without unlocking &rarr;</a>
+          <a
+            href="/packing"
+            style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: 'rgba(44, 36, 22, 0.4)', textDecoration: 'none', marginTop: 20, transition: 'color 0.3s' }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(44, 36, 22, 0.7)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(44, 36, 22, 0.4)')}
+          >
+            For pilot testers: Continue without unlocking →
+          </a>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
 export default function MoroccoGuide() {
   const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { getImageUrl, hasCustomImage } = useCustomImages();
 
   const openModal = (p: CarouselProduct) => {
     setSelectedItem({
@@ -305,6 +239,38 @@ export default function MoroccoGuide() {
       price: p.price ?? undefined,
       shopUrl: p.shopUrl,
       shopStatus: 'live',
+    });
+    setDrawerOpen(true);
+  };
+
+  /* Genome-resolving product modal — same pattern as /concierge */
+  const openProductModal = (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string; genomeKey?: string }) => {
+    let resolvedGenomeKey = data.genomeKey;
+    if (!resolvedGenomeKey && data.itemId) {
+      const flowId = data.itemId.replace(/-(look|wardrobe)$/, '');
+      const mapKey = FLOW_LOOK_GENOME_KEY[flowId] || SECTION_LOOK_GENOME_KEY[flowId];
+      if (mapKey) resolvedGenomeKey = mapKey;
+    }
+    const genome = resolvedGenomeKey ? getProductByKey(resolvedGenomeKey) : undefined;
+    const displayName = genome ? getProductDisplayName(genome) : data.title;
+    const shopUrlResolved = genome && isShoppable(genome) ? genome.url : data.shopUrl;
+
+    setSelectedItem({
+      id: data.itemId,
+      title: displayName,
+      bucket: 'Your Style',
+      pinType: data.pinType || 'look',
+      assetKey: data.itemId,
+      storyTag: 'morocco',
+      imageUrl: data.imageUrl,
+      brand: genome?.brand || data.brand,
+      price: genome?.price || undefined,
+      shopUrl: shopUrlResolved || undefined,
+      description: genome?.description || data.description,
+      color: genome?.color || undefined,
+      sizes: genome?.sizes || undefined,
+      shopStatus: genome?.shop_status || undefined,
+      genomeKey: resolvedGenomeKey,
     });
     setDrawerOpen(true);
   };
@@ -775,8 +741,8 @@ export default function MoroccoGuide() {
 
       <hr className="divider" />
 
-      {/* ═══ ITINERARY TEASER (EXPANDED) ═══ */}
-      <ItineraryTeaser />
+      {/* ═══ ITINERARY TEASER — Real editorial overview from /concierge ═══ */}
+      <ItineraryTeaser getImageUrl={getImageUrl} hasCustomImage={hasCustomImage} onOpenProductModal={openProductModal} />
 
       {/* ═══ FOOTER ═══ */}
       <div className="guide-footer">
