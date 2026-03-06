@@ -860,7 +860,7 @@ export default function DailyFlowPage() {
                     letterSpacing: "0.02em",
                   }}
                 >
-                  DAILY FLOW: {dayPage.title}
+                  DAILY FLOW: {dayPage.title.replace(/^Daily Flow:\s*/i, "")}
                 </h2>
                 <div
                   style={{
