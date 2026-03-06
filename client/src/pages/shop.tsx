@@ -1,29 +1,30 @@
 import { useState } from "react";
-import { getAllProducts, type BrandGenomeProduct } from "@/lib/brand-genome";
-import { useCustomImages } from "@/hooks/use-custom-images";
+import { getAllProducts, getProductImageUrl, type BrandGenomeProduct } from "@/lib/brand-genome";
 import { ItemModal } from "@/components/item-modal";
 import type { ItemModalData } from "@/components/item-modal";
 
 export default function ShopPage() {
-  const { getImageUrl, hasCustomImage } = useCustomImages();
   const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Get all products from the genome
   const products = getAllProducts();
 
+  const getImgUrl = (product: BrandGenomeProduct): string => {
+    const key = product.database_match_key || "";
+    if (!key) return "";
+    return getProductImageUrl(key);
+  };
+
   const openModal = (product: BrandGenomeProduct) => {
-    const imgKey = product.database_match_key || "";
-    const imgUrl = hasCustomImage(imgKey)
-      ? getImageUrl(imgKey, "")
-      : "";
+    const imgUrl = getImgUrl(product);
 
     setSelectedItem({
       id: product.database_match_key || product.name,
       title: `${product.brand} ${product.name}`,
       bucket: "Your Style",
       pinType: "style",
-      assetKey: imgKey,
+      assetKey: product.database_match_key || "",
       storyTag: "shop",
       imageUrl: imgUrl || undefined,
       brand: product.brand,
@@ -81,10 +82,7 @@ export default function ShopPage() {
           }}
         >
           {products.map((product) => {
-            const imgKey = product.database_match_key || "";
-            const imgUrl = hasCustomImage(imgKey)
-              ? getImageUrl(imgKey, "")
-              : "";
+            const imgUrl = getImgUrl(product);
 
             return (
               <button

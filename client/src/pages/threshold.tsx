@@ -24,7 +24,7 @@ const LOOK_KEYS = [
 ];
 
 const CATEGORY_NAV = [
-  { id: "travel", label: "Travel / Destinations", href: "/destinations", active: true },
+  { id: "guides", label: "Guides", href: "/guides", active: true },
   { id: "style", label: "Style", href: null, active: false },
   { id: "culture", label: "Culture", href: null, active: false },
   { id: "experiences", label: "Experiences", href: null, active: false },
@@ -288,14 +288,14 @@ export default function Threshold() {
         style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
       >
         <div className="flex items-center justify-center gap-8 sm:gap-12 md:gap-16 px-6 py-12 md:py-16 overflow-x-auto">
-          {["TRAVEL", "STYLE", "CULTURE", "OBJECTS", "RITUALS"].map((cat) => (
+          {["GUIDES", "STYLE", "CULTURE", "OBJECTS", "RITUALS"].map((cat) => (
             <span
               key={cat}
-              onClick={cat === "TRAVEL" ? () => {
-                window.location.href = "/destinations";
+              onClick={cat === "GUIDES" ? () => {
+                window.location.href = "/guides";
               } : undefined}
               className={`text-xs md:text-sm tracking-[0.15em] uppercase transition-colors cursor-pointer whitespace-nowrap ${
-                cat === "TRAVEL"
+                cat === "GUIDES"
                   ? "text-[#1a1a1a] font-semibold border-b border-[#1a1a1a] pb-1"
                   : "text-[#1a1a1a]/40 hover:text-[#1a1a1a]/70 font-medium"
               }`}

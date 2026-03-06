@@ -5,25 +5,28 @@ import HamburgerDrawer from "./hamburger-drawer";
 export default function TopBar() {
   const [location] = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const isLanding = location === "/";
 
   useEffect(() => {
     if (!isLanding) {
-      setVisible(true);
+      setScrolled(true);
       return;
     }
 
-    // On landing page, fade in after scrolling past the hero (~75vh)
+    // On landing page, transition from transparent to white after scrolling past hero
     const handleScroll = () => {
       const threshold = window.innerHeight * 0.75;
-      setVisible(window.scrollY > threshold);
+      setScrolled(window.scrollY > threshold);
     };
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLanding]);
+
+  // Always visible — but transparent over hero, white after scroll
+  const iconColor = isLanding && !scrolled ? "#ffffff" : "#2c2416";
 
   return (
     <>
@@ -35,17 +38,14 @@ export default function TopBar() {
           right: 0,
           zIndex: 90,
           height: 56,
-          background: "rgba(255, 255, 255, 0.95)",
-          backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+          background: scrolled ? "rgba(255, 255, 255, 0.95)" : "transparent",
+          backdropFilter: scrolled ? "blur(12px)" : "none",
+          borderBottom: scrolled ? "1px solid rgba(0, 0, 0, 0.06)" : "1px solid transparent",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0 16px",
-          opacity: visible ? 1 : 0,
-          transform: visible ? "translateY(0)" : "translateY(-8px)",
-          pointerEvents: visible ? "auto" : "none",
-          transition: "opacity 0.3s ease, transform 0.3s ease",
+          transition: "background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease",
         }}
       >
         {/* Left — Hamburger */}
@@ -59,7 +59,8 @@ export default function TopBar() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#2c2416",
+            color: iconColor,
+            transition: "color 0.4s ease",
           }}
           aria-label="Open menu"
         >
@@ -95,6 +96,8 @@ export default function TopBar() {
                 height: 40,
                 borderRadius: "50%",
                 objectFit: "contain",
+                filter: isLanding && !scrolled ? "brightness(2) invert(1)" : "none",
+                transition: "filter 0.4s ease",
               }}
             />
           </button>
@@ -111,7 +114,8 @@ export default function TopBar() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#2c2416",
+              color: iconColor,
+              transition: "color 0.4s ease",
             }}
             aria-label="Concierge"
           >
