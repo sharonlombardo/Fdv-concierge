@@ -31,6 +31,7 @@ import MyEdits from "@/pages/my-edits";
 import MyTrips from "@/pages/my-trips";
 import ConciergeInfo from "@/pages/concierge-info";
 import Profile from "@/pages/profile";
+import CapsuleDetail from "@/pages/capsule-detail";
 import { EmailCaptureManager } from "@/components/email-capture-manager";
 
 function Router() {
@@ -62,6 +63,7 @@ function Router() {
       <Route path="/shop" component={ShopPage} />
       <Route path="/daily-flow" component={DailyFlow} />
       <Route path="/my-edits" component={MyEdits} />
+      <Route path="/capsule/:capsuleId" component={CapsuleDetail} />
       <Route path="/my-trips" component={MyTrips} />
       <Route path="/concierge-info" component={ConciergeInfo} />
       <Route path="/profile" component={Profile} />

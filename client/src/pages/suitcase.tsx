@@ -9,6 +9,24 @@ import { Link, useLocation } from "wouter";
 import { ItemModal, type ItemModalData } from "@/components/item-modal";
 import { deriveEditTag } from "@/lib/derive-edit-tag";
 import { useCustomImages } from "@/hooks/use-custom-images";
+import { CuratingAnimation } from "@/components/curating-animation";
+import { PRESET_CAPSULES } from "@/data/capsule-data";
+
+const LS_SAVED_CAPSULES_KEY = "fdv_saved_capsules";
+
+function getSavedCapsuleIds(): string[] {
+  try {
+    const raw = localStorage.getItem(LS_SAVED_CAPSULES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function getNextUnsavedCapsule(): typeof PRESET_CAPSULES[0] | null {
+  const savedIds = getSavedCapsuleIds();
+  return PRESET_CAPSULES.find((c) => !savedIds.includes(c.id)) || null;
+}
 
 type SavedItem = {
   id: number;
@@ -485,6 +503,25 @@ export default function SuitcasePage() {
   });
   const [, navigate] = useLocation();
   const { getImageUrl } = useCustomImages();
+  const [showCurating, setShowCurating] = useState(false);
+  const [curatingCapsule, setCuratingCapsule] = useState<typeof PRESET_CAPSULES[0] | null>(null);
+
+  const handleCurateForMe = () => {
+    const next = getNextUnsavedCapsule();
+    if (!next) return;
+    setCuratingCapsule(next);
+    setShowCurating(true);
+  };
+
+  const handleCuratingComplete = () => {
+    setShowCurating(false);
+    if (curatingCapsule) {
+      navigate(`/capsule/${curatingCapsule.id}`);
+    }
+  };
+
+  const nextCapsule = getNextUnsavedCapsule();
+  const allCurated = !nextCapsule;
 
   const handleRemoveQuote = (quoteId: string) => {
     setRemovedQuotes(prev => {
@@ -552,20 +589,69 @@ export default function SuitcasePage() {
           <p className="text-sm text-muted-foreground mb-4" data-testid="text-suitcase-stats">
             {saves.length} {saves.length === 1 ? 'item' : 'items'} saved
           </p>
-          <Link href="/concierge">
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-[#c9a84c] text-[#c9a84c] hover:bg-[#c9a84c]/10 mb-2"
-              data-testid="button-curate-for-me-header"
-            >
-              <svg width="12" height="16" viewBox="0 0 24 32" fill="#c9a84c" stroke="none" className="mr-2">
-                <circle cx="12" cy="10" r="9" />
-                <polygon points="9,18 12,32 15,18" />
-              </svg>
-              Curate for Me
-            </Button>
-          </Link>
+          {saves.length >= 3 && (
+            allCurated ? (
+              <div
+                style={{
+                  width: "100%",
+                  maxWidth: 360,
+                  margin: "0 auto",
+                  height: 48,
+                  borderRadius: 8,
+                  background: "rgba(44, 36, 22, 0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase" as const,
+                  color: "#9B8D7C",
+                }}
+              >
+                More Edits Coming
+              </div>
+            ) : (
+              <button
+                onClick={handleCurateForMe}
+                data-testid="button-curate-for-me-header"
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  maxWidth: 360,
+                  margin: "0 auto",
+                  height: 48,
+                  borderRadius: 8,
+                  background: "#1a1a1a",
+                  border: "1px solid transparent",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  overflow: "hidden",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase" as const,
+                  color: "#ffffff",
+                }}
+              >
+                <span style={{ position: "relative", zIndex: 1 }}>Curate for Me</span>
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    borderRadius: 8,
+                    border: "1px solid transparent",
+                    background: "linear-gradient(#1a1a1a, #1a1a1a) padding-box, linear-gradient(90deg, transparent, #c9a84c, transparent) border-box",
+                    animation: "shimmer 3s ease-in-out infinite",
+                  }}
+                />
+              </button>
+            )
+          )}
         </header>
 
         <div className="border-b border-border mb-8">
@@ -617,19 +703,7 @@ export default function SuitcasePage() {
                           </Button>
                         </Link>
                       </div>
-                      <Link href="/concierge">
-                        <Button
-                          variant="outline"
-                          className="mt-2 border-[#c9a84c] text-[#c9a84c] hover:bg-[#c9a84c]/10"
-                          data-testid="button-curate-for-me"
-                        >
-                          <svg width="14" height="18" viewBox="0 0 24 32" fill="#c9a84c" stroke="none" className="mr-2">
-                            <circle cx="12" cy="10" r="9" />
-                            <polygon points="9,18 12,32 15,18" />
-                          </svg>
-                          Curate for Me
-                        </Button>
-                      </Link>
+                      {/* Curate for Me only appears with 3+ saves — no button in empty state */}
                     </div>
                   </>
                 ) : (
@@ -725,6 +799,23 @@ export default function SuitcasePage() {
         onOpenChange={setDrawerOpen}
         source="suitcase"
       />
+
+      {/* Curating Animation Overlay */}
+      {showCurating && curatingCapsule && (
+        <CuratingAnimation
+          capsuleName={curatingCapsule.name}
+          capsuleTagline={curatingCapsule.tagline}
+          onComplete={handleCuratingComplete}
+        />
+      )}
+
+      {/* Shimmer keyframes for Curate for Me button */}
+      <style>{`
+        @keyframes shimmer {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 }
