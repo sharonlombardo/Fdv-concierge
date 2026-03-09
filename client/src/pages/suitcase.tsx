@@ -719,15 +719,15 @@ export default function SuitcasePage() {
                           cursor: "pointer",
                         }}
                       >
-                        <div style={{ width: "100%", aspectRatio: "3 / 4", background: "#f0ece4", overflow: "hidden" }}>
+                        <div style={{ width: "100%", aspectRatio: "3 / 4", background: "#ffffff", overflow: "hidden" }}>
                           {!isPlaceholder ? (
                             <img
                               src={heroImage}
                               alt={capsule.name}
-                              style={{ width: "100%", height: "100%", objectFit: "contain", background: "#f0ece4" }}
+                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
                             />
                           ) : (
-                            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#f0ece4" }}>
+                            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#ffffff" }}>
                               <span style={{ fontFamily: "Lora, serif", fontSize: 20, color: "#9B8D7C" }}>{capsule.name}</span>
                             </div>
                           )}
