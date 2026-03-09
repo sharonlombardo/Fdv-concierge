@@ -89,15 +89,14 @@ export default function TopBar() {
               aria-label="Home"
             >
               <img
-                src="/logo-circle.jpeg"
+                src={isLanding && !scrolled ? "/logo-circle-white.png" : "/logo-circle.jpeg"}
                 alt="FDV Concierge"
                 style={{
                   width: 40,
                   height: 40,
                   borderRadius: "50%",
                   objectFit: "cover",
-                  filter: isLanding && !scrolled ? "invert(1) brightness(2)" : "none",
-                  transition: "filter 0.4s ease",
+                  transition: "opacity 0.4s ease",
                 }}
               />
             </button>
