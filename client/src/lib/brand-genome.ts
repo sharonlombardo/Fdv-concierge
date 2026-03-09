@@ -386,6 +386,11 @@ const GENOME_KEY_TO_EXTRA: Record<string, string> = {
   // Day 8
 };
 
+/** Reverse lookup: Blob extra key (e.g. "d1-1-extra-0") → genome database_match_key */
+export const EXTRA_KEY_TO_GENOME: Record<string, string> = Object.fromEntries(
+  Object.entries(GENOME_KEY_TO_EXTRA).map(([genomeKey, blobKey]) => [blobKey, genomeKey])
+);
+
 /** Reverse lookup: genome database_match_key → flow ID for wardrobe image resolution */
 /** Prioritizes FLOW_LOOK_GENOME_KEY (event-based, matching Blob filenames) over
  *  SECTION_LOOK_GENOME_KEY (packing-grid-based) for image URL construction. */

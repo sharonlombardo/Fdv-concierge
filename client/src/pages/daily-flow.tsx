@@ -47,8 +47,11 @@ import {
   getProductByKey,
   getProductDisplayName,
   isShoppable,
+  getProductImageUrl,
   SECTION_LOOK_GENOME_KEY,
   FLOW_LOOK_GENOME_KEY,
+  EXTRA_KEY_TO_GENOME,
+  getSlotProducts,
 } from "@/lib/brand-genome";
 
 function isDayPage(page: ItineraryPage): page is DayPage {
@@ -381,45 +384,70 @@ function InlineFlowDetail({
           )}
 
           {/* Accessory grid (4 items: footwear, handbag, jewelry, accessory) */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, maxWidth: 320, margin: "0 auto" }}>
-            {[0, 1, 2, 3].map((index) => {
-              const extra = item.wardrobeExtras?.[index];
-              const extraKey = `${item.id}-extra-${index}`;
-              const customImageUrl = hasCustomImage(extraKey) ? getImageUrl(extraKey, "") : null;
-              const hasImage = customImageUrl || extra?.image;
-              const placeholderName = ["Footwear", "Handbag", "Jewelry", "Accessory"][index];
-              return (
-                <div key={index} style={{ textAlign: "center" }}>
-                  <div style={{ aspectRatio: "1/1", borderRadius: 6, overflow: "hidden", border: "1px solid #e8e0d4", background: "#f5f1e8", position: "relative" }}>
-                    {hasImage ? (
-                      <>
+          {(() => {
+            const dayMatch = item.id.match(/^d(\d+)/);
+            const dayNum = dayMatch ? parseInt(dayMatch[1]) : 0;
+            const todMap: Record<string, "morning" | "afternoon" | "evening"> = { morning: "morning", afternoon: "afternoon", evening: "evening" };
+            const tod = todMap[(item.time || "").toLowerCase()];
+            const slotProducts = dayNum && tod ? getSlotProducts(dayNum, tod) : [];
+            const positions = ["footwear", "handbag", "jewelry", "accessory"] as const;
+            const labels = ["Footwear", "Handbag", "Jewelry", "Accessory"];
+
+            return (
+              <div style={{ display: "flex", gap: 10, maxWidth: 320, margin: "0 auto", alignItems: "flex-start" }}>
+                {positions.map((pos, index) => {
+                  const extraKey = `${item.id}-extra-${index}`;
+                  const slotEntry = slotProducts.find(sp => sp.position === pos);
+                  const genomeKey = slotEntry?.key || EXTRA_KEY_TO_GENOME[extraKey] || null;
+                  const product = slotEntry?.product || (genomeKey ? getProductByKey(genomeKey) : undefined);
+                  const customImageUrl = hasCustomImage(extraKey) ? getImageUrl(extraKey, "") : null;
+                  const blobUrl = getProductImageUrl(genomeKey || "", item.id, extraKey);
+                  const imgUrl = customImageUrl || blobUrl;
+
+                  return (
+                    <div key={index} style={{ flex: "1 1 0px", minWidth: 0, textAlign: "center" }}>
+                      <div style={{ position: "relative", width: "100%", overflow: "hidden", borderRadius: 6, border: "1px solid #e8e0d4", background: "#f5f1e8" }}>
+                        <div style={{ paddingBottom: "133.33%" }} />
                         <img
-                          src={getImageUrl(extraKey, extra?.image || "")}
-                          alt={extra?.name || placeholderName}
-                          style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }}
+                          src={imgUrl}
+                          alt={product?.name || labels[index]}
+                          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }}
+                          onError={(e) => {
+                            const el = e.target as HTMLImageElement;
+                            if (genomeKey) {
+                              const fallback = getProductImageUrl(genomeKey, item.id);
+                              if (el.src !== fallback) { el.src = fallback; return; }
+                            }
+                            el.style.display = "none";
+                          }}
                           onClick={() => {
                             if (onOpenProductModal) {
                               onOpenProductModal({
-                                title: extra?.name || placeholderName,
-                                imageUrl: getImageUrl(extraKey, extra?.image || ""),
+                                title: product?.name || labels[index],
+                                imageUrl: imgUrl,
                                 itemId: extraKey,
-                                shopUrl: extra?.shopLink,
+                                brand: product?.brand || undefined,
+                                description: product?.description || undefined,
+                                shopUrl: product?.url || undefined,
                                 pinType: "product",
+                                genomeKey: genomeKey || undefined,
                               });
                             }
                           }}
                         />
-                        <div style={{ position: "absolute", top: 2, right: 2 }}>
-                          <PinButton
-                            itemType="product"
-                            itemId={extraKey}
-                            itemData={{ title: extra?.name || placeholderName, imageUrl: getImageUrl(extraKey, extra?.image || ""), shopLink: extra?.shopLink, editTag: "morocco-edit", storyTag: "morocco" }}
-                            sourceContext="morocco_daily_flow"
-                            aestheticTags={["accessory", placeholderName.toLowerCase()]}
-                            size="sm"
-                          />
-                        </div>
-                        <div style={{ position: "absolute", bottom: 2, right: 2 }}>
+                        {product && (
+                          <div style={{ position: "absolute", top: 2, right: 2, zIndex: 1 }}>
+                            <PinButton
+                              itemType="product"
+                              itemId={extraKey}
+                              itemData={{ title: product.name, imageUrl: imgUrl, shopLink: product.url, editTag: "morocco-edit", storyTag: "morocco", genomeKey: genomeKey || undefined }}
+                              sourceContext="morocco_daily_flow"
+                              aestheticTags={["accessory", pos]}
+                              size="sm"
+                            />
+                          </div>
+                        )}
+                        <div style={{ position: "absolute", bottom: 2, right: 2, zIndex: 1 }}>
                           <button
                             onClick={() => handleOpenSelfiePicker(extraKey)}
                             style={{ width: 24, height: 24, borderRadius: 12, background: "rgba(255,255,255,0.9)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
@@ -427,24 +455,16 @@ function InlineFlowDetail({
                             <Camera size={12} color="#2c2416" />
                           </button>
                         </div>
-                      </>
-                    ) : (
-                      <button
-                        onClick={() => handleOpenSelfiePicker(extraKey)}
-                        style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, background: "none", border: "none", cursor: "pointer", color: "rgba(44,36,22,0.3)" }}
-                      >
-                        <Camera size={16} />
-                        <span style={{ fontSize: 8, fontWeight: 600, textTransform: "uppercase" }}>ADD</span>
-                      </button>
-                    )}
-                  </div>
-                  <p style={{ fontSize: 9, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "rgba(44,36,22,0.5)", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {extra?.name || placeholderName}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+                      </div>
+                      <p style={{ fontSize: 9, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "rgba(44,36,22,0.5)", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {labels[index]}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
       )}
 
@@ -678,11 +698,18 @@ export default function DailyFlowPage() {
   }) => {
     let resolvedGenomeKey = data.genomeKey;
     if (!resolvedGenomeKey && data.itemId) {
-      const flowId = data.itemId.replace(/-(look|wardrobe)$/, "");
-      const mapKey =
-        FLOW_LOOK_GENOME_KEY[flowId] ||
-        SECTION_LOOK_GENOME_KEY[flowId];
-      if (mapKey) resolvedGenomeKey = mapKey;
+      // Try reverse extra-key lookup (e.g., "d1-1-extra-0" → genome key)
+      const fromExtra = EXTRA_KEY_TO_GENOME[data.itemId];
+      if (fromExtra) {
+        resolvedGenomeKey = fromExtra;
+      } else {
+        // Try flow/section look lookup
+        const flowId = data.itemId.replace(/-(look|wardrobe)$/, "");
+        const mapKey =
+          FLOW_LOOK_GENOME_KEY[flowId] ||
+          SECTION_LOOK_GENOME_KEY[flowId];
+        if (mapKey) resolvedGenomeKey = mapKey;
+      }
     }
     const genome = resolvedGenomeKey
       ? getProductByKey(resolvedGenomeKey)

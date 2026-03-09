@@ -60,7 +60,7 @@ import {
   EditorialDaySection
 } from '@/components/editorial-sections';
 import { LoadingImage } from '@/components/loading-image';
-import { getProductByKey, getProductDisplayName, isShoppable, SECTION_LOOK_GENOME_KEY, FLOW_LOOK_GENOME_KEY } from '@/lib/brand-genome';
+import { getProductByKey, getProductDisplayName, isShoppable, SECTION_LOOK_GENOME_KEY, FLOW_LOOK_GENOME_KEY, EXTRA_KEY_TO_GENOME } from '@/lib/brand-genome';
 
 function isDayPage(page: ItineraryPage): page is DayPage {
   return 'day' in page;
@@ -550,12 +550,17 @@ function ItemDetailDrawer({
                               alt={extra?.name || placeholderName}
                               onClick={() => {
                                 if (onOpenProductModal) {
+                                  const extraGenomeKey = EXTRA_KEY_TO_GENOME[extraKey];
+                                  const extraProduct = extraGenomeKey ? getProductByKey(extraGenomeKey) : undefined;
                                   onOpenProductModal({
-                                    title: extra?.name || placeholderName,
+                                    title: extraProduct?.name || extra?.name || placeholderName,
                                     imageUrl: getImageUrl(extraKey, extra?.image || ''),
                                     itemId: extraKey,
-                                    shopUrl: extra?.shopLink,
+                                    brand: extraProduct?.brand || undefined,
+                                    description: extraProduct?.description || undefined,
+                                    shopUrl: extraProduct?.url || extra?.shopLink,
                                     pinType: "product",
+                                    genomeKey: extraGenomeKey || undefined,
                                   });
                                 }
                               }}
@@ -1090,12 +1095,18 @@ export default function Home() {
   };
 
   const openProductModal = (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string; genomeKey?: string }) => {
-    // Resolve genome key: use provided key, or derive from itemId (e.g. "d1-1-look" or "d1-1-wardrobe" → "d1-1")
+    // Resolve genome key: use provided key, or derive from itemId
     let resolvedGenomeKey = data.genomeKey;
     if (!resolvedGenomeKey && data.itemId) {
-      const flowId = data.itemId.replace(/-(look|wardrobe)$/, '');
-      const mapKey = FLOW_LOOK_GENOME_KEY[flowId] || SECTION_LOOK_GENOME_KEY[flowId];
-      if (mapKey) resolvedGenomeKey = mapKey;
+      // Try reverse extra-key lookup (e.g., "d1-1-extra-0" → genome key)
+      const fromExtra = EXTRA_KEY_TO_GENOME[data.itemId];
+      if (fromExtra) {
+        resolvedGenomeKey = fromExtra;
+      } else {
+        const flowId = data.itemId.replace(/-(look|wardrobe)$/, '');
+        const mapKey = FLOW_LOOK_GENOME_KEY[flowId] || SECTION_LOOK_GENOME_KEY[flowId];
+        if (mapKey) resolvedGenomeKey = mapKey;
+      }
     }
     // Try genome lookup for rich product data
     const genome = resolvedGenomeKey ? getProductByKey(resolvedGenomeKey) : undefined;
