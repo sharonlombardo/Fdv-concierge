@@ -1,111 +1,118 @@
 export interface CapsuleItem {
+  id: string;
   database_match_key: string;
   brand: string;
   name: string;
-  price: string;
-  category: string; // "look" | "footwear" | "bag" | "jewelry" | "beauty" | "accessory"
+  price?: string;
+  category: string; // "footwear" | "handbag" | "jewelry" | "accessory" | "beauty"
+  pinType: string; // "object" for accessories
+}
+
+export interface MoodImage {
+  imageUrl: string;
+  alt: string;
 }
 
 export interface Capsule {
   id: string;
   name: string;
   tagline: string;
-  description: string;
-  mood: string;
-  items: CapsuleItem[];
+  editorialCopy: string;
+  moodImages: MoodImage[]; // Editorial/lifestyle images — 2-column grid
+  accessories: CapsuleItem[]; // Shoes, bags, jewelry, beauty — horizontal scroll
   createdAt: string;
 }
+
+const BLOB_BASE =
+  "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2";
+const GUIDE_IMG = `${BLOB_BASE}/guide-morocco`;
 
 export const PRESET_CAPSULES: Capsule[] = [
   {
     id: "desert-neutrals",
     name: "Desert Neutrals",
-    tagline: "Quiet warmth. Natural textures. Unhurried beauty.",
-    description:
-      "We noticed a thread — quiet warmth, natural textures, unhurried beauty. Here's what belongs together.",
-    mood: "Warm · Grounded · Effortless",
-    items: [
-      // LOOKS (hero pieces)
+    tagline:
+      "A curated selection of mood, looks, and pieces for the journey ahead.",
+    editorialCopy:
+      "We noticed a thread—quiet warmth, natural textures, unhurried beauty. Here's what belongs together.",
+    moodImages: [
       {
-        database_match_key: "Look:alia:soukcoat:desertpants:blush.jpg",
-        brand: "Alaïa",
-        name: "Souk Coat & Desert Pant",
-        price: "$1,200 / $760",
-        category: "look",
+        imageUrl: `${BLOB_BASE}/todays-edit-mood-1`,
+        alt: "Editorial fashion — woman under palm thatch",
       },
       {
-        database_match_key: "LOOK:FDV:PHILOMENACAFTAN:SAND.jpg",
-        brand: "FIL DE VIE",
-        name: "Philomena Caftan",
-        price: "$1,250",
-        category: "look",
+        imageUrl: `${BLOB_BASE}/todays-edit-mood-2`,
+        alt: "Sunset over Moroccan kasbah",
       },
       {
-        database_match_key: "look:fdv:cashmereknitset:ivory.jpg",
-        brand: "FIL DE VIE",
-        name: "Cashmere Knit Set",
-        price: "$2,400",
-        category: "look",
+        imageUrl: `${BLOB_BASE}/todays-edit-mood-3`,
+        alt: "Terracotta archway with olive trees",
       },
       {
-        database_match_key: "LOOK:LOROPIANA:SLIPDRESS:BLACK.jpg",
-        brand: "Loro Piana",
-        name: "Slip Dress",
-        price: "$1,300",
-        category: "look",
+        imageUrl: `${GUIDE_IMG}/stay-3-large.jpg`,
+        alt: "Grand Moroccan archway — warm golden light",
       },
       {
-        database_match_key: "look:phoebephilo:cashmereovercoat:tobacco.jpg",
-        brand: "Phoebe Philo",
-        name: "Cashmere Overcoat",
-        price: "$5,900",
-        category: "look",
-      },
-      // FOOTWEAR
-      {
-        database_match_key: "footwear, amery kit sandal.jpg",
-        brand: "A Emery",
-        name: "Kir Sandal",
-        price: "$185",
-        category: "footwear",
+        imageUrl: `${GUIDE_IMG}/stay-1-large.jpg`,
+        alt: "Riad pool with loungers",
       },
       {
+        imageUrl: `${BLOB_BASE}/todays-edit-mood-4`,
+        alt: "Editorial wardrobe — striped outfit in Morocco",
+      },
+    ],
+    accessories: [
+      {
+        id: "dn-acc-1",
         database_match_key: "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
-        brand: "Khaite",
+        brand: "KHAITE",
         name: "Otto Leather Slippers",
         price: "$595",
         category: "footwear",
-      },
-      // ACCESSORIES
-      {
-        database_match_key:
-          "ACCESSORY:GABRIELLAHEARST:WELFATCHASHMERE:SAND.jpg",
-        brand: "Gabriella Hearst",
-        name: "Lauren Knit Wrap",
-        price: "$3,170",
-        category: "accessory",
+        pinType: "object",
       },
       {
-        database_match_key: "ACCESS:BAG:CHLOE:WRISTLETTE:BLACK.jpg",
-        brand: "Chloé",
-        name: "Wristlette",
+        id: "dn-acc-2",
+        database_match_key: "footwear, amery kit sandal.jpg",
+        brand: "A EMERY",
+        name: "Kir Sandal",
+        price: "$185",
+        category: "footwear",
+        pinType: "object",
+      },
+      {
+        id: "dn-acc-3",
+        database_match_key: "access:bag:bottega:hobo.jpg",
+        brand: "BOTTEGA VENETA",
+        name: "Solstice Bag",
         price: "$4,200",
         category: "bag",
-      },
-      // BEAUTY
-      {
-        database_match_key: "beauty:imortelle oil.jpg",
-        brand: "Hildegaard",
-        name: "Immortelle Facial Oil",
-        price: "$375",
-        category: "beauty",
+        pinType: "object",
       },
       {
-        database_match_key: "BEAUTY:FDV:PARFUM.jpg",
-        brand: "FIL DE VIE",
-        name: "Parfum",
-        price: "$475",
-        category: "beauty",
+        id: "dn-acc-4",
+        database_match_key: "ACCESSORY:BAG:DEMELIER:SANTORINI.jpg",
+        brand: "DEMELLIER",
+        name: "Santorini Basket Bag",
+        category: "bag",
+        pinType: "object",
+      },
+      {
+        id: "dn-acc-5",
+        database_match_key: "access:jewlery:phoebephilo:hoops.jpg",
+        brand: "PHOEBE PHILO",
+        name: "Mini Hoops",
+        category: "jewelry",
+        pinType: "object",
+      },
+      {
+        id: "dn-acc-6",
+        database_match_key: "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg",
+        brand: "PHOEBE PHILO",
+        name: "Peak Sunglasses",
+        price: "$490",
+        category: "accessory",
+        pinType: "object",
       },
     ],
     createdAt: new Date().toISOString(),
@@ -113,98 +120,88 @@ export const PRESET_CAPSULES: Capsule[] = [
   {
     id: "evening-marrakech",
     name: "Evening in Marrakech",
-    tagline: "When the sun sets and the city glows.",
-    description:
-      "For the hours when Marrakech transforms — when the heat breaks and the light turns gold. Every piece chosen for the woman who arrives already knowing where she's going.",
-    mood: "Luminous · Intentional · Magnetic",
-    items: [
-      // LOOKS
+    tagline:
+      "A curated selection of mood, looks, and pieces for the journey ahead.",
+    editorialCopy:
+      "When the sun sets and the city glows. Luminous, intentional, magnetic.",
+    moodImages: [
       {
-        database_match_key: "LOOK:YSL:JUMPSUIT:BLACK.jpg",
-        brand: "YSL",
-        name: "Jumpsuit",
-        price: "$1,230",
-        category: "look",
+        imageUrl: `${GUIDE_IMG}/exp-4-large.jpg`,
+        alt: "Evening ambiance — lantern-lit terrace",
       },
       {
-        database_match_key: "look:phoebephilo:gaiadress:black.jpg",
-        brand: "Phoebe Philo",
-        name: "Gaia Dress",
-        price: "$2,360",
-        category: "look",
+        imageUrl: `${GUIDE_IMG}/eat-1-large.jpg`,
+        alt: "Candlelit dining — Marrakech restaurant",
       },
       {
-        database_match_key: "LOOK:DRIESVANNOTEN:LAYEREDSILKDRESS:BLACK.jpg",
-        brand: "Dries Van Noten",
-        name: "Layered Silk Dress",
-        price: "$750",
-        category: "look",
+        imageUrl: `${GUIDE_IMG}/stay-3-large.jpg`,
+        alt: "Riad evening — pool at dusk",
       },
       {
-        database_match_key: "LOOK:JILSANDER:SILKFLUIDSET:BLACK.jpg",
-        brand: "Jil Sander",
-        name: "Silk Button Down & Fluid Pant",
-        price: "$760 / $720",
-        category: "look",
+        imageUrl: `${GUIDE_IMG}/shop-3-large.jpg`,
+        alt: "Evening souk — golden hour",
       },
       {
-        database_match_key: "LOOK:FDV:ISADORADRESS:BLK.jpg",
-        brand: "FIL DE VIE",
-        name: "Isadora Dress",
-        price: "$795",
-        category: "look",
+        imageUrl: `${GUIDE_IMG}/eat-3-large.jpg`,
+        alt: "Rooftop dining — city lights",
       },
-      // FOOTWEAR
       {
+        imageUrl: `${GUIDE_IMG}/ward-2-large_fdv_isadora_dress.jpg`,
+        alt: "Editorial wardrobe — evening look",
+      },
+    ],
+    accessories: [
+      {
+        id: "em-acc-1",
         database_match_key: "FOOTWEAR:ALAIA:BLACK.jpg",
-        brand: "Alaïa",
+        brand: "ALAÏA",
         name: "Heel Thong Mules",
         price: "$1,450",
         category: "footwear",
+        pinType: "object",
       },
       {
-        database_match_key: "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg",
-        brand: "Phoebe Philo",
-        name: "Ankle Boot",
-        price: "$1,650",
-        category: "footwear",
-      },
-      // ACCESSORIES
-      {
-        database_match_key: "feb 26 prod info pg 1.jpg - Item 1",
-        brand: "Paco Rabanne",
-        name: "Gold Pailette Handbag",
-        price: "$1,490",
+        id: "em-acc-2",
+        database_match_key: "ACCESS:BAG:CHLOE:WRISTLETTE:BLACK.jpg",
+        brand: "CHLOÉ",
+        name: "Wristlette",
+        price: "$4,200",
         category: "bag",
+        pinType: "object",
       },
       {
-        database_match_key: "feb 26 prod info pg 1.jpg - Item 2",
-        brand: "Phoebe Philo",
-        name: "Gold Drop Earrings",
-        price: "$1,050",
-        category: "jewelry",
-      },
-      {
+        id: "em-acc-3",
         database_match_key: "ACCESSORY:BULGAR:SERPENTI:BLK.jpg",
-        brand: "Bulgari",
+        brand: "BULGARI",
         name: "Serpenti Watch",
         price: "$13,200",
         category: "accessory",
-      },
-      // BEAUTY
-      {
-        database_match_key: "BEAUTY:POPPYKING:SINLIPSTICK:RED.jpg",
-        brand: "Poppy King",
-        name: "Original Sin Lipstick",
-        price: "$34",
-        category: "beauty",
+        pinType: "object",
       },
       {
-        database_match_key: "BEAUTY:VIOLETTEFR:NECATRLIPSTAIN.jpg",
-        brand: "Violette_FR",
-        name: "Nectar Lip Stain",
-        price: "$29",
+        id: "em-acc-4",
+        database_match_key: "ACCESSORY:JEWELRY:BULGARI:CABACHON NECKLACE.jpg",
+        brand: "BULGARI",
+        name: "Cabochon Necklace",
+        category: "jewelry",
+        pinType: "object",
+      },
+      {
+        id: "em-acc-5",
+        database_match_key: "phoebe philo earrings dropped.jpg",
+        brand: "PHOEBE PHILO",
+        name: "Drop Earrings",
+        category: "jewelry",
+        pinType: "object",
+      },
+      {
+        id: "em-acc-6",
+        database_match_key: "BEAUTY:FDV:PARFUM.jpg",
+        brand: "FIL DE VIE",
+        name: "Parfum",
+        price: "$475",
         category: "beauty",
+        pinType: "object",
       },
     ],
     createdAt: new Date().toISOString(),

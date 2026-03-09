@@ -352,7 +352,7 @@ const GENOME_KEY_TO_EXTRA: Record<string, string> = {
   "accessory:bulgar:serpenti:blk.jpg": "d1-1-extra-2",
   "accessory:phoebephilo:peaksunglasses:black.jpg": "d1-1-extra-3",
   "footwear, amery kit sandal.jpg": "d1-6-extra-0",
-  "access:bag:chloe:wristlette:black.jpg": "d1-6-extra-1",
+  "access:bag:chloe:wristlette:black.jpg": "capsule-chloe-wristlette-black",
   "accessory:jewelry:bulgari:cabachon necklace.jpg": "d1-6-extra-2",
   "access:jewlery:phoebephilo:hoops.jpg": "d1-6-extra-3",
   "beauty:fdv:parfum.jpg": "d1-3-extra-3",
@@ -384,6 +384,8 @@ const GENOME_KEY_TO_EXTRA: Record<string, string> = {
   "footwear:ferragamo:lolysandal:black.jpg": "d7-4-extra-0",
   "accessory:gabriellahearst:welfatchashmere:sand.jpg": "d7-4-extra-3",
   // Day 8
+  // Capsule-specific uploads
+  "look:fdv:cybelblouse:stripe.jpg": "capsule-cybel-blouse-stripe",
 };
 
 /** Reverse lookup: Blob extra key (e.g. "d1-1-extra-0") → genome database_match_key */

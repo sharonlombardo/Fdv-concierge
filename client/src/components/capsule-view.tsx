@@ -31,16 +31,17 @@ function getItemImage(item: CapsuleItem): string {
 function buildModalData(item: CapsuleItem): ItemModalData {
   const genome = getProductByKey(item.database_match_key);
   return {
-    id: item.database_match_key,
+    id: item.id,
     title: item.name,
     bucket: item.category,
-    pinType: item.category === "look" ? "style" : "object",
+    pinType: item.pinType as "style" | "object",
     assetKey: item.database_match_key,
     storyTag: "capsule",
     imageUrl: getItemImage(item),
     brand: genome?.brand || item.brand,
     price: genome?.price || item.price,
-    shopUrl: genome?.shop_status === "live" ? genome.url || undefined : undefined,
+    shopUrl:
+      genome?.shop_status === "live" ? genome.url || undefined : undefined,
     detailDescription: genome?.description,
     genomeKey: item.database_match_key,
     color: genome?.color,
@@ -48,6 +49,12 @@ function buildModalData(item: CapsuleItem): ItemModalData {
     shopStatus: genome?.shop_status,
   };
 }
+
+/** Hide scrollbar utility styles */
+const hideScrollbar: React.CSSProperties = {
+  scrollbarWidth: "none" as const,
+  msOverflowStyle: "none" as const,
+};
 
 interface CapsuleViewProps {
   capsule: Capsule;
@@ -58,22 +65,8 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
   const [modalItem, setModalItem] = useState<ItemModalData | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [saved, setSaved] = useState(() =>
-    getSavedCapsuleIds().includes(capsule.id)
+    getSavedCapsuleIds().includes(capsule.id),
   );
-
-  const looks = capsule.items.filter((i) => i.category === "look");
-  const accessories = capsule.items.filter(
-    (i) =>
-      i.category === "footwear" ||
-      i.category === "bag" ||
-      i.category === "accessory" ||
-      i.category === "jewelry"
-  );
-  const beauty = capsule.items.filter((i) => i.category === "beauty");
-
-  const heroItem = looks[0];
-  const twoUpItems = looks.slice(1, 3);
-  const remainingLooks = looks.slice(3);
 
   const handleItemTap = (item: CapsuleItem) => {
     setModalItem(buildModalData(item));
@@ -95,15 +88,17 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
         fontFamily: "Inter, sans-serif",
       }}
     >
-      <div style={{ maxWidth: 480, margin: "0 auto", padding: "0 24px" }}>
-        {/* Top bar */}
+      {/* ===== HEADER SECTION ===== */}
+      <div style={{ textAlign: "center", padding: "0 16px" }}>
+        {/* Back link */}
         <div
           style={{
+            textAlign: "left",
+            marginBottom: 24,
+            marginTop: 8,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: 32,
-            marginTop: 8,
           }}
         >
           <button
@@ -112,7 +107,8 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
               background: "none",
               border: "none",
               fontFamily: "Inter, sans-serif",
-              fontSize: 14,
+              fontSize: 12,
+              letterSpacing: "0.15em",
               color: "#2c2416",
               cursor: "pointer",
               padding: 0,
@@ -127,7 +123,7 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
                 background: "none",
                 border: "none",
                 fontFamily: "Inter, sans-serif",
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: 600,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
@@ -141,238 +137,228 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
           )}
         </div>
 
-        {/* Capsule header */}
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <h1
-            style={{
-              fontFamily: "Lora, serif",
-              fontSize: 28,
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "#2c2416",
-              marginBottom: 16,
-            }}
-          >
-            {capsule.name}
-          </h1>
-          <p
-            style={{
-              fontFamily: "Lora, serif",
-              fontSize: 18,
-              fontStyle: "italic",
-              color: "#2c2416",
-              lineHeight: 1.6,
-              marginBottom: 16,
-            }}
-          >
-            {capsule.tagline}
-          </p>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 12,
-            }}
-          >
-            <div style={{ flex: 1, height: 1, background: "#e8e0d4" }} />
-            <span
-              style={{
-                fontFamily: "Inter, sans-serif",
-                fontSize: 12,
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                color: "#9B8D7C",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {capsule.mood}
-            </span>
-            <div style={{ flex: 1, height: 1, background: "#e8e0d4" }} />
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div style={{ height: 1, background: "#e8e0d4", marginBottom: 24 }} />
-
-        {/* Hero item */}
-        {heroItem && (
-          <ProductCard
-            item={heroItem}
-            onTap={() => handleItemTap(heroItem)}
-            layout="hero"
-          />
-        )}
-
-        {/* Divider */}
-        <div
+        {/* Title — italic serif */}
+        <h1
           style={{
-            height: 1,
-            background: "#e8e0d4",
-            margin: "24px 0",
-          }}
-        />
-
-        {/* Two-up items */}
-        {twoUpItems.length > 0 && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 12,
-              marginBottom: 24,
-            }}
-          >
-            {twoUpItems.map((item) => (
-              <ProductCard
-                key={item.database_match_key}
-                item={item}
-                onTap={() => handleItemTap(item)}
-                layout="half"
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Remaining looks */}
-        {remainingLooks.length > 0 && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 12,
-              marginBottom: 24,
-            }}
-          >
-            {remainingLooks.map((item) => (
-              <ProductCard
-                key={item.database_match_key}
-                item={item}
-                onTap={() => handleItemTap(item)}
-                layout="half"
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Divider */}
-        <div
-          style={{
-            height: 1,
-            background: "#e8e0d4",
-            margin: "24px 0",
-          }}
-        />
-
-        {/* Accessories section */}
-        {accessories.length > 0 && (
-          <>
-            <h2
-              style={{
-                fontFamily: "Lora, serif",
-                fontSize: 12,
-                fontWeight: 500,
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                color: "#c9a84c",
-                marginBottom: 16,
-              }}
-            >
-              THE ACCESSORIES
-            </h2>
-            <div
-              style={{
-                display: "flex",
-                gap: 16,
-                overflowX: "auto",
-                paddingBottom: 8,
-                WebkitOverflowScrolling: "touch",
-              }}
-            >
-              {accessories.map((item) => (
-                <ProductCard
-                  key={item.database_match_key}
-                  item={item}
-                  onTap={() => handleItemTap(item)}
-                  layout="accessory"
-                />
-              ))}
-            </div>
-          </>
-        )}
-
-        {/* Divider */}
-        <div
-          style={{
-            height: 1,
-            background: "#e8e0d4",
-            margin: "24px 0",
-          }}
-        />
-
-        {/* Beauty section */}
-        {beauty.length > 0 && (
-          <>
-            <h2
-              style={{
-                fontFamily: "Lora, serif",
-                fontSize: 12,
-                fontWeight: 500,
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                color: "#c9a84c",
-                marginBottom: 16,
-              }}
-            >
-              THE DETAILS
-            </h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns:
-                  beauty.length === 1 ? "1fr" : "1fr 1fr",
-                gap: 12,
-                marginBottom: 24,
-              }}
-            >
-              {beauty.map((item) => (
-                <ProductCard
-                  key={item.database_match_key}
-                  item={item}
-                  onTap={() => handleItemTap(item)}
-                  layout="half"
-                />
-              ))}
-            </div>
-          </>
-        )}
-
-        {/* Divider */}
-        <div
-          style={{
-            height: 1,
-            background: "#e8e0d4",
-            margin: "24px 0",
-          }}
-        />
-
-        {/* Closing description */}
-        <p
-          style={{
-            fontFamily: "Lora, serif",
-            fontSize: 16,
+            fontFamily: "'Lora', serif",
             fontStyle: "italic",
+            fontSize: "1.75rem",
+            fontWeight: 400,
             color: "#2c2416",
-            lineHeight: 1.7,
-            textAlign: "center",
-            margin: "32px 0",
+            margin: "0 0 12px",
           }}
         >
-          {capsule.description}
+          Your Capsule
+        </h1>
+
+        {/* Subtitle */}
+        <p
+          style={{
+            fontSize: 14,
+            color: "#6b6560",
+            margin: "0 auto 16px",
+            maxWidth: 340,
+            lineHeight: 1.5,
+          }}
+        >
+          {capsule.tagline}
         </p>
 
-        {/* Save this edit button */}
+        {/* Editorial copy — italic */}
+        <p
+          style={{
+            fontFamily: "'Lora', serif",
+            fontStyle: "italic",
+            fontSize: 14,
+            color: "#8a7d6b",
+            margin: "0 auto 32px",
+            maxWidth: 380,
+            lineHeight: 1.6,
+          }}
+        >
+          {capsule.editorialCopy}
+        </p>
+      </div>
+
+      {/* ===== MOOD IMAGES — 2-column grid, NO product labels ===== */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 6,
+          padding: "0 12px",
+          marginTop: 8,
+        }}
+      >
+        {capsule.moodImages.map((img, idx) => (
+          <div
+            key={idx}
+            style={{
+              position: "relative",
+              aspectRatio: "3 / 4",
+              overflow: "hidden",
+              borderRadius: 3,
+              background: "#f0ece4",
+            }}
+          >
+            <img
+              src={img.imageUrl}
+              alt={img.alt}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+              onError={(e) => {
+                const el = e.target as HTMLImageElement;
+                el.style.display = "none";
+              }}
+            />
+            {/* Gold pin icon — top right */}
+            <div
+              style={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+                zIndex: 1,
+              }}
+            >
+              <PinButton
+                itemType="style"
+                itemId={`mood-${capsule.id}-${idx}`}
+                itemData={{
+                  title: img.alt,
+                  imageUrl: img.imageUrl,
+                  editTag: "capsule",
+                }}
+                sourceContext="capsule"
+                size="sm"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ===== SECTION DIVIDER ===== */}
+      <div style={{ textAlign: "center", padding: "16px 0" }}>
+        <p
+          style={{
+            fontFamily: "Inter, sans-serif",
+            fontSize: 11,
+            letterSpacing: "0.3em",
+            textTransform: "uppercase",
+            color: "#9B8D7C",
+            margin: 0,
+          }}
+        >
+          Style & Objects of Desire
+        </p>
+      </div>
+
+      {/* ===== ACCESSORIES SECTION — horizontal scroll ===== */}
+      <div style={{ padding: "0 12px", paddingBottom: 24 }}>
+        <div
+          className="hide-scrollbar"
+          style={{
+            display: "flex",
+            gap: 6,
+            overflowX: "auto",
+            paddingBottom: 12,
+            ...hideScrollbar,
+          }}
+        >
+          {capsule.accessories.map((item) => (
+            <div
+              key={item.id}
+              style={{
+                flex: "none",
+                width: "38%",
+              }}
+              className="sm-acc-card"
+            >
+              {/* Image container */}
+              <div
+                onClick={() => handleItemTap(item)}
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  aspectRatio: "3 / 4",
+                  overflow: "hidden",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                  background: "#f0ece4",
+                }}
+              >
+                <img
+                  src={getItemImage(item)}
+                  alt={`${item.brand} ${item.name}`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                  onError={(e) => {
+                    const el = e.target as HTMLImageElement;
+                    el.style.display = "none";
+                  }}
+                />
+                {/* Gold pin */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 6,
+                    right: 6,
+                    zIndex: 1,
+                  }}
+                >
+                  <PinButton
+                    itemType="object"
+                    itemId={item.database_match_key}
+                    itemData={{
+                      title: `${item.brand} — ${item.name}`,
+                      imageUrl: getItemImage(item),
+                      editTag: "capsule",
+                    }}
+                    sourceContext="capsule"
+                    size="sm"
+                  />
+                </div>
+              </div>
+              {/* Brand + name below each */}
+              <div style={{ marginTop: 6 }}>
+                <p
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 9,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    color: "#9B8D7C",
+                    margin: 0,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {item.brand}
+                </p>
+                <p
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    color: "#2c2416",
+                    margin: "2px 0 0",
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {item.name}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ===== SAVE BUTTON ===== */}
+      <div style={{ padding: "0 24px", maxWidth: 480, margin: "0 auto" }}>
         {!saved ? (
           <button
             onClick={handleSaveEdit}
@@ -418,154 +404,18 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
         onOpenChange={setModalOpen}
         source="current"
       />
-    </div>
-  );
-}
 
-/* ---------- Product Card ---------- */
-
-function ProductCard({
-  item,
-  onTap,
-  layout,
-}: {
-  item: CapsuleItem;
-  onTap: () => void;
-  layout: "hero" | "half" | "accessory";
-}) {
-  const imageUrl = getItemImage(item);
-  const isPlaceholder = imageUrl.startsWith("data:");
-
-  const containerStyle: React.CSSProperties =
-    layout === "accessory"
-      ? { minWidth: 120, flexShrink: 0 }
-      : {};
-
-  const imageAspect: React.CSSProperties =
-    layout === "accessory"
-      ? { width: 120, height: 160, borderRadius: 4, overflow: "hidden" }
-      : {
-          width: "100%",
-          aspectRatio: "3 / 4",
-          borderRadius: 4,
-          overflow: "hidden",
-        };
-
-  return (
-    <div style={containerStyle}>
-      {/* Image */}
-      <div
-        onClick={onTap}
-        style={{
-          ...imageAspect,
-          cursor: "pointer",
-          position: "relative",
-          background: "#f0ece4",
-        }}
-      >
-        {isPlaceholder ? (
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "#f0ece4",
-              padding: 12,
-              textAlign: "center",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "Inter, sans-serif",
-                fontSize: 10,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: "#9B8D7C",
-              }}
-            >
-              {item.brand}
-            </span>
-            <span
-              style={{
-                fontFamily: "Lora, serif",
-                fontSize: 13,
-                color: "#2c2416",
-                marginTop: 4,
-              }}
-            >
-              {item.name}
-            </span>
-          </div>
-        ) : (
-          <img
-            src={imageUrl}
-            alt={`${item.brand} ${item.name}`}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit:
-                item.category === "look" ? "contain" : "cover",
-              background: item.category === "look" ? "#f0ece4" : undefined,
-            }}
-          />
-        )}
-
-        {/* Pin button */}
-        <div style={{ position: "absolute", top: 6, right: 6 }}>
-          <PinButton
-            itemType={item.category === "look" ? "style" : "object"}
-            itemId={item.database_match_key}
-            itemData={{
-              title: `${item.brand} — ${item.name}`,
-              imageUrl: imageUrl,
-              editTag: "capsule",
-            }}
-            sourceContext="capsule"
-            size="sm"
-          />
-        </div>
-      </div>
-
-      {/* Item info */}
-      <div style={{ marginTop: 8 }}>
-        <p
-          style={{
-            fontFamily: "Inter, sans-serif",
-            fontSize: layout === "accessory" ? 10 : 12,
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            color: "#9B8D7C",
-            margin: 0,
-            lineHeight: 1.3,
-          }}
-        >
-          {item.brand}
-        </p>
-        <p
-          style={{
-            fontFamily: "Inter, sans-serif",
-            fontSize: layout === "accessory" ? 13 : 16,
-            color: "#2c2416",
-            margin: "2px 0 0",
-            lineHeight: 1.3,
-          }}
-        >
-          {item.name}
-        </p>
-        <p
-          style={{
-            fontFamily: "Inter, sans-serif",
-            fontSize: layout === "accessory" ? 12 : 14,
-            color: "#9B8D7C",
-            margin: "2px 0 0",
-          }}
-        >
-          {item.price}
-        </p>
-      </div>
+      {/* Hide scrollbar CSS (Webkit) */}
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        @media (min-width: 640px) {
+          .sm-acc-card {
+            width: 18% !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

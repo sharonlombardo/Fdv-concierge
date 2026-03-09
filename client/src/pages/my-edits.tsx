@@ -160,11 +160,11 @@ function CapsuleCard({
   capsule: Capsule;
   onTap: () => void;
 }) {
-  const heroItem = capsule.items[0];
-  const heroImage = heroItem
-    ? getProductImageUrl(heroItem.database_match_key)
+  const heroMood = capsule.moodImages[0];
+  const heroImage = heroMood
+    ? heroMood.imageUrl
     : "";
-  const isPlaceholder = heroImage.startsWith("data:");
+  const isPlaceholder = !heroImage || heroImage.startsWith("data:");
 
   const dateStr = new Date(capsule.createdAt).toLocaleDateString("en-US", {
     month: "short",
@@ -263,7 +263,7 @@ function CapsuleCard({
             margin: 0,
           }}
         >
-          {capsule.items.length} pieces · Saved {dateStr}
+          {capsule.moodImages.length + capsule.accessories.length} pieces · Saved {dateStr}
         </p>
       </div>
     </div>
