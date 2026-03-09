@@ -1,9 +1,10 @@
 import { Link } from "wouter";
 import { DESTINATIONS } from "@shared/destinations";
 import { ChevronRight } from "lucide-react";
+import { EMBEDDED_IMAGE_MAPPINGS } from "@shared/embedded-image-mappings";
 
 function GuideCard({ destination }: { destination: typeof DESTINATIONS[0] }) {
-  const imageUrl = destination.defaultImage;
+  const imageUrl = EMBEDDED_IMAGE_MAPPINGS[destination.imageSlotKey] || destination.defaultImage;
 
   const inner = (
     <div className="group relative overflow-hidden rounded-lg aspect-[4/5] cursor-pointer">
