@@ -10,7 +10,8 @@ import { ItemModal, type ItemModalData } from "@/components/item-modal";
 import { deriveEditTag } from "@/lib/derive-edit-tag";
 import { useCustomImages } from "@/hooks/use-custom-images";
 import { CuratingAnimation } from "@/components/curating-animation";
-import { PRESET_CAPSULES } from "@/data/capsule-data";
+import { PRESET_CAPSULES, type Capsule } from "@/data/capsule-data";
+import { useUser } from "@/contexts/user-context";
 
 const LS_SAVED_CAPSULES_KEY = "fdv_saved_capsules";
 
@@ -505,6 +506,19 @@ export default function SuitcasePage() {
   const { getImageUrl } = useCustomImages();
   const [showCurating, setShowCurating] = useState(false);
   const [curatingCapsule, setCuratingCapsule] = useState<typeof PRESET_CAPSULES[0] | null>(null);
+  const { saveCount } = useUser();
+  const [savedCapsuleIds, setSavedCapsuleIds] = useState<string[]>(getSavedCapsuleIds);
+
+  // Auto-seed "Desert Neutrals" if user has 3+ saves and no capsules yet
+  useEffect(() => {
+    if (savedCapsuleIds.length === 0 && saveCount >= 3) {
+      const updated = ["desert-neutrals"];
+      localStorage.setItem(LS_SAVED_CAPSULES_KEY, JSON.stringify(updated));
+      setSavedCapsuleIds(updated);
+    }
+  }, [saveCount, savedCapsuleIds.length]);
+
+  const savedCapsules = PRESET_CAPSULES.filter((c) => savedCapsuleIds.includes(c.id));
 
   const handleCurateForMe = () => {
     const next = getNextUnsavedCapsule();
@@ -515,6 +529,8 @@ export default function SuitcasePage() {
 
   const handleCuratingComplete = () => {
     setShowCurating(false);
+    // Refresh saved capsule IDs so My Edits tab shows the new capsule
+    setSavedCapsuleIds(getSavedCapsuleIds());
     if (curatingCapsule) {
       navigate(`/capsule/${curatingCapsule.id}`);
     }
@@ -576,9 +592,9 @@ export default function SuitcasePage() {
   const filteredSaves = filterSaves(saves, activeTab);
 
   return (
-    <div className="min-h-screen pb-[80px] bg-[#fafaf9] dark:bg-background">
+    <div className="min-h-screen pb-[80px] bg-[#fafaf9] dark:bg-background" style={{ paddingTop: 70 }}>
       {/* TopBar handles navigation at app level */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 pb-8">
         <header className="text-center mb-10">
           <h1 className="font-serif text-3xl md:text-4xl font-medium tracking-tight mb-2" data-testid="text-suitcase-title">
             YOUR SUITCASE
@@ -681,6 +697,65 @@ export default function SuitcasePage() {
               </div>
             ) : activeTab === "state-of-mind" ? (
               <StateOfMindContent onRemove={handleRemoveQuote} removedIds={removedQuotes} />
+            ) : activeTab === "my-edits" ? (
+              /* My Edits — show saved capsules from localStorage */
+              savedCapsules.length > 0 ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 480, margin: "0 auto" }}>
+                  {savedCapsules.map((capsule) => {
+                    const heroMood = capsule.moodImages[0];
+                    const heroImage = heroMood ? heroMood.imageUrl : "";
+                    const isPlaceholder = !heroImage || heroImage.startsWith("data:");
+                    const dateStr = new Date(capsule.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
+                    return (
+                      <div
+                        key={capsule.id}
+                        onClick={() => navigate(`/capsule/${capsule.id}`)}
+                        style={{
+                          background: "#ffffff",
+                          borderRadius: 8,
+                          overflow: "hidden",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <div style={{ width: "100%", aspectRatio: "3 / 4", background: "#f0ece4", overflow: "hidden" }}>
+                          {!isPlaceholder ? (
+                            <img
+                              src={heroImage}
+                              alt={capsule.name}
+                              style={{ width: "100%", height: "100%", objectFit: "contain", background: "#f0ece4" }}
+                            />
+                          ) : (
+                            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#f0ece4" }}>
+                              <span style={{ fontFamily: "Lora, serif", fontSize: 20, color: "#9B8D7C" }}>{capsule.name}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div style={{ padding: 16 }}>
+                          <h3 style={{ fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 600, color: "#2c2416", margin: 0, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                            {capsule.name}
+                          </h3>
+                          <p style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#9B8D7C", margin: 0, marginBottom: 6, lineHeight: 1.4 }}>
+                            {capsule.tagline}
+                          </p>
+                          <p style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#9B8D7C", margin: 0 }}>
+                            {capsule.moodImages.length + capsule.accessories.length} pieces · Saved {dateStr}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div style={{ textAlign: "center", padding: "40px 0" }}>
+                  <p style={{ fontFamily: "Lora, serif", fontSize: 16, fontStyle: "italic", color: "rgba(44, 36, 22, 0.55)", lineHeight: 1.6, marginBottom: 24 }}>
+                    Save more items to unlock your first Edit.
+                    <br />
+                    We're watching what catches your eye.
+                  </p>
+                </div>
+              )
             ) : filteredSaves.length === 0 ? (
               <div className="text-center py-20">
                 {saves.length === 0 ? (
