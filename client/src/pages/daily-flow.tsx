@@ -269,7 +269,7 @@ function InlineFlowDetail({
       {/* Full event image */}
       <div style={{ width: "100%", aspectRatio: "16/9", borderRadius: 8, overflow: "hidden", background: "#f0ebe0", marginBottom: 20, position: "relative" }}>
         <img
-          src={getImageUrl(item.id, item.image, { time: item.time, location: dayLocation, title: item.title, description: item.description, imageType: "item" })}
+          src={hasCustomImage(item.id) ? getImageUrl(item.id, item.image) : item.image}
           alt={item.title}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
           onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1549944850-84e00be4203b?auto=format&fit=crop&q=80&w=1200"; }}
@@ -278,7 +278,7 @@ function InlineFlowDetail({
           <PinButton
             itemType="experience"
             itemId={item.id}
-            itemData={{ title: item.title, description: item.description || item.body, imageUrl: getImageUrl(item.id, item.image, { time: item.time, location: dayLocation, title: item.title, description: item.description, imageType: "item" }), time: item.time, location: dayLocation, editTag: "morocco-edit", storyTag: "morocco" }}
+            itemData={{ title: item.title, description: item.description || item.body, imageUrl: hasCustomImage(item.id) ? getImageUrl(item.id, item.image) : item.image, time: item.time, location: dayLocation, editTag: "morocco-edit", storyTag: "morocco" }}
             sourceContext="morocco_daily_flow"
             aestheticTags={["experience", item.time?.toLowerCase() || ""]}
             size="md"
@@ -959,15 +959,9 @@ export default function DailyFlowPage() {
               }}
             >
               <img
-                src={getImageUrl(
-                  `day-${dayPage.day}-hero`,
-                  dayPage.flow[0]?.image || "",
-                  {
-                    imageType: "cover",
-                    title: dayPage.title,
-                    location: dayPage.location,
-                  }
-                )}
+                src={hasCustomImage(`d${dayPage.day}-hero`)
+                  ? getImageUrl(`d${dayPage.day}-hero`, dayPage.flow[0]?.image || "")
+                  : dayPage.flow[0]?.image || ""}
                 alt={`Day ${dayPage.day}`}
                 style={{
                   width: "100%",
@@ -986,15 +980,9 @@ export default function DailyFlowPage() {
                   itemData={{
                     title: `Day ${dayPage.day}: ${dayPage.title}`,
                     location: dayPage.location,
-                    imageUrl: getImageUrl(
-                      `day-${dayPage.day}-hero`,
-                      dayPage.flow[0]?.image || "",
-                      {
-                        imageType: "cover",
-                        title: dayPage.title,
-                        location: dayPage.location,
-                      }
-                    ),
+                    imageUrl: hasCustomImage(`d${dayPage.day}-hero`)
+                      ? getImageUrl(`d${dayPage.day}-hero`, dayPage.flow[0]?.image || "")
+                      : dayPage.flow[0]?.image || "",
                     editTag: "morocco-edit",
                     storyTag: "morocco",
                   }}
