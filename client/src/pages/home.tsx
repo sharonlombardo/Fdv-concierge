@@ -332,8 +332,8 @@ function ItemDetailDrawer({
           </h2>
           <div className="aspect-[16/9] w-full overflow-hidden bg-muted my-6 rounded-md relative">
             <LoadingImage 
-              src={getImageUrl(item.id, item.image, { time: item.time, location, title: item.title, description: item.description, imageType: 'item' })} 
-              className="w-full h-full object-cover" 
+              src={hasCustomImage(item.id) ? getImageUrl(item.id, item.image) : item.image}
+              className="w-full h-full object-cover"
               alt={item.title}
             />
             <div className="absolute top-2 right-2">
@@ -343,7 +343,7 @@ function ItemDetailDrawer({
                 itemData={{
                   title: item.title,
                   description: item.description || item.body,
-                  imageUrl: getImageUrl(item.id, item.image, { time: item.time, location, title: item.title, description: item.description, imageType: 'item' }),
+                  imageUrl: hasCustomImage(item.id) ? getImageUrl(item.id, item.image) : item.image,
                   time: item.time,
                   location,
                   editTag: 'morocco-edit',
@@ -541,7 +541,7 @@ function ItemDetailDrawer({
                   
                   return (
                     <div key={index} className="space-y-2">
-                      <div className="aspect-square bg-card border border-border rounded-md overflow-hidden relative group">
+                      <div className="aspect-[3/4] bg-card border border-border rounded-md overflow-hidden relative group">
                         {hasImage ? (
                           <>
                             <img

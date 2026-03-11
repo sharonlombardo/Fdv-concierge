@@ -319,7 +319,7 @@ function DaySection({ day, getImageUrl, hasCustomImage }: DaySectionProps) {
                           if (!hasCustomImage(extra.imageKey)) return null;
                           const extraImage = getImageUrl(extra.imageKey, extra.imageDefault);
                           return (
-                            <div key={idx} className="aspect-square overflow-hidden rounded-sm bg-muted">
+                            <div key={idx} className="aspect-[3/4] overflow-hidden rounded-sm bg-muted">
                               <img 
                                 src={extraImage}
                                 alt={`Accessory ${idx + 1}`}
