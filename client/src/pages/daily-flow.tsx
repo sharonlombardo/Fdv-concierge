@@ -457,7 +457,7 @@ function InlineFlowDetail({
                         </div>
                       </div>
                       <p style={{ fontSize: 9, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "rgba(44,36,22,0.5)", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        {labels[index]}
+                        {product?.brand || labels[index]}
                       </p>
                     </div>
                   );

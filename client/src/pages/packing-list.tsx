@@ -275,8 +275,8 @@ function ItemCard({ item, isPacked, onTogglePack, onOpenModal, getImageUrl, hasC
           {isPacked ? <Check className="w-3 h-3" /> : item.isLook ? <Eye className="w-3 h-3" /> : <Check className="w-3 h-3" />}
         </div>
       </div>
-      <p className={`${isLarge ? 'text-sm' : 'text-xs'} text-center text-muted-foreground leading-tight font-light`}>
-        {item.name}
+      <p className={`${isLarge ? 'text-sm' : 'text-xs'} text-center text-muted-foreground leading-tight font-light truncate`}>
+        {item.brand || item.name}
       </p>
     </div>
   );

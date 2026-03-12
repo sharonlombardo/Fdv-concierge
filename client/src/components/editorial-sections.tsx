@@ -353,7 +353,8 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                           const extraGenomeKey = mapEntry?.key || undefined;
 
                           return (
-                            <div key={idx} className="aspect-square overflow-hidden rounded-sm bg-muted relative group">
+                            <div key={idx} className="flex flex-col">
+                            <div className="aspect-[3/4] overflow-hidden rounded-sm bg-muted relative group">
                               <img
                                 src={extraImage}
                                 alt={extraName}
@@ -390,6 +391,10 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                                   size="sm"
                                 />
                               </div>
+                            </div>
+                            <p className="text-[9px] font-medium uppercase tracking-wider text-center truncate opacity-60 mt-1">
+                              {extraGenome?.brand || positionLabels[idx]}
+                            </p>
                             </div>
                           );
                         })}

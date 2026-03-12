@@ -538,7 +538,9 @@ function ItemDetailDrawer({
                   const customImageUrl = hasCustomImage(extraKey) ? getImageUrl(extraKey, '') : null;
                   const hasImage = customImageUrl || extra?.image;
                   const placeholderName = ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][index];
-                  
+                  const extraGenomeKey = EXTRA_KEY_TO_GENOME[extraKey];
+                  const extraProduct = extraGenomeKey ? getProductByKey(extraGenomeKey) : undefined;
+
                   return (
                     <div key={index} className="space-y-2">
                       <div className="aspect-[3/4] bg-card border border-border rounded-md overflow-hidden relative group">
@@ -603,7 +605,7 @@ function ItemDetailDrawer({
                         )}
                       </div>
                       <p className="text-[9px] font-medium uppercase tracking-wider text-center truncate opacity-60">
-                        {extra?.name || placeholderName}
+                        {extraProduct?.brand || extra?.name || placeholderName}
                       </p>
                     </div>
                   );
