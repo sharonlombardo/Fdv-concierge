@@ -294,6 +294,40 @@ export default function Threshold() {
         </div>
       </section>
 
+      {/* Intro section — orients new users */}
+      <section
+        className="py-12 md:py-16 px-6"
+        style={{ backgroundColor: "#fafaf9" }}
+      >
+        <div className="max-w-[520px] mx-auto text-center">
+          <p
+            style={{
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: "16.5px",
+              color: "#1a1a1a",
+              lineHeight: 1.6,
+              marginBottom: "20px",
+            }}
+          >
+            FIL DE VIE Concierge brings together travel, style, and the objects that belong with both. Browse, save what resonates, and let your Suitcase become a living collection of what moves you. The more you save, the better we know what to show you next.
+          </p>
+          <Link href="/about">
+            <span
+              className="inline-block cursor-pointer transition-colors hover:text-[#c9a84c]"
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "13px",
+                letterSpacing: "0.09em",
+                textTransform: "uppercase",
+                color: "#1a1a1a",
+              }}
+            >
+              The details →
+            </span>
+          </Link>
+        </div>
+      </section>
+
       {/* Category navigation — between hero and The Current */}
       <nav
         className="bg-[#fafaf9] border-b border-black/5"

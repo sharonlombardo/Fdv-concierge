@@ -32,12 +32,14 @@ import MyTrips from "@/pages/my-trips";
 import ConciergeInfo from "@/pages/concierge-info";
 import Profile from "@/pages/profile";
 import CapsuleDetail from "@/pages/capsule-detail";
+import About from "@/pages/about";
 import { EmailCaptureManager } from "@/components/email-capture-manager";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Threshold} />
+      <Route path="/about" component={About} />
       <Route path="/destinations" component={Destinations} />
       <Route path="/destinations/hydra" component={ComingSoon} />
       <Route path="/destinations/slow-travel" component={ComingSoon} />

@@ -4,6 +4,7 @@ import { useUser } from "@/contexts/user-context";
 
 const MENU_ITEMS = [
   { label: "Home", href: "/" },
+  { label: "The Details", href: "/about" },
   { label: "The Current", href: "/current" },
   { label: "Guides", href: "/guides" },
   { label: "Itinerary Overview", href: "/concierge" },
