@@ -48,8 +48,29 @@ export default function TopBar() {
           transition: "background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease",
         }}
       >
-        {/* Left — Hamburger */}
-        <div style={{ justifySelf: "start" }}>
+        {/* Left — Back arrow + Hamburger */}
+        <div style={{ justifySelf: "start", display: "flex", alignItems: "center", gap: 0 }}>
+          {!isLanding && (
+            <button
+              onClick={() => window.history.back()}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 8,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: iconColor,
+                transition: "color 0.4s ease",
+              }}
+              aria-label="Go back"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+          )}
           <button
             onClick={() => setDrawerOpen(true)}
             style={{

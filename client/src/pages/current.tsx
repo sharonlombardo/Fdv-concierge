@@ -1383,7 +1383,7 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
 
   return (
     <ImageContext.Provider value={getImageUrl}>
-    <div className={embedded ? "" : "min-h-screen pb-[80px] bg-[#fafaf9] dark:bg-background"}>
+    <div className={embedded ? "" : "min-h-screen pt-14 pb-[80px] bg-[#fafaf9] dark:bg-background"}>
       <ItemModal
         item={selectedItem}
         open={drawerOpen}

@@ -3,6 +3,19 @@ import { Link } from "wouter";
 export default function About() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#fafaf9" }}>
+      <style>{`
+        .inline-link {
+          text-decoration: underline;
+          text-underline-offset: 3px;
+          text-decoration-thickness: 1px;
+          color: #1a1a1a;
+          cursor: pointer;
+          transition: color 0.2s ease;
+        }
+        .inline-link:hover {
+          color: #c9a84c;
+        }
+      `}</style>
       <div className="max-w-[560px] mx-auto px-6 py-16 md:py-24">
 
         {/* Hero line */}
@@ -53,13 +66,16 @@ export default function About() {
           }}
         >
           <p>
-            Everything you save goes into your Suitcase.
+            Everything you save goes into your{" "}
+            <Link href="/suitcase"><span className="inline-link">Suitcase</span></Link>.
           </p>
           <p>
             Your Suitcase is more than a place to keep things. It's a living portrait of what you're drawn to — and the more it holds, the better we can curate for you. Over time, we learn what resonates and surface new stories, places, and pieces that feel like yours.
           </p>
           <p>
-            You can also use Curate for Me, which creates personalized edits drawn from what you've already saved — trips, looks, restaurants, objects, or combinations you wouldn't have thought to put together yourself.
+            You can also use{" "}
+            <Link href="/my-edits"><span className="inline-link">Curate for Me</span></Link>,
+            {" "}which creates personalized edits drawn from what you've already saved — trips, looks, restaurants, objects, or combinations you wouldn't have thought to put together yourself.
           </p>
         </div>
 
@@ -91,7 +107,19 @@ export default function About() {
           }}
         >
           <p>
-            Start anywhere. Browse The Current for stories. Explore destinations for travel guides and itineraries. Shop for wardrobe and objects. When something catches you, save it. Your Suitcase does the rest.
+            Start anywhere. Browse{" "}
+            <Link href="/current"><span className="inline-link">The Current</span></Link>
+            {" "}for stories. Explore{" "}
+            <Link href="/guides"><span className="inline-link">destinations</span></Link>
+            {" "}for{" "}
+            <Link href="/guides"><span className="inline-link">travel guides</span></Link>
+            {" "}and{" "}
+            <Link href="/concierge"><span className="inline-link">itineraries</span></Link>.
+            {" "}
+            <Link href="/shop"><span className="inline-link">Shop</span></Link>
+            {" "}for wardrobe and objects. When something catches you, save it. Your{" "}
+            <Link href="/suitcase"><span className="inline-link">Suitcase</span></Link>
+            {" "}does the rest.
           </p>
         </div>
 
