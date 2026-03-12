@@ -245,12 +245,10 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
         s.metadata?.bucket === "my-trips"
       );
     case "travel-destinations":
-      // Include travel/destination items AND style/product items (dual visibility)
-      // Style items cluster by destination so users see everything from each trip
+      // ONLY places — hotels, restaurants, museums, landmarks, destinations
+      // Style/product items belong in "Your Style" and "Objects of Desire"
       return saves.filter(s =>
         SAVE_TYPE_TO_CATEGORY[s.itemType] === "travel-destinations" ||
-        SAVE_TYPE_TO_CATEGORY[s.itemType] === "style" ||
-        SAVE_TYPE_TO_CATEGORY[s.itemType] === "items" ||
         s.itemType === "place" ||
         s.itemType === "destination"
       );
@@ -341,7 +339,9 @@ function SavedItemCard({ save, onRemove, onClick, getImageUrl }: {
   const isWanted = save.purchaseStatus === 'want';
 
   // Use object-contain for look/wardrobe items to show full outfit without cropping
-  const isLookItem = save.itemType === 'look' || save.itemId.includes('-look') || save.itemId.includes('-wardrobe');
+  // But NOT for place/destination/scene/editorial items — those always fill the card
+  const isPlaceType = SAVE_TYPE_TO_CATEGORY[save.itemType] === 'travel-destinations' || save.itemType === 'place' || save.itemType === 'destination';
+  const isLookItem = !isPlaceType && (save.itemType === 'look' || save.itemId.includes('-look') || save.itemId.includes('-wardrobe'));
 
   return (
     <div
