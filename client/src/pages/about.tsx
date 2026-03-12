@@ -73,9 +73,70 @@ export default function About() {
             Your Suitcase is more than a place to keep things. It's a living portrait of what you're drawn to — and the more it holds, the better we can curate for you. Over time, we learn what resonates and surface new stories, places, and pieces that feel like yours.
           </p>
           <p>
-            You can also use{" "}
-            <Link href="/my-edits"><span className="inline-link">Curate for Me</span></Link>,
-            {" "}which creates personalized edits drawn from what you've already saved — trips, looks, restaurants, objects, or combinations you wouldn't have thought to put together yourself.
+            From your{" "}
+            <Link href="/suitcase"><span className="inline-link">Suitcase</span></Link>,
+            {" "}you can tap{" "}
+            <Link href="/my-edits"><span className="inline-link">Curate for Me</span></Link>
+            {" "}— which creates personalized edits drawn from what you've already saved — trips, looks, restaurants, objects, or combinations you wouldn't have thought to put together yourself. Your edits live in{" "}
+            <Link href="/my-edits"><span className="inline-link">My Edits</span></Link>.
+          </p>
+        </div>
+
+        {/* Divider */}
+        <div className="flex justify-center my-10 md:my-12">
+          <div style={{ width: 40, height: 1, backgroundColor: "#c9a84c" }} />
+        </div>
+
+        {/* WHAT'S AHEAD */}
+        <p
+          className="text-center mb-6"
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "11px",
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: "#1a1a1a",
+          }}
+        >
+          WHAT'S AHEAD
+        </p>
+        <div
+          className="space-y-5 mb-10 md:mb-12"
+          style={{
+            fontFamily: "'Lora', Georgia, serif",
+            fontSize: "16px",
+            color: "#1a1a1a",
+            lineHeight: 1.7,
+          }}
+        >
+          <p>
+            Right now, you're seeing the beginning. Here's where we're going.
+          </p>
+          <p>
+            FIL DE VIE works in tiers — each one designed to meet you where you are.
+          </p>
+          <p>
+            <em style={{ fontStyle: "italic", fontWeight: 600 }}>Browse freely.</em>{" "}
+            Explore{" "}
+            <Link href="/current"><span className="inline-link">The Current</span></Link>,
+            {" "}save what resonates, and let your{" "}
+            <Link href="/suitcase"><span className="inline-link">Suitcase</span></Link>
+            {" "}grow.{" "}
+            <Link href="/my-edits"><span className="inline-link">Curate for Me</span></Link>
+            {" "}creates personalized edits based on what you've saved. This is yours from the start.
+          </p>
+          <p>
+            <em style={{ fontStyle: "italic", fontWeight: 600 }}>Go deeper with Gold.</em>{" "}
+            Unlock full itineraries — day-by-day guides with outfits, restaurants, and experiences mapped to your trip. Access{" "}
+            <Link href="/my-trips"><span className="inline-link">My Trips</span></Link>
+            {" "}to organize everything around where you're going.
+          </p>
+          <p>
+            <em style={{ fontStyle: "italic", fontWeight: 600 }}>The Concierge.</em>{" "}
+            This is the full experience. Custom packing lists built for your trip. Itineraries tailored to your taste — not a template, yours. A personal concierge who can chat with you, suggest looks, handle bookings, and plan the details so you don't have to. Think of it less like a subscription and more like having someone who understands your taste on call.
+          </p>
+          <p style={{ marginTop: "2rem" }}>
+            You get the things you love — the hotel, the dress, the dinner. The concierge is what finds them, curates them, and brings them to you.
           </p>
         </div>
 
