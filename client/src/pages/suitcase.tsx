@@ -239,61 +239,72 @@ const NON_PRODUCT_TYPES = new Set([
   'image', 'inspire', 'feature', 'article', 'edit', 'activity'
 ]);
 
-// Hardcoded overrides for known problem items (title-based, case-insensitive)
-const CATEGORY_OVERRIDES: Record<string, string> = {
-  'travel mist': 'BEAUTY',
-  'pool essentials': 'BEAUTY',
-  'plumscreen': 'BEAUTY',
-  'sunscreen': 'BEAUTY',
-  'parfum': 'BEAUTY',
-  'hildegard oil': 'BEAUTY',
-  'saint jane luxury body serum': 'BEAUTY',
-  'le prunier': 'BEAUTY',
-};
+// Title keyword lists for classifyItem (used in classification + backfill)
+const FOOTWEAR_KEYWORDS = ['sandal', 'thong', 'mule', 'slipper', 'boot', 'shoe', 'pump', 'loafer', 'sneaker', 'flat', 'heel', 'espadrille', 'clog'];
+const BAG_KEYWORDS = ['bag', 'tote', 'clutch', 'wristlette', 'basket', 'pouch', 'satchel', 'handbag', 'purse'];
+const JEWELRY_KEYWORDS = ['earring', 'necklace', 'bracelet', 'ring', 'hoops', 'pendant', 'chain', 'cuff', 'bangle'];
+const BEAUTY_KEYWORDS = ['sunscreen', 'serum', 'oil', 'cream', 'moistur', 'lipstick', 'parfum', 'perfume', 'fragrance', 'travel mist', 'pool essential', 'plumscreen', 'body oil', 'sun ritual', 'skincare'];
+const PLACE_KEYWORDS = ['transfer to', 'mountains', 'afternoon swim', 'morning walk', 'sunset', 'sunrise', 'rooftop', 'poolside', 'garden', 'medina walk', 'souk', 'marketplace'];
 
 // Master classification function — SINGLE source of truth for tab routing
 // Returns: 'style-clothing' | 'style-accessory' | 'object' | 'other'
 function classifyItem(save: SavedItem): 'style-clothing' | 'style-accessory' | 'object' | 'other' {
-  // 1. Non-product types → always 'other'
-  if (NON_PRODUCT_TYPES.has(save.itemType)) return 'other';
-
-  // 2. Check hardcoded overrides by title (catches known misclassified items)
   const titleLower = (save.title || save.metadata?.title || '').toLowerCase().trim();
-  for (const [key, overrideCat] of Object.entries(CATEGORY_OVERRIDES)) {
-    if (titleLower.includes(key)) {
-      if (overrideCat === 'BEAUTY') return 'object';
-      if (overrideCat === 'LOOK') return 'style-clothing';
-      if (overrideCat.startsWith('ACCESSORY') || overrideCat === 'FOOTWEAR') return 'style-accessory';
-    }
-  }
+  const itemType = (save.itemType || '').toLowerCase();
 
-  // 3. Editorial/non-product filter: no brand + long title likely = editorial image
-  const brand = save.brand || save.metadata?.brand || '';
-  if (!brand && titleLower.length > 60) return 'other';
+  // ===== PHASE 1: Title-based keyword matching (runs FIRST, catches items with missing categories) =====
 
-  // 4. Genome category (saved on record) — AUTHORITATIVE
+  // Footwear → accessory
+  if (FOOTWEAR_KEYWORDS.some(kw => titleLower.includes(kw))) return 'style-accessory';
+  // Bags → accessory
+  if (BAG_KEYWORDS.some(kw => titleLower.includes(kw))) return 'style-accessory';
+  // Jewelry → accessory
+  if (JEWELRY_KEYWORDS.some(kw => titleLower.includes(kw))) return 'style-accessory';
+  // Sunglasses/eyewear → accessory
+  if (titleLower.includes('sunglass') || titleLower.includes('eyewear') || titleLower.includes('cat eye') || titleLower.includes('aviator')) return 'style-accessory';
+  // Watch → accessory
+  if (titleLower.includes('watch') || titleLower.includes('timepiece')) return 'style-accessory';
+  // Beauty → object
+  if (BEAUTY_KEYWORDS.some(kw => titleLower.includes(kw))) return 'object';
+  // Knit wrap/shawl → clothing
+  if (titleLower.includes('knit wrap') || titleLower.includes('shawl') || titleLower.includes('poncho')) return 'style-clothing';
+
+  // ===== PHASE 2: Database category (if populated) =====
   let cat = (save.category || '').toUpperCase();
 
-  // 5. If no saved category, try live genome lookup
+  // If no saved category, try live genome lookup
   if (!cat) {
     const key = save.metadata?.genomeKey || save.metadata?.assetKey || save.itemId;
     const product = getProductByKey(key);
     cat = (product?.category || '').toUpperCase();
   }
 
-  // 6. Route by category
   if (cat) {
     if (cat === 'BEAUTY') return 'object';
     if (cat === 'LOOK') return 'style-clothing';
-    if (cat.startsWith('ACCESSORY') || cat === 'FOOTWEAR') return 'style-accessory';
-    // Unknown genome category → 'other'
-    return 'other';
+    if (cat === 'FOOTWEAR') return 'style-accessory';
+    if (cat.startsWith('ACCESSORY')) return 'style-accessory';
+    return 'style-clothing';
   }
 
-  // 7. Last resort — itemType mapping (only for product-like types)
-  const mapped = SAVE_TYPE_TO_CATEGORY[save.itemType] || '';
-  if (mapped === 'style') return 'style-clothing'; // default style items to clothing
-  if (mapped === 'items') return 'object';
+  // ===== PHASE 3: Filter out non-product editorial items =====
+
+  // Non-product itemTypes
+  if (NON_PRODUCT_TYPES.has(itemType)) return 'other';
+
+  // Detect landscape/place images saved with itemType "style" or "look"
+  // IMPORTANT: Styled outfit photos ("Dinner at the Kasbah - The Look", "Sharp Silhouette") stay
+  const isPlaceTitle = PLACE_KEYWORDS.some(kw => titleLower.includes(kw));
+  const brand = save.brand || save.metadata?.brand || '';
+  if (isPlaceTitle && !brand) return 'other';
+
+  // No brand + long title likely = editorial image, not product
+  if (!brand && titleLower.length > 60) return 'other';
+
+  // ===== PHASE 4: Fallback by itemType =====
+  if (['style', 'look', 'wardrobe'].includes(itemType)) return 'style-clothing';
+  if (['accessory', 'footwear'].includes(itemType)) return 'style-accessory';
+  if (itemType === 'object') return 'object';
 
   return 'other';
 }
@@ -488,9 +499,11 @@ function SavedItemCard({ save, onRemove, onClick, getImageUrl }: {
           <Badge variant="outline" className="text-xs shrink-0">
             {getTypeLabel(save.itemType)}
           </Badge>
-          <span className="text-[10px] font-medium tracking-[0.1em] uppercase text-muted-foreground truncate">
-            {getDestinationLabel(save)}
-          </span>
+          {getDestinationLabel(save) !== 'Other' && (
+            <span className="text-[10px] font-medium tracking-[0.1em] uppercase text-muted-foreground truncate">
+              {getDestinationLabel(save)}
+            </span>
+          )}
         </div>
         <h3 className="font-medium text-sm leading-tight line-clamp-2">
           {save.title || save.metadata?.title || save.itemId}
@@ -662,71 +675,66 @@ export default function SuitcasePage() {
     dedup();
   }, [saves]);
 
-  // Backfill category + storyTag for existing saves (v4 — with CATEGORY_OVERRIDES)
+  // Backfill category + storyTag for existing saves (v5 — classifyItem-based inference)
   useEffect(() => {
     if (saves.length === 0) return;
-    if (sessionStorage.getItem('categories_backfilled_v4')) return;
+    if (sessionStorage.getItem('categories_backfilled_v5')) return;
+
+    // Infer a specific genome category from classifyItem + title keywords
+    function inferCategory(save: SavedItem): string | undefined {
+      const classification = classifyItem(save);
+      const tLower = (save.title || save.metadata?.title || '').toLowerCase().trim();
+
+      if (classification === 'style-accessory') {
+        if (FOOTWEAR_KEYWORDS.some(kw => tLower.includes(kw))) return 'FOOTWEAR';
+        if (BAG_KEYWORDS.some(kw => tLower.includes(kw))) return 'ACCESSORY: BAG';
+        if (JEWELRY_KEYWORDS.some(kw => tLower.includes(kw))) return 'ACCESSORY: JEWELRY';
+        if (tLower.includes('sunglass') || tLower.includes('cat eye') || tLower.includes('eyewear')) return 'ACCESSORY: SUNGLASSES';
+        if (tLower.includes('watch') || tLower.includes('timepiece')) return 'ACCESSORY';
+        return 'ACCESSORY';
+      }
+      if (classification === 'style-clothing') return 'LOOK';
+      if (classification === 'object') return 'BEAUTY';
+      return undefined;
+    }
 
     async function backfill() {
       let updated = 0;
       for (const save of saves) {
-        // Skip non-product types for category backfill
-        const skipCategory = NON_PRODUCT_TYPES.has(save.itemType);
-
-        // Check if category needs fixing — either missing OR wrong (override takes precedence)
-        let needsCategory = !skipCategory && !save.category;
-        let overrideCategory: string | undefined;
-
-        // Check CATEGORY_OVERRIDES even if category already set (fixes known wrong categories)
-        if (!skipCategory) {
-          const tLower = (save.title || save.metadata?.title || '').toLowerCase().trim();
-          for (const [key, overrideCat] of Object.entries(CATEGORY_OVERRIDES)) {
-            if (tLower.includes(key)) {
-              if ((save.category || '').toUpperCase() !== overrideCat) {
-                overrideCategory = overrideCat;
-                needsCategory = true;
-              }
-              break;
-            }
-          }
-        }
-
-        // Check if storyTag needs fixing (shows as "Other" destination)
-        const currentDest = getDestinationLabel(save);
-        const needsStoryTag = !save.storyTag && currentDest !== 'Other';
-
-        if (!needsCategory && !needsStoryTag) continue;
-
         const patch: Record<string, string> = {};
 
-        if (needsCategory) {
-          // Priority: override → genome lookup
-          const category = overrideCategory || findCategoryInGenome(save);
-          if (category) patch.category = category;
+        // Category backfill: infer from classifyItem if missing or wrong
+        const inferred = inferCategory(save);
+        if (inferred && (save.category || '').toUpperCase() !== inferred) {
+          patch.category = inferred;
         }
 
-        if (needsStoryTag && currentDest !== 'Other') {
-          const tagMap: Record<string, string> = {
-            'Morocco': 'morocco', 'Hydra': 'hydra', 'Slow Travel': 'slow-travel',
-            'The Retreat': 'retreat', 'New York': 'new-york', "Today's Edit": 'opening'
-          };
-          if (tagMap[currentDest]) patch.storyTag = tagMap[currentDest];
-        }
-
-        if (Object.keys(patch).length > 0) {
-          try {
-            await fetch(`/api/saves/${encodeURIComponent(save.itemId)}`, {
-              method: 'PATCH',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(patch)
-            });
-            updated++;
-          } catch (e) {
-            // Silently skip
+        // StoryTag backfill: fix missing storyTag for destination items
+        if (!save.storyTag) {
+          const currentDest = getDestinationLabel(save);
+          if (currentDest !== 'Other') {
+            const tagMap: Record<string, string> = {
+              'Morocco': 'morocco', 'Hydra': 'hydra', 'Slow Travel': 'slow-travel',
+              'The Retreat': 'retreat', 'New York': 'new-york', "Today's Edit": 'opening'
+            };
+            if (tagMap[currentDest]) patch.storyTag = tagMap[currentDest];
           }
         }
+
+        if (Object.keys(patch).length === 0) continue;
+
+        try {
+          await fetch(`/api/saves/${encodeURIComponent(save.itemId)}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(patch)
+          });
+          updated++;
+        } catch (e) {
+          // Silently skip
+        }
       }
-      sessionStorage.setItem('categories_backfilled_v4', 'true');
+      sessionStorage.setItem('categories_backfilled_v5', 'true');
       if (updated > 0) {
         queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
       }
