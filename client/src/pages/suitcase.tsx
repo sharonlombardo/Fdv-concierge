@@ -239,73 +239,81 @@ const NON_PRODUCT_TYPES = new Set([
   'image', 'inspire', 'feature', 'article', 'edit', 'activity'
 ]);
 
-// Category-aware filter helpers — genome category is AUTHORITATIVE over itemType
-function isBeautyProduct(save: SavedItem): boolean {
-  const category = (save.category || '').toUpperCase();
-  if (category === 'BEAUTY') return true;
-  // Also try genome lookup if no category set
-  if (!category) {
+// Hardcoded overrides for known problem items (title-based, case-insensitive)
+const CATEGORY_OVERRIDES: Record<string, string> = {
+  'travel mist': 'BEAUTY',
+  'pool essentials': 'BEAUTY',
+  'plumscreen': 'BEAUTY',
+  'sunscreen': 'BEAUTY',
+  'parfum': 'BEAUTY',
+  'hildegard oil': 'BEAUTY',
+  'saint jane luxury body serum': 'BEAUTY',
+  'le prunier': 'BEAUTY',
+};
+
+// Master classification function — SINGLE source of truth for tab routing
+// Returns: 'style-clothing' | 'style-accessory' | 'object' | 'other'
+function classifyItem(save: SavedItem): 'style-clothing' | 'style-accessory' | 'object' | 'other' {
+  // 1. Non-product types → always 'other'
+  if (NON_PRODUCT_TYPES.has(save.itemType)) return 'other';
+
+  // 2. Check hardcoded overrides by title (catches known misclassified items)
+  const titleLower = (save.title || save.metadata?.title || '').toLowerCase().trim();
+  for (const [key, overrideCat] of Object.entries(CATEGORY_OVERRIDES)) {
+    if (titleLower.includes(key)) {
+      if (overrideCat === 'BEAUTY') return 'object';
+      if (overrideCat === 'LOOK') return 'style-clothing';
+      if (overrideCat.startsWith('ACCESSORY') || overrideCat === 'FOOTWEAR') return 'style-accessory';
+    }
+  }
+
+  // 3. Editorial/non-product filter: no brand + long title likely = editorial image
+  const brand = save.brand || save.metadata?.brand || '';
+  if (!brand && titleLower.length > 60) return 'other';
+
+  // 4. Genome category (saved on record) — AUTHORITATIVE
+  let cat = (save.category || '').toUpperCase();
+
+  // 5. If no saved category, try live genome lookup
+  if (!cat) {
     const key = save.metadata?.genomeKey || save.metadata?.assetKey || save.itemId;
     const product = getProductByKey(key);
-    if (product?.category?.toUpperCase() === 'BEAUTY') return true;
+    cat = (product?.category || '').toUpperCase();
   }
-  return false;
+
+  // 6. Route by category
+  if (cat) {
+    if (cat === 'BEAUTY') return 'object';
+    if (cat === 'LOOK') return 'style-clothing';
+    if (cat.startsWith('ACCESSORY') || cat === 'FOOTWEAR') return 'style-accessory';
+    // Unknown genome category → 'other'
+    return 'other';
+  }
+
+  // 7. Last resort — itemType mapping (only for product-like types)
+  const mapped = SAVE_TYPE_TO_CATEGORY[save.itemType] || '';
+  if (mapped === 'style') return 'style-clothing'; // default style items to clothing
+  if (mapped === 'items') return 'object';
+
+  return 'other';
 }
 
+// Derived helpers — guaranteed mutually exclusive via classifyItem()
 function isStyleItem(save: SavedItem): boolean {
-  // Non-product types never go to Your Style
-  if (NON_PRODUCT_TYPES.has(save.itemType)) return false;
-
-  const category = (save.category || '').toUpperCase();
-
-  // If genome category is set, use it as AUTHORITATIVE source
-  if (category) {
-    if (category === 'BEAUTY') return false;
-    if (category === 'LOOK' || category.startsWith('ACCESSORY') || category === 'FOOTWEAR') return true;
-    return false;
-  }
-
-  // No genome category — try live genome lookup
-  const key = save.metadata?.genomeKey || save.metadata?.assetKey || save.itemId;
-  const product = getProductByKey(key);
-  if (product?.category) {
-    const pCat = product.category.toUpperCase();
-    if (pCat === 'BEAUTY') return false;
-    if (pCat === 'LOOK' || pCat.startsWith('ACCESSORY') || pCat === 'FOOTWEAR') return true;
-    return false;
-  }
-
-  // Last resort — fall back to itemType mapping (only for product-like types)
-  const mapped = SAVE_TYPE_TO_CATEGORY[save.itemType] || '';
-  return mapped === 'style';
+  const c = classifyItem(save);
+  return c === 'style-clothing' || c === 'style-accessory';
 }
 
 function isObjectItem(save: SavedItem): boolean {
-  // Non-product types never go to Objects of Desire
-  if (NON_PRODUCT_TYPES.has(save.itemType)) return false;
+  return classifyItem(save) === 'object';
+}
 
-  const category = (save.category || '').toUpperCase();
+function isClothingItem(save: SavedItem): boolean {
+  return classifyItem(save) === 'style-clothing';
+}
 
-  // If genome category is set, use it as AUTHORITATIVE source
-  if (category) {
-    if (category === 'BEAUTY') return true;
-    if (category === 'LOOK' || category.startsWith('ACCESSORY') || category === 'FOOTWEAR') return false;
-    return false;
-  }
-
-  // No genome category — try live genome lookup
-  const key = save.metadata?.genomeKey || save.metadata?.assetKey || save.itemId;
-  const product = getProductByKey(key);
-  if (product?.category) {
-    const pCat = product.category.toUpperCase();
-    if (pCat === 'BEAUTY') return true;
-    if (pCat === 'LOOK' || pCat.startsWith('ACCESSORY') || pCat === 'FOOTWEAR') return false;
-    return false;
-  }
-
-  // Last resort — fall back to itemType mapping
-  const mapped = SAVE_TYPE_TO_CATEGORY[save.itemType] || '';
-  return mapped === 'items';
+function isAccessoryItem(save: SavedItem): boolean {
+  return classifyItem(save) === 'style-accessory';
 }
 
 function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
@@ -637,28 +645,15 @@ export default function SuitcasePage() {
     return undefined;
   }
 
-  // Dedup: remove duplicate saves (one-time, server-side)
+  // Dedup: remove duplicate saves (server-side, title+brand grouping)
   useEffect(() => {
     if (saves.length === 0) return;
-    if (sessionStorage.getItem('saves_deduplicated_v1')) return;
-
-    // Check if there are actual dupes
-    const seen = new Set<string>();
-    let hasDupes = false;
-    for (const s of saves) {
-      if (seen.has(s.itemId)) { hasDupes = true; break; }
-      seen.add(s.itemId);
-    }
-
-    if (!hasDupes) {
-      sessionStorage.setItem('saves_deduplicated_v1', 'true');
-      return;
-    }
+    if (sessionStorage.getItem('saves_deduplicated_v2')) return;
 
     async function dedup() {
       try {
         await fetch('/api/saves/dedup', { method: 'POST' });
-        sessionStorage.setItem('saves_deduplicated_v1', 'true');
+        sessionStorage.setItem('saves_deduplicated_v2', 'true');
         queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
       } catch (e) {
         // Silently skip
@@ -667,17 +662,34 @@ export default function SuitcasePage() {
     dedup();
   }, [saves]);
 
-  // Backfill category + storyTag for existing saves
+  // Backfill category + storyTag for existing saves (v4 — with CATEGORY_OVERRIDES)
   useEffect(() => {
     if (saves.length === 0) return;
-    if (sessionStorage.getItem('categories_backfilled_v3')) return;
+    if (sessionStorage.getItem('categories_backfilled_v4')) return;
 
     async function backfill() {
       let updated = 0;
       for (const save of saves) {
         // Skip non-product types for category backfill
         const skipCategory = NON_PRODUCT_TYPES.has(save.itemType);
-        const needsCategory = !skipCategory && !save.category;
+
+        // Check if category needs fixing — either missing OR wrong (override takes precedence)
+        let needsCategory = !skipCategory && !save.category;
+        let overrideCategory: string | undefined;
+
+        // Check CATEGORY_OVERRIDES even if category already set (fixes known wrong categories)
+        if (!skipCategory) {
+          const tLower = (save.title || save.metadata?.title || '').toLowerCase().trim();
+          for (const [key, overrideCat] of Object.entries(CATEGORY_OVERRIDES)) {
+            if (tLower.includes(key)) {
+              if ((save.category || '').toUpperCase() !== overrideCat) {
+                overrideCategory = overrideCat;
+                needsCategory = true;
+              }
+              break;
+            }
+          }
+        }
 
         // Check if storyTag needs fixing (shows as "Other" destination)
         const currentDest = getDestinationLabel(save);
@@ -688,12 +700,12 @@ export default function SuitcasePage() {
         const patch: Record<string, string> = {};
 
         if (needsCategory) {
-          const category = findCategoryInGenome(save);
+          // Priority: override → genome lookup
+          const category = overrideCategory || findCategoryInGenome(save);
           if (category) patch.category = category;
         }
 
         if (needsStoryTag && currentDest !== 'Other') {
-          // Derive storyTag from destination label
           const tagMap: Record<string, string> = {
             'Morocco': 'morocco', 'Hydra': 'hydra', 'Slow Travel': 'slow-travel',
             'The Retreat': 'retreat', 'New York': 'new-york', "Today's Edit": 'opening'
@@ -714,7 +726,7 @@ export default function SuitcasePage() {
           }
         }
       }
-      sessionStorage.setItem('categories_backfilled_v3', 'true');
+      sessionStorage.setItem('categories_backfilled_v4', 'true');
       if (updated > 0) {
         queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
       }
@@ -796,24 +808,11 @@ export default function SuitcasePage() {
 
   const filteredSaves = filterSaves(saves, activeTab);
 
-  // Apply sub-filter for Your Style tab
-  // Only items WITH a genome category show under CLOTHING or ACCESSORIES pills
-  // Uncategorized items only appear under ALL pill
+  // Apply sub-filter for Your Style tab — uses classifyItem() for consistency
   const displayedSaves = activeTab === 'style' && styleSubFilter !== 'all'
     ? filteredSaves.filter(s => {
-        // Try saved category first, then live genome lookup
-        let cat = (s.category || '').toUpperCase();
-        if (!cat) {
-          const key = s.metadata?.genomeKey || s.metadata?.assetKey || s.itemId;
-          const product = getProductByKey(key);
-          cat = (product?.category || '').toUpperCase();
-        }
-        if (!cat) return false; // no category → only shows under ALL
-        if (styleSubFilter === 'clothing') {
-          return cat === 'LOOK';
-        }
-        // accessories sub-filter: includes ACCESSORY*, FOOTWEAR
-        return cat.startsWith('ACCESSORY') || cat === 'FOOTWEAR';
+        if (styleSubFilter === 'clothing') return isClothingItem(s);
+        return isAccessoryItem(s);
       })
     : filteredSaves;
 
