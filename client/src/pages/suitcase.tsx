@@ -665,12 +665,12 @@ export default function SuitcasePage() {
   // Dedup: remove duplicate saves (server-side, case-insensitive title+brand)
   useEffect(() => {
     if (saves.length === 0) return;
-    if (sessionStorage.getItem('saves_deduplicated_v3')) return;
+    if (sessionStorage.getItem('saves_deduplicated_v4')) return;
 
     async function dedup() {
       try {
         await fetch('/api/saves/dedup', { method: 'POST' });
-        sessionStorage.setItem('saves_deduplicated_v3', 'true');
+        sessionStorage.setItem('saves_deduplicated_v4', 'true');
         queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
       } catch (e) {
         // Silently skip
@@ -820,14 +820,39 @@ export default function SuitcasePage() {
 
   const filteredSaves = filterSaves(saves, activeTab);
 
-  // Client-side dedup safety net — even if DB has dupes, UI won't show them
+  // Client-side dedup safety net — fuzzy matching catches title variations
+  // e.g. "Wristlette" vs "Wristlette Bag", "Heel Thong Mules in Velvet" vs "Velvet Thongs"
   function deduplicateSaves(items: SavedItem[]): SavedItem[] {
+    const normalizeStr = (s: string) => (s || '')
+      .toLowerCase()
+      .trim()
+      .replace(/[—–\-:,\.]/g, ' ')   // Replace dashes, colons, commas, dots with space
+      .replace(/\s+/g, ' ')           // Collapse multiple spaces
+      .trim();
+
     const seen = new Set<string>();
     return items.filter(s => {
-      const key = `${(s.title || '').toLowerCase().trim()}|${(s.brand || s.metadata?.brand || '').toLowerCase().trim()}`;
-      if (key === '|') return true; // no title+brand = keep (can't dedup)
-      if (seen.has(key)) return false;
-      seen.add(key);
+      const title = normalizeStr(s.title);
+      const brand = normalizeStr(s.brand || s.metadata?.brand || '');
+      if (!title && !brand) return true; // no title+brand = keep (can't dedup)
+
+      // Core title: strip common suffixes so "Wristlette Bag" matches "Wristlette"
+      const coreTitle = title
+        .replace(/\b(bag|the|a|an|in|of)\b/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      // Try exact normalized match first
+      const exactKey = `${title}|${brand}`;
+      if (seen.has(exactKey)) return false;
+
+      // Try core title match (catches "Wristlette Bag" vs "Wristlette")
+      const coreKey = `${coreTitle}|${brand}`;
+      if (seen.has(coreKey)) return false;
+
+      // Add both keys
+      seen.add(exactKey);
+      seen.add(coreKey);
       return true;
     });
   }

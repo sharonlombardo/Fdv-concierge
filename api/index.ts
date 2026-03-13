@@ -438,10 +438,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: 'itemType and itemId are required' });
       }
 
-      // Check if already exists
+      // Check if already exists — by exact itemId OR by normalized title+brand
       const existing = await pool.query('SELECT id FROM saves WHERE item_id = $1 LIMIT 1', [itemId]);
       if (existing.rows.length > 0) {
         return res.status(400).json({ error: 'Already pinned' });
+      }
+      // Also check by normalized title+brand to prevent dupes from different surfaces
+      if (title) {
+        const brandNorm = (brand || '').toLowerCase().trim();
+        const titleNorm = (title || '').toLowerCase().trim();
+        // Fetch all saves with same brand, compare titles in app code
+        const sameBrand = await pool.query(
+          `SELECT id, title FROM saves WHERE LOWER(TRIM(COALESCE(brand,''))) = $1`,
+          [brandNorm]
+        );
+        const normalize = (s: string) => s.toLowerCase().trim()
+          .replace(/[—–\-:,\.]/g, ' ')
+          .replace(/\b(bag|the|a|an|in|of)\b/g, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+        const newCore = normalize(titleNorm);
+        const isDupe = sameBrand.rows.some((r: any) => normalize(r.title || '') === newCore);
+        if (isDupe) {
+          return res.status(400).json({ error: 'Already pinned' });
+        }
       }
 
       const result = await pool.query(
@@ -496,7 +516,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ success: true });
     }
 
-    // POST /api/saves/dedup — remove duplicate saves (aggressive, case-insensitive)
+    // POST /api/saves/dedup — remove duplicate saves (3-phase: exact, normalized, fuzzy)
     if (path === '/api/saves/dedup' && method === 'POST') {
       // Phase 1: Dedup by exact itemId
       const r1 = await pool.query(
@@ -509,7 +529,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           GROUP BY LOWER(TRIM(COALESCE(NULLIF(title, ''), item_id))), LOWER(TRIM(COALESCE(brand, '')))
         ) RETURNING id`
       );
-      return res.status(200).json({ removed: (r1.rowCount || 0) + (r2.rowCount || 0) });
+      // Phase 3: Fuzzy dedup — catches "Wristlette" vs "Wristlette Bag", etc.
+      const allSaves = await pool.query('SELECT id, title, brand FROM saves ORDER BY id');
+      const rows = allSaves.rows;
+      const toDelete: number[] = [];
+      const seenCoreKeys = new Map<string, number>();
+      for (const row of rows) {
+        const brand = (row.brand || '').toLowerCase().trim();
+        const title = (row.title || '').toLowerCase().trim()
+          .replace(/[—–\-:,\.]/g, ' ')
+          .replace(/\b(bag|the|a|an|in|of)\b/g, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+        const coreKey = `${title}|${brand}`;
+        if (seenCoreKeys.has(coreKey)) {
+          toDelete.push(row.id);
+        } else {
+          seenCoreKeys.set(coreKey, row.id);
+        }
+      }
+      let fuzzyRemoved = 0;
+      if (toDelete.length > 0) {
+        const r3 = await pool.query('DELETE FROM saves WHERE id = ANY($1) RETURNING id', [toDelete]);
+        fuzzyRemoved = r3.rowCount || 0;
+      }
+      return res.status(200).json({ removed: (r1.rowCount || 0) + (r2.rowCount || 0) + fuzzyRemoved });
     }
 
     // PATCH /api/saves/:itemId — update a save
