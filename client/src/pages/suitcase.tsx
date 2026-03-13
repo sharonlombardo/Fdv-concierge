@@ -666,12 +666,12 @@ export default function SuitcasePage() {
   // Dedup: remove duplicate saves (server-side, case-insensitive title+brand)
   useEffect(() => {
     if (saves.length === 0) return;
-    if (sessionStorage.getItem('saves_deduplicated_v4')) return;
+    if (sessionStorage.getItem('saves_deduplicated_v5')) return;
 
     async function dedup() {
       try {
         await fetch('/api/saves/dedup', { method: 'POST' });
-        sessionStorage.setItem('saves_deduplicated_v4', 'true');
+        sessionStorage.setItem('saves_deduplicated_v5', 'true');
         queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
       } catch (e) {
         // Silently skip
@@ -821,46 +821,49 @@ export default function SuitcasePage() {
 
   const filteredSaves = filterSaves(saves, activeTab);
 
-  // Client-side dedup safety net — fuzzy matching catches title variations
-  // e.g. "Wristlette" vs "Wristlette Bag", "FIL DE VIE — X" vs "FIL DE VIE – X"
+  // Client-side dedup — multi-key: title+brand, core title+brand, AND image URL
+  // Image URL is the most reliable key — same product image = same product regardless of title
   function deduplicateSaves(items: SavedItem[]): SavedItem[] {
     const normalizeStr = (s: string) => (s || '')
-      .toLowerCase()
-      .trim()
-      .replace(/[éèê]/g, 'e')        // Normalize accented chars
-      .replace(/[àâä]/g, 'a')
-      .replace(/[ïîì]/g, 'i')
-      .replace(/[ôöò]/g, 'o')
-      .replace(/[üûù]/g, 'u')
-      .replace(/[ç]/g, 'c')
-      .replace(/[—–\-:,\.]/g, ' ')   // ALL dash types + punctuation → space
-      .replace(/[^\w\s]/g, '')        // Remove all remaining special chars
-      .replace(/\s+/g, ' ')           // Collapse multiple spaces
-      .trim();
+      .toLowerCase().trim()
+      .replace(/[éèê]/g, 'e').replace(/[àâä]/g, 'a')
+      .replace(/[ïîì]/g, 'i').replace(/[ôöò]/g, 'o')
+      .replace(/[üûù]/g, 'u').replace(/[ç]/g, 'c')
+      .replace(/[—–\-:,\.]/g, ' ').replace(/[^\w\s]/g, '')
+      .replace(/\s+/g, ' ').trim();
 
-    const seen = new Set<string>();
+    const getCoreTitle = (title: string) => normalizeStr(title)
+      .replace(/\b(bag|bags|the|a|an|in|of|mules|thongs|sandals|slippers|earrings|hoops|necklace)\b/g, '')
+      .replace(/\s+/g, ' ').trim();
+
+    const seenTitleBrand = new Set<string>();
+    const seenCoreTitleBrand = new Set<string>();
+    const seenImageUrl = new Set<string>();
+
     return items.filter(s => {
-      const title = normalizeStr(s.title);
-      const brand = normalizeStr(s.brand || s.metadata?.brand || '');
-      if (!title && !brand) return true; // no title+brand = keep (can't dedup)
+      const normTitle = normalizeStr(s.title);
+      const normBrand = normalizeStr(s.brand || s.metadata?.brand || '');
+      const coreTitle = getCoreTitle(s.title);
+      const imageUrl = (s.assetUrl || s.metadata?.imageUrl || '').trim();
 
-      // Core title: strip common suffixes so "Wristlette Bag" matches "Wristlette"
-      const coreTitle = title
-        .replace(/\b(bag|the|a|an|in|of)\b/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
+      // Nothing to dedup on
+      if (!normTitle && !normBrand && !imageUrl) return true;
 
-      // Try exact normalized match first
-      const exactKey = `${title}|${brand}`;
-      if (seen.has(exactKey)) return false;
+      // Key 1: exact normalized title+brand
+      const exactKey = `${normTitle}|${normBrand}`;
+      // Key 2: core title (product-type words stripped) + brand
+      const coreKey = `${coreTitle}|${normBrand}`;
 
-      // Try core title match (catches "Wristlette Bag" vs "Wristlette")
-      const coreKey = `${coreTitle}|${brand}`;
-      if (seen.has(coreKey)) return false;
+      // Check ANY key match → duplicate
+      const isDupe = seenTitleBrand.has(exactKey) ||
+                     seenCoreTitleBrand.has(coreKey) ||
+                     (imageUrl && seenImageUrl.has(imageUrl));
+      if (isDupe) return false;
 
-      // Add both keys
-      seen.add(exactKey);
-      seen.add(coreKey);
+      // Record all keys
+      seenTitleBrand.add(exactKey);
+      seenCoreTitleBrand.add(coreKey);
+      if (imageUrl) seenImageUrl.add(imageUrl);
       return true;
     });
   }

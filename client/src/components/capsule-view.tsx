@@ -373,6 +373,7 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
                       imageUrl: getItemImage(item),
                       editTag: "capsule",
                       storyTag: capsule.id,
+                      assetKey: item.database_match_key,
                     }}
                     sourceContext="capsule"
                     size="sm"

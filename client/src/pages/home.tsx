@@ -576,7 +576,9 @@ function ItemDetailDrawer({
                                   imageUrl: getImageUrl(extraKey, extra?.image || ''),
                                   shopLink: extra?.shopLink,
                                   editTag: 'morocco-edit',
-                                  storyTag: 'morocco'
+                                  storyTag: 'morocco',
+                                  assetKey: extraGenomeKey || extraKey,
+                                  genomeKey: extraGenomeKey,
                                 }}
                                 sourceContext="morocco_itinerary"
                                 aestheticTags={['accessory', placeholderName.toLowerCase()]}

@@ -438,10 +438,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: 'itemType and itemId are required' });
       }
 
-      // Check if already exists — by exact itemId OR by normalized title+brand
+      // Check if already exists — by exact itemId, image URL, or normalized title+brand
       const existing = await pool.query('SELECT id FROM saves WHERE item_id = $1 LIMIT 1', [itemId]);
       if (existing.rows.length > 0) {
         return res.status(400).json({ error: 'Already pinned' });
+      }
+      // Check by image URL — same image = same product
+      if (assetUrl) {
+        const imageCheck = await pool.query(
+          'SELECT id FROM saves WHERE asset_url = $1 LIMIT 1',
+          [assetUrl]
+        );
+        if (imageCheck.rows.length > 0) {
+          return res.status(400).json({ error: 'Already pinned' });
+        }
       }
       // Also check by normalized title+brand to prevent dupes from different surfaces
       if (title) {
@@ -560,7 +570,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const r3 = await pool.query('DELETE FROM saves WHERE id = ANY($1) RETURNING id', [toDelete]);
         fuzzyRemoved = r3.rowCount || 0;
       }
-      return res.status(200).json({ removed: (r1.rowCount || 0) + (r2.rowCount || 0) + fuzzyRemoved });
+      // Phase 4: Image URL dedup — same image = same product regardless of title
+      const r4 = await pool.query(`
+        DELETE FROM saves
+        WHERE id NOT IN (
+          SELECT MIN(id) FROM saves
+          WHERE asset_url IS NOT NULL AND asset_url != ''
+          GROUP BY asset_url
+        )
+        AND asset_url IS NOT NULL AND asset_url != ''
+        RETURNING id
+      `);
+      const imageRemoved = r4.rowCount || 0;
+      return res.status(200).json({ removed: (r1.rowCount || 0) + (r2.rowCount || 0) + fuzzyRemoved + imageRemoved });
     }
 
     // PATCH /api/saves/:itemId — update a save

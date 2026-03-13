@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/contexts/user-context";
 import { triggerSaveEvent } from "./email-capture-manager";
+import { getProductByKey } from "@/lib/brand-genome";
 
 function PinIcon({ size = 18, fill = "none", className }: { size?: number; fill?: string; className?: string }) {
   return (
@@ -90,7 +91,12 @@ export function PinButton({
             editTag: itemData.editTag,
             title: itemData.title,
             assetUrl: itemData.assetUrl || itemData.imageUrl,
-            userEmail: email || undefined
+            userEmail: email || undefined,
+            category: (() => {
+              const key = itemData.assetKey || itemData.genomeKey || itemId;
+              const product = getProductByKey(key);
+              return product?.category || undefined;
+            })()
           })
         });
         // 400 = already pinned — treat as success (idempotent)

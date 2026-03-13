@@ -185,6 +185,11 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
             price: price || undefined,
             shopUrl: shopUrl || undefined,
             bookUrl: bookUrl || undefined,
+            category: (() => {
+              const key = item!.genomeKey || item!.assetKey || item!.id;
+              const product = getProductByKey(key);
+              return product?.category || item!.category || undefined;
+            })(),
           }),
         });
         // 400 = already saved — treat as success

@@ -383,7 +383,8 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                                     storyTag: "morocco",
                                     editionTag: "morocco-2026",
                                     editTag: "morocco-wardrobe",
-                                    assetKey: extra.imageKey,
+                                    assetKey: extraGenomeKey || extra.imageKey,
+                                    genomeKey: extraGenomeKey,
                                     assetUrl: extraImage
                                   }}
                                   sourceContext="morocco_editorial"

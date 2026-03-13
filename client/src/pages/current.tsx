@@ -1194,6 +1194,7 @@ function ShopTheStory({ tiles, sourceStory, onOpenDetail }: ShopTheStoryProps) {
                         brand: tile.brand,
                         price: tile.price,
                         genomeKey: tile.genomeKey,
+                        assetKey: tile.genomeKey,
                       }}
                       size="sm"
                     />
