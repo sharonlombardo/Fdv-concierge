@@ -12,6 +12,7 @@ import { useCustomImages } from "@/hooks/use-custom-images";
 import { CuratingAnimation } from "@/components/curating-animation";
 import { PRESET_CAPSULES, type Capsule } from "@/data/capsule-data";
 import { useUser } from "@/contexts/user-context";
+import { getProductByKey, getAllProducts } from "@/lib/brand-genome";
 
 const LS_SAVED_CAPSULES_KEY = "fdv_saved_capsules";
 
@@ -193,11 +194,16 @@ const SAVE_TYPE_TO_CATEGORY: Record<string, string> = {
 function getDestinationLabel(save: SavedItem): string {
   const storyTag = save.storyTag || save.metadata?.storyTag || '';
   const source = save.sourceContext || '';
-  if (storyTag === 'morocco' || source.includes('morocco')) return 'Morocco';
+  const itemId = save.itemId || '';
+  const title = (save.title || '').toLowerCase();
+  // Morocco: also catch itinerary items (d1-d8 prefix), carousel saves, and packing items
+  if (storyTag === 'morocco' || source.includes('morocco') || source.includes('itinerary') ||
+      source.includes('packing') || source.includes('carousel') ||
+      /^d\d+-/.test(itemId) || source.includes('daily-flow')) return 'Morocco';
   if (storyTag === 'hydra' || source.includes('hydra')) return 'Hydra';
-  if (storyTag === 'slow-travel' || storyTag === 'spain' || source.includes('spain') || source.includes('slow')) return 'Slow Travel';
-  if (storyTag === 'retreat' || source.includes('retreat')) return 'The Retreat';
-  if (storyTag === 'new-york' || storyTag === 'newyork' || source.includes('new-york') || source.includes('newyork')) return 'New York';
+  if (storyTag === 'slow-travel' || storyTag === 'spain' || source.includes('spain') || source.includes('slow') || source.includes('mallorca')) return 'Slow Travel';
+  if (storyTag === 'retreat' || source.includes('retreat') || source.includes('utah')) return 'The Retreat';
+  if (storyTag === 'new-york' || storyTag === 'newyork' || source.includes('new-york') || source.includes('newyork') || source.includes('ny-')) return 'New York';
   if (storyTag === 'opening' || storyTag === 'todays-edit' || source.includes('opening') || source.includes('todays_edit')) return "Today's Edit";
   return 'Other';
 }
@@ -226,6 +232,82 @@ function groupByDestination(saves: SavedItem[]): { destination: string; items: S
   return result;
 }
 
+// Non-product types should NEVER appear in Your Style or Objects of Desire
+const NON_PRODUCT_TYPES = new Set([
+  'place', 'trip', 'experience', 'culture', 'ritual', 'editorial', 'mood',
+  'texture', 'scene', 'cover', 'destination', 'quote', 'inspiration',
+  'image', 'inspire', 'feature', 'article', 'edit', 'activity'
+]);
+
+// Category-aware filter helpers — genome category is AUTHORITATIVE over itemType
+function isBeautyProduct(save: SavedItem): boolean {
+  const category = (save.category || '').toUpperCase();
+  if (category === 'BEAUTY') return true;
+  // Also try genome lookup if no category set
+  if (!category) {
+    const key = save.metadata?.genomeKey || save.metadata?.assetKey || save.itemId;
+    const product = getProductByKey(key);
+    if (product?.category?.toUpperCase() === 'BEAUTY') return true;
+  }
+  return false;
+}
+
+function isStyleItem(save: SavedItem): boolean {
+  // Non-product types never go to Your Style
+  if (NON_PRODUCT_TYPES.has(save.itemType)) return false;
+
+  const category = (save.category || '').toUpperCase();
+
+  // If genome category is set, use it as AUTHORITATIVE source
+  if (category) {
+    if (category === 'BEAUTY') return false;
+    if (category === 'LOOK' || category.startsWith('ACCESSORY') || category === 'FOOTWEAR') return true;
+    return false;
+  }
+
+  // No genome category — try live genome lookup
+  const key = save.metadata?.genomeKey || save.metadata?.assetKey || save.itemId;
+  const product = getProductByKey(key);
+  if (product?.category) {
+    const pCat = product.category.toUpperCase();
+    if (pCat === 'BEAUTY') return false;
+    if (pCat === 'LOOK' || pCat.startsWith('ACCESSORY') || pCat === 'FOOTWEAR') return true;
+    return false;
+  }
+
+  // Last resort — fall back to itemType mapping (only for product-like types)
+  const mapped = SAVE_TYPE_TO_CATEGORY[save.itemType] || '';
+  return mapped === 'style';
+}
+
+function isObjectItem(save: SavedItem): boolean {
+  // Non-product types never go to Objects of Desire
+  if (NON_PRODUCT_TYPES.has(save.itemType)) return false;
+
+  const category = (save.category || '').toUpperCase();
+
+  // If genome category is set, use it as AUTHORITATIVE source
+  if (category) {
+    if (category === 'BEAUTY') return true;
+    if (category === 'LOOK' || category.startsWith('ACCESSORY') || category === 'FOOTWEAR') return false;
+    return false;
+  }
+
+  // No genome category — try live genome lookup
+  const key = save.metadata?.genomeKey || save.metadata?.assetKey || save.itemId;
+  const product = getProductByKey(key);
+  if (product?.category) {
+    const pCat = product.category.toUpperCase();
+    if (pCat === 'BEAUTY') return true;
+    if (pCat === 'LOOK' || pCat.startsWith('ACCESSORY') || pCat === 'FOOTWEAR') return false;
+    return false;
+  }
+
+  // Last resort — fall back to itemType mapping
+  const mapped = SAVE_TYPE_TO_CATEGORY[save.itemType] || '';
+  return mapped === 'items';
+}
+
 function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
   switch (tab) {
     case "all":
@@ -238,20 +320,20 @@ function filterSaves(saves: SavedItem[], tab: string): SavedItem[] {
     case "my-edits":
       return saves.filter(s => s.itemType === "edit");
     case "my-trips":
-      // Only explicit trip saves — editorial saves are DESTINATIONS, not trips
-      // Trip status is only after user explicitly saves a whole itinerary
       return saves.filter(s =>
         s.itemType === "trip" ||
         s.metadata?.bucket === "my-trips"
       );
     case "travel-destinations":
-      // ONLY places — hotels, restaurants, museums, landmarks, destinations
-      // Style/product items belong in "Your Style" and "Objects of Desire"
       return saves.filter(s =>
         SAVE_TYPE_TO_CATEGORY[s.itemType] === "travel-destinations" ||
         s.itemType === "place" ||
         s.itemType === "destination"
       );
+    case "style":
+      return saves.filter(isStyleItem);
+    case "items":
+      return saves.filter(isObjectItem);
     default:
       return saves.filter(s => SAVE_TYPE_TO_CATEGORY[s.itemType] === tab);
   }
@@ -491,6 +573,7 @@ function ByEditView({ saves }: { saves: SavedItem[] }) {
 export default function SuitcasePage() {
   const [viewMode, setViewMode] = useState("category");
   const [activeTab, setActiveTab] = useState("all");
+  const [styleSubFilter, setStyleSubFilter] = useState<'all' | 'clothing' | 'accessories'>('all');
   const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [removedQuotes, setRemovedQuotes] = useState<Set<string>>(() => {
@@ -522,6 +605,122 @@ export default function SuitcasePage() {
   const { data: saves = [], isLoading } = useQuery<SavedItem[]>({
     queryKey: ["/api/saves"],
   });
+
+  // Multi-strategy genome lookup for backfill
+  function findCategoryInGenome(save: SavedItem): string | undefined {
+    // Strategy 1: Direct key match by itemId
+    const p1 = getProductByKey(save.itemId);
+    if (p1?.category) return p1.category;
+
+    // Strategy 2: Match by genomeKey or assetKey in metadata
+    const metaKey = save.metadata?.genomeKey || save.metadata?.assetKey;
+    if (metaKey) {
+      const p2 = getProductByKey(metaKey);
+      if (p2?.category) return p2.category;
+    }
+
+    // Strategy 3: Match by title + brand combination
+    const allProducts = getAllProducts();
+    if (save.title) {
+      const titleLower = save.title.toLowerCase();
+      const match = allProducts.find(p => {
+        const nameLower = (p.name || '').toLowerCase();
+        const brandLower = (p.brand || '').toLowerCase();
+        if (!nameLower) return false;
+        return titleLower.includes(nameLower) ||
+               titleLower === `${brandLower} — ${nameLower}` ||
+               (titleLower.includes(nameLower) && save.metadata?.brand?.toLowerCase()?.includes(brandLower));
+      });
+      if (match?.category) return match.category;
+    }
+
+    return undefined;
+  }
+
+  // Dedup: remove duplicate saves (one-time, server-side)
+  useEffect(() => {
+    if (saves.length === 0) return;
+    if (sessionStorage.getItem('saves_deduplicated_v1')) return;
+
+    // Check if there are actual dupes
+    const seen = new Set<string>();
+    let hasDupes = false;
+    for (const s of saves) {
+      if (seen.has(s.itemId)) { hasDupes = true; break; }
+      seen.add(s.itemId);
+    }
+
+    if (!hasDupes) {
+      sessionStorage.setItem('saves_deduplicated_v1', 'true');
+      return;
+    }
+
+    async function dedup() {
+      try {
+        await fetch('/api/saves/dedup', { method: 'POST' });
+        sessionStorage.setItem('saves_deduplicated_v1', 'true');
+        queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+      } catch (e) {
+        // Silently skip
+      }
+    }
+    dedup();
+  }, [saves]);
+
+  // Backfill category + storyTag for existing saves
+  useEffect(() => {
+    if (saves.length === 0) return;
+    if (sessionStorage.getItem('categories_backfilled_v3')) return;
+
+    async function backfill() {
+      let updated = 0;
+      for (const save of saves) {
+        // Skip non-product types for category backfill
+        const skipCategory = NON_PRODUCT_TYPES.has(save.itemType);
+        const needsCategory = !skipCategory && !save.category;
+
+        // Check if storyTag needs fixing (shows as "Other" destination)
+        const currentDest = getDestinationLabel(save);
+        const needsStoryTag = !save.storyTag && currentDest !== 'Other';
+
+        if (!needsCategory && !needsStoryTag) continue;
+
+        const patch: Record<string, string> = {};
+
+        if (needsCategory) {
+          const category = findCategoryInGenome(save);
+          if (category) patch.category = category;
+        }
+
+        if (needsStoryTag && currentDest !== 'Other') {
+          // Derive storyTag from destination label
+          const tagMap: Record<string, string> = {
+            'Morocco': 'morocco', 'Hydra': 'hydra', 'Slow Travel': 'slow-travel',
+            'The Retreat': 'retreat', 'New York': 'new-york', "Today's Edit": 'opening'
+          };
+          if (tagMap[currentDest]) patch.storyTag = tagMap[currentDest];
+        }
+
+        if (Object.keys(patch).length > 0) {
+          try {
+            await fetch(`/api/saves/${encodeURIComponent(save.itemId)}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(patch)
+            });
+            updated++;
+          } catch (e) {
+            // Silently skip
+          }
+        }
+      }
+      sessionStorage.setItem('categories_backfilled_v3', 'true');
+      if (updated > 0) {
+        queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+      }
+    }
+    backfill();
+  }, [saves]);
 
   // Merge localStorage capsule IDs with API-saved capsule IDs
   const apiCapsuleIds = saves
@@ -596,6 +795,27 @@ export default function SuitcasePage() {
   };
 
   const filteredSaves = filterSaves(saves, activeTab);
+
+  // Apply sub-filter for Your Style tab
+  // Only items WITH a genome category show under CLOTHING or ACCESSORIES pills
+  // Uncategorized items only appear under ALL pill
+  const displayedSaves = activeTab === 'style' && styleSubFilter !== 'all'
+    ? filteredSaves.filter(s => {
+        // Try saved category first, then live genome lookup
+        let cat = (s.category || '').toUpperCase();
+        if (!cat) {
+          const key = s.metadata?.genomeKey || s.metadata?.assetKey || s.itemId;
+          const product = getProductByKey(key);
+          cat = (product?.category || '').toUpperCase();
+        }
+        if (!cat) return false; // no category → only shows under ALL
+        if (styleSubFilter === 'clothing') {
+          return cat === 'LOOK';
+        }
+        // accessories sub-filter: includes ACCESSORY*, FOOTWEAR
+        return cat.startsWith('ACCESSORY') || cat === 'FOOTWEAR';
+      })
+    : filteredSaves;
 
   return (
     <div className="min-h-screen pb-[80px] bg-[#fafaf9] dark:bg-background" style={{ paddingTop: 70 }}>
@@ -695,6 +915,40 @@ export default function SuitcasePage() {
               </nav>
             </div>
 
+            {/* Sub-filter pills for Your Style tab */}
+            {activeTab === 'style' && (
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: 24,
+                marginBottom: 20,
+                marginTop: -4,
+              }}>
+                {(['all', 'clothing', 'accessories'] as const).map((pill) => (
+                  <button
+                    key={pill}
+                    onClick={() => setStyleSubFilter(pill)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: 11,
+                      fontWeight: styleSubFilter === pill ? 600 : 400,
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                      color: styleSubFilter === pill ? '#1a1a1a' : '#9B8D7C',
+                      cursor: 'pointer',
+                      padding: '4px 0',
+                      borderBottom: styleSubFilter === pill ? '2px solid #c9a84c' : '2px solid transparent',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    {pill}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {isLoading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {[...Array(6)].map((_, i) => (
@@ -762,7 +1016,7 @@ export default function SuitcasePage() {
                   </p>
                 </div>
               )
-            ) : filteredSaves.length === 0 ? (
+            ) : displayedSaves.length === 0 ? (
               <div className="text-center py-20">
                 {saves.length === 0 ? (
                   <>
@@ -798,7 +1052,7 @@ export default function SuitcasePage() {
               </div>
             ) : activeTab === "my-trips" ? (
               <div className="space-y-6">
-                {filteredSaves.map((save) => (
+                {displayedSaves.map((save) => (
                   <Link key={save.id} href="/">
                     <div
                       className="relative overflow-hidden rounded-lg cursor-pointer group"
@@ -840,7 +1094,7 @@ export default function SuitcasePage() {
                     </div>
                   </Link>
                 ))}
-                {filteredSaves.length === 0 && (
+                {displayedSaves.length === 0 && (
                   <div className="text-center py-12">
                     <p className="text-muted-foreground">No trips saved yet. Visit a destination to save it as a trip.</p>
                   </div>
@@ -848,10 +1102,10 @@ export default function SuitcasePage() {
               </div>
             ) : (
               <div className="space-y-10">
-                {groupByDestination(filteredSaves).map((group) => (
+                {groupByDestination(displayedSaves).map((group) => (
                   <div key={group.destination}>
                     {/* Destination header — only show if multiple destinations */}
-                    {groupByDestination(filteredSaves).length > 1 && (
+                    {groupByDestination(displayedSaves).length > 1 && (
                       <div className="flex items-center gap-3 mb-4">
                         <h3 className="text-xs font-bold tracking-[0.2em] uppercase text-muted-foreground">{group.destination}</h3>
                         <div className="flex-1 h-px bg-border" />

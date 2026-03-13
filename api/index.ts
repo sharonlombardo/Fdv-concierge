@@ -496,10 +496,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ success: true });
     }
 
+    // POST /api/saves/dedup — remove duplicate saves (keep oldest per itemId)
+    if (path === '/api/saves/dedup' && method === 'POST') {
+      const result = await pool.query(
+        `DELETE FROM saves WHERE id NOT IN (SELECT MIN(id) FROM saves GROUP BY item_id) RETURNING id`
+      );
+      return res.status(200).json({ removed: result.rowCount });
+    }
+
     // PATCH /api/saves/:itemId — update a save
     if (path.startsWith('/api/saves/') && method === 'PATCH') {
       const itemId = decodeURIComponent(path.replace('/api/saves/', ''));
-      const { metadata, purchaseStatus } = req.body || {};
+      const { metadata, purchaseStatus, category, storyTag } = req.body || {};
       const updates: string[] = [];
       const values: any[] = [];
       let paramIndex = 1;
@@ -512,6 +520,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (purchaseStatus !== undefined) {
         updates.push(`purchase_status = $${paramIndex}`);
         values.push(purchaseStatus);
+        paramIndex++;
+      }
+      if (category !== undefined) {
+        updates.push(`category = $${paramIndex}`);
+        values.push(category);
+        paramIndex++;
+      }
+      if (storyTag !== undefined) {
+        updates.push(`story_tag = $${paramIndex}`);
+        values.push(storyTag);
         paramIndex++;
       }
 
