@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { PRESET_CAPSULES, type Capsule } from "@/data/capsule-data";
 import { getProductImageUrl } from "@/lib/brand-genome";
 import { useUser } from "@/contexts/user-context";
+import { useQueryClient } from "@tanstack/react-query";
 
 const LS_SAVED_CAPSULES_KEY = "fdv_saved_capsules";
 
@@ -17,7 +18,8 @@ function getSavedCapsuleIds(): string[] {
 
 export default function MyEdits() {
   const [, navigate] = useLocation();
-  const { saveCount } = useUser();
+  const { saveCount, email } = useUser();
+  const queryClient = useQueryClient();
   const [savedIds, setSavedIds] = useState<string[]>(getSavedCapsuleIds);
 
   // Auto-seed "Desert Neutrals" if user has 3+ saves and no capsules yet
@@ -28,6 +30,63 @@ export default function MyEdits() {
       setSavedIds(updated);
     }
   }, [saveCount, savedIds.length]);
+
+  // Sync localStorage with API saves on mount — merge both sources, backfill any gaps
+  useEffect(() => {
+    async function syncSaves() {
+      try {
+        const res = await fetch('/api/saves');
+        if (res.ok) {
+          const apiSaves = await res.json();
+          const apiCapsuleIds = apiSaves
+            .filter((s: any) => s.itemType === 'edit' && s.itemId?.startsWith('capsule-'))
+            .map((s: any) => s.itemId.replace('capsule-', ''));
+
+          const localIds = getSavedCapsuleIds();
+          const allIds = [...new Set([...localIds, ...apiCapsuleIds])];
+
+          // Update localStorage with merged set
+          localStorage.setItem(LS_SAVED_CAPSULES_KEY, JSON.stringify(allIds));
+
+          // Backfill any localStorage-only saves to API
+          for (const id of localIds) {
+            if (!apiCapsuleIds.includes(id)) {
+              const capsule = PRESET_CAPSULES.find(c => c.id === id);
+              if (capsule) {
+                await fetch('/api/saves', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    itemType: 'edit',
+                    itemId: `capsule-${id}`,
+                    sourceContext: 'my-edits',
+                    editTag: 'capsule',
+                    storyTag: id,
+                    title: capsule.name,
+                    assetUrl: capsule.moodImages?.[0]?.imageUrl || '',
+                    pinType: 'edit',
+                    metadata: {
+                      capsuleId: id,
+                      capsuleTitle: capsule.name,
+                      itemCount: (capsule.moodImages?.length || 0) + (capsule.accessories?.length || 0)
+                    },
+                    userEmail: email || undefined
+                  })
+                });
+              }
+            }
+          }
+
+          setSavedIds(allIds);
+          queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+        }
+      } catch (err) {
+        console.error('Failed to sync capsule saves:', err);
+        // Fall back to localStorage only
+      }
+    }
+    syncSaves();
+  }, []);
 
   const savedCapsules = PRESET_CAPSULES.filter((c) =>
     savedIds.includes(c.id)

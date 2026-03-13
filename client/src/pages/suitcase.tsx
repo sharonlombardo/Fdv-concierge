@@ -518,7 +518,17 @@ export default function SuitcasePage() {
     }
   }, [saveCount, savedCapsuleIds.length]);
 
-  const savedCapsules = PRESET_CAPSULES.filter((c) => savedCapsuleIds.includes(c.id));
+  // Fetch API saves early so we can merge capsule IDs from both sources
+  const { data: saves = [], isLoading } = useQuery<SavedItem[]>({
+    queryKey: ["/api/saves"],
+  });
+
+  // Merge localStorage capsule IDs with API-saved capsule IDs
+  const apiCapsuleIds = saves
+    .filter((s: SavedItem) => s.itemType === 'edit' && s.itemId?.startsWith('capsule-'))
+    .map((s: SavedItem) => s.itemId.replace('capsule-', ''));
+  const allCapsuleIds = [...new Set([...savedCapsuleIds, ...apiCapsuleIds])];
+  const savedCapsules = PRESET_CAPSULES.filter((c) => allCapsuleIds.includes(c.id));
 
   const handleCurateForMe = () => {
     const next = getNextUnsavedCapsule();
@@ -547,10 +557,6 @@ export default function SuitcasePage() {
       return updated;
     });
   };
-
-  const { data: saves = [], isLoading } = useQuery<SavedItem[]>({
-    queryKey: ["/api/saves"],
-  });
 
   const removeMutation = useMutation({
     mutationFn: async (itemId: string) => {

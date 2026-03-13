@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useQueryClient } from "@tanstack/react-query";
 import { getProductImageUrl, getProductByKey } from "@/lib/brand-genome";
 import { PinButton } from "@/components/pin-button";
 import { ItemModal, type ItemModalData } from "@/components/item-modal";
+import { useUser } from "@/contexts/user-context";
 import type { Capsule, CapsuleItem } from "@/data/capsule-data";
 
 const LS_SAVED_CAPSULES_KEY = "fdv_saved_capsules";
@@ -22,6 +24,11 @@ function saveCapsuleId(capsuleId: string) {
     ids.push(capsuleId);
     localStorage.setItem(LS_SAVED_CAPSULES_KEY, JSON.stringify(ids));
   }
+}
+
+function removeSavedCapsuleId(capsuleId: string) {
+  const ids = getSavedCapsuleIds().filter(id => id !== capsuleId);
+  localStorage.setItem(LS_SAVED_CAPSULES_KEY, JSON.stringify(ids));
 }
 
 function getItemImage(item: CapsuleItem): string {
@@ -67,15 +74,63 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
   const [saved, setSaved] = useState(() =>
     getSavedCapsuleIds().includes(capsule.id),
   );
+  const { incrementSaveCount, email } = useUser();
+  const queryClient = useQueryClient();
 
   const handleItemTap = (item: CapsuleItem) => {
     setModalItem(buildModalData(item));
     setModalOpen(true);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
+    // Keep localStorage for fast local UI state
     saveCapsuleId(capsule.id);
     setSaved(true);
+
+    // ALSO persist to database via saves API
+    try {
+      const res = await fetch('/api/saves', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemType: 'edit',
+          itemId: `capsule-${capsule.id}`,
+          sourceContext: 'my-edits',
+          editTag: 'capsule',
+          storyTag: capsule.id,
+          title: capsule.name,
+          assetUrl: capsule.moodImages?.[0]?.imageUrl || '',
+          pinType: 'edit',
+          metadata: {
+            capsuleId: capsule.id,
+            capsuleTitle: capsule.name,
+            itemCount: (capsule.moodImages?.length || 0) + (capsule.accessories?.length || 0)
+          },
+          userEmail: email || undefined
+        })
+      });
+      if (res.ok) {
+        incrementSaveCount();
+        queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+      }
+    } catch (err) {
+      console.error('Failed to save capsule to suitcase:', err);
+      // localStorage save still works as fallback
+    }
+  };
+
+  const handleUnsaveEdit = async () => {
+    removeSavedCapsuleId(capsule.id);
+    setSaved(false);
+
+    try {
+      await fetch(`/api/saves/${encodeURIComponent(`capsule-${capsule.id}`)}`, {
+        method: 'DELETE'
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+    } catch (err) {
+      console.error('Failed to remove capsule from suitcase:', err);
+    }
   };
 
   return (
@@ -116,25 +171,23 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
           >
             &larr; MY EDITS
           </button>
-          {!saved && (
-            <button
-              onClick={handleSaveEdit}
-              style={{
-                background: "none",
-                border: "none",
-                fontFamily: "Inter, sans-serif",
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: "#c9a84c",
-                cursor: "pointer",
-                padding: 0,
-              }}
-            >
-              SAVE EDIT
-            </button>
-          )}
+          <button
+            onClick={saved ? handleUnsaveEdit : handleSaveEdit}
+            style={{
+              background: "none",
+              border: "none",
+              fontFamily: "Inter, sans-serif",
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: saved ? "#9B8D7C" : "#c9a84c",
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            {saved ? "✓ SAVED" : "SAVE EDIT"}
+          </button>
         </div>
 
         {/* Title — italic serif */}
@@ -230,6 +283,7 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
                   title: img.alt,
                   imageUrl: img.imageUrl,
                   editTag: "capsule",
+                  storyTag: capsule.id,
                 }}
                 sourceContext="capsule"
                 size="sm"
@@ -318,6 +372,7 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
                       title: `${item.brand} — ${item.name}`,
                       imageUrl: getItemImage(item),
                       editTag: "capsule",
+                      storyTag: capsule.id,
                     }}
                     sourceContext="capsule"
                     size="sm"
@@ -381,19 +436,26 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
             SAVE THIS EDIT
           </button>
         ) : (
-          <div
+          <button
+            onClick={handleUnsaveEdit}
             style={{
-              textAlign: "center",
-              marginBottom: 32,
+              width: "100%",
+              height: 48,
+              background: "transparent",
+              border: "1px solid #e8e0d4",
+              borderRadius: 8,
               fontFamily: "Inter, sans-serif",
               fontSize: 13,
-              color: "#9B8D7C",
+              fontWeight: 600,
               letterSpacing: "0.1em",
               textTransform: "uppercase",
+              color: "#9B8D7C",
+              cursor: "pointer",
+              marginBottom: 32,
             }}
           >
             &#10003; SAVED TO MY EDITS
-          </div>
+          </button>
         )}
       </div>
 
