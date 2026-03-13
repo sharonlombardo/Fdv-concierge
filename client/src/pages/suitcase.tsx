@@ -821,7 +821,15 @@ export default function SuitcasePage() {
 
   const filteredSaves = filterSaves(saves, activeTab);
 
-  // Client-side dedup — multi-key: title+brand, core title+brand, AND image URL
+  // Known duplicate product pairs — map variant names to a canonical key
+  // These are the same product saved from different surfaces with different titles + images
+  const SAME_PRODUCT_MAP: Record<string, string> = {
+    'velvet thongs': 'alaia-heel-thong',
+    'heel thong mules': 'alaia-heel-thong',
+    'heel thong mules in velvet': 'alaia-heel-thong',
+  };
+
+  // Client-side dedup — multi-key: title+brand, core title+brand, image URL, AND canonical map
   // Image URL is the most reliable key — same product image = same product regardless of title
   function deduplicateSaves(items: SavedItem[]): SavedItem[] {
     const normalizeStr = (s: string) => (s || '')
@@ -839,6 +847,7 @@ export default function SuitcasePage() {
     const seenTitleBrand = new Set<string>();
     const seenCoreTitleBrand = new Set<string>();
     const seenImageUrl = new Set<string>();
+    const seenCanonical = new Set<string>();
 
     return items.filter(s => {
       const normTitle = normalizeStr(s.title);
@@ -854,16 +863,22 @@ export default function SuitcasePage() {
       // Key 2: core title (product-type words stripped) + brand
       const coreKey = `${coreTitle}|${normBrand}`;
 
+      // Key 4: canonical same-product mapping
+      const canonicalKey = SAME_PRODUCT_MAP[normTitle];
+      const canonicalFullKey = canonicalKey ? `canonical|${canonicalKey}|${normBrand}` : null;
+
       // Check ANY key match → duplicate
       const isDupe = seenTitleBrand.has(exactKey) ||
                      seenCoreTitleBrand.has(coreKey) ||
-                     (imageUrl && seenImageUrl.has(imageUrl));
+                     (imageUrl && seenImageUrl.has(imageUrl)) ||
+                     (canonicalFullKey && seenCanonical.has(canonicalFullKey));
       if (isDupe) return false;
 
       // Record all keys
       seenTitleBrand.add(exactKey);
       seenCoreTitleBrand.add(coreKey);
       if (imageUrl) seenImageUrl.add(imageUrl);
+      if (canonicalFullKey) seenCanonical.add(canonicalFullKey);
       return true;
     });
   }
