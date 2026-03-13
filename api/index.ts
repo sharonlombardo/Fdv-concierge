@@ -453,7 +453,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           [brandNorm]
         );
         const normalize = (s: string) => s.toLowerCase().trim()
+          .replace(/[éèê]/g, 'e').replace(/[àâä]/g, 'a').replace(/[ïîì]/g, 'i')
+          .replace(/[ôöò]/g, 'o').replace(/[üûù]/g, 'u').replace(/[ç]/g, 'c')
           .replace(/[—–\-:,\.]/g, ' ')
+          .replace(/[^\w\s]/g, '')
           .replace(/\b(bag|the|a|an|in|of)\b/g, '')
           .replace(/\s+/g, ' ')
           .trim();
@@ -529,18 +532,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           GROUP BY LOWER(TRIM(COALESCE(NULLIF(title, ''), item_id))), LOWER(TRIM(COALESCE(brand, '')))
         ) RETURNING id`
       );
-      // Phase 3: Fuzzy dedup — catches "Wristlette" vs "Wristlette Bag", etc.
+      // Phase 3: Fuzzy dedup — catches accent/dash variations + common suffix stripping
       const allSaves = await pool.query('SELECT id, title, brand FROM saves ORDER BY id');
       const rows = allSaves.rows;
       const toDelete: number[] = [];
       const seenCoreKeys = new Map<string, number>();
+      const normalizeFuzzy = (s: string) => s.toLowerCase().trim()
+        .replace(/[éèê]/g, 'e').replace(/[àâä]/g, 'a').replace(/[ïîì]/g, 'i')
+        .replace(/[ôöò]/g, 'o').replace(/[üûù]/g, 'u').replace(/[ç]/g, 'c')
+        .replace(/[—–\-:,\.]/g, ' ')
+        .replace(/[^\w\s]/g, '')
+        .replace(/\b(bag|the|a|an|in|of)\b/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
       for (const row of rows) {
-        const brand = (row.brand || '').toLowerCase().trim();
-        const title = (row.title || '').toLowerCase().trim()
-          .replace(/[—–\-:,\.]/g, ' ')
-          .replace(/\b(bag|the|a|an|in|of)\b/g, '')
-          .replace(/\s+/g, ' ')
-          .trim();
+        const brand = normalizeFuzzy(row.brand || '');
+        const title = normalizeFuzzy(row.title || '');
         const coreKey = `${title}|${brand}`;
         if (seenCoreKeys.has(coreKey)) {
           toDelete.push(row.id);

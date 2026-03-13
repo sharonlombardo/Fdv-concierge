@@ -255,7 +255,8 @@ function classifyItem(save: SavedItem): 'style-clothing' | 'style-accessory' | '
   // ===== PHASE 1: Title-based keyword matching (runs FIRST, catches items with missing categories) =====
 
   // Full outfit/look indicators → clothing (check BEFORE accessory keywords)
-  const lookKeywords = ['the look', 'full look', 'silhouette', 'outfit', 'tailoring', 'ensemble', 'puffer', 'caftan', 'kaftan', 'dress code'];
+  // NOTE: 'puffer' was REMOVED — "Wayfarer Puffer" is RayBan sunglasses, not a jacket
+  const lookKeywords = ['the look', 'full look', 'silhouette', 'outfit', 'tailoring', 'ensemble', 'caftan', 'kaftan', 'dress code'];
   if (lookKeywords.some(kw => titleLower.includes(kw))) return 'style-clothing';
 
   // Footwear → accessory
@@ -679,10 +680,10 @@ export default function SuitcasePage() {
     dedup();
   }, [saves]);
 
-  // Backfill category + storyTag for existing saves (v5 — classifyItem-based inference)
+  // Backfill category + storyTag for existing saves (v7 — removed puffer from lookKeywords)
   useEffect(() => {
     if (saves.length === 0) return;
-    if (sessionStorage.getItem('categories_backfilled_v6')) return;
+    if (sessionStorage.getItem('categories_backfilled_v7')) return;
 
     // Infer a specific genome category from classifyItem + title keywords
     function inferCategory(save: SavedItem): string | undefined {
@@ -738,7 +739,7 @@ export default function SuitcasePage() {
           // Silently skip
         }
       }
-      sessionStorage.setItem('categories_backfilled_v6', 'true');
+      sessionStorage.setItem('categories_backfilled_v7', 'true');
       if (updated > 0) {
         queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
       }
@@ -821,12 +822,19 @@ export default function SuitcasePage() {
   const filteredSaves = filterSaves(saves, activeTab);
 
   // Client-side dedup safety net — fuzzy matching catches title variations
-  // e.g. "Wristlette" vs "Wristlette Bag", "Heel Thong Mules in Velvet" vs "Velvet Thongs"
+  // e.g. "Wristlette" vs "Wristlette Bag", "FIL DE VIE — X" vs "FIL DE VIE – X"
   function deduplicateSaves(items: SavedItem[]): SavedItem[] {
     const normalizeStr = (s: string) => (s || '')
       .toLowerCase()
       .trim()
-      .replace(/[—–\-:,\.]/g, ' ')   // Replace dashes, colons, commas, dots with space
+      .replace(/[éèê]/g, 'e')        // Normalize accented chars
+      .replace(/[àâä]/g, 'a')
+      .replace(/[ïîì]/g, 'i')
+      .replace(/[ôöò]/g, 'o')
+      .replace(/[üûù]/g, 'u')
+      .replace(/[ç]/g, 'c')
+      .replace(/[—–\-:,\.]/g, ' ')   // ALL dash types + punctuation → space
+      .replace(/[^\w\s]/g, '')        // Remove all remaining special chars
       .replace(/\s+/g, ' ')           // Collapse multiple spaces
       .trim();
 
