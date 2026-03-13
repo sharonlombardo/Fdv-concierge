@@ -141,6 +141,54 @@ export default function GuidesListing() {
           </p>
         </header>
 
+        {/* Intro blurb */}
+        <div
+          style={{
+            maxWidth: 500,
+            margin: '0 auto',
+            textAlign: 'center',
+            marginTop: -24,
+            marginBottom: 36,
+          }}
+        >
+          <style>{`
+            .guides-inline-link {
+              text-decoration: underline;
+              text-underline-offset: 3px;
+              text-decoration-thickness: 1px;
+              color: #1a1a1a;
+              cursor: pointer;
+              transition: color 0.2s ease;
+            }
+            .guides-inline-link:hover {
+              color: #c9a84c;
+            }
+          `}</style>
+          <p
+            style={{
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: 15,
+              color: '#4a4a4a',
+              lineHeight: 1.7,
+              marginBottom: 16,
+            }}
+          >
+            Each guide is a curated journey — places we love, restaurants worth the trip, wardrobe that belongs there, and the small details that make a destination feel like yours.
+          </p>
+          <p
+            style={{
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: 15,
+              color: '#4a4a4a',
+              lineHeight: 1.7,
+            }}
+          >
+            Browse and save what you love — a hotel, a dress, a neighborhood. Everything goes into your{' '}
+            <Link href="/suitcase"><span className="guides-inline-link">Suitcase</span></Link>
+            , and the more you save, the more we learn what to show you next.
+          </p>
+        </div>
+
         <div
           style={{
             display: 'grid',
