@@ -28,7 +28,10 @@ function DiaryEntryCard({ flowItem, dayPage, entry }: DiaryEntryCardProps) {
 
   const handleShare = async () => {
     const firstImage = entry.logImages?.[0]?.src;
-    if (!firstImage) return;
+    if (!firstImage) {
+      alert('No photos to share yet.');
+      return;
+    }
 
     try {
       const blob = await generateStoryImage({

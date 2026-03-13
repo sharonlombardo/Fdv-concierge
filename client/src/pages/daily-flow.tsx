@@ -145,6 +145,7 @@ interface InlineFlowDetailProps {
   onImageUpload: (id: string, file: File, field: string) => void;
   onImagesUpdate: (id: string, images: LocalLogImage[]) => void;
   onShare: () => void;
+  dayNumber?: number;
   onApplySelfie: (imageKey: string, selfie: SelfieImage) => void;
   onOpenProductModal?: (data: {
     title: string;
@@ -170,6 +171,7 @@ function InlineFlowDetail({
   onImageUpload,
   onImagesUpdate,
   onShare,
+  dayNumber,
   onApplySelfie,
   onOpenProductModal,
 }: InlineFlowDetailProps) {
@@ -249,6 +251,45 @@ function InlineFlowDetail({
       onImagesUpdate(item.id, newImages);
     }, 800);
   }, [item.id, localLogImages, onImagesUpdate]);
+
+  const [isSharing, setIsSharing] = useState(false);
+
+  const handleShareInternal = useCallback(async () => {
+    // Use localLogImages (component state) — NOT entries from parent
+    const firstImage = localLogImages[0]?.src;
+
+    if (!firstImage) {
+      alert('No photos to share yet. Add a photo first!');
+      return;
+    }
+
+    setIsSharing(true);
+    try {
+      const blob = await generateStoryImage({
+        image: firstImage,
+        title: item.title,
+        note: localNote || '',
+        caption: localLogImages[0]?.caption || '',
+        location: dayLocation,
+        day: dayNumber ? `Day ${dayNumber}` : '',
+      });
+      await shareImage(blob, item.title);
+    } catch (err) {
+      console.error('Share failed:', err);
+      try {
+        const a = document.createElement('a');
+        a.href = firstImage;
+        a.download = 'fdv-travel-log.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch {
+        alert('Unable to share. Try taking a screenshot instead.');
+      }
+    } finally {
+      setIsSharing(false);
+    }
+  }, [localLogImages, localNote, item.title, dayLocation, dayNumber]);
 
   useEffect(() => {
     return () => {
@@ -515,11 +556,15 @@ function InlineFlowDetail({
         {/* Share + status */}
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <button
-            onClick={onShare}
-            disabled={localLogImages.length === 0}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 20px", background: "#1a1a1a", color: "#ffffff", border: "none", borderRadius: 24, cursor: localLogImages.length === 0 ? "default" : "pointer", fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", opacity: localLogImages.length === 0 ? 0.3 : 1 }}
+            onClick={handleShareInternal}
+            disabled={localLogImages.length === 0 || isSharing}
+            style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 20px", background: "#1a1a1a", color: "#ffffff", border: "none", borderRadius: 24, cursor: (localLogImages.length === 0 || isSharing) ? "default" : "pointer", fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", opacity: (localLogImages.length === 0 || isSharing) ? 0.3 : 1 }}
           >
-            <Share2 size={14} /> Share to Instagram
+            {isSharing ? (
+              <><Loader2 size={14} style={{ animation: "spin 1s linear infinite" }} /> Generating...</>
+            ) : (
+              <><Share2 size={14} /> Share to Instagram</>
+            )}
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 16px", background: "#f0ebe0", borderRadius: 24, fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(44,36,22,0.5)" }}>
             {status === "saving" ? <Loader2 size={14} style={{ animation: "spin 1s linear infinite" }} /> : <Save size={14} />}
@@ -1252,36 +1297,8 @@ export default function DailyFlowPage() {
                         onJournalChange={handleJournalChange}
                         onImageUpload={processImage}
                         onImagesUpdate={handleImagesUpdate}
-                        onShare={async () => {
-                          const logImgs = journalEntries[item.id]?.logImages || [];
-                          const firstImage = logImgs[0]?.src;
-                          if (!firstImage) return;
-
-                          try {
-                            const blob = await generateStoryImage({
-                              image: firstImage,
-                              title: item.title,
-                              note: journalEntries[item.id]?.note || '',
-                              caption: logImgs[0]?.caption || '',
-                              location: dayPage.location,
-                              day: `Day ${dayPage.day}`,
-                            });
-                            await shareImage(blob, item.title);
-                          } catch (err) {
-                            console.error('Share failed:', err);
-                            // Fallback: just try to download the original image directly
-                            try {
-                              const a = document.createElement('a');
-                              a.href = firstImage;
-                              a.download = 'fdv-travel-log.png';
-                              document.body.appendChild(a);
-                              a.click();
-                              document.body.removeChild(a);
-                            } catch {
-                              alert('Unable to share. Try taking a screenshot instead.');
-                            }
-                          }
-                        }}
+                        onShare={() => {}}
+                        dayNumber={dayPage.day}
                         onApplySelfie={handleApplySelfie}
                         onOpenProductModal={openProductModal}
                       />

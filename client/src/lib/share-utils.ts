@@ -131,8 +131,12 @@ export async function generateStoryImage(options: StoryImageOptions): Promise<Bl
 export async function shareImage(blob: Blob, title: string): Promise<boolean> {
   const file = new File([blob], 'fdv-travel-log.png', { type: 'image/png' });
 
-  // Try Web Share API first (works on iOS Safari)
-  if (navigator.share && navigator.canShare?.({ files: [file] })) {
+  // Only use Web Share API on mobile (touch devices)
+  // macOS Safari supports navigator.share but the UX is unreliable —
+  // the share sheet can flash/dismiss, causing AbortError with no fallback
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  if (isMobile && navigator.share && navigator.canShare?.({ files: [file] })) {
     try {
       await navigator.share({
         files: [file],
@@ -146,7 +150,7 @@ export async function shareImage(blob: Blob, title: string): Promise<boolean> {
     }
   }
 
-  // Fallback: download the image
+  // Desktop: always download the file
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
