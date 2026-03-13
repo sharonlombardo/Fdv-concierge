@@ -36,6 +36,7 @@ import { useJournal, type JournalEntry } from "@/hooks/use-journal";
 import { SelfiePickerModal } from "@/components/selfie-picker-modal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { generateStoryImage, shareImage } from "@/lib/share-utils";
 import type { SelfieImage } from "@shared/schema";
 import {
   ITINERARY_DATA,
@@ -1251,7 +1252,20 @@ export default function DailyFlowPage() {
                         onJournalChange={handleJournalChange}
                         onImageUpload={processImage}
                         onImagesUpdate={handleImagesUpdate}
-                        onShare={() => {}}
+                        onShare={async () => {
+                          const logImgs = journalEntries[item.id]?.logImages || [];
+                          const firstImage = logImgs[0]?.src;
+                          if (!firstImage) return;
+                          const blob = await generateStoryImage({
+                            image: firstImage,
+                            title: item.title,
+                            note: journalEntries[item.id]?.note || '',
+                            caption: logImgs[0]?.caption || '',
+                            location: dayPage.location,
+                            day: `Day ${dayPage.day}`,
+                          });
+                          await shareImage(blob, item.title);
+                        }}
                         onApplySelfie={handleApplySelfie}
                         onOpenProductModal={openProductModal}
                       />

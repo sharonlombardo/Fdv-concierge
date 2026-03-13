@@ -3,8 +3,9 @@ import { Link } from 'wouter';
 // GlobalNav removed — TopBar is now app-level in App.tsx
 import { useJournal } from '@/hooks/use-journal';
 import { ITINERARY_DATA, DayPage, FlowItem } from '@shared/itinerary-data';
-import { BookOpen, Camera, MapPin, Calendar, ChevronRight } from 'lucide-react';
+import { Camera, MapPin, ChevronRight, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { generateStoryImage, shareImage } from '@/lib/share-utils';
 
 function isDayPage(page: any): page is DayPage {
   return 'day' in page;
@@ -22,40 +23,149 @@ interface DiaryEntryCardProps {
 function DiaryEntryCard({ flowItem, dayPage, entry }: DiaryEntryCardProps) {
   const hasNote = entry.note && entry.note.trim().length > 0;
   const hasPhotos = entry.logImages && entry.logImages.length > 0;
-  
+
   if (!hasNote && !hasPhotos) return null;
-  
+
+  const handleShare = async () => {
+    const firstImage = entry.logImages?.[0]?.src;
+    if (!firstImage) return;
+    const blob = await generateStoryImage({
+      image: firstImage,
+      title: flowItem.title,
+      note: entry.note || '',
+      caption: entry.logImages?.[0]?.caption || '',
+      location: dayPage.location,
+      day: `Day ${dayPage.day}`,
+    });
+    await shareImage(blob, flowItem.title);
+  };
+
   return (
-    <div className="border-b border-border pb-8 mb-8 last:border-b-0">
-      <div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-          <Calendar className="w-3 h-3" />
-          <span>Day {dayPage.day} — {flowItem.time}</span>
-        </div>
-        <h3 className="font-serif text-lg font-medium mb-1">{flowItem.title}</h3>
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          <MapPin className="w-3 h-3" />
-          <span>{dayPage.location}</span>
-        </div>
+    <div style={{
+      background: '#fff',
+      borderRadius: 12,
+      padding: 24,
+      marginBottom: 20,
+      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      border: '1px solid #f0ece4',
+    }}>
+      {/* Day + Time header + Share button */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 14,
+      }}>
+        <span style={{
+          fontFamily: "'Inter', sans-serif",
+          fontSize: 11,
+          fontWeight: 600,
+          textTransform: 'uppercase' as const,
+          letterSpacing: '0.1em',
+          color: '#8a7e6b',
+        }}>
+          Day {dayPage.day} — {flowItem.time}
+        </span>
+        {hasPhotos && (
+          <button
+            onClick={handleShare}
+            style={{
+              background: '#1a1a1a',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 24,
+              padding: '8px 16px',
+              fontSize: 10,
+              fontWeight: 700,
+              fontFamily: "'Inter', sans-serif",
+              textTransform: 'uppercase' as const,
+              letterSpacing: '0.1em',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+            }}
+          >
+            <Share2 size={12} /> Share
+          </button>
+        )}
       </div>
-      
+
+      {/* Title */}
+      <h3 style={{
+        fontFamily: "'Lora', Georgia, serif",
+        fontSize: 22,
+        fontWeight: 500,
+        color: '#2c2416',
+        marginBottom: 4,
+        marginTop: 0,
+      }}>
+        {flowItem.title}
+      </h3>
+
+      {/* Location */}
+      <p style={{
+        fontFamily: "'Inter', sans-serif",
+        fontSize: 13,
+        color: '#8a7e6b',
+        marginBottom: 16,
+        marginTop: 0,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 4,
+      }}>
+        <MapPin size={12} /> {dayPage.location}
+      </p>
+
+      {/* User's note — italic serif with gold left border */}
       {hasNote && (
-        <div className="mt-4">
-          <p className="font-serif italic text-muted-foreground leading-relaxed">
-            "{entry.note}"
-          </p>
-        </div>
+        <p style={{
+          fontFamily: "'Lora', Georgia, serif",
+          fontSize: 16,
+          fontStyle: 'italic',
+          color: '#2c2416',
+          lineHeight: 1.6,
+          marginBottom: 20,
+          marginTop: 0,
+          paddingLeft: 16,
+          borderLeft: '2px solid #c9a84c',
+        }}>
+          "{entry.note}"
+        </p>
       )}
-      
+
+      {/* Photo grid — single = full width, multiple = 2-col */}
       {hasPhotos && (
-        <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2">
-          {entry.logImages?.map((img: { src: string; caption?: string }, idx: number) => (
-            <div key={idx} className="aspect-square rounded-md overflow-hidden bg-muted">
-              <img 
-                src={img.src} 
-                alt={img.caption || `Photo ${idx + 1}`}
-                className="w-full h-full object-cover"
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: entry.logImages!.length === 1 ? '1fr' : 'repeat(2, 1fr)',
+          gap: 8,
+        }}>
+          {entry.logImages!.map((img, i) => (
+            <div key={i}>
+              <img
+                src={img.src}
+                alt={img.caption || `Photo ${i + 1}`}
+                style={{
+                  width: '100%',
+                  borderRadius: 8,
+                  aspectRatio: entry.logImages!.length === 1 ? 'auto' : '1',
+                  objectFit: 'cover',
+                  display: 'block',
+                }}
               />
+              {img.caption && (
+                <p style={{
+                  fontFamily: "'Lora', Georgia, serif",
+                  fontSize: 13,
+                  fontStyle: 'italic',
+                  color: '#5a5147',
+                  marginTop: 6,
+                  marginBottom: 0,
+                }}>
+                  {img.caption}
+                </p>
+              )}
             </div>
           ))}
         </div>
@@ -67,9 +177,9 @@ function DiaryEntryCard({ flowItem, dayPage, entry }: DiaryEntryCardProps) {
 export default function TravelDiary() {
   const { entries, isLoading } = useJournal();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  
+
   const dayPages = ITINERARY_DATA.filter(isDayPage) as DayPage[];
-  
+
   const getEntriesForDay = (day: DayPage) => {
     const dayEntries: Array<{ flowItem: FlowItem; entry: any }> = [];
     day.flow.forEach(flowItem => {
@@ -80,30 +190,52 @@ export default function TravelDiary() {
     });
     return dayEntries;
   };
-  
+
   const allEntriesCount = dayPages.reduce((acc, day) => acc + getEntriesForDay(day).length, 0);
-  
-  const filteredDays = selectedDay 
+
+  const filteredDays = selectedDay
     ? dayPages.filter(d => d.day === selectedDay)
     : dayPages;
 
   return (
-    <div className="min-h-screen pb-[80px] bg-background">
-      {/* GlobalNav removed — TopBar is now app-level in App.tsx */}
-      
-      <div className="pt-20 pb-12">
-        <div className="max-w-3xl mx-auto px-4 md:px-6">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-6">
-              <BookOpen className="w-7 h-7 text-muted-foreground" />
-            </div>
-            <h1 className="font-serif text-4xl md:text-5xl font-normal mb-3">Travel Diary</h1>
-            <p className="text-muted-foreground text-base md:text-lg">
-              Your personal notes and photos from Morocco 2026
+    <div style={{ minHeight: '100vh', paddingBottom: 80, background: '#fafaf9' }}>
+      <div style={{ paddingTop: 80, paddingBottom: 48 }}>
+        <div style={{ maxWidth: 640, margin: '0 auto', padding: '0 16px' }}>
+
+          {/* Page header — editorial feel */}
+          <div style={{ textAlign: 'center', marginBottom: 36 }}>
+            <h1 style={{
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: 28,
+              fontWeight: 400,
+              color: '#2c2416',
+              marginBottom: 4,
+              marginTop: 0,
+            }}>
+              Travel Diary
+            </h1>
+            <p style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: 13,
+              color: '#8a7e6b',
+              textTransform: 'uppercase' as const,
+              letterSpacing: '0.1em',
+              marginTop: 0,
+            }}>
+              Morocco 2026
             </p>
           </div>
-          
-          <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 border-b border-border">
+
+          {/* Day filter tabs */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            overflowX: 'auto',
+            paddingBottom: 16,
+            marginBottom: 28,
+            borderBottom: '1px solid #f0ece4',
+          }}>
             <Button
               variant={selectedDay === null ? "default" : "ghost"}
               size="sm"
@@ -129,21 +261,37 @@ export default function TravelDiary() {
               );
             })}
           </div>
-          
+
+          {/* Content */}
           {isLoading ? (
-            <div className="text-center py-20">
-              <div className="animate-pulse text-muted-foreground">Loading entries...</div>
+            <div style={{ textAlign: 'center', padding: '80px 0' }}>
+              <div style={{ color: '#8a7e6b' }}>Loading entries...</div>
             </div>
           ) : allEntriesCount === 0 ? (
-            <div className="text-center py-20">
-              <Camera className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
-              <h2 className="font-serif text-2xl mb-2">No entries yet</h2>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                Start adding notes and photos to your itinerary. Tap any activity in the concierge to begin journaling.
+            <div style={{ textAlign: 'center', padding: '80px 0' }}>
+              <Camera size={48} color="rgba(138,126,107,0.3)" style={{ marginBottom: 16 }} />
+              <h2 style={{
+                fontFamily: "'Lora', Georgia, serif",
+                fontSize: 24,
+                fontWeight: 400,
+                color: '#2c2416',
+                marginBottom: 8,
+              }}>
+                No entries yet
+              </h2>
+              <p style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 14,
+                color: '#8a7e6b',
+                marginBottom: 24,
+                maxWidth: 320,
+                margin: '0 auto 24px',
+              }}>
+                Start adding notes and photos to your itinerary. Tap any activity in the Daily Flow to begin journaling.
               </p>
-              <Link href="/concierge">
+              <Link href="/daily-flow">
                 <Button data-testid="button-go-to-concierge">
-                  Go to Concierge
+                  Go to Daily Flow
                   <ChevronRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
@@ -153,19 +301,53 @@ export default function TravelDiary() {
               {filteredDays.map(day => {
                 const dayEntries = getEntriesForDay(day);
                 if (dayEntries.length === 0) return null;
-                
+
                 return (
-                  <div key={day.day} className="mb-12">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-10 h-10 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-sm">
+                  <div key={day.day} style={{ marginBottom: 40 }}>
+                    {/* Day header */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      marginBottom: 20,
+                    }}>
+                      <div style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: '50%',
+                        background: '#2c2416',
+                        color: '#faf8f5',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: 700,
+                        fontSize: 14,
+                        fontFamily: "'Inter', sans-serif",
+                        flexShrink: 0,
+                      }}>
                         {day.day}
                       </div>
                       <div>
-                        <h2 className="font-serif text-xl font-medium">{day.title}</h2>
-                        <p className="text-xs text-muted-foreground">{day.date}</p>
+                        <h2 style={{
+                          fontFamily: "'Lora', Georgia, serif",
+                          fontSize: 20,
+                          fontWeight: 500,
+                          color: '#2c2416',
+                          margin: 0,
+                        }}>
+                          {day.title}
+                        </h2>
+                        <p style={{
+                          fontFamily: "'Inter', sans-serif",
+                          fontSize: 12,
+                          color: '#8a7e6b',
+                          margin: 0,
+                        }}>
+                          {day.date}
+                        </p>
                       </div>
                     </div>
-                    
+
                     {dayEntries.map(({ flowItem, entry }) => (
                       <DiaryEntryCard
                         key={flowItem.id}
@@ -181,9 +363,21 @@ export default function TravelDiary() {
           )}
         </div>
       </div>
-      
-      <footer className="border-t border-border py-10 text-center">
-        <p className="text-xs text-muted-foreground tracking-widest uppercase">
+
+      {/* Footer */}
+      <footer style={{
+        borderTop: '1px solid #f0ece4',
+        padding: '40px 0',
+        textAlign: 'center',
+      }}>
+        <p style={{
+          fontFamily: "'Inter', sans-serif",
+          fontSize: 11,
+          color: '#8a7e6b',
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase' as const,
+          margin: 0,
+        }}>
           FDV Concierge — Morocco 2026
         </p>
       </footer>
