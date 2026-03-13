@@ -823,11 +823,21 @@ export default function SuitcasePage() {
 
   // Known duplicate product pairs — map variant names to a canonical key
   // These are the same product saved from different surfaces with different titles + images
+  // Keys are CONTAINS-matched against normalized title (not exact), so brand prefixes are fine
   const SAME_PRODUCT_MAP: Record<string, string> = {
     'velvet thongs': 'alaia-heel-thong',
     'heel thong mules': 'alaia-heel-thong',
     'heel thong mules in velvet': 'alaia-heel-thong',
   };
+
+  // Fuzzy lookup: try exact match, then check if normTitle CONTAINS any map key
+  function getCanonicalKey(normTitle: string): string | null {
+    if (SAME_PRODUCT_MAP[normTitle]) return SAME_PRODUCT_MAP[normTitle];
+    for (const [variant, canonical] of Object.entries(SAME_PRODUCT_MAP)) {
+      if (normTitle.includes(variant)) return canonical;
+    }
+    return null;
+  }
 
   // Client-side dedup — multi-key: title+brand, core title+brand, image URL, AND canonical map
   // Image URL is the most reliable key — same product image = same product regardless of title
@@ -863,9 +873,10 @@ export default function SuitcasePage() {
       // Key 2: core title (product-type words stripped) + brand
       const coreKey = `${coreTitle}|${normBrand}`;
 
-      // Key 4: canonical same-product mapping
-      const canonicalKey = SAME_PRODUCT_MAP[normTitle];
-      const canonicalFullKey = canonicalKey ? `canonical|${canonicalKey}|${normBrand}` : null;
+      // Key 4: canonical same-product mapping (fuzzy — handles brand prefix in title)
+      const canonicalKey = getCanonicalKey(normTitle);
+      // Canonical key is brand-agnostic — the map entries are product-specific enough
+      const canonicalFullKey = canonicalKey ? `canonical|${canonicalKey}` : null;
 
       // Check ANY key match → duplicate
       const isDupe = seenTitleBrand.has(exactKey) ||
