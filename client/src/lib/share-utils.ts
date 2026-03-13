@@ -12,6 +12,10 @@ export interface StoryImageOptions {
   headerText?: string;  // e.g., "FDV CONCIERGE — MOROCCO 2026"
 }
 
+function safeLetterSpacing(ctx: CanvasRenderingContext2D, value: string) {
+  try { (ctx as any).letterSpacing = value; } catch {}
+}
+
 export async function generateStoryImage(options: StoryImageOptions): Promise<Blob> {
   const canvas = document.createElement('canvas');
   canvas.width = 1080;
@@ -26,14 +30,14 @@ export async function generateStoryImage(options: StoryImageOptions): Promise<Bl
   ctx.fillStyle = '#2c2416';
   ctx.font = '500 24px Inter, sans-serif';
   ctx.textAlign = 'center';
-  ctx.letterSpacing = '0.15em';
+  safeLetterSpacing(ctx, '0.15em');
   ctx.fillText((options.headerText || 'FDV CONCIERGE — MOROCCO 2026').toUpperCase(), 540, 120);
 
   // Day label
   if (options.day) {
     ctx.font = '400 20px Inter, sans-serif';
     ctx.fillStyle = '#8a7e6b';
-    ctx.letterSpacing = '0.1em';
+    safeLetterSpacing(ctx, '0.1em');
     ctx.fillText(options.day.toUpperCase(), 540, 180);
   }
 
@@ -42,7 +46,10 @@ export async function generateStoryImage(options: StoryImageOptions): Promise<Bl
   if (options.image) {
     try {
       const img = new Image();
-      img.crossOrigin = 'anonymous';
+      // ONLY set crossOrigin for non-data URLs (data URLs don't need CORS)
+      if (!options.image.startsWith('data:')) {
+        img.crossOrigin = 'anonymous';
+      }
       await new Promise<void>((resolve, reject) => {
         img.onload = () => resolve();
         img.onerror = () => reject(new Error('Image load failed'));
@@ -69,14 +76,14 @@ export async function generateStoryImage(options: StoryImageOptions): Promise<Bl
   ctx.fillStyle = '#2c2416';
   ctx.font = 'italic 500 36px Lora, Georgia, serif';
   ctx.textAlign = 'center';
-  ctx.letterSpacing = '0em';
+  safeLetterSpacing(ctx, '0em');
   ctx.fillText(options.title || '', 540, textStartY);
 
   // Location
   if (options.location) {
     ctx.font = '400 22px Inter, sans-serif';
     ctx.fillStyle = '#8a7e6b';
-    ctx.letterSpacing = '0.05em';
+    safeLetterSpacing(ctx, '0.05em');
     ctx.fillText(options.location, 540, textStartY + 50);
   }
 
@@ -85,7 +92,7 @@ export async function generateStoryImage(options: StoryImageOptions): Promise<Bl
   if (noteText) {
     ctx.font = 'italic 400 28px Lora, Georgia, serif';
     ctx.fillStyle = '#2c2416';
-    ctx.letterSpacing = '0em';
+    safeLetterSpacing(ctx, '0em');
     const words = noteText.split(' ');
     let line = '';
     let lineY = textStartY + 110;
@@ -107,11 +114,17 @@ export async function generateStoryImage(options: StoryImageOptions): Promise<Bl
   ctx.font = '400 18px Inter, sans-serif';
   ctx.fillStyle = '#c9a84c';
   ctx.textAlign = 'center';
-  ctx.letterSpacing = '0.2em';
+  safeLetterSpacing(ctx, '0.2em');
   ctx.fillText('FIL DE VIE', 540, 1860);
 
-  return new Promise(resolve => {
-    canvas.toBlob(blob => resolve(blob!), 'image/png');
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(blob => {
+      if (blob) {
+        resolve(blob);
+      } else {
+        reject(new Error('Failed to generate image — canvas may be tainted'));
+      }
+    }, 'image/png');
   });
 }
 

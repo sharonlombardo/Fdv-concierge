@@ -29,15 +29,30 @@ function DiaryEntryCard({ flowItem, dayPage, entry }: DiaryEntryCardProps) {
   const handleShare = async () => {
     const firstImage = entry.logImages?.[0]?.src;
     if (!firstImage) return;
-    const blob = await generateStoryImage({
-      image: firstImage,
-      title: flowItem.title,
-      note: entry.note || '',
-      caption: entry.logImages?.[0]?.caption || '',
-      location: dayPage.location,
-      day: `Day ${dayPage.day}`,
-    });
-    await shareImage(blob, flowItem.title);
+
+    try {
+      const blob = await generateStoryImage({
+        image: firstImage,
+        title: flowItem.title,
+        note: entry.note || '',
+        caption: entry.logImages?.[0]?.caption || '',
+        location: dayPage.location,
+        day: `Day ${dayPage.day}`,
+      });
+      await shareImage(blob, flowItem.title);
+    } catch (err) {
+      console.error('Share failed:', err);
+      try {
+        const a = document.createElement('a');
+        a.href = firstImage;
+        a.download = 'fdv-travel-log.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch {
+        alert('Unable to share. Try taking a screenshot instead.');
+      }
+    }
   };
 
   return (
@@ -149,7 +164,8 @@ function DiaryEntryCard({ flowItem, dayPage, entry }: DiaryEntryCardProps) {
                 style={{
                   width: '100%',
                   borderRadius: 8,
-                  aspectRatio: entry.logImages!.length === 1 ? 'auto' : '1',
+                  maxHeight: entry.logImages!.length === 1 ? 400 : undefined,
+                  aspectRatio: entry.logImages!.length === 1 ? '4/3' : '1',
                   objectFit: 'cover',
                   display: 'block',
                 }}

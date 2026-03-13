@@ -1256,15 +1256,31 @@ export default function DailyFlowPage() {
                           const logImgs = journalEntries[item.id]?.logImages || [];
                           const firstImage = logImgs[0]?.src;
                           if (!firstImage) return;
-                          const blob = await generateStoryImage({
-                            image: firstImage,
-                            title: item.title,
-                            note: journalEntries[item.id]?.note || '',
-                            caption: logImgs[0]?.caption || '',
-                            location: dayPage.location,
-                            day: `Day ${dayPage.day}`,
-                          });
-                          await shareImage(blob, item.title);
+
+                          try {
+                            const blob = await generateStoryImage({
+                              image: firstImage,
+                              title: item.title,
+                              note: journalEntries[item.id]?.note || '',
+                              caption: logImgs[0]?.caption || '',
+                              location: dayPage.location,
+                              day: `Day ${dayPage.day}`,
+                            });
+                            await shareImage(blob, item.title);
+                          } catch (err) {
+                            console.error('Share failed:', err);
+                            // Fallback: just try to download the original image directly
+                            try {
+                              const a = document.createElement('a');
+                              a.href = firstImage;
+                              a.download = 'fdv-travel-log.png';
+                              document.body.appendChild(a);
+                              a.click();
+                              document.body.removeChild(a);
+                            } catch {
+                              alert('Unable to share. Try taking a screenshot instead.');
+                            }
+                          }
                         }}
                         onApplySelfie={handleApplySelfie}
                         onOpenProductModal={openProductModal}
