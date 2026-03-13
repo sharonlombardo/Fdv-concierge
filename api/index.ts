@@ -496,17 +496,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ success: true });
     }
 
-    // POST /api/saves/dedup — remove duplicate saves (keep oldest per title+brand OR itemId)
+    // POST /api/saves/dedup — remove duplicate saves (aggressive, case-insensitive)
     if (path === '/api/saves/dedup' && method === 'POST') {
-      // Phase 1: Dedup by exact itemId (original behavior)
+      // Phase 1: Dedup by exact itemId
       const r1 = await pool.query(
         `DELETE FROM saves WHERE id NOT IN (SELECT MIN(id) FROM saves GROUP BY item_id) RETURNING id`
       );
-      // Phase 2: Dedup by title+brand (catches same product saved from different surfaces)
+      // Phase 2: Dedup by normalized title+brand (case-insensitive, trimmed)
       const r2 = await pool.query(
         `DELETE FROM saves WHERE id NOT IN (
           SELECT MIN(id) FROM saves
-          GROUP BY COALESCE(NULLIF(title, ''), item_id), COALESCE(NULLIF(brand, ''), '')
+          GROUP BY LOWER(TRIM(COALESCE(NULLIF(title, ''), item_id))), LOWER(TRIM(COALESCE(brand, '')))
         ) RETURNING id`
       );
       return res.status(200).json({ removed: (r1.rowCount || 0) + (r2.rowCount || 0) });

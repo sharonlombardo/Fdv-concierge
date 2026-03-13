@@ -254,14 +254,18 @@ function classifyItem(save: SavedItem): 'style-clothing' | 'style-accessory' | '
 
   // ===== PHASE 1: Title-based keyword matching (runs FIRST, catches items with missing categories) =====
 
+  // Full outfit/look indicators → clothing (check BEFORE accessory keywords)
+  const lookKeywords = ['the look', 'full look', 'silhouette', 'outfit', 'tailoring', 'ensemble', 'puffer', 'caftan', 'kaftan', 'dress code'];
+  if (lookKeywords.some(kw => titleLower.includes(kw))) return 'style-clothing';
+
   // Footwear → accessory
   if (FOOTWEAR_KEYWORDS.some(kw => titleLower.includes(kw))) return 'style-accessory';
   // Bags → accessory
   if (BAG_KEYWORDS.some(kw => titleLower.includes(kw))) return 'style-accessory';
   // Jewelry → accessory
   if (JEWELRY_KEYWORDS.some(kw => titleLower.includes(kw))) return 'style-accessory';
-  // Sunglasses/eyewear → accessory
-  if (titleLower.includes('sunglass') || titleLower.includes('eyewear') || titleLower.includes('cat eye') || titleLower.includes('aviator')) return 'style-accessory';
+  // Sunglasses/eyewear → accessory (includes brand-specific terms)
+  if (titleLower.includes('sunglass') || titleLower.includes('eyewear') || titleLower.includes('cat eye') || titleLower.includes('aviator') || titleLower.includes('wayfarer') || titleLower.includes('ray-ban') || titleLower.includes('rayban') || titleLower.includes('ray ban')) return 'style-accessory';
   // Watch → accessory
   if (titleLower.includes('watch') || titleLower.includes('timepiece')) return 'style-accessory';
   // Beauty → object
@@ -658,15 +662,15 @@ export default function SuitcasePage() {
     return undefined;
   }
 
-  // Dedup: remove duplicate saves (server-side, title+brand grouping)
+  // Dedup: remove duplicate saves (server-side, case-insensitive title+brand)
   useEffect(() => {
     if (saves.length === 0) return;
-    if (sessionStorage.getItem('saves_deduplicated_v2')) return;
+    if (sessionStorage.getItem('saves_deduplicated_v3')) return;
 
     async function dedup() {
       try {
         await fetch('/api/saves/dedup', { method: 'POST' });
-        sessionStorage.setItem('saves_deduplicated_v2', 'true');
+        sessionStorage.setItem('saves_deduplicated_v3', 'true');
         queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
       } catch (e) {
         // Silently skip
@@ -678,7 +682,7 @@ export default function SuitcasePage() {
   // Backfill category + storyTag for existing saves (v5 — classifyItem-based inference)
   useEffect(() => {
     if (saves.length === 0) return;
-    if (sessionStorage.getItem('categories_backfilled_v5')) return;
+    if (sessionStorage.getItem('categories_backfilled_v6')) return;
 
     // Infer a specific genome category from classifyItem + title keywords
     function inferCategory(save: SavedItem): string | undefined {
@@ -689,7 +693,7 @@ export default function SuitcasePage() {
         if (FOOTWEAR_KEYWORDS.some(kw => tLower.includes(kw))) return 'FOOTWEAR';
         if (BAG_KEYWORDS.some(kw => tLower.includes(kw))) return 'ACCESSORY: BAG';
         if (JEWELRY_KEYWORDS.some(kw => tLower.includes(kw))) return 'ACCESSORY: JEWELRY';
-        if (tLower.includes('sunglass') || tLower.includes('cat eye') || tLower.includes('eyewear')) return 'ACCESSORY: SUNGLASSES';
+        if (tLower.includes('sunglass') || tLower.includes('cat eye') || tLower.includes('eyewear') || tLower.includes('wayfarer') || tLower.includes('ray-ban') || tLower.includes('rayban') || tLower.includes('ray ban')) return 'ACCESSORY: SUNGLASSES';
         if (tLower.includes('watch') || tLower.includes('timepiece')) return 'ACCESSORY';
         return 'ACCESSORY';
       }
@@ -734,7 +738,7 @@ export default function SuitcasePage() {
           // Silently skip
         }
       }
-      sessionStorage.setItem('categories_backfilled_v5', 'true');
+      sessionStorage.setItem('categories_backfilled_v6', 'true');
       if (updated > 0) {
         queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
       }
@@ -816,13 +820,27 @@ export default function SuitcasePage() {
 
   const filteredSaves = filterSaves(saves, activeTab);
 
+  // Client-side dedup safety net — even if DB has dupes, UI won't show them
+  function deduplicateSaves(items: SavedItem[]): SavedItem[] {
+    const seen = new Set<string>();
+    return items.filter(s => {
+      const key = `${(s.title || '').toLowerCase().trim()}|${(s.brand || s.metadata?.brand || '').toLowerCase().trim()}`;
+      if (key === '|') return true; // no title+brand = keep (can't dedup)
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
   // Apply sub-filter for Your Style tab — uses classifyItem() for consistency
-  const displayedSaves = activeTab === 'style' && styleSubFilter !== 'all'
+  const subFiltered = activeTab === 'style' && styleSubFilter !== 'all'
     ? filteredSaves.filter(s => {
         if (styleSubFilter === 'clothing') return isClothingItem(s);
         return isAccessoryItem(s);
       })
     : filteredSaves;
+
+  const displayedSaves = deduplicateSaves(subFiltered);
 
   return (
     <div className="min-h-screen pb-[80px] bg-[#fafaf9] dark:bg-background" style={{ paddingTop: 70 }}>
