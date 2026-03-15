@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { getAllProducts, getProductImageUrl, type BrandGenomeProduct } from "@/lib/brand-genome";
+import { getAllProducts, getShopImageUrl, type BrandGenomeProduct } from "@/lib/brand-genome";
 import { ItemModal } from "@/components/item-modal";
 import type { ItemModalData } from "@/components/item-modal";
 
-const PLACEHOLDER = "/product-placeholder.svg";
+const BLOB_BASE = "blob.vercel-storage.com";
 
 const CATEGORIES = [
   { key: "ALL", label: "All" },
@@ -35,8 +35,7 @@ export default function ShopPage() {
   const getImgUrl = (product: BrandGenomeProduct): string => {
     const key = product.database_match_key || "";
     if (!key) return "";
-    const url = getProductImageUrl(key);
-    return url === PLACEHOLDER ? "" : url;
+    return getShopImageUrl(key);
   };
 
   const filteredProducts = products
@@ -197,7 +196,7 @@ export default function ShopPage() {
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: "cover",
+                        objectFit: imgUrl.includes(BLOB_BASE) ? "contain" : "cover",
                       }}
                       loading="lazy"
                     />
