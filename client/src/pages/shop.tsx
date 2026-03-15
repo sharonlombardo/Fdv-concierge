@@ -3,18 +3,53 @@ import { getAllProducts, getProductImageUrl, type BrandGenomeProduct } from "@/l
 import { ItemModal } from "@/components/item-modal";
 import type { ItemModalData } from "@/components/item-modal";
 
+const PLACEHOLDER = "/product-placeholder.svg";
+
+const CATEGORIES = [
+  { key: "ALL", label: "All" },
+  { key: "STYLE", label: "Style" },
+  { key: "ACCESSORIES", label: "Accessories" },
+  { key: "FOOTWEAR", label: "Footwear" },
+  { key: "BEAUTY", label: "Beauty" },
+  { key: "JEWELRY", label: "Jewelry" },
+] as const;
+
+function matchesFilter(product: BrandGenomeProduct, filter: string): boolean {
+  if (filter === "ALL") return true;
+  const cat = (product.category || "").toUpperCase();
+  if (filter === "STYLE") return cat === "LOOK";
+  if (filter === "ACCESSORIES") return cat.startsWith("ACCESSORY");
+  if (filter === "FOOTWEAR") return cat === "FOOTWEAR";
+  if (filter === "BEAUTY") return cat === "BEAUTY";
+  if (filter === "JEWELRY") return cat.includes("JEWELRY");
+  return true;
+}
+
 export default function ShopPage() {
   const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("ALL");
 
-  // Get all products from the genome
   const products = getAllProducts();
 
   const getImgUrl = (product: BrandGenomeProduct): string => {
     const key = product.database_match_key || "";
     if (!key) return "";
-    return getProductImageUrl(key);
+    const url = getProductImageUrl(key);
+    return url === PLACEHOLDER ? "" : url;
   };
+
+  const filteredProducts = products
+    .filter(p => matchesFilter(p, activeFilter))
+    .filter(p => {
+      const url = getImgUrl(p);
+      return url !== "";
+    })
+    .sort((a, b) => {
+      if (a.shop_status === "live" && b.shop_status !== "live") return -1;
+      if (b.shop_status === "live" && a.shop_status !== "live") return 1;
+      return a.brand.localeCompare(b.brand);
+    });
 
   const openModal = (product: BrandGenomeProduct) => {
     const imgUrl = getImgUrl(product);
@@ -47,7 +82,7 @@ export default function ShopPage() {
       }}
     >
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 20px" }}>
-        <header style={{ textAlign: "center", marginBottom: 40, paddingTop: 8 }}>
+        <header style={{ textAlign: "center", marginBottom: 20, paddingTop: 8 }}>
           <h1
             style={{
               fontFamily: "Inter, sans-serif",
@@ -73,15 +108,64 @@ export default function ShopPage() {
           </p>
         </header>
 
+        {/* Category filter pills */}
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            overflowX: "auto",
+            paddingBottom: 16,
+            marginBottom: 8,
+            WebkitOverflowScrolling: "touch",
+            msOverflowStyle: "none",
+            scrollbarWidth: "none",
+          }}
+        >
+          {CATEGORIES.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setActiveFilter(key)}
+              style={{
+                fontFamily: "Inter, sans-serif",
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                padding: "8px 16px",
+                borderRadius: 20,
+                border: activeFilter === key ? "1px solid #1a1a1a" : "1px solid #d4d0c8",
+                background: activeFilter === key ? "#1a1a1a" : "transparent",
+                color: activeFilter === key ? "#fff" : "#1a1a1a",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <p
+          style={{
+            fontFamily: "Inter, sans-serif",
+            fontSize: 11,
+            color: "rgba(0,0,0,0.4)",
+            marginBottom: 16,
+          }}
+        >
+          {filteredProducts.length} piece{filteredProducts.length !== 1 ? "s" : ""}
+        </p>
+
         {/* Product grid — B&W aesthetic */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+            gridTemplateColumns: "repeat(2, 1fr)",
             gap: 2,
           }}
         >
-          {products.map((product) => {
+          {filteredProducts.map((product) => {
             const imgUrl = getImgUrl(product);
 
             return (
