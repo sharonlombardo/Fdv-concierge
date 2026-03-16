@@ -462,58 +462,34 @@ export function getProductImageUrl(genomeKey: string, fallbackFlowId?: string, d
 }
 
 /**
- * Editorial image fallback map.
- * Maps genome keys (lowercase) to editorial/story images from IMAGE_SLOTS.
- * Used when a product has no Blob studio shot but appears in The Current.
+ * Direct product image map.
+ * Maps genome keys (lowercase) to their dedicated product blob keys.
+ * These are Gemini-rendered studio shots uploaded via upload_product_images.mjs.
+ * Products NOT in this map AND not in the itinerary maps will be hidden on Shop.
  */
-const EDITORIAL_IMAGE_FALLBACK: Record<string, string> = {
-  // Morocco
-  "look:ysl:louloubikini:black.jpg": "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=800",
-  "look:phoebephilo:gaiadress:black.jpg": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=600",
-  "look:alaia:drapedtop:black.jpg": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=600",
-  "look:fildevie:estedress:black.jpg": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=600",
-  "look:fildevie:columndress:black.jpg": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=800",
-  "look:fildevie:longcaftandress:red.jpg": "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&q=80&w=1200",
-  // Hydra
-  "look:ysl:jumpsuit:black.jpg": "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=800",
-  "look:jilsander:buttondownshirt:bluestripe.jpg": "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80&w=600",
-  "look:jilsander:trenchcoat:white.jpg": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=600",
-  "look:eres:effigieswimsuit:black.jpg": "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&q=80&w=600",
-  "look:phoebephilo:buttondownshirt.jpg": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=800",
-  "look:driesvannoten:layeredsilkdress:black.jpg": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=800",
-  // Spain
-  "access:jewelry:phoebephilo:silvercuff.jpg": "https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?auto=format&fit=crop&q=80&w=800",
-  "look:fildevie:straplessswimsuit:black.jpg": "https://images.unsplash.com/photo-1554907984-15263bfd63bd?auto=format&fit=crop&q=80&w=800",
-  "look:loropiana:slipdress:black.jpg": "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&q=80&w=600",
-  "look:phoebephilo:polosweater:black.jpg": "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600",
-  "look:phoebephilo:bombesunglasses:brown.jpg": "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&q=80&w=600",
-  "look:rayban:puffedwayfarer:black.jpg": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=800",
-  // Retreat
-  "look:therow:cashmeretracksuit:cream.jpg": "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?auto=format&fit=crop&q=80&w=600",
-  "look:fearofgod:leathercoat:espresso.jpg": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=600",
-  "look:phoebephilo:cashmeretracksuit:espresso.jpg": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=600",
-  "look:aimeleondore:quarterzipset:black.jpg": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=600",
-  "look:jilsander:silkfluidset:black.jpg": "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&q=80&w=600",
-  // New York
-  "look:phoebephilo:cashmereovercoat:tobacco.jpg": "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=800",
-  "fil de vie look grecian dress.jpg": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=600",
-  "footwear:phoebephilo:ankleboot:black.jpg": "https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&q=80&w=600",
-  "look:fdv:daradressfurstole:bone:black.jpg": "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&q=80&w=600",
-  "look:fildevie:heradress:bone.jpg": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=600",
-  "accessory:bag:phoebephilo:drivebag.jpg": "https://images.unsplash.com/photo-1554907984-15263bfd63bd?auto=format&fit=crop&q=80&w=800",
-  "accessory:smythson:chelseanotebook:red.jpg": "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&q=80&w=600",
-  "look:fdv:miracoat:black.jpg": "https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&q=80&w=600",
+const PRODUCT_IMAGE_DIRECT: Record<string, string> = {
+  // Products with dedicated blob uploads (not in Morocco itinerary maps)
+  // Uploaded via upload_product_images.mjs
+  "look:ysl:bikini:black.jpg": "product-ysl-bikini",
+  "look:fildevie:columndress:black.jpg": "product-fdv-column-dress",
+  "look:phoebephilo:bombesunglasses:brown.jpg": "product-pp-bombe-sunglasses",
+  "footwear:phoebephilo:ankleboot:black.jpg": "product-pp-ankle-boot",
+  "look:fdv:medinadress:blk.jpg": "product-fdv-medina-dress",
+  "look:fdv:bellacaftanmini:ivory.jpg": "product-fdv-bella-caftan-mini",
+  "look:fdv:dianadres:stripe.jpg": "product-fdv-diana-dress",
 };
 
 /**
  * Get a shop-ready image URL for any product.
- * Tries Blob studio shot first, then editorial image fallback.
- * Returns empty string if no image available.
+ * Tries Blob studio shot first (itinerary maps), then direct product blob key.
+ * Returns empty string if no image available (product will be hidden on Shop).
  */
 export function getShopImageUrl(genomeKey: string): string {
   const blobUrl = getProductImageUrl(genomeKey);
   if (blobUrl !== PRODUCT_PLACEHOLDER) return blobUrl;
-  return EDITORIAL_IMAGE_FALLBACK[genomeKey.toLowerCase()] || "";
+  const directKey = PRODUCT_IMAGE_DIRECT[genomeKey.toLowerCase()];
+  if (directKey) return `${BLOB_BASE}/${directKey}`;
+  return "";
 }
 
 /**
