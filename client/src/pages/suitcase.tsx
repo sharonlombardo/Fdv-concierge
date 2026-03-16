@@ -208,14 +208,20 @@ function getDestinationLabel(save: SavedItem): string {
   return 'Other';
 }
 
+/** Normalize title for dedup — strip brand prefixes like "FIL DE VIE — " or "BRAND — " */
+function normalizeTitle(raw: string): string {
+  return raw.toLowerCase().trim().replace(/^[^—–-]+[—–-]\s*/, '');
+}
+
 /** Deduplicate saves by title — keeps the first (most recent) save when duplicates exist */
 function deduplicateByTitle(saves: SavedItem[]): SavedItem[] {
   const seen = new Set<string>();
   return saves.filter(save => {
-    const title = (save.title || save.metadata?.title || '').toLowerCase().trim();
-    if (!title) return true; // keep items with no title
-    if (seen.has(title)) return false;
-    seen.add(title);
+    const raw = save.title || save.metadata?.title || '';
+    if (!raw.trim()) return true; // keep items with no title
+    const normalized = normalizeTitle(raw);
+    if (seen.has(normalized)) return false;
+    seen.add(normalized);
     return true;
   });
 }
