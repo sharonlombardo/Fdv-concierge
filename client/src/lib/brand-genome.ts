@@ -463,26 +463,50 @@ export function getProductImageUrl(genomeKey: string, fallbackFlowId?: string, d
 
 /**
  * Direct product image map.
- * Maps genome keys (lowercase) to their dedicated product blob keys.
- * These are Gemini-rendered studio shots uploaded via upload_product_images.mjs.
+ * Maps genome keys (lowercase) to blob URLs or blob key suffixes.
+ * Includes: Gemini studio shots (product-* keys) + editorial images from The Current.
  * Products NOT in this map AND not in the itinerary maps will be hidden on Shop.
  */
 const PRODUCT_IMAGE_DIRECT: Record<string, string> = {
-  // Products with dedicated blob uploads (not in Morocco itinerary maps)
-  // Uploaded via upload_product_images.mjs
+  // === Gemini studio shots (uploaded via upload_product_images.mjs) ===
   "look:ysl:bikini:black.jpg": "product-ysl-bikini",
-  "look:fildevie:columndress:black.jpg": "product-fdv-column-dress",
-  "look:phoebephilo:bombesunglasses:brown.jpg": "product-pp-bombe-sunglasses",
-  "footwear:phoebephilo:ankleboot:black.jpg": "product-pp-ankle-boot",
   "look:fdv:medinadress:blk.jpg": "product-fdv-medina-dress",
   "look:fdv:bellacaftanmini:ivory.jpg": "product-fdv-bella-caftan-mini",
-  "look:fdv:dianadres:stripe.jpg": "product-fdv-diana-dress",
+
+  // === Editorial images from The Current stories (custom-uploaded by Sharon) ===
+  // Morocco
+  "look:phoebephilo:gaiadress:black.jpg": "morocco-tile-1",
+  "look:fildevie:estedress:black.jpg": "morocco-tile-5",
+  "look:fildevie:longcaftandress:red.jpg": "morocco-motion-1",
+  // Hydra
+  "look:ysl:jumpsuit:black.jpg": "hydra-style-1",
+  "look:jilsander:buttondownshirt:bluestripe.jpg": "hydra-tile-1",
+  "look:jilsander:trenchcoat:white.jpg": "hydra-tile-3",
+  "look:eres:effigieswimsuit:black.jpg": "retreat-object-1",
+  "look:phoebephilo:buttondownshirt.jpg": "hydra-object-1",
+  "look:driesvannoten:layeredsilkdress:black.jpg": "hydra-ritual-1",
+  // Spain
+  "look:fildevie:straplessswimsuit:black.jpg": "slow-museum",
+  "look:loropiana:slipdress:black.jpg": "slow-tile-2",
+  "look:phoebephilo:polosweater:black.jpg": "slow-tile-1",
+  "look:rayban:puffedwayfarer:black.jpg": "slow-object-1",
+  // Retreat
+  "look:therow:cashmeretracksuit:cream.jpg": "retreat-tile-1",
+  "look:fearofgod:leathercoat:espresso.jpg": "retreat-tile-2",
+  "look:phoebephilo:cashmeretracksuit:espresso.jpg": "retreat-tile-3",
+  "look:aimeleondore:quarterzipset:black.jpg": "retreat-tile-4",
+  "look:jilsander:silkfluidset:black.jpg": "retreat-tile-6",
+  // New York
+  "look:phoebephilo:cashmereovercoat:tobacco.jpg": "newyork-style-1",
+  "fil de vie look grecian dress.jpg": "ny-tile-4",
+  "look:fdv:daradressfurstole:bone:black.jpg": "ny-tile-6",
+  "look:fildevie:heradress:bone.jpg": "ny-culture-1",
+  "look:fdv:miracoat:black.jpg": "ny-reset-4",
 };
 
 /**
  * Get a shop-ready image URL for any product.
- * Tries Blob studio shot first (itinerary maps), then direct product blob key.
- * Returns empty string if no image available (product will be hidden on Shop).
+ * Resolution: itinerary blob → direct product/editorial blob → empty (hidden).
  */
 export function getShopImageUrl(genomeKey: string): string {
   const blobUrl = getProductImageUrl(genomeKey);
