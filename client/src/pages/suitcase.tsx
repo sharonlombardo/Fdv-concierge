@@ -208,6 +208,18 @@ function getDestinationLabel(save: SavedItem): string {
   return 'Other';
 }
 
+/** Deduplicate saves by title — keeps the first (most recent) save when duplicates exist */
+function deduplicateByTitle(saves: SavedItem[]): SavedItem[] {
+  const seen = new Set<string>();
+  return saves.filter(save => {
+    const title = (save.title || save.metadata?.title || '').toLowerCase().trim();
+    if (!title) return true; // keep items with no title
+    if (seen.has(title)) return false;
+    seen.add(title);
+    return true;
+  });
+}
+
 function groupByDestination(saves: SavedItem[]): { destination: string; items: SavedItem[] }[] {
   const groups = new Map<string, SavedItem[]>();
   for (const save of saves) {
@@ -1191,10 +1203,10 @@ export default function SuitcasePage() {
               </div>
             ) : (
               <div className="space-y-10">
-                {groupByDestination(displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture' && s.itemType !== 'place' && s.itemType !== 'destination' && s.itemType !== 'scene' && s.itemType !== 'image' && s.itemType !== 'inspire' && s.itemType !== 'cover' && s.itemType !== 'feature')).map((group) => (
+                {groupByDestination(deduplicateByTitle(displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture' && s.itemType !== 'place' && s.itemType !== 'destination' && s.itemType !== 'scene' && s.itemType !== 'image' && s.itemType !== 'inspire' && s.itemType !== 'cover' && s.itemType !== 'feature'))).map((group) => (
                   <div key={group.destination}>
                     {/* Destination header — only show if multiple destinations */}
-                    {groupByDestination(displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture' && s.itemType !== 'place' && s.itemType !== 'destination' && s.itemType !== 'scene' && s.itemType !== 'image' && s.itemType !== 'inspire' && s.itemType !== 'cover' && s.itemType !== 'feature')).length > 1 && (
+                    {groupByDestination(deduplicateByTitle(displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture' && s.itemType !== 'place' && s.itemType !== 'destination' && s.itemType !== 'scene' && s.itemType !== 'image' && s.itemType !== 'inspire' && s.itemType !== 'cover' && s.itemType !== 'feature'))).length > 1 && (
                       <div className="flex items-center gap-3 mb-4">
                         <h3 className="text-xs font-bold tracking-[0.2em] uppercase text-muted-foreground">{group.destination}</h3>
                         <div className="flex-1 h-px bg-border" />
