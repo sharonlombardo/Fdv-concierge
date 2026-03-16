@@ -12,7 +12,7 @@ import { useCustomImages } from "@/hooks/use-custom-images";
 import { CuratingAnimation } from "@/components/curating-animation";
 import { PRESET_CAPSULES, type Capsule } from "@/data/capsule-data";
 import { useUser } from "@/contexts/user-context";
-import { getProductByKey, getAllProducts } from "@/lib/brand-genome";
+import { getProductByKey, getAllProducts, getShopImageUrl } from "@/lib/brand-genome";
 
 const LS_SAVED_CAPSULES_KEY = "fdv_saved_capsules";
 
@@ -441,6 +441,8 @@ function SavedItemCard({ save, onRemove, onClick, getImageUrl }: {
   const imageKey = getImageKey(save.itemId);
   const fallbackUrl = save.assetUrl || save.metadata?.imageUrl || '';
   const imageUrl = getImageUrl(imageKey, fallbackUrl);
+  const genomeKey = save.metadata?.genomeKey || save.metadata?.assetKey || '';
+  const finalImageUrl = imageUrl || (genomeKey ? getShopImageUrl(genomeKey) : '');
   const isOwned = save.purchaseStatus === 'purchased';
   const isWanted = save.purchaseStatus === 'want';
 
@@ -456,9 +458,9 @@ function SavedItemCard({ save, onRemove, onClick, getImageUrl }: {
       onClick={onClick}
     >
       <div className={`aspect-[3/4] relative ${isLookItem ? 'bg-stone-100 dark:bg-stone-800' : ''}`}>
-        {imageUrl ? (
+        {finalImageUrl ? (
           <img
-            src={imageUrl}
+            src={finalImageUrl}
             alt={save.title || save.metadata?.title || "Saved item"}
             className={`w-full h-full ${isLookItem ? 'object-contain' : 'object-cover'}`}
           />
@@ -1119,7 +1121,7 @@ export default function SuitcasePage() {
                             Explore The Current
                           </Button>
                         </Link>
-                        <Link href="/">
+                        <Link href="/concierge">
                           <Button data-testid="button-browse-itinerary">
                             Browse Itinerary
                           </Button>
@@ -1140,7 +1142,7 @@ export default function SuitcasePage() {
             ) : activeTab === "my-trips" ? (
               <div className="space-y-6">
                 {displayedSaves.map((save) => (
-                  <Link key={save.id} href="/">
+                  <Link key={save.id} href="/concierge">
                     <div
                       className="relative overflow-hidden rounded-lg cursor-pointer group"
                       data-testid={`card-trip-${save.id}`}
@@ -1189,10 +1191,10 @@ export default function SuitcasePage() {
               </div>
             ) : (
               <div className="space-y-10">
-                {groupByDestination(displayedSaves).map((group) => (
+                {groupByDestination(displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture')).map((group) => (
                   <div key={group.destination}>
                     {/* Destination header — only show if multiple destinations */}
-                    {groupByDestination(displayedSaves).length > 1 && (
+                    {groupByDestination(displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture')).length > 1 && (
                       <div className="flex items-center gap-3 mb-4">
                         <h3 className="text-xs font-bold tracking-[0.2em] uppercase text-muted-foreground">{group.destination}</h3>
                         <div className="flex-1 h-px bg-border" />
