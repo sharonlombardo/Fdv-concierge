@@ -457,12 +457,12 @@ function SavedItemCard({ save, onRemove, onClick, getImageUrl }: {
       data-testid={`card-saved-${save.id}`}
       onClick={onClick}
     >
-      <div className={`aspect-[3/4] relative ${isLookItem ? 'bg-stone-100 dark:bg-stone-800' : ''}`}>
+      <div className="aspect-[3/4] relative overflow-hidden">
         {finalImageUrl ? (
           <img
             src={finalImageUrl}
             alt={save.title || save.metadata?.title || "Saved item"}
-            className={`w-full h-full ${isLookItem ? 'object-contain' : 'object-cover'}`}
+            className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 dark:from-stone-700 dark:to-stone-800 flex items-center justify-center">
@@ -1191,10 +1191,10 @@ export default function SuitcasePage() {
               </div>
             ) : (
               <div className="space-y-10">
-                {groupByDestination(displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture')).map((group) => (
+                {groupByDestination(displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture' && s.itemType !== 'place' && s.itemType !== 'destination' && s.itemType !== 'scene' && s.itemType !== 'image' && s.itemType !== 'inspire' && s.itemType !== 'cover' && s.itemType !== 'feature')).map((group) => (
                   <div key={group.destination}>
                     {/* Destination header — only show if multiple destinations */}
-                    {groupByDestination(displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture')).length > 1 && (
+                    {groupByDestination(displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture' && s.itemType !== 'place' && s.itemType !== 'destination' && s.itemType !== 'scene' && s.itemType !== 'image' && s.itemType !== 'inspire' && s.itemType !== 'cover' && s.itemType !== 'feature')).length > 1 && (
                       <div className="flex items-center gap-3 mb-4">
                         <h3 className="text-xs font-bold tracking-[0.2em] uppercase text-muted-foreground">{group.destination}</h3>
                         <div className="flex-1 h-px bg-border" />
