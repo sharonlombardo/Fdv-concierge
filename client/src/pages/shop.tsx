@@ -3,14 +3,15 @@ import { getAllProducts, getShopImageUrl, type BrandGenomeProduct } from "@/lib/
 import { ItemModal } from "@/components/item-modal";
 import type { ItemModalData } from "@/components/item-modal";
 
-// Per-product object-position overrides for editorial images that crop badly at 3:4
-const IMAGE_POSITION: Record<string, string> = {
-  "look:aimeleondore:quarterzipset:black.jpg": "center 40%",
-  "look:phoebephilo:cashmeretracksuit:espresso.jpg": "center 30%",
-  "fil de vie look grecian dress.jpg": "center 35%",
-  "look:fearofgod:leathercoat:espresso.jpg": "center 55%",        // model in lower half, push crop down
-  "look:jilsander:silkfluidset:black.jpg": "center 45%",          // model centered with bag
-  "look:therow:cashmeretracksuit:cream.jpg": "center 40%",        // model sitting center-frame
+// Per-product image adjustments for editorial photos with small subjects
+// position: where to anchor the crop, scale: zoom factor to fill frame
+const IMAGE_ADJUST: Record<string, { position?: string; scale?: number }> = {
+  "look:aimeleondore:quarterzipset:black.jpg": { scale: 1.4, position: "center 45%" },
+  "look:phoebephilo:cashmeretracksuit:espresso.jpg": { scale: 1.3, position: "center 25%" },
+  "fil de vie look grecian dress.jpg": { scale: 1.3, position: "center 30%" },
+  "look:fearofgod:leathercoat:espresso.jpg": { scale: 1.4, position: "center 60%" },
+  "look:jilsander:silkfluidset:black.jpg": { scale: 1.3, position: "center 40%" },
+  "look:therow:cashmeretracksuit:cream.jpg": { scale: 1.5, position: "center 35%" },
 };
 
 const CATEGORIES = [
@@ -207,19 +208,23 @@ export default function ShopPage() {
                     overflow: "hidden",
                   }}
                 >
-                  {imgUrl && (
-                    <img
-                      src={imgUrl}
-                      alt={product.name}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        objectPosition: IMAGE_POSITION[(product.database_match_key || "").toLowerCase()] || "center center",
-                      }}
-                      loading="lazy"
-                    />
-                  )}
+                  {imgUrl && (() => {
+                    const adj = IMAGE_ADJUST[(product.database_match_key || "").toLowerCase()];
+                    return (
+                      <img
+                        src={imgUrl}
+                        alt={product.name}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          objectPosition: adj?.position || "center center",
+                          transform: adj?.scale ? `scale(${adj.scale})` : undefined,
+                        }}
+                        loading="lazy"
+                      />
+                    );
+                  })()}
                 </div>
                 <div style={{ padding: "10px 10px 14px" }}>
                   <p
