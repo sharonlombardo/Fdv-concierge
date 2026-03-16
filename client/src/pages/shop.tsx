@@ -5,9 +5,12 @@ import type { ItemModalData } from "@/components/item-modal";
 
 // Per-product object-position overrides for editorial images that crop badly at 3:4
 const IMAGE_POSITION: Record<string, string> = {
-  "look:aimeleondore:quarterzipset:black.jpg": "center 40%",     // subject centered vertically
-  "look:phoebephilo:cashmeretracksuit:espresso.jpg": "center 30%", // subject in upper third
-  "fil de vie look grecian dress.jpg": "center 35%",              // subject upper-center
+  "look:aimeleondore:quarterzipset:black.jpg": "center 40%",
+  "look:phoebephilo:cashmeretracksuit:espresso.jpg": "center 30%",
+  "fil de vie look grecian dress.jpg": "center 35%",
+  "look:fearofgod:leathercoat:espresso.jpg": "center 55%",        // model in lower half, push crop down
+  "look:jilsander:silkfluidset:black.jpg": "center 45%",          // model centered with bag
+  "look:therow:cashmeretracksuit:cream.jpg": "center 40%",        // model sitting center-frame
 };
 
 const CATEGORIES = [
