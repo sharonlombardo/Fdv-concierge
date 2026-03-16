@@ -3,6 +3,13 @@ import { getAllProducts, getShopImageUrl, type BrandGenomeProduct } from "@/lib/
 import { ItemModal } from "@/components/item-modal";
 import type { ItemModalData } from "@/components/item-modal";
 
+// Per-product object-position overrides for editorial images that crop badly at 3:4
+const IMAGE_POSITION: Record<string, string> = {
+  "look:aimeleondore:quarterzipset:black.jpg": "center 40%",     // subject centered vertically
+  "look:phoebephilo:cashmeretracksuit:espresso.jpg": "center 30%", // subject in upper third
+  "fil de vie look grecian dress.jpg": "center 35%",              // subject upper-center
+};
+
 const CATEGORIES = [
   { key: "ALL", label: "All" },
   { key: "STYLE", label: "Style" },
@@ -205,6 +212,7 @@ export default function ShopPage() {
                         width: "100%",
                         height: "100%",
                         objectFit: "cover",
+                        objectPosition: IMAGE_POSITION[(product.database_match_key || "").toLowerCase()] || "center center",
                       }}
                       loading="lazy"
                     />
