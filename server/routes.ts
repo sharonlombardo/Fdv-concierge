@@ -527,6 +527,11 @@ export async function registerRoutes(
         purchaseStatus: data.purchaseStatus || null,
         title: data.title || data.metadata?.title || null,
         assetUrl: data.assetUrl || data.metadata?.assetUrl || data.metadata?.imageUrl || null,
+        brand: data.brand || data.metadata?.brand || null,
+        price: data.price || data.metadata?.price || null,
+        shopUrl: data.shopUrl || data.metadata?.shopUrl || null,
+        bookUrl: data.bookUrl || data.metadata?.bookUrl || null,
+        category: data.category || data.metadata?.category || null,
       });
       res.json(newSave);
     } catch (error) {

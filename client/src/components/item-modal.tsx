@@ -192,9 +192,14 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
             })(),
           }),
         });
-        // 409 = already saved — that's fine
-        if (res.status === 409) {
-          return;
+        // 409 or 400 "Already pinned" — treat as success
+        if (res.status === 409 || res.status === 400) {
+          const body = await res.json().catch(() => ({}));
+          if (body.error === "Already pinned") {
+            return;
+          }
+          console.error('[ItemModal] Save validation failed:', body.details || body.error);
+          throw new Error('Save validation failed');
         }
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
@@ -206,7 +211,7 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["/api/saves/check", item?.id] });
       const previous = queryClient.getQueryData(["/api/saves/check", item?.id]);
-      queryClient.setQueryData(["/api/saves/check", item?.id], { isPinned: !isSaved });
+      queryClient.setQueryData(["/api/saves/check", item?.id], !isSaved);
       return { previous };
     },
     onError: (err, _vars, context) => {

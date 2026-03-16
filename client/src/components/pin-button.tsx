@@ -102,9 +102,15 @@ export function PinButton({
             })()
           })
         });
-        // 409 = already pinned — treat as success
-        if (res.status === 409) {
-          return { action: 'pinned' };
+        // 409 or 400 "Already pinned" — treat as success
+        if (res.status === 409 || res.status === 400) {
+          const body = await res.json().catch(() => ({}));
+          if (body.error === "Already pinned") {
+            return { action: 'pinned' };
+          }
+          // Actual validation error
+          console.error('[PinButton] Save validation failed:', body.details || body.error);
+          throw new Error('Save validation failed');
         }
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
@@ -118,7 +124,8 @@ export function PinButton({
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['/api/saves/check', itemId] });
       const previous = queryClient.getQueryData(['/api/saves/check', itemId]);
-      queryClient.setQueryData(['/api/saves/check', itemId], { isPinned: !isPinned });
+      // queryFn returns a boolean, so set the cache to a boolean (not an object)
+      queryClient.setQueryData(['/api/saves/check', itemId], !isPinned);
       return { previous };
     },
     onError: (err, _vars, context) => {
