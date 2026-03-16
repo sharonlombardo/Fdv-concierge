@@ -1517,8 +1517,9 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           sourceStory="Morocco"
           tiles={getCarouselItems('morocco').map((c: any) => {
               const t = getTile('morocco', c.tileId);
+              const genome = c.genomeKey ? getProductByKey(c.genomeKey) : null;
               const brandFromLabel = c.label?.split('—')[0]?.split('–')[0]?.trim();
-              return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, genomeKey: c.genomeKey, price: c.price };
+              return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, shopUrl: genome?.url || t?.shopUrl, genomeKey: c.genomeKey, price: c.price };
             })}
         />
       </section>
@@ -1665,8 +1666,9 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           sourceStory="Hydra"
           tiles={getCarouselItems('hydra').map((c: any) => {
             const t = getTile('hydra', c.tileId);
+            const genome = c.genomeKey ? getProductByKey(c.genomeKey) : null;
             const brandFromLabel = c.label?.split('—')[0]?.split('–')[0]?.trim();
-            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, genomeKey: c.genomeKey, price: c.price };
+            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, shopUrl: genome?.url || t?.shopUrl, genomeKey: c.genomeKey, price: c.price };
           })}
         />
       </section>
@@ -1817,8 +1819,9 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           sourceStory="Spain"
           tiles={getCarouselItems('spain').map((c: any) => {
             const t = getTile('spain', c.tileId);
+            const genome = c.genomeKey ? getProductByKey(c.genomeKey) : null;
             const brandFromLabel = c.label?.split('—')[0]?.split('–')[0]?.trim();
-            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, shopUrl: t?.shopUrl, genomeKey: c.genomeKey, price: c.price };
+            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, shopUrl: genome?.url || t?.shopUrl, genomeKey: c.genomeKey, price: c.price };
           })}
         />
       </section>
@@ -1930,8 +1933,9 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           sourceStory="Retreat"
           tiles={getCarouselItems('retreat').map((c: any) => {
             const t = getTile('retreat', c.tileId);
+            const genome = c.genomeKey ? getProductByKey(c.genomeKey) : null;
             const brandFromLabel = c.label?.split('—')[0]?.split('–')[0]?.trim();
-            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, genomeKey: c.genomeKey, price: c.price };
+            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, shopUrl: genome?.url || t?.shopUrl, genomeKey: c.genomeKey, price: c.price };
           })}
         />
       </section>
@@ -2118,8 +2122,9 @@ export default function CurrentFeed({ embedded = false }: { embedded?: boolean }
           sourceStory="New York"
           tiles={getCarouselItems('newyork').map((c: any) => {
             const t = getTile('newyork', c.tileId);
+            const genome = c.genomeKey ? getProductByKey(c.genomeKey) : null;
             const brandFromLabel = c.label?.split('—')[0]?.split('–')[0]?.trim();
-            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, genomeKey: c.genomeKey, price: c.price };
+            return { id: c.tileId, assetKey: c.assetKey || c.tileId, caption: c.label, bucket: "Your Style", pinType: t?.pinType || "style", brand: t?.brand || brandFromLabel, shopUrl: genome?.url || t?.shopUrl, genomeKey: c.genomeKey, price: c.price };
           })}
         />
       </section>

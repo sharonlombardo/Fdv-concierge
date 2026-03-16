@@ -285,9 +285,9 @@
     ],
     "price": "$745",
     "price_numeric": 745,
-    "description": "Viscose knit long black dress. Coming soon.",
+    "description": "Viscose knit long black dress.",
     "url": "https://www.fildevie.com",
-    "shop_status": "coming_soon",
+    "shop_status": "live",
     "wellspring_atelier_codes": [
       "Knit Column",
       "Viscose Fluid",
