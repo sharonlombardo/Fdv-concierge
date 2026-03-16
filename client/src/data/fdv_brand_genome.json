@@ -66,7 +66,7 @@
   },
   {
     "database_match_key": "LOOK:RAYBAN:PUFFEDWAYFARER:BLACK.jpg",
-    "category": "ACCESSORY",
+    "category": "ACCESSORY: SUNGLASSES",
     "brand": "RayBan",
     "name": "Puffed Wayfarer",
     "color": "Black",
@@ -192,7 +192,7 @@
   },
   {
     "database_match_key": "LOOK:PHOEBEPHILO:BOMBESUNGLASSES:BROWN.jpg",
-    "category": "ACCESSORY",
+    "category": "ACCESSORY: SUNGLASSES",
     "brand": "Phoebe Philo",
     "name": "Bombe Sunglasses",
     "color": "Black",
@@ -362,7 +362,7 @@
   },
   {
     "database_match_key": "ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg",
-    "category": "ACCESSORY",
+    "category": "ACCESSORY: SUNGLASSES",
     "brand": "Phoebe Philo",
     "name": "Peak Sunglasses",
     "color": "Black",
@@ -1062,26 +1062,6 @@
     ]
   },
   {
-    "database_match_key": "feb 26 prod info pg 1.jpg - Item 3",
-    "category": "BEAUTY",
-    "brand": "Hildegaard",
-    "name": "Immortelle Haute Botanical Facial Oil",
-    "color": "",
-    "sizes": [
-      "O/S"
-    ],
-    "price": "$375",
-    "price_numeric": 375,
-    "description": "Haute Botanical Facial Oil 50 ml / 1.7 Fl. Oz.",
-    "url": "https://hildegaard.com/products/immortellehildegaard%20immortellehaute%20botanicalfacial%20oil",
-    "shop_status": "live",
-    "wellspring_atelier_codes": [
-      "Botanical Alchemy",
-      "Pure Extract",
-      "Ritual Beauty"
-    ]
-  },
-  {
     "database_match_key": "feb 26 prod info pg 1.jpg - Item 5",
     "category": "ACCESSORY: BAG",
     "brand": "Bottega Veneta",
@@ -1556,7 +1536,7 @@
   },
   {
     "database_match_key": "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg",
-    "category": "LOOK",
+    "category": "FOOTWEAR",
     "brand": "Phoebe Philo",
     "name": "Ankle Boot",
     "color": "Black",
@@ -1751,7 +1731,7 @@
   },
   {
     "database_match_key": "BEAUTY:FDV:TRAVELMIST.jpg",
-    "category": "ACCESSORY",
+    "category": "BEAUTY",
     "brand": "FIL DE VIE",
     "name": "Travel Mist",
     "color": "",
@@ -1940,7 +1920,7 @@
   },
   {
     "database_match_key": "ACCESSORY:BULGAR:SERPENTI:BLK.jpg",
-    "category": "ACCESSORY",
+    "category": "ACCESSORY: JEWELRY",
     "brand": "Bulgari",
     "name": "Serpenti watch",
     "color": "Black/Rose Gold",
@@ -2003,7 +1983,7 @@
   },
   {
     "database_match_key": "accessory:jewelry:fildevie:silverlinknecklace.jpg",
-    "category": "ACCESSORY",
+    "category": "ACCESSORY: JEWELRY",
     "brand": "FIL DE VIE",
     "name": "Link Necklace",
     "color": "Silver",

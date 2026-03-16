@@ -9,9 +9,9 @@ const IMAGE_ADJUST: Record<string, { position?: string; scale?: number }> = {
   "look:aimeleondore:quarterzipset:black.jpg": { scale: 1.4, position: "center 45%" },
   "look:phoebephilo:cashmeretracksuit:espresso.jpg": { scale: 1.3, position: "center 25%" },
   "fil de vie look grecian dress.jpg": { scale: 1.3, position: "center 30%" },
-  "look:fearofgod:leathercoat:espresso.jpg": { scale: 1.4, position: "center 60%" },
-  "look:jilsander:silkfluidset:black.jpg": { scale: 1.3, position: "center 40%" },
-  "look:therow:cashmeretracksuit:cream.jpg": { scale: 1.5, position: "center 35%" },
+  "look:fearofgod:leathercoat:espresso.jpg": { scale: 1.8, position: "center 55%" },
+  "look:jilsander:silkfluidset:black.jpg": { scale: 1.7, position: "center 40%" },
+  "look:therow:cashmeretracksuit:cream.jpg": { scale: 2.4, position: "center 30%" },
 };
 
 const CATEGORIES = [
