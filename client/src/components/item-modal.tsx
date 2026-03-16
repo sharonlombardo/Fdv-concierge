@@ -221,12 +221,14 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
       console.error('[ItemModal] Save error:', err);
     },
     onSuccess: () => {
+      // Explicitly set pin state so it stays gold without waiting for refetch
+      queryClient.setQueryData(["/api/saves/check", item?.id], !isSaved);
+
       if (!isSaved && item) {
         fireEvent("save_item", item.id, undefined, { source: "modal", title: item.title });
       }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/saves/check", item?.id] });
+
+      // Refresh saves list in background
       queryClient.invalidateQueries({ queryKey: ["/api/saves"] });
     },
   });

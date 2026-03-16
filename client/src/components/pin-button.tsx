@@ -136,19 +136,27 @@ export function PinButton({
       toast({ description: 'Could not save — please try again', duration: 3000 });
     },
     onSuccess: (data) => {
+      // Explicitly set the cache to the correct boolean value
+      // so pin stays gold without waiting for refetch
+      const pinned = data.action === 'pinned';
+      queryClient.setQueryData(['/api/saves/check', itemId], pinned);
+
       toast({
-        description: data.action === 'pinned' ? 'Saved to your Suitcase' : 'Removed from Suitcase',
+        description: pinned ? 'Saved to your Suitcase' : 'Removed from Suitcase',
         duration: 2000
       });
 
-      if (data.action === 'pinned') {
+      if (pinned) {
         triggerSaveEvent();
         if (onPinSuccess) onPinSuccess();
       }
+
+      // Refresh the saves list in background (but don't re-check this pin — we already know)
+      queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/saves/check', itemId] });
-      queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
+      // Don't invalidate the check query here — onSuccess already set it correctly
+      // Invalidating would trigger a refetch that could briefly flash the old state
     }
   });
 
