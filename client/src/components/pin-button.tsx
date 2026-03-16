@@ -161,15 +161,15 @@ export function PinButton({
   });
 
   const sizeClasses = {
-    sm: "h-7 w-7",
-    md: "h-10 w-10",
-    lg: "h-12 w-12"
+    sm: "h-9 w-9",     // 36px (was 28px)
+    md: "h-11 w-11",   // 44px (was 40px)
+    lg: "h-14 w-14"    // 56px (was 48px)
   };
 
   const iconSizes = {
-    sm: 17,
-    md: 22,
-    lg: 26
+    sm: 22,   // was 17
+    md: 26,   // was 22
+    lg: 30    // was 26
   };
 
   return (
