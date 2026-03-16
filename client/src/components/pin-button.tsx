@@ -80,7 +80,7 @@ export function PinButton({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            itemType,
+            itemType: itemType || 'style',
             itemId,
             sourceContext,
             aestheticTags,
@@ -99,19 +99,33 @@ export function PinButton({
             })()
           })
         });
-        // 400 = already pinned — treat as success (idempotent)
-        if (res.status === 400) {
+        // 409 = already pinned — treat as success
+        if (res.status === 409) {
           return { action: 'pinned' };
         }
-        if (!res.ok) throw new Error('Failed to pin');
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          console.error('[PinButton] Save failed:', res.status, body);
+          throw new Error('Failed to pin');
+        }
         incrementSaveCount();
         return { action: 'pinned' };
       }
     },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['/api/saves/check', itemId] });
+      const previous = queryClient.getQueryData(['/api/saves/check', itemId]);
+      queryClient.setQueryData(['/api/saves/check', itemId], { isPinned: !isPinned });
+      return { previous };
+    },
+    onError: (err, _vars, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(['/api/saves/check', itemId], context.previous);
+      }
+      console.error('[PinButton] Save failed:', err);
+      toast({ description: 'Could not save — please try again', duration: 3000 });
+    },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/saves/check', itemId] });
-
       toast({
         description: data.action === 'pinned' ? 'Saved to your Suitcase' : 'Removed from Suitcase',
         duration: 2000
@@ -121,6 +135,10 @@ export function PinButton({
         triggerSaveEvent();
         if (onPinSuccess) onPinSuccess();
       }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/saves/check', itemId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
     }
   });
 

@@ -170,10 +170,10 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            itemType: item!.pinType,
+            itemType: item!.pinType || 'style',
             itemId: item!.id,
             sourceContext: "item_modal",
-            aestheticTags: [item!.bucket.toLowerCase(), item!.pinType.toLowerCase(), item!.storyTag],
+            aestheticTags: [item!.bucket?.toLowerCase(), item!.pinType?.toLowerCase(), item!.storyTag].filter(Boolean),
             savedAt: Date.now(),
             metadata: { title: item!.title, imageUrl: item!.imageUrl, brand: brand, shopUrl: shopUrl, bookUrl: bookUrl, price: price },
             storyTag: item!.storyTag,
@@ -182,7 +182,7 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
             title: item!.title,
             assetUrl: item!.imageUrl || "",
             brand: brand || undefined,
-            price: price || undefined,
+            price: typeof price === 'number' ? String(price) : (price || undefined),
             shopUrl: shopUrl || undefined,
             bookUrl: bookUrl || undefined,
             category: (() => {
@@ -192,16 +192,37 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
             })(),
           }),
         });
-        // 400 = already saved — treat as success
-        if (res.status !== 400 && !res.ok) throw new Error('Failed to save');
+        // 409 = already saved — that's fine
+        if (res.status === 409) {
+          return;
+        }
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          console.error('[ItemModal] Save failed:', res.status, body);
+          throw new Error('Failed to save');
+        }
       }
     },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["/api/saves/check", item?.id] });
+      const previous = queryClient.getQueryData(["/api/saves/check", item?.id]);
+      queryClient.setQueryData(["/api/saves/check", item?.id], { isPinned: !isSaved });
+      return { previous };
+    },
+    onError: (err, _vars, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(["/api/saves/check", item?.id], context.previous);
+      }
+      console.error('[ItemModal] Save error:', err);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/saves/check", item?.id] });
-      queryClient.invalidateQueries({ queryKey: ["/api/saves"] });
       if (!isSaved && item) {
         fireEvent("save_item", item.id, undefined, { source: "modal", title: item.title });
       }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/saves/check", item?.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/saves"] });
     },
   });
 

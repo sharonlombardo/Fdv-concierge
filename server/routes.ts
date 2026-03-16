@@ -511,7 +511,7 @@ export async function registerRoutes(
       
       const existing = await storage.getSaveByItemId(data.itemId);
       if (existing) {
-        return res.status(400).json({ error: "Already pinned" });
+        return res.status(409).json({ error: "Already pinned" });
       }
 
       const newSave = await storage.addSave({
