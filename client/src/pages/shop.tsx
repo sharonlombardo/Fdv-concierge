@@ -3,8 +3,6 @@ import { getAllProducts, getShopImageUrl, type BrandGenomeProduct } from "@/lib/
 import { ItemModal } from "@/components/item-modal";
 import type { ItemModalData } from "@/components/item-modal";
 
-const BLOB_BASE = "blob.vercel-storage.com";
-
 const CATEGORIES = [
   { key: "ALL", label: "All" },
   { key: "STYLE", label: "Style" },
@@ -206,7 +204,7 @@ export default function ShopPage() {
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: imgUrl.includes(BLOB_BASE) ? "contain" : "cover",
+                        objectFit: "cover",
                       }}
                       loading="lazy"
                     />
