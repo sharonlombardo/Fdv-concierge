@@ -80,7 +80,7 @@ export default function ShopPage() {
         background: "#fff",
       }}
     >
-      <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 20px" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 20px" }}>
         <header style={{ textAlign: "center", marginBottom: 20, paddingTop: 8 }}>
           <h1
             style={{
@@ -156,14 +156,24 @@ export default function ShopPage() {
           {filteredProducts.length} piece{filteredProducts.length !== 1 ? "s" : ""}
         </p>
 
-        {/* Product grid — B&W aesthetic */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: 2,
-          }}
-        >
+        {/* Product grid — B&W aesthetic, responsive columns */}
+        <style>{`
+          .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px;
+          }
+          @media (min-width: 600px) {
+            .shop-grid { grid-template-columns: repeat(3, 1fr); }
+          }
+          @media (min-width: 900px) {
+            .shop-grid { grid-template-columns: repeat(4, 1fr); }
+          }
+          @media (min-width: 1100px) {
+            .shop-grid { grid-template-columns: repeat(5, 1fr); }
+          }
+        `}</style>
+        <div className="shop-grid">
           {filteredProducts.map((product) => {
             const imgUrl = getImgUrl(product);
 
