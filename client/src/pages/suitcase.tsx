@@ -461,12 +461,15 @@ function SavedItemCard({ save, onRemove, onClick, getImageUrl }: {
   const imageUrl = getImageUrl(imageKey, fallbackUrl);
   let genomeKey = save.metadata?.genomeKey || save.metadata?.assetKey || '';
   // For look/wardrobe saves from daily flow, extract genome key from flow ID mappings
-  if (!genomeKey && (save.itemType === 'look' || save.itemId.includes('-look') || save.itemId.includes('-wardrobe'))) {
-    // Extract flow ID like "d1-1" from itemIds like "d1-1-look", "d1-1-wardrobe", "morocco-d3-5-look"
+  // FLOW_LOOK_GENOME_KEY maps flow event IDs → look genome keys (correct for look saves)
+  // SECTION_LOOK_GENOME_KEY maps packing-grid positions → ANY product (wrong for look saves — d2-7 = hoops, not Honora Dress)
+  if (save.itemType === 'look' || save.itemId.includes('-look') || save.itemId.includes('-wardrobe')) {
     const flowMatch = save.itemId.match(/(d\d+-\d+)/);
     if (flowMatch) {
       const flowId = flowMatch[1];
-      genomeKey = SECTION_LOOK_GENOME_KEY[flowId] || FLOW_LOOK_GENOME_KEY[flowId] || '';
+      // Always prefer FLOW_LOOK_GENOME_KEY for look items — it has the correct outfit mapping
+      const flowGenomeKey = FLOW_LOOK_GENOME_KEY[flowId] || '';
+      if (flowGenomeKey) genomeKey = flowGenomeKey;
     }
   }
   // Studio shots take priority for products — old save records have stale itinerary URLs baked in
@@ -830,12 +833,13 @@ export default function SuitcasePage() {
     const imageKey = getImageKey(save.itemId);
     const savedImageUrl = getImageUrl(imageKey, save.assetUrl || save.metadata?.imageUrl || '');
     let modalGenomeKey = save.metadata?.genomeKey || save.metadata?.assetKey || '';
-    // For look/wardrobe saves, resolve genome key from flow ID mappings
-    if (!modalGenomeKey && (save.itemType === 'look' || save.itemId.includes('-look') || save.itemId.includes('-wardrobe'))) {
+    // For look/wardrobe saves, resolve genome key from FLOW map (not SECTION — different numbering)
+    if (save.itemType === 'look' || save.itemId.includes('-look') || save.itemId.includes('-wardrobe')) {
       const flowMatch = save.itemId.match(/(d\d+-\d+)/);
       if (flowMatch) {
         const flowId = flowMatch[1];
-        modalGenomeKey = SECTION_LOOK_GENOME_KEY[flowId] || FLOW_LOOK_GENOME_KEY[flowId] || '';
+        const flowGenomeKey = FLOW_LOOK_GENOME_KEY[flowId] || '';
+        if (flowGenomeKey) modalGenomeKey = flowGenomeKey;
       }
     }
     // Studio shots take priority — old save records have stale itinerary URLs
