@@ -327,7 +327,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/exp-1-small1.jpg`} alt="Badi Palace detail" /></div>
           <div className="img-small"><img src={`${IMG}/exp-1-small2.jpg`} alt="Badi Palace moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-badi-palace" itemData={{ title: "Badi Palace", description: "Ruins, scale, silence.", imageUrl: `${IMG}/exp-1-large.jpg`, storyTag: "morocco", bookUrl: "http://www.badipalace.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "culture"]} size="sm" /></div>
           <h3>Badi Palace</h3>
           <div className="tagline">Ruins, scale, silence.</div>
           <div className="description">The 16th-century El Badi Palace is mostly ruins now &mdash; which is exactly why it&rsquo;s powerful. Vast sun-warmed walls, stork nests perched high above, and open courtyards that feel almost surreal against the blue sky. Go late afternoon when the light softens and the crowds thin. It&rsquo;s less about what&rsquo;s left and more about the space it creates.</div>
@@ -346,7 +347,8 @@ export default function MoroccoGuide() {
           <div className="img-slot"><img src={`${IMG}/exp-2-left.jpg`} alt="Jardin Secret" /></div>
           <div className="img-slot"><img src={`${IMG}/exp-2-right.jpg`} alt="Jardin Secret" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-jardin-secret" itemData={{ title: "Jardin Secret", description: "A quiet medina escape.", imageUrl: `${IMG}/exp-2-left.jpg`, storyTag: "morocco", bookUrl: "http://lejardinsecretmarrakech.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "garden"]} size="sm" /></div>
           <h3>Jardin Secret</h3>
           <div className="tagline">A quiet medina escape.</div>
           <div className="description">Hidden within the medina walls, Le Jardin Secret feels like stepping into a private courtyard from another century. Islamic architecture, carved cedar ceilings, and restored gardens that feel calm compared to the surrounding chaos. Climb the tower for a panoramic view &mdash; it&rsquo;s one of the most beautiful in the city.</div>
@@ -364,7 +366,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/exp-3-small1.jpg`} alt="Agafay detail" /></div>
           <div className="img-small"><img src={`${IMG}/exp-3-small2.jpg`} alt="Agafay moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-agafay-desert" itemData={{ title: "Agafay Desert Camp", description: "Desert drama without the five-hour drive.", imageUrl: `${IMG}/exp-3-large.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "nature"]} size="sm" /></div>
           <h3>Agafay Desert Camp</h3>
           <div className="tagline">Desert drama without the five-hour drive.</div>
           <div className="description">Agafay isn&rsquo;t the Sahara &mdash; it&rsquo;s stone desert &mdash; but that&rsquo;s its appeal. Less clich&eacute;, more lunar landscape. An overnight camp gives you that endless horizon feeling without committing to a multi-day trek. Go for sunset. Stay for dinner under the stars. It&rsquo;s theatrical in the best way.</div>
@@ -384,7 +387,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/exp-4-small1.jpg`} alt="Majorelle detail" /></div>
           <div className="img-small"><img src={`${IMG}/exp-4-small2.jpg`} alt="Majorelle moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-jardin-majorelle" itemData={{ title: "Jardin Majorelle", description: "Cobalt blue and exquisite beauty with a side of Saint Laurent", imageUrl: `${IMG}/exp-4-large.jpg`, storyTag: "morocco", bookUrl: "http://jardinmajorelle.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "culture"]} size="sm" /></div>
           <h3>Jardin Majorelle</h3>
           <div className="tagline">Cobalt blue and exquisite beauty with a side of Saint Laurent</div>
           <div className="description">Yes, it&rsquo;s popular. Yes, it&rsquo;s worth it. The Yves Saint Laurent&ndash;owned garden is an immersion in electric Majorelle blue, lush cactus forms, and quiet pathways. Book the first entry time of the day &mdash; it gets crowded quickly. Pair it with the YSL Museum next door if you have even a passing interest in fashion or design.</div>
@@ -412,7 +416,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/eat-1-small1.jpg`} alt="Nomad detail" /></div>
           <div className="img-small"><img src={`${IMG}/eat-1-small2.jpg`} alt="Nomad moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-nomad" itemData={{ title: "Nomad", description: "Rooftop views and modern Moroccan.", imageUrl: `${IMG}/eat-1-large.jpg`, storyTag: "morocco", bookUrl: "http://nomadmarrakech.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant"]} size="sm" /></div>
           <h3>Nomad</h3>
           <div className="tagline">Rooftop views and modern Moroccan.</div>
           <div className="description">Nomad balances local flavors with modern presentation. It&rsquo;s popular but reliable. Sit upstairs. Order small plates and watch the medina shift into evening.</div>
@@ -429,7 +434,8 @@ export default function MoroccoGuide() {
           <div className="img-slot"><img src={`${IMG}/eat-2-left.jpg`} alt="Cafe Bacha" /></div>
           <div className="img-slot"><img src={`${IMG}/eat-2-right.jpg`} alt="Cafe Bacha" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-cafe-bacha" itemData={{ title: "Café Bacha", description: "Decadent morning ritual.", imageUrl: `${IMG}/eat-2-left.jpg`, storyTag: "morocco", bookUrl: "http://bachacoffee.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant", "cafe"]} size="sm" /></div>
           <h3>Caf&eacute; Bacha</h3>
           <div className="tagline">Decadent morning ritual.</div>
           <div className="description">Located inside Dar el Bacha Palace, Caf&eacute; Bacha is all marble, gold accents, and endless coffee options. It&rsquo;s theatrical &mdash; but charming. Go early to avoid lines and sit inside if you can. Order the pastries and commit.</div>
@@ -449,7 +455,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/eat-3-small1.jpg`} alt="La Famille detail" /></div>
           <div className="img-small"><img src={`${IMG}/eat-3-small2.jpg`} alt="La Famille moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-la-famille" itemData={{ title: "La Famille", description: "Vegetarian and unexpectedly chic.", imageUrl: `${IMG}/eat-3-large.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant"]} size="sm" /></div>
           <h3>La Famille</h3>
           <div className="tagline">Vegetarian and unexpectedly chic.</div>
           <div className="description">Tucked away in the medina, La Famille feels like a secret garden lunch. The menu is seasonal, simple, and beautiful. It&rsquo;s light, fresh, and a welcome pause from heavier meals.</div>
@@ -467,7 +474,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/eat-4-small1.jpg`} alt="Le Jardin de Lotus detail" /></div>
           <div className="img-small"><img src={`${IMG}/eat-4-small2.jpg`} alt="Le Jardin de Lotus moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-jardin-de-lotus" itemData={{ title: "Le Jardin de Lotus", description: "Relaxed glamour", imageUrl: `${IMG}/eat-4-large.jpg`, storyTag: "morocco", bookUrl: "https://lejardindelotus.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant"]} size="sm" /></div>
           <h3>Le Jardin de Lotus</h3>
           <div className="tagline">Relaxed glamour</div>
           <div className="description">A more contemporary rooftop option with cocktails and Moroccan-Asian fusion plates. Come at sunset. Stay if the mood is right.</div>
@@ -484,7 +492,8 @@ export default function MoroccoGuide() {
           <div className="img-slot"><img src={`${IMG}/eat-5-left.jpg`} alt="La Mamounia" /></div>
           <div className="img-slot"><img src={`${IMG}/eat-5-right.jpg`} alt="La Mamounia" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-mamounia-drinks" itemData={{ title: "La Mamounia — Evening Drinks", description: "Golden hour, perfected.", imageUrl: `${IMG}/eat-5-left.jpg`, storyTag: "morocco", bookUrl: "http://www.mamounia.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant", "bar"]} size="sm" /></div>
           <h3>La Mamounia &mdash; Evening Drinks</h3>
           <div className="tagline">Golden hour, perfected.</div>
           <div className="description">You don&rsquo;t have to stay here to enjoy it. Come for a pre-dinner drink in the Churchill Bar or on the terrace. It&rsquo;s polished, yes &mdash; but the atmosphere is undeniable. Lean into it.</div>
@@ -504,7 +513,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/eat-6-small1.jpg`} alt="Dar Yacout detail" /></div>
           <div className="img-small"><img src={`${IMG}/eat-6-small2.jpg`} alt="Dar Yacout moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-dar-yacout" itemData={{ title: "Dar Yacout", description: "Traditional Moroccan, done properly.", imageUrl: `${IMG}/eat-6-large.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant"]} size="sm" /></div>
           <h3>Dar Yacout</h3>
           <div className="tagline">Traditional Moroccan, done properly.</div>
           <div className="description">A multi-course feast in a traditional riad setting &mdash; lantern light, tiled courtyards, live musicians. It&rsquo;s over-the-top in the very best way. Go hungry. Don&rsquo;t rush.</div>
@@ -532,7 +542,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/shop-1-small1.jpg`} alt="The Souks detail" /></div>
           <div className="img-small"><img src={`${IMG}/shop-1-small2.jpg`} alt="The Souks moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-souks" itemData={{ title: "The Souks — Of Course", description: "Start here. Then wander.", imageUrl: `${IMG}/shop-1-large.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "shop", "market"]} size="sm" /></div>
           <h3>The Souks &mdash; Of Course</h3>
           <div className="tagline">Start here. Then wander.</div>
           <div className="description">
@@ -555,7 +566,8 @@ export default function MoroccoGuide() {
           <div className="img-slot"><img src={`${IMG}/shop-2-left.jpg`} alt="El Fenn Gift Shop" /></div>
           <div className="img-slot"><img src={`${IMG}/shop-2-right.jpg`} alt="El Fenn Gift Shop" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-elfenn-shop" itemData={{ title: "El Fenn Gift Shop", description: "Actually chic souvenirs.", imageUrl: `${IMG}/shop-2-left.jpg`, storyTag: "morocco", bookUrl: "http://www.elfenn.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "shop"]} size="sm" /></div>
           <h3>El Fenn Gift Shop</h3>
           <div className="tagline">Actually chic souvenirs.</div>
           <div className="description">Not the usual tourist trinkets. The El Fenn boutique curates ceramics, textiles, books, and home pieces that feel elevated. It&rsquo;s where you find something you&rsquo;ll genuinely keep &mdash; not just pack.</div>
@@ -575,7 +587,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/shop-3-small1.jpg`} alt="Mustapha Blaoui detail" /></div>
           <div className="img-small"><img src={`${IMG}/shop-3-small2.jpg`} alt="Mustapha Blaoui moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-mustapha-blaoui" itemData={{ title: "Mustapha Blaoui", description: "Treasure hunting at scale.", imageUrl: `${IMG}/shop-3-large.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "shop"]} size="sm" /></div>
           <h3>Mustapha Blaoui</h3>
           <div className="tagline">Treasure hunting at scale.</div>
           <div className="description">If you love objects &mdash; lamps, ceramics, carved doors, vintage finds &mdash; this is the place. It&rsquo;s layered and slightly dusty and entirely addictive. You&rsquo;ll want to ship things home. You probably should.</div>
@@ -590,7 +603,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/shop-4-small1.jpg`} alt="Max & Jan detail" /></div>
           <div className="img-small"><img src={`${IMG}/shop-4-small2.jpg`} alt="Max & Jan moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-max-jan" itemData={{ title: "Max & Jan", description: "Modern Marrakech.", imageUrl: `${IMG}/shop-4-large.jpg`, storyTag: "morocco", bookUrl: "http://www.maxandjan.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "shop"]} size="sm" /></div>
           <h3>Max &amp; Jan</h3>
           <div className="tagline">Modern Marrakech.</div>
           <div className="description">A contemporary boutique blending Moroccan craftsmanship with European silhouettes. Graphic prints, sharp tailoring, and pieces that travel well. It&rsquo;s a smart edit if you want something local but wearable back home.</div>
@@ -618,7 +632,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/stay-1-small1.jpg`} alt="El Fenn detail" /></div>
           <div className="img-small"><img src={`${IMG}/stay-1-small2.jpg`} alt="El Fenn moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-el-fenn" itemData={{ title: "El Fenn", description: "Color, art, and rooftop sunsets.", imageUrl: `${IMG}/stay-1-large.jpg`, storyTag: "morocco", bookUrl: "http://www.elfenn.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div>
           <h3>El Fenn</h3>
           <div className="tagline">Color, art, and rooftop sunsets.</div>
           <div className="description">Owned by Vanessa Branson, El Fenn is Marrakech at its most curated &mdash; bold colors, modern art, layered textiles. The rooftop pool at sunset is reason enough to stay. It&rsquo;s lively but intimate, and the design feels intentional without being overly staged. <em>My favorite place to stay &mdash; close to everything you&rsquo;ll want to do.</em></div>
@@ -636,7 +651,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/stay-2-small1.jpg`} alt="Riad Jardin Secret detail" /></div>
           <div className="img-small"><img src={`${IMG}/stay-2-small2.jpg`} alt="Riad Jardin Secret moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-riad-jardin-secret" itemData={{ title: "Riad Jardin Secret", description: "Intimate, traditional, serene.", imageUrl: `${IMG}/stay-2-large.jpg`, storyTag: "morocco", bookUrl: "http://www.riad-jardinsecret.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div>
           <h3>Riad Jardin Secret</h3>
           <div className="tagline">Intimate, traditional, serene.</div>
           <div className="description">Tucked inside the medina, this riad offers the opposite of hotel grandeur &mdash; quiet courtyards, carved wood, and a sense of privacy. It feels personal and atmospheric. Perfect if you want immersion over spectacle.</div>
@@ -656,7 +672,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/stay-3-small1.jpg`} alt="La Mamounia detail" /></div>
           <div className="img-small"><img src={`${IMG}/stay-3-small2.jpg`} alt="La Mamounia moment" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-la-mamounia" itemData={{ title: "La Mamounia", description: "Iconic. Unapologetically grand.", imageUrl: `${IMG}/stay-3-large.jpg`, storyTag: "morocco", bookUrl: "http://mamounia.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div>
           <h3>La Mamounia</h3>
           <div className="tagline">Iconic. Unapologetically grand.</div>
           <div className="description">La Mamounia is not understated &mdash; it&rsquo;s cinematic, historic, and slightly over the top in the best way. The gardens alone are worth walking through. Stay if you want full classic Moroccan luxury. Or just come for drinks at sunset and let the tiled corridors and candlelight do the rest.</div>
@@ -687,7 +704,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`} alt="Bottega Veneta Kalimero Bag" /></div>
           <div className="img-small"><img src={`${IMG}/ward-1-small2_bulgari_necklace.jpg`} alt="Bulgari Necklace" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-day-look" itemData={{ title: "Day in the Medina", description: "Medina uniform.", imageUrl: `${IMG}/ward-day-large.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
           <h3>Day in the Medina</h3>
           <div className="tagline">Medina uniform.</div>
           <div className="description">Linen you can breathe in. Stripes that feel intentional but not precious. Flat sandals because you&rsquo;ll be walking more than you expect. Gold, but not too much. Hair slightly undone. It moves with you &mdash; which is the whole point.</div>
@@ -712,7 +730,8 @@ export default function MoroccoGuide() {
           <div className="img-small"><img src={`${IMG}/ward-2-small1_chloe_wristless_bag.jpg`} alt="Chloé Wristlette Bag" /></div>
           <div className="img-small"><img src={`${IMG}/ward-2-small2_poppyking_red.jpg`} alt="PoppyKing Lipstick" /></div>
         </div>
-        <div className="place-info">
+        <div className="place-info" style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}><PinButton itemType="place" itemId="guide-morocco-evening-look" itemData={{ title: "Riad Evenings", description: "Marrakech does drama. You might as well participate.", imageUrl: `${IMG}/ward-eve-large.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
           <h3>Riad Evenings</h3>
           <div className="tagline">Marrakech does drama. You might as well participate.</div>
           <div className="description">Lantern light, warm stone, a drink resting on the table while you lean in. Black feels intentional here. Slightly dangerous in candlelight. In a good way. You&rsquo;ll stay longer than planned. You won&rsquo;t regret it.</div>
