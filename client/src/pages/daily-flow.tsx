@@ -53,6 +53,7 @@ import {
   FLOW_LOOK_GENOME_KEY,
   EXTRA_KEY_TO_GENOME,
   getSlotProducts,
+  getShopImageUrl,
 } from "@/lib/brand-genome";
 
 function isDayPage(page: ItineraryPage): page is DayPage {
@@ -298,13 +299,16 @@ function InlineFlowDetail({
     };
   }, []);
 
-  // Wardrobe image
-  const wardrobeUrl = item.commercialWardrobe
+  // Wardrobe image — studio shots take priority
+  const lookGenomeKey = FLOW_LOOK_GENOME_KEY[item.id];
+  const wardrobeStudioUrl = lookGenomeKey ? getShopImageUrl(lookGenomeKey) : '';
+  const wardrobeFallback = item.commercialWardrobe
     ? getImageUrl(`${item.id}-wardrobe`, item.commercialWardrobe, {
         imageType: "wardrobe",
         title: item.title,
       })
     : null;
+  const wardrobeUrl = wardrobeStudioUrl || wardrobeFallback;
 
   return (
     <div style={{ padding: "20px 0", borderTop: "1px solid #e8e0d4", animation: "fadeIn 0.3s ease" }}>
@@ -443,8 +447,10 @@ function InlineFlowDetail({
                   const genomeKey = slotEntry?.key || EXTRA_KEY_TO_GENOME[extraKey] || null;
                   const product = slotEntry?.product || (genomeKey ? getProductByKey(genomeKey) : undefined);
                   const customImageUrl = hasCustomImage(extraKey) ? getImageUrl(extraKey, "") : null;
+                  // Studio shots take priority for accessories
+                  const extraStudioUrl = genomeKey ? getShopImageUrl(genomeKey) : '';
                   const blobUrl = getProductImageUrl(genomeKey || "", item.id, extraKey);
-                  const imgUrl = customImageUrl || blobUrl;
+                  const imgUrl = extraStudioUrl || customImageUrl || blobUrl;
 
                   return (
                     <div key={index} style={{ flex: "1 1 0px", minWidth: 0, textAlign: "center" }}>
