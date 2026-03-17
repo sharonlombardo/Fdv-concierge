@@ -60,7 +60,7 @@ import {
   EditorialDaySection
 } from '@/components/editorial-sections';
 import { LoadingImage } from '@/components/loading-image';
-import { getProductByKey, getProductDisplayName, isShoppable, SECTION_LOOK_GENOME_KEY, FLOW_LOOK_GENOME_KEY, EXTRA_KEY_TO_GENOME } from '@/lib/brand-genome';
+import { getProductByKey, getProductDisplayName, isShoppable, getShopImageUrl, SECTION_LOOK_GENOME_KEY, FLOW_LOOK_GENOME_KEY, EXTRA_KEY_TO_GENOME } from '@/lib/brand-genome';
 
 function isDayPage(page: ItineraryPage): page is DayPage {
   return 'day' in page;
@@ -463,16 +463,21 @@ function ItemDetailDrawer({
             <p className="text-base font-medium italic opacity-70 leading-relaxed mb-8">"{item.wardrobe}"</p>
             
             <div className="space-y-6">
+              {(() => {
+                const lookGenomeKey = FLOW_LOOK_GENOME_KEY[item.id] || SECTION_LOOK_GENOME_KEY[item.id];
+                const wardrobeStudioUrl = lookGenomeKey ? getShopImageUrl(lookGenomeKey) : '';
+                const wardrobeFallback = getImageUrl(`${item.id}-wardrobe`, item.commercialWardrobe || "", { imageType: 'wardrobe', title: item.title });
+                const wardrobeImgUrl = wardrobeStudioUrl || wardrobeFallback;
+                const gp = lookGenomeKey ? getProductByKey(lookGenomeKey) : undefined;
+                return (<>
               <div className="space-y-4">
                 <div
                   className="w-full max-w-xs mx-auto rounded-md relative cursor-pointer"
                   onClick={() => {
                     if (onOpenProductModal) {
-                      const lookGenomeKey = FLOW_LOOK_GENOME_KEY[item.id] || SECTION_LOOK_GENOME_KEY[item.id];
-                      const gp = lookGenomeKey ? getProductByKey(lookGenomeKey) : undefined;
                       onOpenProductModal({
                         title: gp?.name || `${item.title} - The Look`,
-                        imageUrl: getImageUrl(`${item.id}-wardrobe`, item.commercialWardrobe || "", { imageType: 'wardrobe', title: item.title }),
+                        imageUrl: wardrobeImgUrl,
                         itemId: `${item.id}-look`,
                         brand: gp?.brand || undefined,
                         description: gp?.description || item.wardrobe,
@@ -484,45 +489,30 @@ function ItemDetailDrawer({
                   }}
                 >
                   <img
-                    src={getImageUrl(
-                      `${item.id}-wardrobe`,
-                      item.commercialWardrobe || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800",
-                      { imageType: 'wardrobe', title: item.title }
-                    )}
+                    src={wardrobeImgUrl}
                     className="rounded-md w-full"
                     onLoad={(e) => {
-                      // Force natural aspect ratio display
                       const img = e.currentTarget;
                       img.style.height = 'auto';
                     }}
                     alt="Style recommendation"
                   />
                   <div className="absolute top-3 right-3 z-10">
-                    {(() => {
-                      const pinGenomeKey = FLOW_LOOK_GENOME_KEY[item.id] || SECTION_LOOK_GENOME_KEY[item.id];
-                      const pinProduct = pinGenomeKey ? getProductByKey(pinGenomeKey) : undefined;
-                      return (
-                        <PinButton
-                          itemType="look"
-                          itemId={`${item.id}-look`}
-                          itemData={{
-                            title: pinProduct?.name || `${item.title} - The Look`,
-                            description: pinProduct?.description || item.wardrobe,
-                            imageUrl: getImageUrl(
-                              `${item.id}-wardrobe`,
-                              item.commercialWardrobe || "",
-                              { imageType: 'wardrobe', title: item.title }
-                            ),
-                            editTag: 'morocco-edit',
-                            storyTag: 'morocco',
-                            genomeKey: pinGenomeKey || undefined,
-                          }}
-                          sourceContext="morocco_itinerary"
-                          aestheticTags={['look', 'outfit', 'style']}
-                          size="md"
-                        />
-                      );
-                    })()}
+                    <PinButton
+                      itemType="look"
+                      itemId={`${item.id}-look`}
+                      itemData={{
+                        title: gp?.name || `${item.title} - The Look`,
+                        description: gp?.description || item.wardrobe,
+                        imageUrl: wardrobeImgUrl,
+                        editTag: 'morocco-edit',
+                        storyTag: 'morocco',
+                        genomeKey: lookGenomeKey || undefined,
+                      }}
+                      sourceContext="morocco_itinerary"
+                      aestheticTags={['look', 'outfit', 'style']}
+                      size="md"
+                    />
                   </div>
                 </div>
                 <div className="flex justify-between items-center max-w-md mx-auto">
@@ -540,23 +530,23 @@ function ItemDetailDrawer({
                   const placeholderName = ['Footwear', 'Handbag', 'Jewelry', 'Accessory'][index];
                   const extraGenomeKey = EXTRA_KEY_TO_GENOME[extraKey];
                   const extraProduct = extraGenomeKey ? getProductByKey(extraGenomeKey) : undefined;
+                  const studioExtraUrl = extraGenomeKey ? getShopImageUrl(extraGenomeKey) : '';
+                  const extraImgUrl = studioExtraUrl || customImageUrl || getImageUrl(extraKey, extra?.image || '');
 
                   return (
                     <div key={index} className="space-y-2">
                       <div className="aspect-[3/4] bg-card border border-border rounded-md overflow-hidden relative group">
-                        {hasImage ? (
+                        {hasImage || studioExtraUrl ? (
                           <>
                             <img
-                              src={getImageUrl(extraKey, extra?.image || '')}
+                              src={extraImgUrl}
                               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
                               alt={extra?.name || placeholderName}
                               onClick={() => {
                                 if (onOpenProductModal) {
-                                  const extraGenomeKey = EXTRA_KEY_TO_GENOME[extraKey];
-                                  const extraProduct = extraGenomeKey ? getProductByKey(extraGenomeKey) : undefined;
                                   onOpenProductModal({
                                     title: extraProduct?.name || extra?.name || placeholderName,
-                                    imageUrl: getImageUrl(extraKey, extra?.image || ''),
+                                    imageUrl: extraImgUrl,
                                     itemId: extraKey,
                                     brand: extraProduct?.brand || undefined,
                                     description: extraProduct?.description || undefined,
@@ -573,7 +563,7 @@ function ItemDetailDrawer({
                                 itemId={extraKey}
                                 itemData={{
                                   title: extra?.name || placeholderName,
-                                  imageUrl: getImageUrl(extraKey, extra?.image || ''),
+                                  imageUrl: extraImgUrl,
                                   shopLink: extra?.shopLink,
                                   editTag: 'morocco-edit',
                                   storyTag: 'morocco',
@@ -613,6 +603,8 @@ function ItemDetailDrawer({
                   );
                 })}
               </div>
+                </>);
+              })()}
             </div>
           </div>
         )}
