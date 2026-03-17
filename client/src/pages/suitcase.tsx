@@ -12,7 +12,7 @@ import { useCustomImages } from "@/hooks/use-custom-images";
 import { CuratingAnimation } from "@/components/curating-animation";
 import { PRESET_CAPSULES, type Capsule } from "@/data/capsule-data";
 import { useUser } from "@/contexts/user-context";
-import { getProductByKey, getAllProducts, getShopImageUrl } from "@/lib/brand-genome";
+import { getProductByKey, getAllProducts, getShopImageUrl, SECTION_LOOK_GENOME_KEY, FLOW_LOOK_GENOME_KEY } from "@/lib/brand-genome";
 
 const LS_SAVED_CAPSULES_KEY = "fdv_saved_capsules";
 
@@ -459,7 +459,16 @@ function SavedItemCard({ save, onRemove, onClick, getImageUrl }: {
   const imageKey = getImageKey(save.itemId);
   const fallbackUrl = save.assetUrl || save.metadata?.imageUrl || '';
   const imageUrl = getImageUrl(imageKey, fallbackUrl);
-  const genomeKey = save.metadata?.genomeKey || save.metadata?.assetKey || '';
+  let genomeKey = save.metadata?.genomeKey || save.metadata?.assetKey || '';
+  // For look/wardrobe saves from daily flow, extract genome key from flow ID mappings
+  if (!genomeKey && (save.itemType === 'look' || save.itemId.includes('-look') || save.itemId.includes('-wardrobe'))) {
+    // Extract flow ID like "d1-1" from itemIds like "d1-1-look", "d1-1-wardrobe", "morocco-d3-5-look"
+    const flowMatch = save.itemId.match(/(d\d+-\d+)/);
+    if (flowMatch) {
+      const flowId = flowMatch[1];
+      genomeKey = SECTION_LOOK_GENOME_KEY[flowId] || FLOW_LOOK_GENOME_KEY[flowId] || '';
+    }
+  }
   // Studio shots take priority for products — old save records have stale itinerary URLs baked in
   const studioUrl = genomeKey ? getShopImageUrl(genomeKey) : '';
   const finalImageUrl = studioUrl || imageUrl || '';
@@ -820,7 +829,15 @@ export default function SuitcasePage() {
     }
     const imageKey = getImageKey(save.itemId);
     const savedImageUrl = getImageUrl(imageKey, save.assetUrl || save.metadata?.imageUrl || '');
-    const modalGenomeKey = save.metadata?.genomeKey || save.metadata?.assetKey || '';
+    let modalGenomeKey = save.metadata?.genomeKey || save.metadata?.assetKey || '';
+    // For look/wardrobe saves, resolve genome key from flow ID mappings
+    if (!modalGenomeKey && (save.itemType === 'look' || save.itemId.includes('-look') || save.itemId.includes('-wardrobe'))) {
+      const flowMatch = save.itemId.match(/(d\d+-\d+)/);
+      if (flowMatch) {
+        const flowId = flowMatch[1];
+        modalGenomeKey = SECTION_LOOK_GENOME_KEY[flowId] || FLOW_LOOK_GENOME_KEY[flowId] || '';
+      }
+    }
     // Studio shots take priority — old save records have stale itinerary URLs
     const modalStudioUrl = modalGenomeKey ? getShopImageUrl(modalGenomeKey) : '';
     const imageUrl = modalStudioUrl || savedImageUrl;
@@ -854,6 +871,9 @@ export default function SuitcasePage() {
     'velvet thongs': 'alaia-heel-thong',
     'heel thong mules': 'alaia-heel-thong',
     'heel thong mules in velvet': 'alaia-heel-thong',
+    'otto leather slippers': 'khaite-otto-slippers',
+    'khaite otto leather slippers': 'khaite-otto-slippers',
+    'otto leather slipper': 'khaite-otto-slippers',
   };
 
   // Fuzzy lookup: try exact match, then check if normTitle CONTAINS any map key
