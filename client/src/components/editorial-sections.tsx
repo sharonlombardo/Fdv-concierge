@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { ITINERARY_DATA, DayPage, FlowItem } from "@shared/itinerary-data";
 import { PinButton } from "@/components/pin-button";
-import { getProductByKey, getProductDisplayName, isShoppable, getSlotProducts, FLOW_LOOK_GENOME_KEY } from "@/lib/brand-genome";
+import { getProductByKey, getProductDisplayName, isShoppable, getShopImageUrl, getSlotProducts, FLOW_LOOK_GENOME_KEY } from "@/lib/brand-genome";
 
 export interface DayEditorial {
   dayNumber: number;
@@ -283,11 +283,15 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
             ? getImageUrl(flow.eventImageKey, flow.eventImageDefault)
             : flow.eventImageDefault;
           
-          const wardrobeImage = flow.wardrobeImageKey && flow.wardrobeImageDefault
+          // Studio shots take priority for wardrobe images
+          const lookGenomeKeyForImage = FLOW_LOOK_GENOME_KEY[flow.id];
+          const wardrobeStudioUrl = lookGenomeKeyForImage ? getShopImageUrl(lookGenomeKeyForImage) : '';
+          const wardrobeImageFallback = flow.wardrobeImageKey && flow.wardrobeImageDefault
             ? (hasCustomImage(flow.wardrobeImageKey)
               ? getImageUrl(flow.wardrobeImageKey, flow.wardrobeImageDefault)
               : flow.wardrobeImageDefault)
             : null;
+          const wardrobeImage = wardrobeStudioUrl || wardrobeImageFallback;
           
           const hasAccessories = flow.wardrobeExtras.some(extra => hasCustomImage(extra.imageKey));
           const hasWardrobeContent = wardrobeImage || hasAccessories;
@@ -342,15 +346,18 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
                       return (
                       <div className="grid grid-cols-4 gap-2">
                         {flow.wardrobeExtras.map((extra, idx) => {
-                          if (!hasCustomImage(extra.imageKey)) return null;
-                          const extraImage = getImageUrl(extra.imageKey, extra.imageDefault);
-
                           // Resolve product data from packing grid position
                           const position = positionNames[idx];
                           const mapEntry = slotProducts.find(s => s.position === position);
                           const extraGenome = mapEntry?.product;
                           const extraName = extraGenome ? getProductDisplayName(extraGenome) : `${flow.title} ${positionLabels[idx]}`;
                           const extraGenomeKey = mapEntry?.key || undefined;
+
+                          // Studio shots take priority for accessories
+                          const extraStudioUrl = extraGenomeKey ? getShopImageUrl(extraGenomeKey) : '';
+                          const extraImageFallback = getImageUrl(extra.imageKey, extra.imageDefault);
+                          const extraImage = extraStudioUrl || extraImageFallback;
+                          if (!extraStudioUrl && !hasCustomImage(extra.imageKey)) return null;
 
                           return (
                             <div key={idx} className="flex flex-col">
