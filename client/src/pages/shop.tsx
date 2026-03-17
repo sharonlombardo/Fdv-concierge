@@ -204,7 +204,7 @@ export default function ShopPage() {
                   style={{
                     aspectRatio: "3/4",
                     width: "100%",
-                    background: "#eee",
+                    background: "#e8e4de",
                     overflow: "hidden",
                   }}
                 >
@@ -217,7 +217,7 @@ export default function ShopPage() {
                         style={{
                           width: "100%",
                           height: "100%",
-                          objectFit: "cover",
+                          objectFit: "contain",
                           objectPosition: adj?.position || "center center",
                           transform: adj?.scale ? `scale(${adj.scale})` : undefined,
                         }}
