@@ -541,14 +541,16 @@ const PRODUCT_IMAGE_DIRECT: Record<string, string> = {
   "look:fildevie:longcaftandress:red.jpg": "morocco-motion-1",
   // Hydra
   "look:ysl:jumpsuit:black.jpg": "hydra-style-1",
-  "look:jilsander:buttondownshirt:bluestripe.jpg": "hydra-tile-1",
+  // REMOVED: hydra-tile-1 showed "#23 Street" scene, not Jil Sander shirt
+  // "look:jilsander:buttondownshirt:bluestripe.jpg": "hydra-tile-1",
   "look:jilsander:trenchcoat:white.jpg": "hydra-tile-3",
   "look:eres:effigieswimsuit:black.jpg": "retreat-object-1",
   "look:phoebephilo:buttondownshirt.jpg": "hydra-object-1",
   "look:driesvannoten:layeredsilkdress:black.jpg": "hydra-ritual-1",
   // Spain
   "look:fildevie:straplessswimsuit:black.jpg": "slow-museum",
-  "look:loropiana:slipdress:black.jpg": "slow-tile-2",
+  // REMOVED: slow-tile-2 showed outdoor scene, not Loro Piana dress
+  // "look:loropiana:slipdress:black.jpg": "slow-tile-2",
   "look:phoebephilo:polosweater:black.jpg": "slow-tile-1",
   "look:rayban:puffedwayfarer:black.jpg": "slow-object-1",
   // Retreat
@@ -556,7 +558,8 @@ const PRODUCT_IMAGE_DIRECT: Record<string, string> = {
   "look:fearofgod:leathercoat:espresso.jpg": "retreat-tile-2",
   "look:phoebephilo:cashmeretracksuit:espresso.jpg": "retreat-tile-3",
   "look:aimeleondore:quarterzipset:black.jpg": "retreat-tile-4",
-  "look:jilsander:silkfluidset:black.jpg": "retreat-tile-6",
+  // REMOVED: retreat-tile-6 showed retreat editorial scene, not Jil Sander set
+  // "look:jilsander:silkfluidset:black.jpg": "retreat-tile-6",
   // New York
   "look:phoebephilo:cashmereovercoat:tobacco.jpg": "newyork-style-1",
   "fil de vie look grecian dress.jpg": "ny-tile-4",
