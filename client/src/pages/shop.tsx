@@ -210,8 +210,6 @@ export default function ShopPage() {
                 >
                   {imgUrl && (() => {
                     const adj = IMAGE_ADJUST[(product.database_match_key || "").toLowerCase()];
-                    // Editorial fallback images need cover + scaling; studio shots need contain
-                    const isEditorial = !!adj;
                     return (
                       <img
                         src={imgUrl}
@@ -219,7 +217,7 @@ export default function ShopPage() {
                         style={{
                           width: "100%",
                           height: "100%",
-                          objectFit: isEditorial ? "cover" : "contain",
+                          objectFit: "cover",
                           objectPosition: adj?.position || "center center",
                           transform: adj?.scale ? `scale(${adj.scale})` : undefined,
                         }}
