@@ -460,7 +460,9 @@ function SavedItemCard({ save, onRemove, onClick, getImageUrl }: {
   const fallbackUrl = save.assetUrl || save.metadata?.imageUrl || '';
   const imageUrl = getImageUrl(imageKey, fallbackUrl);
   const genomeKey = save.metadata?.genomeKey || save.metadata?.assetKey || '';
-  const finalImageUrl = imageUrl || (genomeKey ? getShopImageUrl(genomeKey) : '');
+  // Studio shots take priority for products — old save records have stale itinerary URLs baked in
+  const studioUrl = genomeKey ? getShopImageUrl(genomeKey) : '';
+  const finalImageUrl = studioUrl || imageUrl || '';
   const isOwned = save.purchaseStatus === 'purchased';
   const isWanted = save.purchaseStatus === 'want';
 
@@ -817,7 +819,11 @@ export default function SuitcasePage() {
       return;
     }
     const imageKey = getImageKey(save.itemId);
-    const imageUrl = getImageUrl(imageKey, save.assetUrl || save.metadata?.imageUrl || '');
+    const savedImageUrl = getImageUrl(imageKey, save.assetUrl || save.metadata?.imageUrl || '');
+    const modalGenomeKey = save.metadata?.genomeKey || save.metadata?.assetKey || '';
+    // Studio shots take priority — old save records have stale itinerary URLs
+    const modalStudioUrl = modalGenomeKey ? getShopImageUrl(modalGenomeKey) : '';
+    const imageUrl = modalStudioUrl || savedImageUrl;
     setSelectedItem({
       id: save.itemId,
       title: save.title || save.metadata?.title || save.itemId,
