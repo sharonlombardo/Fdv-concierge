@@ -468,12 +468,73 @@ export function getProductImageUrl(genomeKey: string, fallbackFlowId?: string, d
  * Products NOT in this map AND not in the itinerary maps will be hidden on Shop.
  */
 const PRODUCT_IMAGE_DIRECT: Record<string, string> = {
-  // === Gemini studio shots (uploaded via upload_product_images.mjs) ===
-  "look:ysl:bikini:black.jpg": "product-ysl-bikini",
+  // === Gemini studio shots (Mar 17, 2026 — full product catalog upload) ===
+  // STYLE / LOOKS
+  "look:fildevie:columndress:black.jpg": "product-fdv-column-dress",
+  "look:fdv:astridblouse:blk.jpg": "product-fdv-astrid-blouse",
+  "look:fdv:atlasscarf:ivory.jpg": "product-fdv-atlas-scarf",
+  "look:fdv:calypsodress:black.jpg": "product-fdv-calypso-dress",
+  "look:fdv:dianadres:stripe.jpg": "product-fdv-diana-dress",
+  "look:fdv:honoradress:floral.jpg": "product-fdv-honora-dress",
+  "look:fdv:junoblouse:marrakechpant:stripe.jpg": "product-fdv-juno-marrakech-stripe",
+  "look:fdv:lucinablouse:black.jpg": "product-fdv-lucina-blouse",
   "look:fdv:medinadress:blk.jpg": "product-fdv-medina-dress",
-  "look:fdv:bellacaftanmini:ivory.jpg": "product-fdv-bella-caftan-mini",
+  "look:fdv:philomenacaftan:sand.jpg": "product-fdv-philomena-caftan",
+  "look:fdv:bellacaftanmini:ivory.jpg": "product-fdv-bella-mini-ivory",
+  "look:fdv:cybelblouse:stripe.jpg": "product-fdv-cybel-blouse",
+  "look:fdv:lillithcaftan:ivory.jpg": "product-fdv-lillith-caftan",
+  "look:fdv:steviecaftan:black.jpg": "product-fdv-stevie-caftan",
+  "look:fdv:virginiadress:emerald.jpg": "product-fdv-virginia-dress",
+  "look:fdv:isadoradress:blk.jpg": "product-fdv-isadora-dress",
+  "look:fdv:junoblouse:stripe.jpg": "product-fdv-juno-anona-stripe",
+  "look:fdv:junoblouse:blk.jpg": "product-fdv-juno-blouse-blk",
+  "look:ysl:bikini:black.jpg": "product-ysl-bikini",
+  // New products (Mar 17)
+  "style_fdv_bella_mini_caftan_blk.jpg": "product-fdv-bella-mini-blk",
+  "style_fdv_lucina_blouse_crm.jpeg": "product-fdv-lucina-blouse-crm",
+  "style_fdv_silk_set_blk.jpg": "product-jilsander-silk-set",
+  // FDV Crepe Silk Set (itinerary key: look:fdv:crepesilkset:black.jpg)
+  "look:fdv:crepesilkset:black.jpg": "product-jilsander-silk-set",
+  // Jil Sander Silk Fluid Set keeps editorial fallback (retreat-tile-6) below
+  // ACCESSORIES / BAGS / SUNGLASSES
+  "accessory:bag:bottega:kalimero:black.jpg": "product-bottega-kalimero",
+  "feb 26 prod info pg 1.jpg - item 5": "product-bottega-solstice",
+  "accessory:bag:demelier:santorini.jpg": "product-demellier-santorini",
+  "accessory:bag:driesvannoten:black.jpg": "product-driesvannoten-bag",
+  "access:bag:chloe:wristlette:black.jpg": "product-chloe-wristlette",
+  "access:sugnlasses:loewe:black.jpg": "product-loewe-sunglasses",
+  "accessory:phoebephilo:peaksunglasses:black.jpg": "product-phoebephilo-peak-sunglasses",
+  "access:bag:towel:fdv:poolessentials:olive.jpg": "product-fdv-pool-essentials",
+  "accessory:gabriellahearst:welfatchashmere:sand.jpg": "product-gabriellahearst-wrap",
+  "feb 26 prod info pg 1.jpg - item 1": "product-pacorabanne-bag",
+  "look:phoebephilo:bombesunglasses:brown.jpg": "product-phoebephilo-bombe-sunglasses",
+  "accessory:sunglasses:phoebephilo:cruisesunglasses:tawny.jpg": "product-phoebephilo-cruise-sunglasses",
+  "accessory:bag:phoebephilo:drivebag.jpg": "product-phoebephilo-drive-bag",
+  // BEAUTY
+  "beauty:amanessentials:jadeset.jpg": "product-aman-ritual-set",
+  "beauty:rituelgeinsha.jpg": "product-bienaime-geisha",
+  "beauty:fdv:parfum.jpg": "product-fdv-parfum",
+  "beauty:fdv:travelmist.jpg": "product-fdv-travel-mist",
+  "beauty:imortelle oil.jpg": "product-hildegaard-oil",
+  "le prunier sunscreen.jpg": "product-leprunier-sunscreen",
+  "beauty:poppyking:sinlipstick:red.jpg": "product-poppyking-lipstick",
+  "beauty:sainjane:sunritual.jpg": "product-saintjane-sunscreen",
+  "feb 26 pro info pg 66.jpg - item 2": "product-beautysandwich-snatchsauce",
+  "beauty:violettefr:necatrlipstain.jpg": "product-violettefr-lipstain",
+  // FOOTWEAR
+  "footwear, amery kit sandal.jpg": "product-aemery-kir-sandal",
+  "footwear:alaia:black.jpg": "product-alaia-thong-sandal",
+  "footwear:ferragamo:lolysandal:black.jpg": "product-ferragamo-loly-sandal",
+  "footwear:khaite:otto:wht.jpg": "product-khaite-otto-slipper",
+  "footwear:phoebephilo:ankleboot:black.jpg": "product-phoebephilo-ankle-boot",
+  // JEWELRY
+  "accessory:bulgar:serpenti:blk.jpg": "product-bulgari-serpenti",
+  "accessory:jewelry:bulgari:cabachon necklace.jpg": "product-bulgari-cabochon-necklace",
+  "feb 26 prod info pg 1.jpg - item 2": "product-phoebephilo-drop-earrings",
+  "feb 26 pro info pg 66.jpg - item 1": "product-phoebephilo-hallmark-earrings",
+  "feb 26 prod info pg 1.jpg - item 6": "product-phoebephilo-mini-hoops",
 
-  // === Editorial images from The Current stories (custom-uploaded by Sharon) ===
+  // === Editorial fallbacks (products without studio shots — from The Current stories) ===
   // Morocco
   "look:phoebephilo:gaiadress:black.jpg": "morocco-tile-1",
   "look:fildevie:estedress:black.jpg": "morocco-tile-5",

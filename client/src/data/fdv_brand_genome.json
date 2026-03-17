@@ -201,7 +201,7 @@
     ],
     "price": "$750",
     "price_numeric": 750,
-    "description": "Bombé sunglasses with brown acetate frames, extra-wide, angular temples and dark brown lenses.",
+    "description": "Bomb\u00e9 sunglasses with brown acetate frames, extra-wide, angular temples and dark brown lenses.",
     "url": "https://us.phoebephilo.com/products/bombe-sunglasses-brown-acetate",
     "shop_status": "live",
     "wellspring_atelier_codes": [
@@ -384,7 +384,7 @@
   {
     "database_match_key": "LOOK:AIMELEONDORE:QUARTERZIPSET:BLACK.jpg",
     "category": "LOOK",
-    "brand": "Aimé Leon Dore",
+    "brand": "Aim\u00e9 Leon Dore",
     "name": "Quarter Zip Pullover & Track pant",
     "color": "Black",
     "sizes": [
@@ -405,7 +405,7 @@
   {
     "database_match_key": "Look:alia:soukcoat:desertpants:blush.jpg",
     "category": "LOOK",
-    "brand": "Alaïa",
+    "brand": "Ala\u00efa",
     "name": "Souk Coat/Desert Pant",
     "color": "Blush",
     "sizes": [
@@ -588,7 +588,7 @@
     ],
     "price": "$5900",
     "price_numeric": 5900,
-    "description": "Man’s coat in tobacco cashmere wool blend. Double breasted, the coat has inverted sleeves, a lightly structured shoulder, dropped contour waist and slits towards the front. Pressed and partially lined, with a double face construction and a glossy satin finish.",
+    "description": "Man\u2019s coat in tobacco cashmere wool blend. Double breasted, the coat has inverted sleeves, a lightly structured shoulder, dropped contour waist and slits towards the front. Pressed and partially lined, with a double face construction and a glossy satin finish.",
     "url": "https://us.phoebephilo.com/products/mans-coat-tobacco-cashmere",
     "shop_status": "live",
     "wellspring_atelier_codes": [
@@ -1558,7 +1558,7 @@
   {
     "database_match_key": "look:alai:desertcoat:blush.jpg",
     "category": "LOOK",
-    "brand": "Alaïa",
+    "brand": "Ala\u00efa",
     "name": "Desert Coat & Pant",
     "color": "Blush",
     "sizes": [
@@ -1669,7 +1669,7 @@
   {
     "database_match_key": "FOOTWEAR:ALAIA:BLACK.jpg",
     "category": "FOOTWEAR",
-    "brand": "Alaïa",
+    "brand": "Ala\u00efa",
     "name": "Heel Thong Mules in Velvet",
     "color": "Black",
     "sizes": [
@@ -2155,12 +2155,57 @@
     "brand": "Le Prunier",
     "name": "Plumscreen Sunscreen",
     "color": null,
-    "sizes": ["50ml"],
+    "sizes": [
+      "50ml"
+    ],
     "price": "$80",
     "price_numeric": 80,
     "description": "Our 7x award-winning Plumscreen combines broad spectrum UVA/UVB/HEV sun protection with the skincare benefits of Le Prunier's cult-favorite Plum Beauty Oil.",
     "url": "https://www.leprunier.com",
     "shop_status": "live",
-    "wellspring_atelier_codes": ["Clean Beauty", "French Pharmacy", "Sun Protection"]
+    "wellspring_atelier_codes": [
+      "Clean Beauty",
+      "French Pharmacy",
+      "Sun Protection"
+    ]
+  },
+  {
+    "database_match_key": "Style_FDV_bella_mini_caftan_blk.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Bella Caftan Mini",
+    "color": "Black",
+    "sizes": "S, M, L",
+    "price": "$475",
+    "description": "Mini linen caftan with hand crafted embroidery and tassels. Perfect for a day at the beach, pool or sightseeing",
+    "url": "https://fildevie.com/collections/caftans-auto/products/bella-caftan-mini",
+    "shop_status": "live",
+    "wellspring_atelier_codes": "Artisanal Embroidery, Resort Linen, Nomadic Mini, Tasseled Fluidity"
+  },
+  {
+    "database_match_key": "STYLE_FDV_LUCINA_BLOUSE_CRM.JPEG",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Lucina Blouse & Marrakech Pants",
+    "color": "Cream",
+    "sizes": "S, M, L",
+    "price": "$575 & $350",
+    "description": "The Lucina Blouse is crafted of breezy ramie with cuffed poet sleeves and handmade broderie anglaise. Traditional craftsmanship and modern design are woven together to create a future heirloom. Marrakech pants are linen dropped rise with tapered leg, vent at hem and elasticated waist.",
+    "url": "https://fildevie.com/products/lucina-blouse",
+    "shop_status": "live",
+    "wellspring_atelier_codes": "Broderie Anglaise, Poet Sleeve, Dropped Rise Architecture, Nocturnal Bohemia"
+  },
+  {
+    "database_match_key": "STYLE_FDV_SILK_SET_BLK.jpg",
+    "category": "LOOK",
+    "brand": "FIL DE VIE",
+    "name": "Crepe Silk Set",
+    "color": "Black",
+    "sizes": "S, M, L",
+    "price": "$498",
+    "description": "The silk set has a billowing silhouette handcrafted in floaty spun silk crepe that's gathered along the cuffs, hem and tassel-tipped neckline. Marrakech pants.",
+    "url": "",
+    "shop_status": "coming_soon",
+    "wellspring_atelier_codes": "Spun Silk Crepe, Billowing Silhouette, Tasseled Neckline, Artisanal Gather"
   }
 ]
