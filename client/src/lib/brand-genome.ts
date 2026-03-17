@@ -470,7 +470,7 @@ export function getProductImageUrl(genomeKey: string, fallbackFlowId?: string, d
 const PRODUCT_IMAGE_DIRECT: Record<string, string> = {
   // === Gemini studio shots (Mar 17, 2026 — full product catalog upload) ===
   // STYLE / LOOKS
-  "look:fildevie:columndress:black.jpg": "product-fdv-column-dress",
+  "look:fildevie:columndress:black.jpg": "product-fdv-column-dress-v2",
   "look:fdv:astridblouse:blk.jpg": "product-fdv-astrid-blouse",
   "look:fdv:atlasscarf:ivory.jpg": "product-fdv-atlas-scarf",
   "look:fdv:calypsodress:black.jpg": "product-fdv-calypso-dress",
