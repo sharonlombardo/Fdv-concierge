@@ -3,7 +3,7 @@ import { ItemModal, type ItemModalData } from '@/components/item-modal';
 import { PinButton } from '@/components/pin-button';
 import { EditorialDaySection, extractEditorialData } from '@/components/editorial-sections';
 import { useCustomImages } from '@/hooks/use-custom-images';
-import { getProductByKey, getProductDisplayName, isShoppable, FLOW_LOOK_GENOME_KEY, SECTION_LOOK_GENOME_KEY } from '@/lib/brand-genome';
+import { getProductByKey, getProductDisplayName, isShoppable, getShopImageUrl, FLOW_LOOK_GENOME_KEY, SECTION_LOOK_GENOME_KEY } from '@/lib/brand-genome';
 import './morocco-guide.css';
 
 const IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco';
@@ -16,31 +16,34 @@ type CarouselProduct = {
   price: string | null;
   shopUrl: string;
   imageUrl: string;
+  genomeKey?: string;
 };
 
 const DAY_PRODUCTS: CarouselProduct[] = [
-  { id: 'guide-day-1', brand: 'Fil de Vie', name: 'Juno Blouse & Marrakech Pants', price: null, shopUrl: 'http://www.fildevie.com', imageUrl: `${CAROUSEL}/01_fdv_juno.jpg` },
-  { id: 'guide-day-2', brand: 'Bottega Veneta', name: 'Kalimero Bag', price: '$4,100', shopUrl: 'https://www.bottegaveneta.com/en-us/small-kalimero-citta-fondant-813744715.html', imageUrl: `${CAROUSEL}/02_bottega_kalimero.jpg` },
-  { id: 'guide-day-3', brand: 'A Emery', name: 'Kir Sandal', price: '$185', shopUrl: 'https://aemery.com/products/the-kir-sandal-black', imageUrl: `${CAROUSEL}/03_aemery_kir_sandal.jpg` },
-  { id: 'guide-day-4', brand: 'Bulgari via 1st Dibs', name: 'Lapis Cabachon Necklace', price: '$50,000', shopUrl: 'https://www.1stdibs.com/jewelry/necklaces/pendant-necklaces/bvlgari-1980s-unheated-sapphire-gold-necklace/id-j_28202612/', imageUrl: `${CAROUSEL}/04_bulgari_necklace.jpg` },
-  { id: 'guide-day-5', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: `${CAROUSEL}/05_loewe_sunglasses.jpg` },
-  { id: 'guide-day-6', brand: 'Saint Jane', name: 'Sunscreen', price: '$38', shopUrl: 'https://saintjanebeauty.com/collections/sun-protection-spf/products/luxury-sun-ritual', imageUrl: `${CAROUSEL}/06_saintjane_sunscreen.jpg` },
+  { id: 'guide-day-1', brand: 'Fil de Vie', name: 'Juno Blouse & Marrakech Pants', price: null, shopUrl: 'http://www.fildevie.com', imageUrl: `${CAROUSEL}/01_fdv_juno.jpg`, genomeKey: 'look:fdv:junoblouse:marrakechpant:stripe.jpg' },
+  { id: 'guide-day-2', brand: 'Bottega Veneta', name: 'Kalimero Bag', price: '$4,100', shopUrl: 'https://www.bottegaveneta.com/en-us/small-kalimero-citta-fondant-813744715.html', imageUrl: `${CAROUSEL}/02_bottega_kalimero.jpg`, genomeKey: 'accessory:bag:bottega:kalimero:black.jpg' },
+  { id: 'guide-day-3', brand: 'A Emery', name: 'Kir Sandal', price: '$185', shopUrl: 'https://aemery.com/products/the-kir-sandal-black', imageUrl: `${CAROUSEL}/03_aemery_kir_sandal.jpg`, genomeKey: 'footwear, amery kit sandal.jpg' },
+  { id: 'guide-day-4', brand: 'Bulgari via 1st Dibs', name: 'Lapis Cabachon Necklace', price: '$50,000', shopUrl: 'https://www.1stdibs.com/jewelry/necklaces/pendant-necklaces/bvlgari-1980s-unheated-sapphire-gold-necklace/id-j_28202612/', imageUrl: `${CAROUSEL}/04_bulgari_necklace.jpg`, genomeKey: 'accessory:jewelry:bulgari:cabachon necklace.jpg' },
+  { id: 'guide-day-5', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: `${CAROUSEL}/05_loewe_sunglasses.jpg`, genomeKey: 'access:sugnlasses:loewe:black.jpg' },
+  { id: 'guide-day-6', brand: 'Saint Jane', name: 'Sunscreen', price: '$38', shopUrl: 'https://saintjanebeauty.com/collections/sun-protection-spf/products/luxury-sun-ritual', imageUrl: `${CAROUSEL}/06_saintjane_sunscreen.jpg`, genomeKey: 'beauty:sainjane:sunritual.jpg' },
 ];
 
 const EVE_PRODUCTS: CarouselProduct[] = [
-  { id: 'guide-eve-1', brand: 'FDV', name: 'Isadora Dress', price: '$795', shopUrl: 'http://www.fildevie.com', imageUrl: `${CAROUSEL}/07_fdv_isadora.jpg` },
-  { id: 'guide-eve-2', brand: 'Ala\u00efa', name: 'Velvet Thongs', price: '$1,450', shopUrl: 'https://www.bergdorfgoodman.com/p/alaia-velvet-kitten-heel-thong-sandals-prodt196740019', imageUrl: `${CAROUSEL}/08_alaia_thongs.jpg` },
-  { id: 'guide-eve-3', brand: 'Chlo\u00e9', name: 'Wristlette Bag', price: '$4,200', shopUrl: 'https://www.chloe.com/en-us/p/bags/shoulder-bag/CH5US623P57001.html', imageUrl: `${CAROUSEL}/09_chloe_bag.jpg` },
-  { id: 'guide-eve-4', brand: 'Phoebe Philo', name: 'Gold Studded Mini Hoops', price: '$550', shopUrl: 'https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver', imageUrl: `${CAROUSEL}/10_phoebephilo_hoops.jpg` },
-  { id: 'guide-eve-5', brand: 'Hildegard', name: 'Immortelle Oil', price: '$375', shopUrl: 'https://hildegaard.com/products/immortelle', imageUrl: `${CAROUSEL}/11_hildegard_oil.jpg` },
-  { id: 'guide-eve-6', brand: 'PoppyKing', name: 'Original Sin Lipstick', price: '$34', shopUrl: 'https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622', imageUrl: `${CAROUSEL}/12_poppyking_lipstick.jpg` },
+  { id: 'guide-eve-1', brand: 'FDV', name: 'Isadora Dress', price: '$795', shopUrl: 'http://www.fildevie.com', imageUrl: `${CAROUSEL}/07_fdv_isadora.jpg`, genomeKey: 'look:fdv:isadoradress:blk.jpg' },
+  { id: 'guide-eve-2', brand: 'Ala\u00efa', name: 'Velvet Thongs', price: '$1,450', shopUrl: 'https://www.bergdorfgoodman.com/p/alaia-velvet-kitten-heel-thong-sandals-prodt196740019', imageUrl: `${CAROUSEL}/08_alaia_thongs.jpg`, genomeKey: 'footwear:alaia:black.jpg' },
+  { id: 'guide-eve-3', brand: 'Chlo\u00e9', name: 'Wristlette Bag', price: '$4,200', shopUrl: 'https://www.chloe.com/en-us/p/bags/shoulder-bag/CH5US623P57001.html', imageUrl: `${CAROUSEL}/09_chloe_bag.jpg`, genomeKey: 'access:bag:chloe:wristlette:black.jpg' },
+  { id: 'guide-eve-4', brand: 'Phoebe Philo', name: 'Gold Studded Mini Hoops', price: '$550', shopUrl: 'https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver', imageUrl: `${CAROUSEL}/10_phoebephilo_hoops.jpg`, genomeKey: 'feb 26 prod info pg 1.jpg - item 6' },
+  { id: 'guide-eve-5', brand: 'Hildegard', name: 'Immortelle Oil', price: '$375', shopUrl: 'https://hildegaard.com/products/immortelle', imageUrl: `${CAROUSEL}/11_hildegard_oil.jpg`, genomeKey: 'beauty:imortelle oil.jpg' },
+  { id: 'guide-eve-6', brand: 'PoppyKing', name: 'Original Sin Lipstick', price: '$34', shopUrl: 'https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622', imageUrl: `${CAROUSEL}/12_poppyking_lipstick.jpg`, genomeKey: 'beauty:poppyking:sinlipstick:red.jpg' },
 ];
 
 function CarouselItem({ product, onOpenModal }: { product: CarouselProduct; onOpenModal: (p: CarouselProduct) => void }) {
+  const studioUrl = product.genomeKey ? getShopImageUrl(product.genomeKey) : '';
+  const imgSrc = studioUrl || product.imageUrl;
   return (
     <div className="carousel-item" onClick={() => onOpenModal(product)} style={{ cursor: 'pointer' }}>
       <div className="item-image" style={{ position: 'relative' }}>
-        <img src={product.imageUrl} alt={`${product.brand} ${product.name}`} />
+        <img src={imgSrc} alt={`${product.brand} ${product.name}`} />
         <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: 6, right: 6 }}>
           <PinButton
             itemType="style"
