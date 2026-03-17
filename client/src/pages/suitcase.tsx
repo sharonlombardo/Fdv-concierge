@@ -201,7 +201,7 @@ function getDestinationLabel(save: SavedItem): string {
       source.includes('packing') || source.includes('carousel') ||
       /^d\d+-/.test(itemId) || source.includes('daily-flow')) return 'Morocco';
   if (storyTag === 'hydra' || source.includes('hydra')) return 'Hydra';
-  if (storyTag === 'slow-travel' || storyTag === 'spain' || source.includes('spain') || source.includes('slow') || source.includes('mallorca')) return 'Slow Travel';
+  if (storyTag === 'slow-travel' || storyTag === 'slow' || storyTag === 'spain' || source.includes('spain') || source.includes('slow') || source.includes('mallorca')) return 'Slow Travel';
   if (storyTag === 'retreat' || source.includes('retreat') || source.includes('utah')) return 'The Retreat';
   if (storyTag === 'new-york' || storyTag === 'newyork' || source.includes('new-york') || source.includes('newyork') || source.includes('ny-')) return 'New York';
   if (storyTag === 'opening' || storyTag === 'todays-edit' || source.includes('opening') || source.includes('todays_edit')) return "Today's Edit";
