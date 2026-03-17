@@ -323,7 +323,7 @@ export default function MoroccoGuide() {
       {/* Experience 1: Badi Palace */}
       <div className="place-block">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/exp-1-large.jpg`} alt="Badi Palace" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/exp-1-large.jpg`} alt="Badi Palace" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/exp-1-small1.jpg`} alt="Badi Palace detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-badi-palace-detail" itemData={{ title: "Badi Palace", description: "Ruins, scale, silence.", imageUrl: `${IMG}/exp-1-small1.jpg`, storyTag: "morocco", bookUrl: "http://www.badipalace.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "culture"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/exp-1-small2.jpg`} alt="Badi Palace moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-badi-palace-moment" itemData={{ title: "Badi Palace", description: "Ruins, scale, silence.", imageUrl: `${IMG}/exp-1-small2.jpg`, storyTag: "morocco", bookUrl: "http://www.badipalace.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "culture"]} size="sm" /></div></div>
@@ -345,7 +345,7 @@ export default function MoroccoGuide() {
       <div className="place-block reverse">
         <div className="place-images layout-c">
           <div className="img-slot" style={{ position: "relative" }}><img src={`${IMG}/exp-2-left.jpg`} alt="Jardin Secret" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-jardin-secret-left" itemData={{ title: "Jardin Secret", description: "A quiet medina escape.", imageUrl: `${IMG}/exp-2-left.jpg`, storyTag: "morocco", bookUrl: "http://lejardinsecretmarrakech.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "garden"]} size="sm" /></div></div>
-          <div className="img-slot"><img src={`${IMG}/exp-2-right.jpg`} alt="Jardin Secret" />
+          <div className="img-slot" style={{ position: "relative" }}><img src={`${IMG}/exp-2-right.jpg`} alt="Jardin Secret" />
           </div>
         </div>
         <div className="place-info">
@@ -362,7 +362,7 @@ export default function MoroccoGuide() {
       {/* Experience 3: Agafay Desert Camp */}
       <div className="place-block">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/exp-3-large.jpg`} alt="Agafay Desert Camp" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/exp-3-large.jpg`} alt="Agafay Desert Camp" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/exp-3-small1.jpg`} alt="Agafay detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-agafay-desert-detail" itemData={{ title: "Agafay Desert Camp", description: "Desert drama without the five-hour drive.", imageUrl: `${IMG}/exp-3-small1.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "nature"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/exp-3-small2.jpg`} alt="Agafay moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-agafay-desert-moment" itemData={{ title: "Agafay Desert Camp", description: "Desert drama without the five-hour drive.", imageUrl: `${IMG}/exp-3-small2.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "nature"]} size="sm" /></div></div>
@@ -383,7 +383,7 @@ export default function MoroccoGuide() {
       {/* Experience 4: Jardin Majorelle */}
       <div className="place-block reverse">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/exp-4-large.jpg`} alt="Jardin Majorelle" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/exp-4-large.jpg`} alt="Jardin Majorelle" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/exp-4-small1.jpg`} alt="Majorelle detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-jardin-majorelle-detail" itemData={{ title: "Jardin Majorelle", description: "Cobalt blue and exquisite beauty.", imageUrl: `${IMG}/exp-4-small1.jpg`, storyTag: "morocco", bookUrl: "http://jardinmajorelle.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "culture"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/exp-4-small2.jpg`} alt="Majorelle moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-jardin-majorelle-moment" itemData={{ title: "Jardin Majorelle", description: "Cobalt blue and exquisite beauty.", imageUrl: `${IMG}/exp-4-small2.jpg`, storyTag: "morocco", bookUrl: "http://jardinmajorelle.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "culture"]} size="sm" /></div></div>
@@ -412,7 +412,7 @@ export default function MoroccoGuide() {
       {/* Eat 1: Nomad */}
       <div className="place-block">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/eat-1-large.jpg`} alt="Nomad" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/eat-1-large.jpg`} alt="Nomad" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/eat-1-small1.jpg`} alt="Nomad detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-nomad-detail" itemData={{ title: "Nomad", description: "Rooftop views and modern Moroccan.", imageUrl: `${IMG}/eat-1-small1.jpg`, storyTag: "morocco", bookUrl: "http://nomadmarrakech.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/eat-1-small2.jpg`} alt="Nomad moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-nomad-moment" itemData={{ title: "Nomad", description: "Rooftop views and modern Moroccan.", imageUrl: `${IMG}/eat-1-small2.jpg`, storyTag: "morocco", bookUrl: "http://nomadmarrakech.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant"]} size="sm" /></div></div>
@@ -432,7 +432,7 @@ export default function MoroccoGuide() {
       <div className="place-block reverse">
         <div className="place-images layout-c">
           <div className="img-slot" style={{ position: "relative" }}><img src={`${IMG}/eat-2-left.jpg`} alt="Cafe Bacha" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-cafe-bacha-left" itemData={{ title: "Café Bacha", description: "Decadent morning ritual.", imageUrl: `${IMG}/eat-2-left.jpg`, storyTag: "morocco", bookUrl: "http://bachacoffee.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant", "cafe"]} size="sm" /></div></div>
-          <div className="img-slot"><img src={`${IMG}/eat-2-right.jpg`} alt="Cafe Bacha" />
+          <div className="img-slot" style={{ position: "relative" }}><img src={`${IMG}/eat-2-right.jpg`} alt="Cafe Bacha" />
           </div>
         </div>
         <div className="place-info">
@@ -451,7 +451,7 @@ export default function MoroccoGuide() {
       {/* Eat 3: La Famille */}
       <div className="place-block">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/eat-3-large.jpg`} alt="La Famille" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/eat-3-large.jpg`} alt="La Famille" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/eat-3-small1.jpg`} alt="La Famille detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-la-famille-detail" itemData={{ title: "La Famille", description: "Vegetarian and unexpectedly chic.", imageUrl: `${IMG}/eat-3-small1.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/eat-3-small2.jpg`} alt="La Famille moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-la-famille-moment" itemData={{ title: "La Famille", description: "Vegetarian and unexpectedly chic.", imageUrl: `${IMG}/eat-3-small2.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant"]} size="sm" /></div></div>
@@ -470,7 +470,7 @@ export default function MoroccoGuide() {
       {/* Eat 4: Le Jardin de Lotus */}
       <div className="place-block reverse">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/eat-4-large.jpg`} alt="Le Jardin de Lotus" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/eat-4-large.jpg`} alt="Le Jardin de Lotus" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/eat-4-small1.jpg`} alt="Le Jardin de Lotus detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-jardin-de-lotus-detail" itemData={{ title: "Le Jardin de Lotus", description: "Relaxed glamour", imageUrl: `${IMG}/eat-4-small1.jpg`, storyTag: "morocco", bookUrl: "https://lejardindelotus.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/eat-4-small2.jpg`} alt="Le Jardin de Lotus moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-jardin-de-lotus-moment" itemData={{ title: "Le Jardin de Lotus", description: "Relaxed glamour", imageUrl: `${IMG}/eat-4-small2.jpg`, storyTag: "morocco", bookUrl: "https://lejardindelotus.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant"]} size="sm" /></div></div>
@@ -490,7 +490,7 @@ export default function MoroccoGuide() {
       <div className="place-block">
         <div className="place-images layout-c">
           <div className="img-slot" style={{ position: "relative" }}><img src={`${IMG}/eat-5-left.jpg`} alt="La Mamounia" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-mamounia-drinks-left" itemData={{ title: "La Mamounia — Evening Drinks", description: "Golden hour, perfected.", imageUrl: `${IMG}/eat-5-left.jpg`, storyTag: "morocco", bookUrl: "http://www.mamounia.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant", "bar"]} size="sm" /></div></div>
-          <div className="img-slot"><img src={`${IMG}/eat-5-right.jpg`} alt="La Mamounia" />
+          <div className="img-slot" style={{ position: "relative" }}><img src={`${IMG}/eat-5-right.jpg`} alt="La Mamounia" />
           </div>
         </div>
         <div className="place-info">
@@ -509,7 +509,7 @@ export default function MoroccoGuide() {
       {/* Eat 6: Dar Yacout */}
       <div className="place-block reverse">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/eat-6-large.jpg`} alt="Dar Yacout" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/eat-6-large.jpg`} alt="Dar Yacout" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/eat-6-small1.jpg`} alt="Dar Yacout detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-dar-yacout-detail" itemData={{ title: "Dar Yacout", description: "Traditional Moroccan, done properly.", imageUrl: `${IMG}/eat-6-small1.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/eat-6-small2.jpg`} alt="Dar Yacout moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-dar-yacout-moment" itemData={{ title: "Dar Yacout", description: "Traditional Moroccan, done properly.", imageUrl: `${IMG}/eat-6-small2.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "restaurant"]} size="sm" /></div></div>
@@ -538,7 +538,7 @@ export default function MoroccoGuide() {
       {/* Shop 1: The Souks */}
       <div className="place-block">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/shop-1-large.jpg`} alt="The Souks" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/shop-1-large.jpg`} alt="The Souks" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/shop-1-small1.jpg`} alt="The Souks detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-souks-detail" itemData={{ title: "The Souks", description: "Start here. Then wander.", imageUrl: `${IMG}/shop-1-small1.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "shop", "market"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/shop-1-small2.jpg`} alt="The Souks moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-souks-moment" itemData={{ title: "The Souks", description: "Start here. Then wander.", imageUrl: `${IMG}/shop-1-small2.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "shop", "market"]} size="sm" /></div></div>
@@ -564,7 +564,7 @@ export default function MoroccoGuide() {
       <div className="place-block reverse">
         <div className="place-images layout-c">
           <div className="img-slot" style={{ position: "relative" }}><img src={`${IMG}/shop-2-left.jpg`} alt="El Fenn Gift Shop" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-elfenn-shop-left" itemData={{ title: "El Fenn Gift Shop", description: "Actually chic souvenirs.", imageUrl: `${IMG}/shop-2-left.jpg`, storyTag: "morocco", bookUrl: "http://www.elfenn.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "shop"]} size="sm" /></div></div>
-          <div className="img-slot"><img src={`${IMG}/shop-2-right.jpg`} alt="El Fenn Gift Shop" />
+          <div className="img-slot" style={{ position: "relative" }}><img src={`${IMG}/shop-2-right.jpg`} alt="El Fenn Gift Shop" />
           </div>
         </div>
         <div className="place-info">
@@ -583,7 +583,7 @@ export default function MoroccoGuide() {
       {/* Shop 3: Mustapha Blaoui */}
       <div className="place-block">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/shop-3-large.jpg`} alt="Mustapha Blaoui" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/shop-3-large.jpg`} alt="Mustapha Blaoui" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/shop-3-small1.jpg`} alt="Mustapha Blaoui detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-mustapha-blaoui-detail" itemData={{ title: "Mustapha Blaoui", description: "Treasure hunting at scale.", imageUrl: `${IMG}/shop-3-small1.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "shop"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/shop-3-small2.jpg`} alt="Mustapha Blaoui moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-mustapha-blaoui-moment" itemData={{ title: "Mustapha Blaoui", description: "Treasure hunting at scale.", imageUrl: `${IMG}/shop-3-small2.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "shop"]} size="sm" /></div></div>
@@ -599,7 +599,7 @@ export default function MoroccoGuide() {
       {/* Shop 4: Max & Jan */}
       <div className="place-block reverse">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/shop-4-large.jpg`} alt="Max & Jan" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/shop-4-large.jpg`} alt="Max & Jan" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/shop-4-small1.jpg`} alt="Max & Jan detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-max-jan-detail" itemData={{ title: "Max & Jan", description: "Modern Marrakech.", imageUrl: `${IMG}/shop-4-small1.jpg`, storyTag: "morocco", bookUrl: "http://www.maxandjan.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "shop"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/shop-4-small2.jpg`} alt="Max & Jan moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-max-jan-moment" itemData={{ title: "Max & Jan", description: "Modern Marrakech.", imageUrl: `${IMG}/shop-4-small2.jpg`, storyTag: "morocco", bookUrl: "http://www.maxandjan.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "shop"]} size="sm" /></div></div>
@@ -628,7 +628,7 @@ export default function MoroccoGuide() {
       {/* Stay 1: El Fenn */}
       <div className="place-block">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/stay-1-large.jpg`} alt="El Fenn" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/stay-1-large.jpg`} alt="El Fenn" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/stay-1-small1.jpg`} alt="El Fenn detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-el-fenn-detail" itemData={{ title: "El Fenn", description: "Color, art, and rooftop sunsets.", imageUrl: `${IMG}/stay-1-small1.jpg`, storyTag: "morocco", bookUrl: "http://www.elfenn.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/stay-1-small2.jpg`} alt="El Fenn moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-el-fenn-moment" itemData={{ title: "El Fenn", description: "Color, art, and rooftop sunsets.", imageUrl: `${IMG}/stay-1-small2.jpg`, storyTag: "morocco", bookUrl: "http://www.elfenn.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
@@ -647,7 +647,7 @@ export default function MoroccoGuide() {
       {/* Stay 2: Riad Jardin Secret */}
       <div className="place-block reverse">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/stay-2-large.jpg`} alt="Riad Jardin Secret" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/stay-2-large.jpg`} alt="Riad Jardin Secret" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/stay-2-small1.jpg`} alt="Riad Jardin Secret detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-riad-jardin-secret-detail" itemData={{ title: "Riad Jardin Secret", description: "Intimate, traditional, serene.", imageUrl: `${IMG}/stay-2-small1.jpg`, storyTag: "morocco", bookUrl: "http://www.riad-jardinsecret.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/stay-2-small2.jpg`} alt="Riad Jardin Secret moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-riad-jardin-secret-moment" itemData={{ title: "Riad Jardin Secret", description: "Intimate, traditional, serene.", imageUrl: `${IMG}/stay-2-small2.jpg`, storyTag: "morocco", bookUrl: "http://www.riad-jardinsecret.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
@@ -668,7 +668,7 @@ export default function MoroccoGuide() {
       {/* Stay 3: La Mamounia */}
       <div className="place-block">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/stay-3-large.jpg`} alt="La Mamounia" />
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/stay-3-large.jpg`} alt="La Mamounia" />
           </div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/stay-3-small1.jpg`} alt="La Mamounia detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-la-mamounia-detail" itemData={{ title: "La Mamounia", description: "Iconic. Unapologetically grand.", imageUrl: `${IMG}/stay-3-small1.jpg`, storyTag: "morocco", bookUrl: "http://mamounia.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
           <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/stay-3-small2.jpg`} alt="La Mamounia moment" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-la-mamounia-moment" itemData={{ title: "La Mamounia", description: "Iconic. Unapologetically grand.", imageUrl: `${IMG}/stay-3-small2.jpg`, storyTag: "morocco", bookUrl: "http://mamounia.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
@@ -685,7 +685,7 @@ export default function MoroccoGuide() {
       </div>
 
       {/* Full-width break — transition to wardrobe */}
-      <div className="full-image"><img src={`${IMG}/wardrobe-break.jpg`} alt="" /></div>
+      <div className="full-image" style={{ position: "relative" }}><img src={`${IMG}/wardrobe-break.jpg`} alt="" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-wardrobe-break" itemData={{ title: "Morocco Wardrobe", description: "What to pack.", imageUrl: `${IMG}/wardrobe-break.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
 
       <hr className="divider" />
 
@@ -700,10 +700,9 @@ export default function MoroccoGuide() {
       {/* Wardrobe 1: Day in the Medina */}
       <div className="place-block">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/ward-1-large.jpg`} alt="Day in the Medina look" />
-          </div>
-          <div className="img-small"><img src={`${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`} alt="Bottega Veneta Kalimero Bag" /></div>
-          <div className="img-small"><img src={`${IMG}/ward-1-small2_bulgari_necklace.jpg`} alt="Bulgari Necklace" /></div>
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/ward-1-large.jpg`} alt="Day in the Medina look" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-day-look-main" itemData={{ title: "Day in the Medina", description: "Medina uniform.", imageUrl: `${IMG}/ward-1-large.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
+          <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`} alt="Bottega Veneta Kalimero Bag" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-day-look-detail" itemData={{ title: "Day in the Medina", description: "Medina uniform.", imageUrl: `${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
+          <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/ward-1-small2_bulgari_necklace.jpg`} alt="Bulgari Necklace" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-day-look-moment" itemData={{ title: "Day in the Medina", description: "Medina uniform.", imageUrl: `${IMG}/ward-1-small2_bulgari_necklace.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
         </div>
         <div className="place-info">
           <h3>Day in the Medina</h3>
@@ -726,10 +725,9 @@ export default function MoroccoGuide() {
       {/* Wardrobe 2: Riad Evenings */}
       <div className="place-block reverse">
         <div className="place-images layout-b">
-          <div className="img-large"><img src={`${IMG}/ward-2-large_fdv_isadora_dress.jpg`} alt="Riad Evenings look" />
-          </div>
-          <div className="img-small"><img src={`${IMG}/ward-2-small1_chloe_wristless_bag.jpg`} alt="Chloé Wristlette Bag" /></div>
-          <div className="img-small"><img src={`${IMG}/ward-2-small2_poppyking_red.jpg`} alt="PoppyKing Lipstick" /></div>
+          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/ward-2-large_fdv_isadora_dress.jpg`} alt="Riad Evenings look" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-evening-look-main" itemData={{ title: "Riad Evenings", description: "Marrakech does drama.", imageUrl: `${IMG}/ward-2-large_fdv_isadora_dress.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
+          <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/ward-2-small1_chloe_wristless_bag.jpg`} alt="Chloé Wristlette Bag" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-evening-look-detail" itemData={{ title: "Riad Evenings", description: "Marrakech does drama.", imageUrl: `${IMG}/ward-2-small1_chloe_wristless_bag.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
+          <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/ward-2-small2_poppyking_red.jpg`} alt="PoppyKing Lipstick" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-evening-look-moment" itemData={{ title: "Riad Evenings", description: "Marrakech does drama.", imageUrl: `${IMG}/ward-2-small2_poppyking_red.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
         </div>
         <div className="place-info">
           <h3>Riad Evenings</h3>
