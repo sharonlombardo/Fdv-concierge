@@ -1239,10 +1239,10 @@ export default function SuitcasePage() {
               </div>
             ) : (
               <div className="space-y-10">
-                {groupByDestination(deduplicateByTitle(displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture' && s.itemType !== 'place' && s.itemType !== 'destination' && s.itemType !== 'scene' && s.itemType !== 'image' && s.itemType !== 'inspire' && s.itemType !== 'cover' && s.itemType !== 'feature'))).map((group) => (
+                {groupByDestination(deduplicateByTitle((activeTab === 'travel-destinations' ? displayedSaves : displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture' && s.itemType !== 'place' && s.itemType !== 'destination' && s.itemType !== 'scene' && s.itemType !== 'image' && s.itemType !== 'inspire' && s.itemType !== 'cover' && s.itemType !== 'feature')))).map((group) => (
                   <div key={group.destination}>
                     {/* Destination header — only show if multiple destinations */}
-                    {groupByDestination(deduplicateByTitle(displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture' && s.itemType !== 'place' && s.itemType !== 'destination' && s.itemType !== 'scene' && s.itemType !== 'image' && s.itemType !== 'inspire' && s.itemType !== 'cover' && s.itemType !== 'feature'))).length > 1 && (
+                    {groupByDestination(deduplicateByTitle((activeTab === 'travel-destinations' ? displayedSaves : displayedSaves.filter(s => s.itemType !== 'quote' && s.itemType !== 'mood' && s.itemType !== 'texture' && s.itemType !== 'place' && s.itemType !== 'destination' && s.itemType !== 'scene' && s.itemType !== 'image' && s.itemType !== 'inspire' && s.itemType !== 'cover' && s.itemType !== 'feature')))).length > 1 && (
                       <div className="flex items-center gap-3 mb-4">
                         <h3 className="text-xs font-bold tracking-[0.2em] uppercase text-muted-foreground">{group.destination}</h3>
                         <div className="flex-1 h-px bg-border" />
