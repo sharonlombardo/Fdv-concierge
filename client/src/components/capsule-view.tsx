@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
-import { getProductImageUrl, getProductByKey } from "@/lib/brand-genome";
+import { getShopImageUrl, getProductByKey } from "@/lib/brand-genome";
 import { PinButton } from "@/components/pin-button";
 import { ItemModal, type ItemModalData } from "@/components/item-modal";
 import { useUser } from "@/contexts/user-context";
@@ -32,7 +32,8 @@ function removeSavedCapsuleId(capsuleId: string) {
 }
 
 function getItemImage(item: CapsuleItem): string {
-  return getProductImageUrl(item.database_match_key);
+  // Use getShopImageUrl to prioritize Gemini studio shots over old itinerary images
+  return getShopImageUrl(item.database_match_key);
 }
 
 function buildModalData(item: CapsuleItem): ItemModalData {

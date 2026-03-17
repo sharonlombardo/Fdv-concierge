@@ -10,7 +10,7 @@ import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
 import { LoadingImage } from "@/components/loading-image";
 import { ITINERARY_DATA, type DayPage } from "@shared/itinerary-data";
-import { getProductByKey, getProductDisplayName, isShoppable, getProductMapDays, getSlotProducts, getProductImageUrl, findProductByPartialKey, getAllProducts, SECTION_LOOK_GENOME_KEY, type BrandGenomeProduct } from "@/lib/brand-genome";
+import { getProductByKey, getProductDisplayName, isShoppable, getProductMapDays, getSlotProducts, getProductImageUrl, getShopImageUrl, findProductByPartialKey, getAllProducts, SECTION_LOOK_GENOME_KEY, type BrandGenomeProduct } from "@/lib/brand-genome";
 import editorialMap from "@/data/editorial_product_map.json";
 
 // Maps carousel tileIds to their correct IMAGE_SLOTS assetKey
@@ -1154,11 +1154,12 @@ function ShopTheStory({ tiles, sourceStory, onOpenDetail }: ShopTheStoryProps) {
         <style>{`.shop-scroll::-webkit-scrollbar { display: none; }`}</style>
         <div className="shop-scroll flex gap-4 px-6 pb-2" style={{ minWidth: "max-content", overflowX: "auto", scrollbarWidth: "none" }}>
           {shopTiles.map((tile) => {
-            // Priority: editorial image first (assetKey), then product image from Blob storage
+            // Priority: Gemini studio shot first (PRODUCT_IMAGE_DIRECT), then editorial, then itinerary fallback
+            const studioImg = tile.genomeKey ? getShopImageUrl(tile.genomeKey) : "";
             const editorialImg = tile.assetKey ? getImageUrl(tile.assetKey) : "";
             const productImg = tile.genomeKey ? getProductImageUrl(tile.genomeKey) : "";
             const isPlaceholder = !productImg || productImg.includes("placeholder");
-            const imageUrl = editorialImg || (!isPlaceholder ? productImg : "") || tile.imageUrl || "";
+            const imageUrl = studioImg || editorialImg || (!isPlaceholder ? productImg : "") || tile.imageUrl || "";
             return (
               <div
                 key={tile.id}

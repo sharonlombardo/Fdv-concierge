@@ -570,13 +570,17 @@ const PRODUCT_IMAGE_DIRECT: Record<string, string> = {
 
 /**
  * Get a shop-ready image URL for any product.
- * Resolution: itinerary blob → direct product/editorial blob → empty (hidden).
+ * Resolution: direct product studio shots FIRST → itinerary blob fallback → empty (hidden).
+ * Changed Mar 17: PRODUCT_IMAGE_DIRECT (Gemini studio shots) takes priority over
+ * old itinerary images (d1-1-wardrobe etc.) which were cropped differently.
  */
 export function getShopImageUrl(genomeKey: string): string {
-  const blobUrl = getProductImageUrl(genomeKey);
-  if (blobUrl !== PRODUCT_PLACEHOLDER) return blobUrl;
+  // 1. Check PRODUCT_IMAGE_DIRECT first — new Gemini studio shots
   const directKey = PRODUCT_IMAGE_DIRECT[genomeKey.toLowerCase()];
   if (directKey) return `${BLOB_BASE}/${directKey}`;
+  // 2. Fall back to itinerary blob images (for products without studio shots)
+  const blobUrl = getProductImageUrl(genomeKey);
+  if (blobUrl !== PRODUCT_PLACEHOLDER) return blobUrl;
   return "";
 }
 
