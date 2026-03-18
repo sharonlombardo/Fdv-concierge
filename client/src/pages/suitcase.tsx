@@ -653,21 +653,23 @@ export default function SuitcasePage() {
   const [savedCapsuleIds, setSavedCapsuleIds] = useState<string[]>(getSavedCapsuleIds);
 
   // Auto-trigger curate flow when arriving with ?curate=true (from first-save prompt)
-  useEffect(() => {
+  const [autoCurate] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('curate') === 'true') {
-      // Clean up URL
       window.history.replaceState({}, '', '/suitcase');
-      // Small delay so page renders first
-      setTimeout(() => {
-        const next = getNextUnsavedCapsule();
-        if (next) {
-          setCuratingCapsule(next);
-          setShowCurating(true);
-        }
-      }, 300);
+      return true;
     }
-  }, []);
+    return false;
+  });
+  useEffect(() => {
+    if (!autoCurate) return;
+    // Trigger immediately — no delay, the curating overlay covers everything
+    const next = getNextUnsavedCapsule();
+    if (next) {
+      setCuratingCapsule(next);
+      setShowCurating(true);
+    }
+  }, [autoCurate]);
 
   // Auto-seed "Desert Neutrals" if user has 3+ saves and no capsules yet
   useEffect(() => {
@@ -817,7 +819,7 @@ export default function SuitcasePage() {
     // Refresh saved capsule IDs so My Edits tab shows the new capsule
     setSavedCapsuleIds(getSavedCapsuleIds());
     if (curatingCapsule) {
-      navigate(`/capsule/${curatingCapsule.id}`);
+      navigate(`/capsule/${curatingCapsule.id}?from=curate`);
     }
   };
 

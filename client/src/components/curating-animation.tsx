@@ -50,6 +50,7 @@ export function CuratingAnimation({
   const [textVisible, setTextVisible] = useState(false);
   const [diamondPulse, setDiamondPulse] = useState(false);
   const [revealReady, setRevealReady] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
   const [particles] = useState(() => createParticles(5));
 
   const advancePhase = useCallback(() => {
@@ -90,11 +91,14 @@ export function CuratingAnimation({
     return () => clearTimeout(t);
   }, [phase, advancePhase]);
 
-  // Auto-complete after reveal
+  // Auto-complete after reveal — ethereal fade out
   useEffect(() => {
     if (revealReady) {
-      const t = setTimeout(onComplete, 1800);
-      return () => clearTimeout(t);
+      // Show the capsule name for 1.8s, then start fading out
+      const t1 = setTimeout(() => setFadeOut(true), 1800);
+      // After the fade completes (1.2s), navigate
+      const t2 = setTimeout(onComplete, 3000);
+      return () => { clearTimeout(t1); clearTimeout(t2); };
     }
   }, [revealReady, onComplete]);
 
@@ -141,6 +145,8 @@ export function CuratingAnimation({
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
+        opacity: fadeOut ? 0 : 1,
+        transition: "opacity 1.2s ease-out",
       }}
     >
       {/* Particles */}
