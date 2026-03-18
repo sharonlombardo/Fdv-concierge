@@ -52,7 +52,7 @@ export function FirstSavePrompt() {
         <button
           onClick={() => {
             dismiss();
-            navigate("/suitcase");
+            navigate("/suitcase?curate=true");
           }}
           className="w-full bg-black text-white uppercase tracking-[0.15em] text-[13px] font-medium py-3 rounded hover:bg-gray-900 transition-colors"
         >
