@@ -149,6 +149,7 @@ export function PinButton({
       if (pinned) {
         triggerSaveEvent();
         if (onPinSuccess) onPinSuccess();
+        window.dispatchEvent(new CustomEvent('fdv-first-save'));
       }
 
       // Refresh the saves list in background (but don't re-check this pin — we already know)

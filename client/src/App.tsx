@@ -43,6 +43,7 @@ import Profile from "@/pages/profile";
 import CapsuleDetail from "@/pages/capsule-detail";
 import About from "@/pages/about";
 import { EmailCaptureManager } from "@/components/email-capture-manager";
+import { FirstSavePrompt } from "@/components/first-save-prompt";
 
 function Router() {
   return (
@@ -92,6 +93,7 @@ function App() {
           <Toaster />
           <ScrollToTop />
           <EmailCaptureManager />
+          <FirstSavePrompt />
           <TopBar />
           <Router />
           <BottomNav />
