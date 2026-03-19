@@ -460,14 +460,19 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
           </button>
         )}
 
-        <div style={{ textAlign: 'center', padding: '32px 0' }}>
-          <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(26, 26, 22, 0.4)' }}>
-            Your edit changes as you save.{' '}
+        <div style={{ textAlign: 'center', padding: '40px 24px' }}>
+          <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 22, fontStyle: 'italic', color: 'rgba(26, 26, 22, 0.7)', animation: 'softPulse 4s ease-in-out infinite' }}>
             <Link href="/suitcase?curate=true">
-              <span style={{ borderBottom: '1px solid rgba(26, 26, 22, 0.2)', cursor: 'pointer' }}>Curate again</span>
-            </Link>{' '}anytime.
+              <span style={{ borderBottom: '1px solid rgba(26, 26, 22, 0.3)', cursor: 'pointer' }}>Edit again</span>
+            </Link>{' '}anytime. It changes as you save.
           </p>
         </div>
+        <style>{`
+          @keyframes softPulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+          }
+        `}</style>
       </div>
 
       {/* Product modal */}
