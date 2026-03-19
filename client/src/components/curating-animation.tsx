@@ -1,43 +1,15 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-type Phase = "scanning" | "finding" | "building" | "reveal";
+const BLOB = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco';
 
-const PHASE_TEXTS: Record<Phase, string> = {
-  scanning: "Looking at what you saved...",
-  finding: "Pulling it together...",
-  building: "Building your capsule...",
-  reveal: "",
-};
+const PHASES = [
+  { text: "Pulling it together...", image: `${BLOB}/hero.jpg` },
+  { text: "Building your aesthetic...", image: `${BLOB}/shop-2-break.jpg` },
+  { text: "Remembering what resonated...", image: `${BLOB}/exp-3-break-v2.jpeg` },
+  { text: "Curating your experience...", image: `${BLOB}/stay-1-large.jpg` },
+];
 
-const PHASE_DURATION = {
-  scanning: 2000,
-  finding: 2000,
-  building: 2000,
-};
-
-interface Particle {
-  id: number;
-  x: number;
-  y: number;
-  size: number;
-  opacity: number;
-  speed: number;
-  driftX: number;
-  driftY: number;
-}
-
-function createParticles(count: number): Particle[] {
-  return Array.from({ length: count }, (_, i) => ({
-    id: i,
-    x: 10 + Math.random() * 80,
-    y: 20 + Math.random() * 60,
-    size: 4 + Math.random() * 4,
-    opacity: 0.4 + Math.random() * 0.3,
-    speed: 0.3 + Math.random() * 0.4,
-    driftX: (Math.random() - 0.5) * 6,
-    driftY: (Math.random() - 0.5) * 4,
-  }));
-}
+const PHASE_DURATION = 2500;
 
 interface CuratingAnimationProps {
   capsuleName: string;
@@ -50,108 +22,48 @@ export function CuratingAnimation({
   capsuleTagline,
   onComplete,
 }: CuratingAnimationProps) {
-  const [phase, setPhase] = useState<Phase>("scanning");
+  const [currentPhase, setCurrentPhase] = useState(0);
   const [textVisible, setTextVisible] = useState(false);
-  const [diamondPulse, setDiamondPulse] = useState(false);
+  const [isReveal, setIsReveal] = useState(false);
   const [revealReady, setRevealReady] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
-  const [particles] = useState(() => createParticles(14));
-  const [tick, setTick] = useState(0);
-  const rafRef = useRef<number>();
 
-  // Gentle floating animation
+  // Fade in first text
   useEffect(() => {
-    let frame = 0;
-    const animate = () => {
-      frame++;
-      if (frame % 3 === 0) setTick((t) => t + 1);
-      rafRef.current = requestAnimationFrame(animate);
-    };
-    rafRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  const advancePhase = useCallback(() => {
-    if (phase === "scanning") {
-      setTextVisible(false);
-      setTimeout(() => {
-        setPhase("finding");
-        setTimeout(() => setTextVisible(true), 100);
-      }, 400);
-    } else if (phase === "finding") {
-      setTextVisible(false);
-      setTimeout(() => {
-        setPhase("building");
-        setTimeout(() => setTextVisible(true), 100);
-        setTimeout(() => setDiamondPulse(true), 1200);
-      }, 400);
-    } else if (phase === "building") {
-      setTextVisible(false);
-      setTimeout(() => {
-        setPhase("reveal");
-        setTimeout(() => setRevealReady(true), 200);
-      }, 400);
-    }
-  }, [phase]);
-
-  // Start text fade-in on mount
-  useEffect(() => {
-    const t = setTimeout(() => setTextVisible(true), 200);
+    const t = setTimeout(() => setTextVisible(true), 300);
     return () => clearTimeout(t);
   }, []);
 
   // Phase transitions
-  useEffect(() => {
-    if (phase === "reveal") return;
-    const duration =
-      PHASE_DURATION[phase as keyof typeof PHASE_DURATION] || 2000;
-    const t = setTimeout(advancePhase, duration);
-    return () => clearTimeout(t);
-  }, [phase, advancePhase]);
+  const advancePhase = useCallback(() => {
+    setTextVisible(false);
+    setTimeout(() => {
+      const next = currentPhase + 1;
+      if (next < PHASES.length) {
+        setCurrentPhase(next);
+        setTimeout(() => setTextVisible(true), 400);
+      } else {
+        // Enter reveal
+        setIsReveal(true);
+        setTimeout(() => setRevealReady(true), 600);
+      }
+    }, 600);
+  }, [currentPhase]);
 
-  // Auto-complete after reveal — ethereal fade out
+  useEffect(() => {
+    if (isReveal) return;
+    const t = setTimeout(advancePhase, PHASE_DURATION);
+    return () => clearTimeout(t);
+  }, [currentPhase, isReveal, advancePhase]);
+
+  // Auto-complete after reveal
   useEffect(() => {
     if (revealReady) {
-      const t1 = setTimeout(() => setFadeOut(true), 1800);
-      const t2 = setTimeout(onComplete, 3000);
+      const t1 = setTimeout(() => setFadeOut(true), 2000);
+      const t2 = setTimeout(onComplete, 3200);
       return () => { clearTimeout(t1); clearTimeout(t2); };
     }
   }, [revealReady, onComplete]);
-
-  const getParticleStyle = (p: Particle): React.CSSProperties => {
-    const isConverging = phase === "building";
-    const isFinding = phase === "finding";
-    const time = tick * 0.02;
-
-    let x = p.x + Math.sin(time * p.speed + p.id) * p.driftX;
-    let y = p.y + Math.cos(time * p.speed + p.id * 0.7) * p.driftY;
-
-    if (isFinding) {
-      x = x + (50 - x) * 0.5;
-      y = y + (45 - y) * 0.5;
-    } else if (isConverging) {
-      x = 50;
-      y = 45;
-    }
-
-    return {
-      position: "absolute",
-      left: `${x}%`,
-      top: `${y}%`,
-      width: isConverging ? 0 : p.size,
-      height: isConverging ? 0 : p.size,
-      borderRadius: "50%",
-      background: "#c9a84c",
-      boxShadow: "0 0 8px rgba(201, 168, 76, 0.4)",
-      opacity: phase === "reveal" ? 0 : p.opacity,
-      transition: isConverging
-        ? "all 1.2s ease-in-out, opacity 0.6s"
-        : "width 0.3s, height 0.3s, opacity 0.6s",
-      pointerEvents: "none" as const,
-    };
-  };
 
   return (
     <div
@@ -159,66 +71,71 @@ export function CuratingAnimation({
         position: "fixed",
         inset: 0,
         zIndex: 9999,
-        background: "radial-gradient(ellipse at center, #faf9f6 0%, #f5f0e8 60%, #efe9dd 100%)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
+        background: "#000",
         opacity: fadeOut ? 0 : 1,
         transition: "opacity 1.2s ease-out",
       }}
     >
-      {/* Particles */}
-      {particles.map((p) => (
-        <div key={p.id} style={getParticleStyle(p)} />
-      ))}
-
-      {/* Diamond (appears in building phase) */}
-      {(phase === "building" || phase === "reveal") && (
+      {/* Background images — all rendered, opacity controlled */}
+      {PHASES.map((phase, i) => (
         <div
+          key={i}
           style={{
             position: "absolute",
-            left: "50%",
-            top: "45%",
-            transform: `translate(-50%, -50%) rotate(45deg) scale(${
-              diamondPulse ? 1 : 0
-            })`,
-            width: 24,
-            height: 24,
-            background: "#c9a84c",
-            boxShadow: "0 0 24px rgba(201, 168, 76, 0.35), 0 0 48px rgba(201, 168, 76, 0.15)",
-            opacity: phase === "reveal" ? 0 : 1,
-            transition: diamondPulse
-              ? "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s"
-              : "transform 0.6s ease-out, opacity 0.6s",
+            inset: 0,
+            backgroundImage: `url(${phase.image})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            opacity: isReveal ? (i === PHASES.length - 1 ? 1 : 0) : currentPhase === i ? 1 : 0,
+            transition: "opacity 1.5s ease-in-out",
           }}
         />
-      )}
+      ))}
 
-      {/* Phase text */}
-      {phase !== "reveal" && (
-        <p
-          style={{
-            fontFamily: "Lora, serif",
-            fontSize: 20,
-            color: "#2c2416",
-            opacity: textVisible ? 1 : 0,
-            transition: "opacity 0.6s ease-in-out",
-            textAlign: "center",
-            padding: "0 32px",
-            position: "relative",
-            zIndex: 1,
-          }}
-        >
-          {PHASE_TEXTS[phase]}
-        </p>
-      )}
+      {/* Dark overlay for text readability */}
+      <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.35)" }} />
 
-      {/* Reveal */}
-      {phase === "reveal" && (
+      {/* Centered text — phase text */}
+      {!isReveal && (
         <div
           style={{
+            position: "relative",
+            zIndex: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+          }}
+        >
+          <p
+            style={{
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: 28,
+              fontStyle: "italic",
+              color: "#fff",
+              textShadow: "0 2px 20px rgba(0,0,0,0.4)",
+              opacity: textVisible ? 1 : 0,
+              transition: "opacity 0.8s ease-in-out",
+              textAlign: "center",
+              padding: "0 32px",
+            }}
+          >
+            {PHASES[currentPhase].text}
+          </p>
+        </div>
+      )}
+
+      {/* Reveal — capsule name + tagline */}
+      {isReveal && (
+        <div
+          style={{
+            position: "relative",
+            zIndex: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
             textAlign: "center",
             padding: "0 32px",
             opacity: revealReady ? 1 : 0,
@@ -228,12 +145,13 @@ export function CuratingAnimation({
         >
           <h1
             style={{
-              fontFamily: "Lora, serif",
-              fontSize: 28,
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: 32,
               fontWeight: 500,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: "#2c2416",
+              color: "#fff",
+              textShadow: "0 2px 24px rgba(0,0,0,0.5)",
               marginBottom: 16,
             }}
           >
@@ -241,10 +159,11 @@ export function CuratingAnimation({
           </h1>
           <p
             style={{
-              fontFamily: "Lora, serif",
-              fontSize: 18,
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: 20,
               fontStyle: "italic",
-              color: "#2c2416",
+              color: "rgba(255,255,255,0.85)",
+              textShadow: "0 2px 16px rgba(0,0,0,0.4)",
               lineHeight: 1.6,
             }}
           >
@@ -252,6 +171,34 @@ export function CuratingAnimation({
           </p>
         </div>
       )}
+
+      {/* Dot indicators at bottom */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 40,
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          gap: 10,
+          zIndex: 2,
+        }}
+      >
+        {PHASES.map((_, i) => (
+          <div
+            key={i}
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: (isReveal || currentPhase === i) && (isReveal ? i === PHASES.length - 1 : true)
+                ? "#fff"
+                : "rgba(255,255,255,0.4)",
+              transition: "background 0.5s",
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }
