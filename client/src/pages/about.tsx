@@ -70,7 +70,7 @@ export default function About() {
             <Link href="/suitcase"><span className="inline-link">Suitcase</span></Link>.
           </p>
           <p>
-            Your Suitcase is more than a place to keep things. It's a living portrait of what you're drawn to — and the more it holds, the better we can curate for you. Over time, we learn what resonates and surface new stories, places, and pieces that feel like yours.
+            Your Suitcase is more than a place to keep things. It's a living portrait of what you love — and the more it holds, the better we can curate for you. Over time, we learn what matters to you and surface new stories, places, and pieces that feel like yours.
           </p>
           <p>
             From your{" "}
