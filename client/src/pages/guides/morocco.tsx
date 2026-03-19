@@ -1,4 +1,5 @@
 import { useState, FormEvent } from 'react';
+import { Link } from 'wouter';
 import { ItemModal, type ItemModalData } from '@/components/item-modal';
 import { PinButton } from '@/components/pin-button';
 import { EditorialDaySection, extractEditorialData } from '@/components/editorial-sections';
