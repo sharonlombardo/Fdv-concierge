@@ -655,24 +655,18 @@ export default function SuitcasePage() {
   const { saveCount } = useUser();
   const [savedCapsuleIds, setSavedCapsuleIds] = useState<string[]>(getSavedCapsuleIds);
 
-  // Auto-trigger curate flow when arriving with ?curate=true (from first-save prompt)
-  const [autoCurate] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('curate') === 'true') {
-      window.history.replaceState({}, '', '/suitcase');
-      return true;
-    }
-    return false;
-  });
+  // Auto-trigger curate flow when arriving with ?curate=true (from any link)
+  // Uses useEffect + location check so it re-triggers on every navigation, not just first mount
   useEffect(() => {
-    if (!autoCurate) return;
-    // Trigger immediately — no delay, the curating overlay covers everything
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('curate') !== 'true') return;
+    window.history.replaceState({}, '', '/suitcase');
     const next = getNextUnsavedCapsule();
     if (next) {
       setCuratingCapsule(next);
       setShowCurating(true);
     }
-  }, [autoCurate]);
+  }); // runs on every render — checks URL param each time
 
   // Auto-seed "Desert Neutrals" if user has 3+ saves and no capsules yet
   useEffect(() => {
