@@ -296,35 +296,88 @@ export default function Threshold() {
 
       {/* Intro section — orients new users */}
       <section
-        className="py-12 md:py-16 px-6"
+        className="py-14 md:py-20 px-6"
         style={{ backgroundColor: "#fafaf9" }}
       >
-        <div className="max-w-[520px] mx-auto text-center">
+        <div className="max-w-[480px] mx-auto text-center">
           <p
             style={{
               fontFamily: "'Lora', Georgia, serif",
-              fontSize: "16.5px",
-              color: "#1a1a1a",
-              lineHeight: 1.6,
-              marginBottom: "20px",
+              fontSize: "16px",
+              color: "rgba(26, 26, 22, 0.75)",
+              lineHeight: 1.7,
+              marginBottom: "14px",
             }}
           >
-            FIL DE VIE Concierge brings together travel, style, and the objects that belong with both. Browse, save what resonates, and let your Suitcase become a living collection of what moves you. The more you save, the better we know what to show you next.
+            FIL DE VIE Concierge brings together travel, style, and the objects that belong with both.
           </p>
-          <Link href="/about">
-            <span
-              className="inline-block cursor-pointer transition-colors hover:text-[#c9a84c]"
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "13px",
-                letterSpacing: "0.09em",
-                textTransform: "uppercase",
-                color: "#1a1a1a",
-              }}
-            >
-              The details →
-            </span>
-          </Link>
+          <p
+            style={{
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: "16px",
+              color: "rgba(26, 26, 22, 0.75)",
+              lineHeight: 1.7,
+              marginBottom: "14px",
+            }}
+          >
+            Browse, save what you like, and keep it in your Suitcase.
+          </p>
+          <p
+            style={{
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: "16px",
+              color: "rgba(26, 26, 22, 0.55)",
+              lineHeight: 1.7,
+              marginBottom: "24px",
+            }}
+          >
+            A place to keep the things you want to come back to — and a way to bring them together when you're ready.
+          </p>
+          <p
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "11px",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "rgba(26, 26, 22, 0.35)",
+              marginBottom: "8px",
+            }}
+          >
+            A curated edit, built from what you save.
+          </p>
+          <div className="flex items-center justify-center gap-6">
+            <Link href="/suitcase?curate=true">
+              <span
+                className="inline-block cursor-pointer transition-all hover:opacity-70"
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "12px",
+                  letterSpacing: "0.08em",
+                  color: "rgba(26, 26, 22, 0.4)",
+                  borderBottom: "1px solid rgba(26, 26, 22, 0.2)",
+                  paddingBottom: "2px",
+                }}
+              >
+                Curate for Me →
+              </span>
+            </Link>
+            <span style={{ color: "rgba(26, 26, 22, 0.15)", fontSize: "10px" }}>·</span>
+            <Link href="/about">
+              <span
+                className="inline-block cursor-pointer transition-all hover:opacity-70"
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "12px",
+                  letterSpacing: "0.08em",
+                  color: "rgba(26, 26, 22, 0.4)",
+                  borderBottom: "1px solid rgba(26, 26, 22, 0.2)",
+                  paddingBottom: "2px",
+                }}
+              >
+                The details →
+              </span>
+            </Link>
+          </div>
         </div>
       </section>
 
