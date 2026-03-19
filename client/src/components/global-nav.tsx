@@ -6,6 +6,7 @@ import fdvLogo from "@assets/LOGO_1767219658929.png";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
+  { href: "/suitcase?curate=true", label: "✨ Curate for Me" },
   { href: "/current", label: "The Current" },
   { href: "/suitcase", label: "Suitcase" },
   { href: "/packing", label: "Packing List" },

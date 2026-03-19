@@ -76,7 +76,7 @@ export default function About() {
             From your{" "}
             <Link href="/suitcase"><span className="inline-link">Suitcase</span></Link>,
             {" "}you can tap{" "}
-            <Link href="/my-edits"><span className="inline-link">Curate for Me</span></Link>
+            <Link href="/suitcase?curate=true"><span className="inline-link">Curate for Me</span></Link>
             {" "}— which creates personalized edits drawn from what you've already saved — trips, looks, restaurants, objects, or combinations you wouldn't have thought to put together yourself. Your edits live in{" "}
             <Link href="/my-edits"><span className="inline-link">My Edits</span></Link>.
           </p>
@@ -122,7 +122,7 @@ export default function About() {
             {" "}save what resonates, and let your{" "}
             <Link href="/suitcase"><span className="inline-link">Suitcase</span></Link>
             {" "}grow.{" "}
-            <Link href="/my-edits"><span className="inline-link">Curate for Me</span></Link>
+            <Link href="/suitcase?curate=true"><span className="inline-link">Curate for Me</span></Link>
             {" "}creates personalized edits based on what you've saved. This is yours from the start.
           </p>
           <p>
