@@ -2,20 +2,24 @@ import { useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { useUser } from "@/contexts/user-context";
 
-const MENU_ITEMS = [
+const MENU_ITEMS: { label: string; href?: string; text?: string }[] = [
   { label: "Home", href: "/" },
   { label: "✨ Curate for Me", href: "/suitcase?curate=true" },
-  { label: "The Details", href: "/about" },
+  { label: "_section", text: "DISCOVER" },
   { label: "The Current", href: "/current" },
   { label: "Guides", href: "/guides" },
+  { label: "Shop", href: "/shop" },
+  { label: "The Details", href: "/about" },
+  { label: "_section", text: "YOUR MOROCCO" },
   { label: "Itinerary Overview", href: "/concierge" },
   { label: "Daily Flow", href: "/daily-flow" },
   { label: "Packing Lists", href: "/packing" },
+  { label: "Travel Diary", href: "/diary" },
+  { label: "_section", text: "YOUR SUITCASE" },
   { label: "Suitcase", href: "/suitcase" },
   { label: "My Edits", href: "/my-edits" },
   { label: "My Trips", href: "/my-trips" },
-  { label: "Travel Diary", href: "/diary" },
-  { label: "Shop", href: "/shop" },
+  { label: "_divider" },
   { label: "Concierge", href: "/concierge-info" },
   { label: "Profile", href: "/profile" },
 ];
@@ -139,10 +143,29 @@ export default function HamburgerDrawer({ open, onClose }: HamburgerDrawerProps)
             padding: "12px 0",
           }}
         >
-          {MENU_ITEMS.map((item) => {
-            const active = isActive(item.href);
+          {MENU_ITEMS.map((item, idx) => {
+            if (item.label === "_section") {
+              return (
+                <div key={`section-${idx}`} style={{
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 10,
+                  letterSpacing: "0.15em",
+                  color: "rgba(26, 26, 22, 0.3)",
+                  marginTop: 20,
+                  marginBottom: 8,
+                  padding: "0 20px",
+                  textTransform: "uppercase" as const,
+                }}>
+                  {item.text}
+                </div>
+              );
+            }
+            if (item.label === "_divider") {
+              return <div key={`divider-${idx}`} style={{ height: 1, background: "rgba(0,0,0,0.06)", margin: "16px 0" }} />;
+            }
+            const active = isActive(item.href!);
             return (
-              <Link key={item.label} href={item.href}>
+              <Link key={item.label} href={item.href!}>
                 <button
                   onClick={onClose}
                   style={{
