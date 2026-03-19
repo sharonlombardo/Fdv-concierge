@@ -603,6 +603,40 @@ export default function MoroccoGuide() {
 
       <hr className="divider" />
 
+      {/* ═══ CURATE PROMPT ═══ */}
+      <div style={{
+        textAlign: 'center',
+        padding: '48px 24px',
+        maxWidth: 420,
+        margin: '0 auto',
+      }}>
+        <p style={{
+          fontFamily: "'Lora', Georgia, serif",
+          fontSize: '15px',
+          fontStyle: 'italic',
+          color: 'rgba(26, 26, 22, 0.5)',
+          lineHeight: 1.7,
+          marginBottom: '16px',
+        }}>
+          Build a Marrakech edit from what you've saved.
+        </p>
+        <Link href="/suitcase?curate=true">
+          <span style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '11px',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase' as const,
+            color: 'rgba(26, 26, 22, 0.35)',
+            borderBottom: '1px solid rgba(26, 26, 22, 0.15)',
+            paddingBottom: '2px',
+            cursor: 'pointer',
+            transition: 'opacity 0.2s',
+          }}>
+            Curate for Me →
+          </span>
+        </Link>
+      </div>
+
       {/* ═══ SECTION: THE STAY ═══ */}
       <div className="divider-double" />
       <div className="section-header">
