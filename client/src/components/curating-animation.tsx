@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 
-const BLOB = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco';
+const BLOB = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2';
 
 const PHASES = [
-  { text: "Pulling it together...", image: `${BLOB}/hero.jpg` },
-  { text: "Building your aesthetic...", image: `${BLOB}/shop-2-break.jpg` },
-  { text: "Remembering what resonated...", image: `${BLOB}/exp-3-break-v2.jpeg` },
-  { text: "Curating your experience...", image: `${BLOB}/stay-1-large.jpg` },
+  { text: "Pulling it together...", image: `${BLOB}/curate-linen` },
+  { text: "Building your aesthetic...", image: `${BLOB}/curate-camera` },
+  { text: "Remembering what resonated...", image: `${BLOB}/curate-oasis` },
+  { text: "Curating your experience...", image: `${BLOB}/curate-staircase-pink` },
 ];
 
 const PHASE_DURATION = 2500;
@@ -43,7 +43,6 @@ export function CuratingAnimation({
         setCurrentPhase(next);
         setTimeout(() => setTextVisible(true), 400);
       } else {
-        // Enter reveal
         setIsReveal(true);
         setTimeout(() => setRevealReady(true), 600);
       }
@@ -59,8 +58,8 @@ export function CuratingAnimation({
   // Auto-complete after reveal
   useEffect(() => {
     if (revealReady) {
-      const t1 = setTimeout(() => setFadeOut(true), 2000);
-      const t2 = setTimeout(onComplete, 3200);
+      const t1 = setTimeout(() => setFadeOut(true), 1800);
+      const t2 = setTimeout(onComplete, 3000);
       return () => { clearTimeout(t1); clearTimeout(t2); };
     }
   }, [revealReady, onComplete]);
@@ -146,7 +145,7 @@ export function CuratingAnimation({
           <h1
             style={{
               fontFamily: "'Lora', Georgia, serif",
-              fontSize: 32,
+              fontSize: 36,
               fontWeight: 500,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
@@ -191,9 +190,7 @@ export function CuratingAnimation({
               width: 8,
               height: 8,
               borderRadius: "50%",
-              background: (isReveal || currentPhase === i) && (isReveal ? i === PHASES.length - 1 : true)
-                ? "#fff"
-                : "rgba(255,255,255,0.4)",
+              background: isReveal || currentPhase >= i ? "#fff" : "rgba(255,255,255,0.4)",
               transition: "background 0.5s",
             }}
           />
