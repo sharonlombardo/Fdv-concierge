@@ -1118,7 +1118,7 @@ export default function SuitcasePage() {
               /* My Edits — show saved capsules from localStorage */
               savedCapsules.length > 0 ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 480, margin: "0 auto" }}>
-                  <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 17, fontStyle: 'italic', color: 'rgba(26, 26, 22, 0.65)', textAlign: 'center', marginBottom: 20 }}>Edits built from what you've saved</p>
+                  <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 26, fontStyle: 'italic', color: 'rgba(26, 26, 22, 0.65)', textAlign: 'center', marginBottom: 20 }}>Edits built from what you've saved</p>
                   {savedCapsules.map((capsule) => {
                     const heroMood = capsule.moodImages[0];
                     const heroImage = heroMood ? heroMood.imageUrl : "";
