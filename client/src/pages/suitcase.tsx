@@ -1008,7 +1008,7 @@ export default function SuitcasePage() {
                 More Edits Coming
               </div>
             ) : (<>
-              <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(26, 26, 22, 0.65)', textAlign: 'center', marginBottom: 12 }}>Curate from what you've saved.</p>
+              <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 17, fontStyle: 'italic', color: 'rgba(26, 26, 22, 0.8)', textAlign: 'center', marginBottom: 12, animation: 'softPulse 4s ease-in-out infinite' }}>Curate from what you've saved.</p>
               <button
                 onClick={handleCurateForMe}
                 data-testid="button-curate-for-me-header"
@@ -1046,7 +1046,7 @@ export default function SuitcasePage() {
                   }}
                 />
               </button>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'rgba(26, 26, 22, 0.5)', textAlign: 'center', marginTop: 10, letterSpacing: '0.05em' }}>Edit again anytime. It changes as you save.</p>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: 'rgba(26, 26, 22, 0.65)', textAlign: 'center', marginTop: 10, letterSpacing: '0.05em', animation: 'softPulse 4s ease-in-out infinite' }}>Edit again anytime. It changes as you save.</p>
             </>)
           )}
         </header>
@@ -1070,7 +1070,7 @@ export default function SuitcasePage() {
               </nav>
             </div>
 
-            <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 13, fontStyle: 'italic', color: 'rgba(26, 26, 22, 0.55)', textAlign: 'center', marginBottom: 16, marginTop: 4 }}>Places, pieces, and ideas that work together.</p>
+            <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 15, fontStyle: 'italic', color: 'rgba(26, 26, 22, 0.7)', textAlign: 'center', marginBottom: 16, marginTop: 4, animation: 'softPulse 4s ease-in-out infinite' }}>Places, pieces, and ideas that work together.</p>
 
             {/* Sub-filter pills for Your Style tab */}
             {activeTab === 'style' && (
@@ -1305,6 +1305,10 @@ export default function SuitcasePage() {
       <style>{`
         @keyframes shimmer {
           0%, 100% { opacity: 0.3; }
+          50% { opacity: 1; }
+        }
+        @keyframes softPulse {
+          0%, 100% { opacity: 0.6; }
           50% { opacity: 1; }
         }
       `}</style>
