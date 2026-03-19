@@ -49,7 +49,7 @@ export default function ConciergeInfo() {
           marginBottom: 32,
         }}
       >
-        AI-powered personal styling, travel planning, and booking — the LLM with the Fil de Vie lens.
+        Style, travel, and the details in between — with someone who already knows what you love.
       </p>
 
       {/* Service features */}
