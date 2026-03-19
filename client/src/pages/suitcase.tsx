@@ -25,9 +25,12 @@ function getSavedCapsuleIds(): string[] {
   }
 }
 
+let curateCounter = 0;
 function getNextUnsavedCapsule(): typeof PRESET_CAPSULES[0] | null {
-  const savedIds = getSavedCapsuleIds();
-  return PRESET_CAPSULES.find((c) => !savedIds.includes(c.id)) || null;
+  // For pilot: unlimited — always return a capsule, alternating between them
+  const capsule = PRESET_CAPSULES[curateCounter % PRESET_CAPSULES.length];
+  curateCounter++;
+  return capsule;
 }
 
 type SavedItem = {
