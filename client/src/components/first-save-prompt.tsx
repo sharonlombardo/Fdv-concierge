@@ -59,9 +59,10 @@ export function FirstSavePrompt() {
           Curate for Me
         </button>
 
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'rgba(26, 26, 22, 0.3)', marginTop: 16, marginBottom: 8 }}>You can always come back to this.</p>
         <button
           onClick={dismiss}
-          className="mt-3 text-[13px] text-gray-400 underline hover:text-gray-600 transition-colors"
+          className="text-[13px] text-gray-400 underline hover:text-gray-600 transition-colors"
         >
           Not now
         </button>

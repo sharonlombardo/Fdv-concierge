@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import { getShopImageUrl, getProductByKey } from "@/lib/brand-genome";
 import { PinButton } from "@/components/pin-button";
@@ -459,6 +459,15 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
             &#10003; SAVED TO MY EDITS
           </button>
         )}
+
+        <div style={{ textAlign: 'center', padding: '32px 0' }}>
+          <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(26, 26, 22, 0.4)' }}>
+            Your edit changes as you save.{' '}
+            <Link href="/suitcase?curate=true">
+              <span style={{ borderBottom: '1px solid rgba(26, 26, 22, 0.2)', cursor: 'pointer' }}>Curate again</span>
+            </Link>{' '}anytime.
+          </p>
+        </div>
       </div>
 
       {/* Product modal */}

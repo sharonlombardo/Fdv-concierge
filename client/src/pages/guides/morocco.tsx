@@ -619,7 +619,7 @@ export default function MoroccoGuide() {
           lineHeight: 1.7,
           marginBottom: '16px',
         }}>
-          Build a Marrakech edit from what you've saved.
+          Build a Marrakech edit from what you've saved. Come back anytime — it changes as your Suitcase grows.
         </p>
         <Link href="/suitcase?curate=true">
           <span style={{
