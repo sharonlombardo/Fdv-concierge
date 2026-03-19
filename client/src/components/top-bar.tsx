@@ -6,6 +6,13 @@ export default function TopBar() {
   const [location] = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  // Listen for custom event to open hamburger from anywhere
+  useEffect(() => {
+    const handler = () => setDrawerOpen(true);
+    window.addEventListener('open-hamburger', handler);
+    return () => window.removeEventListener('open-hamburger', handler);
+  }, []);
   const isLanding = location === "/";
 
   useEffect(() => {

@@ -75,7 +75,7 @@ export default function About() {
           <p>
             From your{" "}
             <Link href="/suitcase"><span className="inline-link">Suitcase</span></Link>
-            {" "}or sidebar, you can tap{" "}
+            {" "}or <span className="inline-link" style={{ cursor: "pointer" }} onClick={() => window.dispatchEvent(new Event('open-hamburger'))}>sidebar</span>, you can tap{" "}
             <Link href="/suitcase?curate=true"><span className="inline-link">Curate for Me</span></Link>
             {" "}— which creates personalized edits drawn from what you've already saved — trips, looks, restaurants, objects, or combinations you wouldn't have thought to put together yourself. Your edits live in{" "}
             <Link href="/my-edits"><span className="inline-link">My Edits</span></Link>.
