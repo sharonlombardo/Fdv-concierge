@@ -1308,7 +1308,7 @@ export default function SuitcasePage() {
           50% { opacity: 1; }
         }
         @keyframes softPulse {
-          0%, 100% { opacity: 0.6; }
+          0%, 100% { opacity: 0.35; }
           50% { opacity: 1; }
         }
       `}</style>
