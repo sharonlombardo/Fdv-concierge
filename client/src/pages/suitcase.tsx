@@ -812,12 +812,13 @@ export default function SuitcasePage() {
   };
 
   const handleCuratingComplete = () => {
-    setShowCurating(false);
-    // Refresh saved capsule IDs so My Edits tab shows the new capsule
+    // Navigate FIRST so the capsule page renders underneath the overlay
     setSavedCapsuleIds(getSavedCapsuleIds());
     if (curatingCapsule) {
       navigate(`/capsule/${curatingCapsule.id}?from=curate`);
     }
+    // Hide overlay after a tick so navigation completes first
+    requestAnimationFrame(() => setShowCurating(false));
   };
 
   const nextCapsule = getNextUnsavedCapsule();
