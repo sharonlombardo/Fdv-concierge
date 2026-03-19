@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 type Phase = "scanning" | "finding" | "building" | "reveal";
 
 const PHASE_TEXTS: Record<Phase, string> = {
   scanning: "Looking at what you saved...",
-  finding: "Finding the pattern...",
+  finding: "Pulling it together...",
   building: "Building your capsule...",
   reveal: "",
 };
@@ -22,16 +22,20 @@ interface Particle {
   size: number;
   opacity: number;
   speed: number;
+  driftX: number;
+  driftY: number;
 }
 
 function createParticles(count: number): Particle[] {
   return Array.from({ length: count }, (_, i) => ({
     id: i,
-    x: 30 + Math.random() * 40,
-    y: 60 + Math.random() * 30,
-    size: 2 + Math.random() * 2,
-    opacity: 0.3 + Math.random() * 0.3,
+    x: 10 + Math.random() * 80,
+    y: 20 + Math.random() * 60,
+    size: 4 + Math.random() * 4,
+    opacity: 0.4 + Math.random() * 0.3,
     speed: 0.3 + Math.random() * 0.4,
+    driftX: (Math.random() - 0.5) * 6,
+    driftY: (Math.random() - 0.5) * 4,
   }));
 }
 
@@ -51,7 +55,23 @@ export function CuratingAnimation({
   const [diamondPulse, setDiamondPulse] = useState(false);
   const [revealReady, setRevealReady] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
-  const [particles] = useState(() => createParticles(5));
+  const [particles] = useState(() => createParticles(14));
+  const [tick, setTick] = useState(0);
+  const rafRef = useRef<number>();
+
+  // Gentle floating animation
+  useEffect(() => {
+    let frame = 0;
+    const animate = () => {
+      frame++;
+      if (frame % 3 === 0) setTick((t) => t + 1);
+      rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   const advancePhase = useCallback(() => {
     if (phase === "scanning") {
@@ -94,9 +114,7 @@ export function CuratingAnimation({
   // Auto-complete after reveal — ethereal fade out
   useEffect(() => {
     if (revealReady) {
-      // Show the capsule name for 1.8s, then start fading out
       const t1 = setTimeout(() => setFadeOut(true), 1800);
-      // After the fade completes (1.2s), navigate
       const t2 = setTimeout(onComplete, 3000);
       return () => { clearTimeout(t1); clearTimeout(t2); };
     }
@@ -105,16 +123,15 @@ export function CuratingAnimation({
   const getParticleStyle = (p: Particle): React.CSSProperties => {
     const isConverging = phase === "building";
     const isFinding = phase === "finding";
+    const time = tick * 0.02;
 
-    let x = p.x;
-    let y = p.y;
+    let x = p.x + Math.sin(time * p.speed + p.id) * p.driftX;
+    let y = p.y + Math.cos(time * p.speed + p.id * 0.7) * p.driftY;
 
     if (isFinding) {
-      // Drift toward center
-      x = p.x + (50 - p.x) * 0.4;
-      y = p.y + (45 - p.y) * 0.4;
+      x = x + (50 - x) * 0.5;
+      y = y + (45 - y) * 0.5;
     } else if (isConverging) {
-      // Converge to center
       x = 50;
       y = 45;
     }
@@ -127,8 +144,11 @@ export function CuratingAnimation({
       height: isConverging ? 0 : p.size,
       borderRadius: "50%",
       background: "#c9a84c",
+      boxShadow: "0 0 8px rgba(201, 168, 76, 0.4)",
       opacity: phase === "reveal" ? 0 : p.opacity,
-      transition: `all ${isConverging ? "1.2s" : "2s"} ease-in-out, opacity 0.6s`,
+      transition: isConverging
+        ? "all 1.2s ease-in-out, opacity 0.6s"
+        : "width 0.3s, height 0.3s, opacity 0.6s",
       pointerEvents: "none" as const,
     };
   };
@@ -139,7 +159,7 @@ export function CuratingAnimation({
         position: "fixed",
         inset: 0,
         zIndex: 9999,
-        background: "#faf9f6",
+        background: "radial-gradient(ellipse at center, #faf9f6 0%, #f5f0e8 60%, #efe9dd 100%)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -164,9 +184,10 @@ export function CuratingAnimation({
             transform: `translate(-50%, -50%) rotate(45deg) scale(${
               diamondPulse ? 1 : 0
             })`,
-            width: 16,
-            height: 16,
+            width: 24,
+            height: 24,
             background: "#c9a84c",
+            boxShadow: "0 0 24px rgba(201, 168, 76, 0.35), 0 0 48px rgba(201, 168, 76, 0.15)",
             opacity: phase === "reveal" ? 0 : 1,
             transition: diamondPulse
               ? "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s"
