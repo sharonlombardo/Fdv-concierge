@@ -1046,7 +1046,7 @@ export default function SuitcasePage() {
                   }}
                 />
               </button>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: 'rgba(26, 26, 22, 0.65)', textAlign: 'center', marginTop: 10, letterSpacing: '0.05em', animation: 'softPulse 4s ease-in-out infinite' }}>Edit again anytime. It changes as you save.</p>
+              <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 17, fontStyle: 'italic', color: 'rgba(26, 26, 22, 0.8)', textAlign: 'center', marginTop: 10, animation: 'softPulse 4s ease-in-out infinite' }}>Edit again anytime. It changes as you save.</p>
             </>)
           )}
         </header>
