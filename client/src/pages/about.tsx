@@ -1,5 +1,15 @@
 import { Link } from "wouter";
 
+const BLOB = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2';
+
+const fullWidthImg: React.CSSProperties = {
+  width: '100%',
+  maxHeight: 500,
+  objectFit: 'cover',
+  borderRadius: 8,
+  margin: '32px 0',
+};
+
 export default function About() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#fafaf9" }}>
@@ -32,6 +42,9 @@ export default function About() {
           FIL DE VIE is a state of mind.
         </p>
 
+        {/* Image 1 — halter dress */}
+        <img src={`${BLOB}/about-halter-dress`} alt="" style={fullWidthImg} />
+
         {/* Body section 1 */}
         <div
           className="space-y-5 mb-10 md:mb-12"
@@ -49,6 +62,9 @@ export default function About() {
             Some people come here to plan a trip. Others come to find the right dress for a rooftop dinner in Marrakech, or to save a hotel they'll book next winter. However you use it, the idea is simple: when something moves you, save it.
           </p>
         </div>
+
+        {/* Image 2 — santorini archway */}
+        <img src={`${BLOB}/about-santorini-archway`} alt="" style={fullWidthImg} />
 
         {/* Divider */}
         <div className="flex justify-center my-10 md:my-12">
@@ -80,6 +96,12 @@ export default function About() {
             {" "}— which creates personalized edits drawn from what you've already saved — trips, looks, restaurants, objects, or combinations you wouldn't have thought to put together yourself. Your edits live in{" "}
             <Link href="/my-edits"><span className="inline-link">My Edits</span></Link>.
           </p>
+        </div>
+
+        {/* Image 3+4 — two side by side */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, margin: '32px 0' }}>
+          <img src={`${BLOB}/about-harbor-boats`} alt="" style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', borderRadius: 8 }} />
+          <img src={`${BLOB}/about-woman-doorway`} alt="" style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', borderRadius: 8 }} />
         </div>
 
         {/* Divider */}
@@ -139,6 +161,9 @@ export default function About() {
             You get the things you love — the hotel, the dress, the dinner. The concierge is what finds them, curates them, and brings them to you.
           </p>
         </div>
+
+        {/* Image 5 — pool swim */}
+        <img src={`${BLOB}/about-pool-swim`} alt="" style={fullWidthImg} />
 
         {/* Divider */}
         <div className="flex justify-center my-10 md:my-12">
@@ -216,8 +241,11 @@ export default function About() {
           </p>
         </div>
 
+        {/* Image 6 — pool float (closing image) */}
+        <img src={`${BLOB}/about-pool-float`} alt="" style={fullWidthImg} />
+
         {/* START BROWSING CTA */}
-        <div className="text-center pb-16">
+        <div className="text-center pb-16" style={{ marginTop: 32 }}>
           <Link href="/current">
             <span
               className="inline-block cursor-pointer transition-opacity hover:opacity-60"
