@@ -11,3 +11,6 @@ vite.config.ts.*
 .env.local
 .vercel
 .env*.local
+
+# Private Claude context (not for public repo)
+CLAUDE-PRIVATE.md
