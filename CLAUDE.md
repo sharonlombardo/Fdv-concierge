@@ -5,7 +5,16 @@
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
-> Claude.ai fetches it via GitHub URL. Cowork reads it from the local repo.
+> Claude.ai gets this file + a private companion file (CLAUDE-PRIVATE.md)
+> uploaded as Project Knowledge. Cowork reads from the local repo.
+>
+> **What lives here (public):** Architecture, build state, product data,
+> feature priorities, principles, workflow, session log.
+>
+> **What lives in CLAUDE-PRIVATE.md (Project Knowledge only):**
+> Competitive landscape, fundraising status, investor contacts, financial
+> model details, strategic outreach.
+>
 > At the end of each significant work session, ask Claude to summarize
 > what was done, then bring that summary to Claude Code and say:
 > "Append today's session summary to CLAUDE.md and commit."
@@ -174,85 +183,27 @@ Individual place maps within Morocco itinerary = fine.
 
 ---
 
-## SECTION 6 — COMPETITIVE LANDSCAPE
-
-**AmiGo** (amigo.app) — closest product in market. 73K users,
-bootstrapped, $129/year Premium, ~14 person team. Founded 2019 by
-Alexia Tamer (Columbia MBA). No disclosed VC funding. No commerce
-layer. Drives intent, earns nothing from bookings. Their ceiling:
-~$200-750K ARR. FDV's open field: the wardrobe + transaction layer
-they can never retrofit.
-
-**Key AmiGo mechanics worth borrowing:**
-- Mid-article paywall (emotional peak placement)
-- Gallery-as-memory (Pinterest muscle memory)
-- Share prompt at end of article (one italic sentence)
-- Three-signal social proof (Recommended/MustGo/Wishlisted)
-- Invite-only with social currency framing
-- "Some places are meant to be kept special" — Premium copy direction
-
-**Other competitors:**
-- Indagare: luxury travel membership, human-powered, no taste layer
-- Moda Operandi: taste-forward fashion commerce, closest wardrobe analog
-- No competitor does: taste + travel + wardrobe + commerce combined
-
----
-
-## SECTION 7 — FUNDRAISING & INVESTOR STATUS
-
-**Current deck:** VC-forward FDV Concierge deck (most current)
-**Earlier framing superseded:** Econ Wedge / subscription-led
-
-**Financial model status:**
-- Gemini-assisted model built
-- Key vulnerability: ~$3,500-4,000 AOV assumption carries the projection
-- Gap: subscription revenue (Gold $29/mo, Black $59/mo) absent from
-  pro forma — model currently understated
-- FIL DE VIE historical data (167% DTC growth, repeat purchase rate)
-  provides AOV credibility
-- Outstanding: email open rate (needs Klaviyo access)
-
-**Key narrative:** FDV Concierge pitched as consumer app = limited
-traction. Reframed as taste infrastructure (Wellspring OS / Invisible
-Shelf / Aesthetic Genome) = opens different investor conversations.
-
-**Active outreach:**
-- Chad Nelson (Head of Creative Partnerships, OpenAI) — extended
-  strategic session, offered enterprise team connection
-- Alex Wissner-Gross — investor target, pitch sent, outcome TBD
-- Jeff Mancini — mutual connection for Anthropic networking
-- Lauren Johnston (Anthropic Brand, ex-Google, ex-goop) — warm intro
-  target via Jeff Mancini
-- Melissa (recently appointed president, Exclusive Resorts) —
-  partnership target
-- Sharon applied for Anthropic Creative Director role (cold, Greenhouse)
-
-**Google Partnership deck** exists for Wellspring OS conversation.
-
----
-
-## SECTION 8 — KEY PRINCIPLES (non-negotiable)
+## SECTION 6 — KEY PRINCIPLES (non-negotiable)
 
 - Fashion looks shown HEAD TO TOE always. Never cropped.
 - Taste intelligence is the moat, not inventory. No inventory model.
 - AI agent orchestration for commerce — FDV doesn't hold stock.
 - Solo + AI fluency is a differentiator, not a liability.
-  Chad Nelson's reaction (assumed Sharon had a team) = narrative asset.
 - Build and iterate over extensive planning. Momentum over perfection.
 - Imagery is primary interface between Sharon's aesthetic intelligence
   and AI systems. Visual curation > linguistic description.
 
 ---
 
-## SECTION 9 — HOW SHARON WORKS WITH CLAUDE
+## SECTION 7 — HOW SHARON WORKS WITH CLAUDE
 
-**Claude.ai (this environment):**
+**Claude.ai:**
 Strategy, research, competitive analysis, narrative, editorial voice,
 investor framing, content. The thinking layer.
 Project: FDV Concierge (has IA doc, wireframe guide, VC deck as
-project knowledge files)
+project knowledge files + CLAUDE-PRIVATE.md)
 
-**Claude Code (terminal):**
+**Claude Code (terminal + web):**
 Build, fix, deploy, commit. The execution layer.
 Reads CLAUDE.md automatically at session start.
 Has direct codebase access.
@@ -262,7 +213,7 @@ File tasks, document automation, desktop workflows. The admin layer.
 Reads from local repo folder.
 
 **The bridge:** Sharon carries context between environments manually.
-This CLAUDE.md file exists to reduce that overhead.
+This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 **Sharon's communication style:**
 - Direct. No flattery. Pushback welcome.
@@ -272,7 +223,7 @@ This CLAUDE.md file exists to reduce that overhead.
 
 ---
 
-## SECTION 10 — OPEN ITEMS (not blocking pilot)
+## SECTION 8 — OPEN ITEMS (not blocking pilot)
 
 - Trip purchase pricing/margins — flat fee structure, numbers TBD
 - Refund/cancellation policy for subscriptions and trip purchases
@@ -285,6 +236,16 @@ This CLAUDE.md file exists to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### March 25, 2026 | Claude Code (web)
+**Topic:** CLAUDE.md commit + public/private split
+
+Committed original CLAUDE.md to repo. Then split into two files:
+- CLAUDE.md (public, in repo) — architecture, build state, features, principles
+- CLAUDE-PRIVATE.md (for Claude.ai Project Knowledge only) — competitive
+  landscape, fundraising, investor contacts, financial model, strategic outreach
 
 ---
 
@@ -310,9 +271,6 @@ Produced: This CLAUDE.md file
 
 Also discussed: CLAUDE.md as shared brain system across all three
 Claude environments. GitHub as the shared layer. Daily sync workflow.
-
-Next: Take this CLAUDE.md to Claude Code, commit to repo root.
-Make repo private again after commit.
 
 ---
 *[Future entries appended above this line by Claude Code after each session]*
