@@ -25,11 +25,16 @@ function getSavedCapsuleIds(): string[] {
   }
 }
 
-let curateCounter = 0;
+function getCurateCounter(): number {
+  try {
+    return parseInt(localStorage.getItem("fdv_curate_index") || "0", 10) || 0;
+  } catch { return 0; }
+}
 function getNextUnsavedCapsule(): typeof PRESET_CAPSULES[0] | null {
   // For pilot: unlimited — always return a capsule, alternating between them
-  const capsule = PRESET_CAPSULES[curateCounter % PRESET_CAPSULES.length];
-  curateCounter++;
+  const counter = getCurateCounter();
+  const capsule = PRESET_CAPSULES[counter % PRESET_CAPSULES.length];
+  try { localStorage.setItem("fdv_curate_index", String(counter + 1)); } catch {}
   return capsule;
 }
 

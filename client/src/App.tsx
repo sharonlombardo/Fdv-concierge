@@ -45,6 +45,7 @@ import About from "@/pages/about";
 import { EmailCaptureManager } from "@/components/email-capture-manager";
 import PassportGate from "@/components/passport-gate";
 import { FirstSavePrompt } from "@/components/first-save-prompt";
+import { ConciergeNudge } from "@/components/concierge-nudge";
 import AdminPilot from "@/pages/admin/pilot";
 import ConciergeChat from "@/pages/concierge-chat";
 import { usePageView } from "@/hooks/use-page-view";
@@ -107,6 +108,7 @@ function App() {
           <EmailCaptureManager />
           <PassportGate />
           <FirstSavePrompt />
+          <ConciergeNudge />
           <TopBar />
           <Router />
           <BottomNav />
