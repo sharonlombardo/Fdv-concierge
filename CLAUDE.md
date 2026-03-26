@@ -59,9 +59,11 @@ systems-level infrastructure play.
 **Database:** Neon Postgres + Drizzle ORM (11 tables)
 **Hosting:** Vercel
 **Images:** Vercel Blob storage (274 mapped URLs)
-**Auth:** Session-based + email capture
-**Server:** Express.js, 20+ REST API endpoints
-**Repo:** github.com/sharonlombardo/Fdv-concierge (52 commits)
+**Auth:** Stateless HMAC-signed tokens in HttpOnly cookies (scrypt passwords)
+**Email:** Resend API (welcome email on signup, domain verification pending)
+**AI:** Claude API (claude-sonnet-4-20250514) for concierge chat
+**Server:** Express.js + Vercel serverless (api/index.ts), 30+ REST API endpoints
+**Repo:** github.com/sharonlombardo/Fdv-concierge (60+ commits)
 
 ### Pages & Routes (all LIVE):
 
@@ -82,7 +84,9 @@ systems-level infrastructure play.
 - `/travel-diary` — Post-trip journal: photos, notes, shareable story images
 - `/todays-edit` — Daily edit carousel with mood cards and look tiles
 - `/todays-edit/:itemId` — Desert Neutrals capsule detail by category
-- `/concierge-info` — Premium tier info page with feature list + CTA
+- `/concierge-info` — Concierge overview: what it does, Day 1 preview,
+  passport tiers, "Chat with Your Concierge" CTA
+- `/concierge-chat` — AI concierge chat powered by Claude API (Morocco knowledge)
 - `/profile` — Email, save count, account settings
 
 **Suitcase & Curation Pages:**
@@ -100,6 +104,8 @@ systems-level infrastructure play.
 - `/image-control` — Visual image slot manager
 - `/image-management` — Direct per-position image replacement
 - `/test-saves` — Debug: view all saves with clear-all
+- `/admin/pilot` — Pilot dashboard: user list, per-user saves, aggregate stats
+  (password-gated via ADMIN_KEY query param)
 
 **Coming Soon (placeholder pages):**
 - `/destinations/hydra`, `/destinations/slow-travel`,
@@ -160,6 +166,42 @@ systems-level infrastructure play.
 - Editorial product maps linking tiles to commerce data
 - Morocco guide with Shop the Story sections
 
+**Auth System (NEW — March 26):**
+- "Create Your Digital Passport" signup/login flow
+- Stateless HMAC-signed tokens in HttpOnly cookies (30-day expiry)
+- Password hashing with Node crypto scrypt
+- Passport Gate modal: triggered on save attempt when not logged in
+- Pending save callback: save completes automatically after signup
+- Per-user save association via user_email column
+
+**Concierge Chat (NEW — March 26):**
+- AI-powered travel concierge at /concierge-chat
+- Claude API (claude-sonnet-4-20250514) with Morocco-specific system prompt
+- Knows restaurants, riads, weather, what to wear, Atlas Mountains, Medina
+- Suggestion chips for common questions
+- Accessible from concierge-info page CTA + hamburger menu
+
+**Admin Dashboard (NEW — March 26):**
+- Pilot dashboard at /admin/pilot (ADMIN_KEY gated)
+- User list: name, email, signup date, last active, save count
+- Click user to expand saves
+- Aggregate stats: top saved items, top page views, curate usage
+
+**Post-Save Nudge (NEW — March 26):**
+- After 3rd-5th save, shows aesthetic signal overlay
+- Reads user's saved aesthetic tags, maps to human phrase
+  (e.g., "desert warmth and golden light", "clean lines and quiet luxury")
+- CTA: "Curate for Me" → triggers capsule curation
+
+**Email (NEW — March 26):**
+- Welcome email via Resend API on signup
+- "Your Digital Passport is ready" — branded HTML template
+- From: onboarding@resend.dev (domain verification pending for custom domain)
+
+**Page View Tracking (NEW — March 26):**
+- usePageView hook fires page_view event on every route change
+- Data visible in admin dashboard
+
 **User Features:**
 - Travel diary with photo uploads, notes, shareable story images
 - Selfie system with background removal (ImgLy)
@@ -168,7 +210,7 @@ systems-level infrastructure play.
 
 ### What is IN PROGRESS:
 - Morocco route migration: /concierge → /destinations/morocco
-- Concierge becoming its own route for AI chat (V2)
+- Resend domain verification for custom from-email (fdvconcierge.com on GoDaddy)
 
 ### What is COMING SOON (Notify Me capture):
 - Experiences, Culture, Objects of Desire, Daily Rituals, State of Mind
@@ -256,9 +298,9 @@ Gold/black covers, luggage tags, dopp bags. Drop-shipped.
    and suitcase-button show confirmation toasts with 2s duration.
 3. ✅ SHIPPED — Suitcase as visual gallery grid. 2-3 column Pinterest-style
    grid with visual cards, category/destination/edit views, search.
-4. ❌ NOT BUILT — End-of-article share prompt. No italic share sentence
-   at emotional peak. Morocco guide ends with "Some places don't need to
-   be explained. They need to be felt." — share prompt could follow this.
+4. ✅ SHIPPED — End-of-article share prompt. Italic "Love this? Tap the
+   share icon above — your friends will thank you." after closing quote
+   on Morocco guide + all 5 Current stories.
 
 **TIER 2 — Build during pilot, first 30 days:**
 5. Shareable Edition/Edit link — Morocco Edit as forwardable link.
@@ -333,17 +375,38 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## SECTION 8 — OPEN ITEMS (not blocking pilot)
 
+- Resend domain verification — fdvconcierge.com DNS records on GoDaddy
+  (needed for welcome emails from custom domain)
 - Trip purchase pricing/margins — flat fee structure, numbers TBD
 - Refund/cancellation policy for subscriptions and trip purchases
 - Curate My Edit algorithm deep build — Phase 2, ontology-driven (core IP)
 - Klaviyo access for email open rate (needed for financial model)
 - Remaining 4 Morocco stories for The Current Issue 1
 - Morocco route migration: /concierge → /destinations/morocco
+- Rotate Anthropic API key (was shared in chat — should regenerate)
 
 ---
 
 ## SECTION 9 — BUILD HISTORY (March 2026)
 *52 commits across Claude Code desktop + web sessions. Grouped by feature.*
+
+### Pilot Launch Build (March 26, 2026 — Claude Code web)
+- Auth system: signup/login with HMAC-signed cookie tokens, Passport Gate
+  modal on save attempts, per-user save association, profile page updates
+- Admin dashboard: /admin/pilot with user table, save drill-down, aggregate
+  stats (top saves, page views, curate usage), password-gated
+- End-of-article share prompt on Morocco guide + Current feed stories
+- Concierge info page redesign: Day 1 preview, passport tiers, chat CTA
+- Day 8 CTA updated: "Meet Your Concierge" replacing old copy
+- Concierge chat: /concierge-chat with Claude API, Morocco knowledge prompt
+- Welcome email via Resend API on signup (domain verification pending)
+- Post-save concierge nudge: aesthetic signal after 3rd-5th save
+- Curate rotation fix: peek/consume split, localStorage persistence
+- Hamburger menu: "YOUR MOROCCO" → "YOUR TRIPS", added "Chat with Concierge"
+- Page view tracking hook for analytics
+- Vercel-GitHub integration reconnected (was disconnected)
+- Environment variables added: SESSION_SECRET, ADMIN_KEY, RESEND_API_KEY,
+  ANTHROPIC_API_KEY
 
 ### Image System Overhaul
 - Studio shot priority system: studio product images now override editorial
@@ -401,6 +464,40 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### March 26, 2026 | Claude Code (web) — Evening Session
+**Topic:** Full pilot launch build — all 9 items implemented and deployed
+
+Built and deployed the complete pilot launch feature set from the 10-item
+brief. Implemented in order: auth system (Item 1), admin dashboard (Item 2),
+share prompts (Item 3), concierge redesign (Item 5), welcome email (Item 6),
+concierge chat with Claude API (Item 7), post-save nudge (Item 8), curate
+rotations (Item 9). Item 4 (itinerary opener) was already built.
+
+Key technical decisions: stateless HMAC-signed tokens instead of sessions
+(Vercel serverless can't use session stores), direct fetch to Resend/Anthropic
+APIs instead of SDKs (npm install blocked in cloud env), email as user
+association key for saves (simpler than userId).
+
+Bug fixes during testing: curate rotation always showing Evening Marrakech
+(getNextUnsavedCapsule called 3x per render — split into peek/consume),
+concierge chat page unreachable (added nav links), hamburger menu label
+("YOUR MOROCCO" → "YOUR TRIPS").
+
+Deployment issue: Vercel-GitHub integration had disconnected — no deploys
+for 7 days. Reconnected via Settings → Git → GitHub → Install. Had to
+redeploy without build cache to pick up latest code.
+
+Set up Resend account for email. Registered fdvconcierge.com domain on
+GoDaddy for future email sending (DNS verification still pending).
+
+Added 4 environment variables to Vercel: SESSION_SECRET, ADMIN_KEY,
+RESEND_API_KEY, ANTHROPIC_API_KEY.
+
+Admin dashboard confirmed working: shows 1 user (Sharon), 191 saves,
+page view stats. Ready for pilot users.
 
 ---
 
