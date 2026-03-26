@@ -21,6 +21,7 @@ const MENU_ITEMS: { label: string; href?: string; text?: string }[] = [
   { label: "My Trips", href: "/my-trips" },
   { label: "_divider" },
   { label: "Concierge", href: "/concierge-info" },
+  { label: "Chat with Concierge", href: "/concierge-chat" },
   { label: "Profile", href: "/profile" },
 ];
 

@@ -30,8 +30,13 @@ function getCurateCounter(): number {
     return parseInt(localStorage.getItem("fdv_curate_index") || "0", 10) || 0;
   } catch { return 0; }
 }
-function getNextUnsavedCapsule(): typeof PRESET_CAPSULES[0] | null {
-  // For pilot: unlimited — always return a capsule, alternating between them
+// Read-only: check which capsule is next without advancing the counter
+function peekNextCapsule(): typeof PRESET_CAPSULES[0] | null {
+  const counter = getCurateCounter();
+  return PRESET_CAPSULES[counter % PRESET_CAPSULES.length];
+}
+// Consume: return next capsule AND advance the counter
+function consumeNextCapsule(): typeof PRESET_CAPSULES[0] | null {
   const counter = getCurateCounter();
   const capsule = PRESET_CAPSULES[counter % PRESET_CAPSULES.length];
   try { localStorage.setItem("fdv_curate_index", String(counter + 1)); } catch {}
@@ -666,7 +671,7 @@ export default function SuitcasePage() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('curate') !== 'true') return;
     window.history.replaceState({}, '', '/suitcase');
-    const next = getNextUnsavedCapsule();
+    const next = consumeNextCapsule();
     if (next) {
       setCuratingCapsule(next);
       setShowCurating(true);
@@ -810,7 +815,7 @@ export default function SuitcasePage() {
   const savedCapsules = PRESET_CAPSULES.filter((c) => allCapsuleIds.includes(c.id));
 
   const handleCurateForMe = () => {
-    const next = getNextUnsavedCapsule();
+    const next = consumeNextCapsule();
     if (!next) return;
     setCuratingCapsule(next);
     setShowCurating(true);
@@ -826,7 +831,7 @@ export default function SuitcasePage() {
     requestAnimationFrame(() => setShowCurating(false));
   };
 
-  const nextCapsule = getNextUnsavedCapsule();
+  const nextCapsule = peekNextCapsule();
   const allCurated = !nextCapsule;
 
   const handleRemoveQuote = (quoteId: string) => {

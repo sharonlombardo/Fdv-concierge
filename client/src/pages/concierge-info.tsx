@@ -96,7 +96,7 @@ export default function ConciergeInfo() {
 
       {/* Bottom CTA */}
       <section style={{ padding: "0 24px 48px", maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
-        <Link href="/guides/morocco">
+        <Link href="/concierge-chat">
           <a style={{
             display: "inline-block",
             background: "#1a1a1a",
@@ -108,9 +108,21 @@ export default function ConciergeInfo() {
             textTransform: "uppercase",
             textDecoration: "none",
           }}>
-            Start with Morocco
+            Chat with Your Concierge
           </a>
         </Link>
+        <div style={{ marginTop: 16 }}>
+          <Link href="/guides/morocco">
+            <a style={{
+              fontFamily: "Lora, serif",
+              fontSize: 14,
+              color: "#999",
+              textDecoration: "underline",
+            }}>
+              or explore Morocco
+            </a>
+          </Link>
+        </div>
       </section>
     </div>
   );
