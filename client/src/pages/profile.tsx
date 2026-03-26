@@ -3,7 +3,7 @@ import { useUser } from "@/contexts/user-context";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Profile() {
-  const { email, setEmail, clearEmail, isLoggedIn, saveCount } = useUser();
+  const { email, name, user, setEmail, logout, isLoggedIn, saveCount, setShowPassportGate } = useUser();
   const [inputValue, setInputValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showChangeEmail, setShowChangeEmail] = useState(false);
@@ -39,8 +39,8 @@ export default function Profile() {
     }
   };
 
-  const handleSignOut = () => {
-    clearEmail();
+  const handleSignOut = async () => {
+    await logout();
     setShowChangeEmail(false);
     setInputValue("");
   };
@@ -78,6 +78,11 @@ export default function Profile() {
         {/* Email section */}
         {isLoggedIn && !showChangeEmail ? (
           <div style={{ marginBottom: 28 }}>
+            {name && (
+              <p style={{ fontSize: 22, fontWeight: 600, color: "#2c2416", marginBottom: 4, fontFamily: "Lora, serif" }}>
+                {name}
+              </p>
+            )}
             <div
               style={{
                 display: "flex",
@@ -87,62 +92,82 @@ export default function Profile() {
             >
               <span
                 style={{
-                  fontSize: 18,
-                  fontWeight: 600,
-                  color: "#2c2416",
+                  fontSize: 16,
+                  color: "#666",
                 }}
               >
                 {email}
               </span>
-              <button
-                onClick={() => setShowChangeEmail(true)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  fontSize: 13,
-                  color: "#9B8D7C",
-                  cursor: "pointer",
-                  textDecoration: "underline",
-                  padding: 0,
-                }}
-              >
-                change
-              </button>
+              {!user && (
+                <button
+                  onClick={() => setShowChangeEmail(true)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    fontSize: 13,
+                    color: "#9B8D7C",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    padding: 0,
+                  }}
+                >
+                  change
+                </button>
+              )}
             </div>
+            {user && (
+              <p style={{ fontSize: 12, color: "#9B8D7C", marginTop: 8 }}>
+                Digital Passport
+              </p>
+            )}
           </div>
         ) : (
           <div style={{ marginBottom: 28 }}>
             {!isLoggedIn && (
-              <>
+              <div style={{ textAlign: "center", marginBottom: 20 }}>
                 <p
                   style={{
                     fontFamily: "Lora, serif",
                     fontSize: 18,
                     color: "#2c2416",
-                    textAlign: "center",
                     lineHeight: 1.5,
                     margin: 0,
                     marginBottom: 6,
                     fontWeight: 500,
                   }}
                 >
-                  You've been saving beautifully.
+                  Create Your Digital Passport
                 </p>
                 <p
                   style={{
                     fontFamily: "Lora, serif",
                     fontSize: 15,
                     color: "rgba(44, 36, 22, 0.6)",
-                    textAlign: "center",
                     lineHeight: 1.6,
                     margin: 0,
                     marginBottom: 20,
                     whiteSpace: "pre-line",
                   }}
                 >
-                  {"Let us keep them safe for you — and start\nlearning what you love."}
+                  {"Save what you love. We'll keep it safe for you —\nand start learning what matters to you."}
                 </p>
-              </>
+                <button
+                  onClick={() => setShowPassportGate(true)}
+                  style={{
+                    width: "100%",
+                    height: 48,
+                    background: "#1a1a1a",
+                    color: "#ffffff",
+                    border: "none",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    letterSpacing: "0.1em",
+                    cursor: "pointer",
+                  }}
+                >
+                  CREATE PASSPORT
+                </button>
+              </div>
             )}
             <input
               type="email"
