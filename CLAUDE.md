@@ -404,6 +404,18 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### March 26, 2026 | Claude.ai + Claude Code
+**Topic:** Pilot launch list — full build brief for first 10 women
+
+Completed full audit of current build state via CLAUDE.md + source files. Confirmed Tier 1 items 1-3 already shipped. Built complete pilot launch brief for Claude Code covering: auth + per-user saves (foundation), admin dashboard for pilot visibility, end-of-article share prompt, itinerary opener copy, concierge section redesign, email setup (info@fildevieconcierge.com), Claude API hookup for concierge chat, post-save nudge, daily Curate for Me rotations. Evening Edit flagged for Sharon to art direct separately. Brief handed to Claude Code in sequence order.
+
+Also completed: AmiGo competitive deep dive (~40 screenshots), feature priority list, shared brain infrastructure (CLAUDE.md + CLAUDE-PRIVATE.md), fdv-context and fdv-session skills, source files uploaded to project knowledge.
+
+Produced: Complete pilot launch brief (9 items, sequenced)
+Next: Claude Code builds in order starting with auth. Check back on auth progress before moving to dependent items (post-save nudge, curate rotations).
+
+---
+
 ### March 26, 2026 | Claude Code (web)
 **Topic:** Build history sync — bringing Claude.ai up to speed
 
