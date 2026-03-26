@@ -676,7 +676,7 @@ export default function SuitcasePage() {
       setCuratingCapsule(next);
       setShowCurating(true);
     }
-  }); // runs on every render — checks URL param each time
+  }); // eslint-disable-line -- runs on every render to catch URL param
 
   // Auto-seed "Desert Neutrals" if user has 3+ saves and no capsules yet
   useEffect(() => {
