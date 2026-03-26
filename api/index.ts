@@ -1,12 +1,119 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import pg from 'pg';
+import crypto from 'crypto';
 const { Pool } = pg;
+
+// Email sending via Resend (lazy-loaded to avoid errors if not installed yet)
+async function sendWelcomeEmail(email: string, name?: string | null) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn('RESEND_API_KEY not set, skipping welcome email');
+    return;
+  }
+
+  const firstName = name ? name.split(' ')[0] : 'there';
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: process.env.RESEND_FROM_EMAIL || 'FDV Concierge <onboarding@resend.dev>',
+        to: [email],
+        subject: 'Your Digital Passport is ready',
+        html: `
+          <div style="font-family: Georgia, 'Times New Roman', serif; max-width: 520px; margin: 0 auto; padding: 40px 24px; color: #2c2416;">
+            <p style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #c9a84c; margin-bottom: 24px;">
+              FIL DE VIE CONCIERGE
+            </p>
+            <p style="font-size: 20px; line-height: 1.5; margin-bottom: 16px;">
+              Welcome, ${firstName}.
+            </p>
+            <p style="font-size: 16px; line-height: 1.7; color: #555; margin-bottom: 16px;">
+              Your Digital Passport is ready. You now have a place to save what you love — places, looks, moments — and we'll start learning what matters to you.
+            </p>
+            <p style="font-size: 16px; line-height: 1.7; color: #555; margin-bottom: 24px;">
+              Start with Morocco. It's waiting for you.
+            </p>
+            <a href="https://fdv-concierge.vercel.app/guides/morocco" style="display: inline-block; background: #1a1a1a; color: #fff; padding: 14px 32px; text-decoration: none; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;">
+              Explore Morocco
+            </a>
+            <p style="font-size: 13px; color: #999; margin-top: 40px; border-top: 1px solid #e8e0d4; padding-top: 20px;">
+              Fil de Vie Concierge — Travel with intention.
+            </p>
+          </div>
+        `,
+      }),
+    });
+  } catch (err) {
+    console.warn('Failed to send welcome email:', err);
+  }
+}
 
 // Database connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
+
+// Password hashing with scrypt (Node built-in)
+function hashPassword(password: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const salt = crypto.randomBytes(16).toString('hex');
+    crypto.scrypt(password, salt, 64, (err, derivedKey) => {
+      if (err) reject(err);
+      resolve(salt + ':' + derivedKey.toString('hex'));
+    });
+  });
+}
+
+function verifyPassword(password: string, hash: string): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    const [salt, key] = hash.split(':');
+    crypto.scrypt(password, salt, 64, (err, derivedKey) => {
+      if (err) reject(err);
+      resolve(key === derivedKey.toString('hex'));
+    });
+  });
+}
+
+// Simple token for session (signed with secret, stateless for serverless)
+const SESSION_SECRET = process.env.SESSION_SECRET || 'fdv-pilot-secret-2026';
+
+function createToken(email: string): string {
+  const payload = JSON.stringify({ email, exp: Date.now() + 30 * 24 * 60 * 60 * 1000 }); // 30 days
+  const hmac = crypto.createHmac('sha256', SESSION_SECRET).update(payload).digest('hex');
+  return Buffer.from(payload).toString('base64') + '.' + hmac;
+}
+
+function verifyToken(token: string): { email: string } | null {
+  try {
+    const [payloadB64, hmac] = token.split('.');
+    const payload = Buffer.from(payloadB64, 'base64').toString();
+    const expectedHmac = crypto.createHmac('sha256', SESSION_SECRET).update(payload).digest('hex');
+    if (hmac !== expectedHmac) return null;
+    const data = JSON.parse(payload);
+    if (data.exp < Date.now()) return null;
+    return { email: data.email };
+  } catch {
+    return null;
+  }
+}
+
+function getTokenFromRequest(req: VercelRequest): string | null {
+  const cookie = req.headers.cookie || '';
+  const match = cookie.match(/fdv_token=([^;]+)/);
+  return match ? match[1] : null;
+}
+
+function getUserEmailFromRequest(req: VercelRequest): string | null {
+  const token = getTokenFromRequest(req);
+  if (!token) return null;
+  const verified = verifyToken(token);
+  return verified?.email || null;
+}
 
 // Run migrations on first request
 let migrated = false;
@@ -16,6 +123,22 @@ async function runMigrations() {
   try {
     await pool.query('ALTER TABLE saves ADD COLUMN IF NOT EXISTS user_email TEXT');
     await pool.query('CREATE INDEX IF NOT EXISTS idx_saves_user_email ON saves(user_email)');
+    // Auth migrations
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        username TEXT UNIQUE,
+        password TEXT NOT NULL,
+        email TEXT UNIQUE,
+        name TEXT,
+        created_at TIMESTAMP DEFAULT NOW(),
+        last_active TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT UNIQUE');
+    await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT');
+    await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()');
+    await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS last_active TIMESTAMP DEFAULT NOW()');
   } catch (e) {
     console.warn('Migration warning:', e);
   }
@@ -309,6 +432,158 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     await runMigrations();
+
+    // ═══ AUTH ENDPOINTS ═══
+
+    // POST /api/auth/signup — Create Digital Passport
+    if (path === '/api/auth/signup' && method === 'POST') {
+      const { name, email, password } = req.body || {};
+      if (!email || !password) return res.status(400).json({ error: 'Email and password are required' });
+      if (password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
+
+      // Check if email already exists
+      const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+      if (existing.rows.length > 0) {
+        return res.status(409).json({ error: 'An account with this email already exists. Please log in.' });
+      }
+
+      const hashedPassword = await hashPassword(password);
+      const result = await pool.query(
+        'INSERT INTO users (username, email, name, password, created_at, last_active) VALUES ($1, $1, $2, $3, NOW(), NOW()) RETURNING id, email, name, created_at',
+        [email, name || null, hashedPassword]
+      );
+      const user = result.rows[0];
+
+      // Associate any anonymous saves with this email
+      await pool.query('UPDATE saves SET user_email = $1 WHERE user_email IS NULL', [email]);
+
+      // Send welcome email (non-blocking)
+      sendWelcomeEmail(email, name).catch(() => {});
+
+      // Set auth cookie
+      const token = createToken(email);
+      res.setHeader('Set-Cookie', `fdv_token=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${30 * 24 * 60 * 60}${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`);
+
+      return res.status(201).json({ user: { id: user.id, email: user.email, name: user.name, createdAt: user.created_at } });
+    }
+
+    // POST /api/auth/login
+    if (path === '/api/auth/login' && method === 'POST') {
+      const { email, password } = req.body || {};
+      if (!email || !password) return res.status(400).json({ error: 'Email and password are required' });
+
+      const result = await pool.query('SELECT id, email, name, password, created_at FROM users WHERE email = $1', [email]);
+      if (result.rows.length === 0) {
+        return res.status(401).json({ error: 'Invalid email or password' });
+      }
+
+      const user = result.rows[0];
+      const valid = await verifyPassword(password, user.password);
+      if (!valid) {
+        return res.status(401).json({ error: 'Invalid email or password' });
+      }
+
+      // Update last active
+      await pool.query('UPDATE users SET last_active = NOW() WHERE id = $1', [user.id]);
+
+      // Set auth cookie
+      const token = createToken(email);
+      res.setHeader('Set-Cookie', `fdv_token=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${30 * 24 * 60 * 60}${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`);
+
+      return res.status(200).json({ user: { id: user.id, email: user.email, name: user.name, createdAt: user.created_at } });
+    }
+
+    // POST /api/auth/logout
+    if (path === '/api/auth/logout' && method === 'POST') {
+      res.setHeader('Set-Cookie', 'fdv_token=; Path=/; HttpOnly; Max-Age=0');
+      return res.status(200).json({ success: true });
+    }
+
+    // GET /api/auth/me — Check current session
+    if (path === '/api/auth/me' && method === 'GET') {
+      const email = getUserEmailFromRequest(req);
+      if (!email) return res.status(200).json({ user: null });
+
+      const result = await pool.query('SELECT id, email, name, created_at FROM users WHERE email = $1', [email]);
+      if (result.rows.length === 0) return res.status(200).json({ user: null });
+
+      const user = result.rows[0];
+      // Update last active
+      await pool.query('UPDATE users SET last_active = NOW() WHERE id = $1', [user.id]);
+      return res.status(200).json({ user: { id: user.id, email: user.email, name: user.name, createdAt: user.created_at } });
+    }
+
+    // ═══ ADMIN ENDPOINTS ═══
+
+    // GET /api/admin/users — All users with stats (admin key protected)
+    if (path === '/api/admin/users' && method === 'GET') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const adminKey = urlObj.searchParams.get('admin_key');
+      if (adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+
+      const users = await pool.query(`
+        SELECT u.id, u.email, u.name, u.created_at, u.last_active,
+          (SELECT COUNT(*) FROM saves WHERE user_email = u.email) as save_count,
+          (SELECT COUNT(*) FROM events WHERE metadata->>'userEmail' = u.email) as event_count
+        FROM users u
+        ORDER BY u.created_at DESC
+      `);
+      return res.status(200).json(users.rows);
+    }
+
+    // GET /api/admin/users/:email/saves
+    if (path.startsWith('/api/admin/users/') && path.endsWith('/saves') && method === 'GET') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const adminKey = urlObj.searchParams.get('admin_key');
+      if (adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+
+      const email = decodeURIComponent(path.split('/api/admin/users/')[1].split('/saves')[0]);
+      const saves = await pool.query('SELECT * FROM saves WHERE user_email = $1 ORDER BY saved_at DESC', [email]);
+      return res.status(200).json(saves.rows);
+    }
+
+    // GET /api/admin/users/:email/events
+    if (path.startsWith('/api/admin/users/') && path.endsWith('/events') && method === 'GET') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const adminKey = urlObj.searchParams.get('admin_key');
+      if (adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+
+      const email = decodeURIComponent(path.split('/api/admin/users/')[1].split('/events')[0]);
+      const events = await pool.query(
+        "SELECT * FROM events WHERE metadata->>'userEmail' = $1 OR source_page LIKE '%' || $1 || '%' ORDER BY created_at DESC LIMIT 200",
+        [email]
+      );
+      return res.status(200).json(events.rows);
+    }
+
+    // GET /api/admin/aggregate — Top saved items, clicks, curate usage
+    if (path === '/api/admin/aggregate' && method === 'GET') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const adminKey = urlObj.searchParams.get('admin_key');
+      if (adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+
+      const topSaved = await pool.query(
+        "SELECT item_id, title, item_type, COUNT(*) as save_count FROM saves GROUP BY item_id, title, item_type ORDER BY save_count DESC LIMIT 20"
+      );
+      const topClicks = await pool.query(
+        "SELECT destination_url, COUNT(*) as click_count FROM events WHERE event_type = 'affiliate_click' GROUP BY destination_url ORDER BY click_count DESC LIMIT 20"
+      );
+      const curateCount = await pool.query(
+        "SELECT COUNT(*) as count FROM events WHERE event_type = 'curate_for_me'"
+      );
+      const pageViews = await pool.query(
+        "SELECT source_page, COUNT(*) as view_count FROM events WHERE event_type = 'page_view' GROUP BY source_page ORDER BY view_count DESC LIMIT 30"
+      );
+      const userCount = await pool.query('SELECT COUNT(*) as count FROM users');
+
+      return res.status(200).json({
+        topSaved: topSaved.rows,
+        topClicks: topClicks.rows,
+        curateUsage: parseInt(curateCount.rows[0].count, 10),
+        pageViews: pageViews.rows,
+        totalUsers: parseInt(userCount.rows[0].count, 10)
+      });
+    }
 
     // POST /api/saves/associate-email — backfill anonymous saves with user email
     if (path === '/api/saves/associate-email' && method === 'POST') {
@@ -697,6 +972,73 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.warn('Events table insert failed (table may not exist):', dbError);
       }
       return res.status(200).json({ success: true, eventType, itemId });
+    }
+
+    // POST /api/concierge/chat — AI concierge chat
+    if (path === '/api/concierge/chat' && method === 'POST') {
+      const apiKey = process.env.ANTHROPIC_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ error: 'Concierge not configured' });
+      }
+
+      const { messages } = req.body || {};
+      if (!messages || !Array.isArray(messages) || messages.length === 0) {
+        return res.status(400).json({ error: 'messages array is required' });
+      }
+
+      const systemPrompt = `You are the FDV Concierge — a warm, knowledgeable travel companion for Fil de Vie Concierge, a luxury travel and style platform. You speak like a trusted friend who happens to have impeccable taste, deep knowledge of Morocco, and a gift for logistics.
+
+Your tone is:
+- Warm but not effusive
+- Confident but never pretentious
+- Specific — you give real names, real places, real details
+- Atmospheric — you paint pictures with words
+- Concise — you respect people's time
+
+You know Morocco deeply — Marrakech, the Atlas Mountains, the coast, the desert. You know:
+- The best restaurants (Le Jardin, Nomad, La Maison Arabe, Dar Yacout, Al Fassia)
+- The best riads and hotels (Royal Mansour, La Mamounia, Kasbah Bab Ourika, Kasbah Tamadot)
+- Marrakech's Medina: Jemaa el-Fnaa, the souks, Bahia Palace, Jardin Majorelle, the tanneries
+- Atlas foothills: Ourika Valley, Imlil, Toubkal region
+- Day trips: Essaouira (2.5hrs), Ouzoud Falls, Aït Benhaddou
+- Weather: warm days, cool desert nights, layer for the mountains
+- What to wear: linen, cotton, modest shoulders/knees for mosques, comfortable shoes for medina cobblestones, a light jacket for evenings
+
+You also know the FDV product catalog — luxury resort wear, desert neutrals, evening looks. When someone asks about packing or what to wear, you can suggest categories (flowing dresses, linen sets, leather sandals, a statement bag) without being overly commercial.
+
+If someone asks about booking, say that the full concierge booking service is coming soon with the Black Passport tier, but you're happy to help them plan.
+
+Keep responses focused and helpful. Use paragraph breaks for readability. Don't use bullet points unless listing specific items.`;
+
+      try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1024,
+            system: systemPrompt,
+            messages: messages.map((m: any) => ({ role: m.role, content: m.content })),
+          }),
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          console.error('Anthropic API error:', errText);
+          return res.status(500).json({ error: 'Concierge unavailable' });
+        }
+
+        const data = await response.json();
+        const reply = data.content?.[0]?.text || 'I wasn\'t able to respond. Please try again.';
+        return res.status(200).json({ reply });
+      } catch (err) {
+        console.error('Concierge chat error:', err);
+        return res.status(500).json({ error: 'Concierge unavailable' });
+      }
     }
 
     // POST handlers (stub for any uncaught POST)

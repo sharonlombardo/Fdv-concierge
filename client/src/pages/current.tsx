@@ -1093,6 +1093,9 @@ function ClosingLine({ text, id }: ClosingLineProps & { sourceStory?: string }) 
   return (
     <div className="py-12 md:py-16 px-8 max-w-2xl mx-auto text-center" data-testid={`closing-${id}`}>
       <p className="text-sm md:text-base text-muted-foreground italic">{text}</p>
+      <p className="mt-6 text-xs text-muted-foreground/60 italic font-serif">
+        Love this? Tap the share icon above — your friends will thank you.
+      </p>
     </div>
   );
 }

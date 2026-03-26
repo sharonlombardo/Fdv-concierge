@@ -1254,9 +1254,7 @@ export default function Home() {
               fontWeight: 400,
             }}
           >
-            Everything above is your trip at a glance.
-            <br />
-            But a glance isn't a plan.
+            This is your trip to customize.
           </p>
           <p
             style={{
@@ -1268,60 +1266,29 @@ export default function Home() {
               marginTop: 20,
             }}
           >
-            Your FDV Concierge turns this overview into a fully orchestrated
-            experience — day-by-day logistics, pre-built packing lists,
-            restaurant reservations, and a Travel Diary to capture it all.
+            Want to swap a restaurant? Add a day?
+            <br />
+            Have someone book it all for you?
           </p>
-          <div
-            style={{
-              display: "flex",
-              gap: 16,
-              justifyContent: "center",
-              marginTop: 36,
-              flexWrap: "wrap",
-            }}
-          >
-            <a
-              href="/daily-flow"
-              onClick={(e) => { e.preventDefault(); setLocation("/daily-flow"); }}
-              style={{
-                display: "inline-block",
-                padding: "14px 32px",
-                background: "#1a1a1a",
-                color: "#ffffff",
-                fontFamily: "Inter, sans-serif",
-                fontSize: 13,
-                fontWeight: 600,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                textDecoration: "none",
-                borderRadius: 4,
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              Unlock Daily Flow
-            </a>
+          <div style={{ marginTop: 36 }}>
             <a
               href="/concierge-info"
               onClick={(e) => { e.preventDefault(); setLocation("/concierge-info"); }}
               style={{
                 display: "inline-block",
-                padding: "14px 32px",
-                background: "transparent",
-                color: "#1a1a1a",
-                fontFamily: "Inter, sans-serif",
+                padding: "14px 40px",
+                background: "#1a1a1a",
+                color: "#ffffff",
+                fontFamily: "Lora, serif",
                 fontSize: 13,
-                fontWeight: 600,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 textDecoration: "none",
-                borderRadius: 4,
-                border: "1.5px solid #1a1a1a",
+                border: "none",
                 cursor: "pointer",
               }}
             >
-              Learn More
+              Meet Your Concierge
             </a>
           </div>
         </div>

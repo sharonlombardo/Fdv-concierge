@@ -43,7 +43,16 @@ import Profile from "@/pages/profile";
 import CapsuleDetail from "@/pages/capsule-detail";
 import About from "@/pages/about";
 import { EmailCaptureManager } from "@/components/email-capture-manager";
+import PassportGate from "@/components/passport-gate";
 import { FirstSavePrompt } from "@/components/first-save-prompt";
+import AdminPilot from "@/pages/admin/pilot";
+import ConciergeChat from "@/pages/concierge-chat";
+import { usePageView } from "@/hooks/use-page-view";
+
+function PageViewTracker() {
+  usePageView();
+  return null;
+}
 
 function Router() {
   return (
@@ -79,6 +88,8 @@ function Router() {
       <Route path="/my-trips" component={MyTrips} />
       <Route path="/concierge-info" component={ConciergeInfo} />
       <Route path="/profile" component={Profile} />
+      <Route path="/concierge-chat" component={ConciergeChat} />
+      <Route path="/admin/pilot" component={AdminPilot} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -92,7 +103,9 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <ScrollToTop />
+          <PageViewTracker />
           <EmailCaptureManager />
+          <PassportGate />
           <FirstSavePrompt />
           <TopBar />
           <Router />
