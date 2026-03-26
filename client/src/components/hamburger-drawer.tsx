@@ -10,7 +10,7 @@ const MENU_ITEMS: { label: string; href?: string; text?: string }[] = [
   { label: "Guides", href: "/guides" },
   { label: "Shop", href: "/shop" },
   { label: "The Details", href: "/about" },
-  { label: "_section", text: "YOUR MOROCCO" },
+  { label: "_section", text: "YOUR TRIPS" },
   { label: "Itinerary Overview", href: "/concierge" },
   { label: "Daily Flow", href: "/daily-flow" },
   { label: "Packing Lists", href: "/packing" },
