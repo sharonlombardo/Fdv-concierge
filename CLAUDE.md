@@ -1,6 +1,6 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** March 25, 2026
+**Last updated:** March 26, 2026
 **Updated by:** Claude.ai session with Sharon Lombardo
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
@@ -53,29 +53,126 @@ systems-level infrastructure play.
 
 ---
 
-## SECTION 2 — CURRENT BUILD STATE (March 2026)
+## SECTION 2 — CURRENT BUILD STATE (March 26, 2026)
 
 **Platform:** React/TypeScript, Vite, Tailwind, shadcn/ui
-**Database:** Neon Postgres + Drizzle ORM
+**Database:** Neon Postgres + Drizzle ORM (11 tables)
 **Hosting:** Vercel
-**Images:** Vercel Blob storage
-**Auth:** Session-based
-**Repo:** github.com/sharonlombardo/Fdv-concierge
+**Images:** Vercel Blob storage (274 mapped URLs)
+**Auth:** Session-based + email capture
+**Server:** Express.js, 20+ REST API endpoints
+**Repo:** github.com/sharonlombardo/Fdv-concierge (52 commits)
 
-**What is LIVE:**
-- The Current (editorial magazine feed)
-- Destinations — Morocco deep build (full itinerary + packing list)
-- Shop — clothing, accessories, beauty (103 products in brand genome)
-- Morocco Edit content fully seeded in production database
-- Images migrated to Vercel Blob storage
+### Pages & Routes (all LIVE):
 
-**What is IN PROGRESS:**
-- IA v2 architecture migration (locked March 1, 2026)
-- Morocco moving from /concierge route → /destinations/morocco
+**Consumer Pages:**
+- `/` — Threshold/landing with hero video, category nav, embedded Current feed
+- `/about` — Brand story, tiered service, editorial photography
+- `/current` — The Current editorial feed (curated moments, stories, shopping)
+- `/destinations` — Grid of 5 destinations (Morocco live, 4 coming soon)
+- `/guides` — Guide listing gallery
+- `/guides/morocco` — Morocco guide with day carousels, Shop the Story,
+  email-gated itinerary (Days 3-8 blurred + unlock flow), 36+ pinnable images
+- `/shop` — Product catalog, 103 items, category filtering, pin buttons, item modals
+- `/concierge` (also `/itinerary/morocco`) — Full 8-day Morocco itinerary
+  with weather, dining, wardrobe looks, shopping, journal, selfie picker
+- `/editorial` — Morocco editorial overview, 8-day narrative with outfits
+- `/packing` — Packing list with day sections, morning/afternoon/evening looks,
+  checkoff, organize/pack view modes, selfie uploads
+- `/travel-diary` — Post-trip journal: photos, notes, shareable story images
+- `/todays-edit` — Daily edit carousel with mood cards and look tiles
+- `/todays-edit/:itemId` — Desert Neutrals capsule detail by category
+- `/concierge-info` — Premium tier info page with feature list + CTA
+- `/profile` — Email, save count, account settings
+
+**Suitcase & Curation Pages:**
+- `/suitcase` — Visual gallery grid (2-3 col), category/destination/edit views,
+  search, Curate for Me, saved item cards with remove/status badges
+- `/my-edits` — Capsule collection page, auto-seeds Desert Neutrals at 3+ saves
+- `/capsule/:capsuleId` — Individual capsule detail with ethereal reveal animation
+- `/my-trips` — Trip collection (Morocco live, 4 coming soon)
+- `/suitcase/edit/:editTag` — Edit detail with tabbed filtering by type
+- `/daily-flow` — Single-day itinerary view with journal integration
+
+**Admin Pages:**
+- `/library` — Image library management (upload, tag, categorize)
+- `/rules` — Image rules engine (auto-assign images by time/location/keyword)
+- `/image-control` — Visual image slot manager
+- `/image-management` — Direct per-position image replacement
+- `/test-saves` — Debug: view all saves with clear-all
+
+**Coming Soon (placeholder pages):**
+- `/destinations/hydra`, `/destinations/slow-travel`,
+  `/destinations/retreat`, `/destinations/new-york`
+
+### Key Features BUILT:
+
+**Save/Pin System:**
+- Gold pin buttons on all saveable content (images, products, places, looks)
+- 36+ pinnable images across Morocco guide
+- Toast notifications on save ("Saved to your Suitcase" / "Added to your Suitcase")
+- Save types: look, product, place, experience, quote, article, ritual, object
+- Commerce metadata on saves: brand, price, shopUrl, bookUrl
+- Purchase status tracking (want/owned)
+
+**Curate for Me:**
+- AI-generated personalized capsule wardrobes from user saves
+- First-save prompt: overlay after first pin triggers curate flow
+- Full-screen curating animation (crossfading photography, 4-phase transitions)
+- Ethereal capsule reveal with slow fade
+- Unlimited curate: alternates between capsule variations
+- Accessible from: hamburger menu, Morocco guide, About page
+- "Edit again anytime" pulsing CTA on capsule detail
+
+**Email Gate / Paywall:**
+- Morocco guide: Days 3-8 gated with blur overlay
+- "Unlock your complete Morocco experience" + email input
+- Pilot tester bypass: "Continue without unlocking"
+- Waitlist table captures email + source
+
+**Content Paywall (mid-content):**
+- Email gate placed at Day 3 of Morocco (emotional peak, not front door)
+- Copy: "Unlock your complete Morocco experience"
+
+**Image System:**
+- Studio shot priority across all surfaces (Shop, Suitcase, capsules, carousels)
+- Brand genome key mapping with 3-tier fallback (direct → case-insensitive → alias)
+- Image library with tags, categories, priorities
+- Rule-based auto-assignment (match by time, location, keywords)
+- Custom image upload per itinerary slot
+- 274 Vercel Blob CDN-mapped URLs with embedded fallbacks
+
+**Commerce:**
+- 103 products in brand genome (YSL, Alaïa, Phoebe Philo, Bottega Veneta, etc.)
+- Farfetch affiliate links
+- Item modals with brand/price, size/color, descriptions, shop/book buttons
+- Event tracking: affiliate_click, book_click, save_item, open_modal, scroll_depth
+
+**Navigation:**
+- Bottom nav: Current | Suitcase | Guides | Shop
+- Top bar with hamburger, logo, concierge icon (transparent → white on scroll)
+- Hamburger drawer with 25+ items organized in sections
+- Curate for Me in hamburger menu
+
+**Editorial:**
+- The Current feed with multiple story categories
+- Morocco editorial: 8-day narrative with wardrobe looks
+- Editorial product maps linking tiles to commerce data
+- Morocco guide with Shop the Story sections
+
+**User Features:**
+- Travel diary with photo uploads, notes, shareable story images
+- Selfie system with background removal (ImgLy)
+- Journal entries synced local + server
+- Packing list with checkoff functionality
+
+### What is IN PROGRESS:
+- Morocco route migration: /concierge → /destinations/morocco
 - Concierge becoming its own route for AI chat (V2)
 
-**What is COMING SOON (Notify Me capture):**
+### What is COMING SOON (Notify Me capture):
 - Experiences, Culture, Objects of Desire, Daily Rituals, State of Mind
+- Hydra, Slow Travel, Retreat, New York destinations
 
 **Current Issue 1:** Morocco as anchor story. 5 stories planned. In
 active editorial development.
@@ -148,18 +245,20 @@ Gold/black covers, luggage tags, dopp bags. Drop-shipped.
 
 ## SECTION 5 — PILOT FEATURE PRIORITY LIST
 *From AmiGo competitive analysis session, March 25, 2026*
+*Status updated: March 26, 2026 after full codebase audit*
 
 **TIER 1 — Must ship before pilot launches:**
-1. Mid-content paywall on Morocco editorial (at emotional peak, not
-   front door). Copy direction: "Some things are kept just for
-   Passport holders."
-2. "Added to Suitcase" toast notification — green confirmation on save.
-   Instant feedback loop.
-3. Suitcase as visual gallery grid — Pinterest muscle memory.
-   Destination tiles with cover photo. One save = already looks like
-   something.
-4. End-of-article share prompt — one italic sentence at emotional peak.
-   No button. "Love this? Hit share above — your friends will thank you."
+1. ✅ SHIPPED — Mid-content paywall on Morocco editorial. Email gate at
+   Day 3 with blur overlay + "Unlock your complete Morocco experience."
+   Pilot tester bypass included. (Copy could be refined to match
+   "Some things are kept just for Passport holders" direction.)
+2. ✅ SHIPPED — "Added to Suitcase" toast notification. Both pin-button
+   and suitcase-button show confirmation toasts with 2s duration.
+3. ✅ SHIPPED — Suitcase as visual gallery grid. 2-3 column Pinterest-style
+   grid with visual cards, category/destination/edit views, search.
+4. ❌ NOT BUILT — End-of-article share prompt. No italic share sentence
+   at emotional peak. Morocco guide ends with "Some places don't need to
+   be explained. They need to be felt." — share prompt could follow this.
 
 **TIER 2 — Build during pilot, first 30 days:**
 5. Shareable Edition/Edit link — Morocco Edit as forwardable link.
@@ -180,6 +279,15 @@ Gold/black covers, luggage tags, dopp bags. Drop-shipped.
 
 **DO NOT BUILD for pilot:** Global explore map. Needs content density.
 Individual place maps within Morocco itinerary = fine.
+
+**BONUS — Built but not on original priority list:**
+- Curate for Me: full AI capsule generation flow with animation
+- First-save prompt triggering curation
+- Travel diary with photo journal + shareable story images
+- Selfie system with background removal
+- Image management admin tools (library, rules, slots)
+- Today's Edit carousel
+- Event/analytics tracking system
 
 ---
 
