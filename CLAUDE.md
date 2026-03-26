@@ -234,8 +234,74 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+## SECTION 9 — BUILD HISTORY (March 2026)
+*52 commits across Claude Code desktop + web sessions. Grouped by feature.*
+
+### Image System Overhaul
+- Studio shot priority system: studio product images now override editorial
+  fallbacks across Shop, Suitcase, capsules, carousels, and itinerary views
+- Brand genome key mapping for look items (FLOW keys, not SECTION keys)
+- Fixed Column Dress image (cropped white bar + "Style" text label)
+- Removed 3 wrong editorial fallback images from Shop grid
+- Shop grid display: editorial images use cover, studio shots use contain
+- Suitcase deduplication (Khaite slippers) + studio image resolution for saves
+- Fixed all daily flow images, itinerary overview images, carousel products
+  to use studio shots
+
+### Save/Pin System — Morocco Guide
+- Save pins added to ALL 36+ images in Morocco guide (every photo pinnable)
+- Pins moved from text to main images
+- Fixed 17 missing pins on large/left images
+- 19 Morocco guide places all have save pins
+
+### Suitcase & Save Organization
+- Fixed Travel/Destinations tab: stopped filtering out place/destination saves
+- Fixed Slow Travel grouping: matches both 'slow' and 'slow-travel' storyTags
+
+### Curate for Me Feature (major new feature)
+- "Curate for Me" button — AI generates personalized capsule wardrobes from saves
+- First-save prompt: centered overlay appears after first pin, triggers curate flow
+- Ethereal curate animation: full-screen crossfading photography with text overlay,
+  slow fade-out, dreamy capsule reveal (rebuilt multiple times for polish)
+- Unlimited curate: alternates between capsule variations for pilot
+- Curate for Me accessible from: hamburger menu, Morocco guide (between
+  Shop Local and The Stay), About page sidebar link
+- "Edit again anytime" CTA on capsule detail page with pulsing animation
+- Whisper-weight contextual text around Curate button and save grid
+- Curate-again messaging on capsule detail, first-save prompt, Morocco guide
+- Fix: re-trigger on every navigation, not just first mount
+
+### My Edits Tab
+- "Edits built from what you've saved" heading
+- Heading styling refinements (size, opacity)
+
+### Navigation & Menu
+- Hamburger menu reordered with section labels and divider
+- Curate for Me added to hamburger drawer
+
+### About Page
+- New copy: "drawn to" → "love", "what resonates" → "what matters to you"
+- Sidebar link opens hamburger drawer
+- 6 editorial photography images woven between text sections
+
+### Editorial & Copy
+- Intro block rewrite: new copy, lighter styling, Curate for Me + details links
+- Concierge subtitle copy update
+- Morocco guide blank page fix (missing Link import)
+
+---
+
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### March 26, 2026 | Claude Code (web)
+**Topic:** Build history sync — bringing Claude.ai up to speed
+
+Added comprehensive build log of all 52 commits to CLAUDE.md so Claude.ai
+has full context of what's been built. Created fdv-context skill for
+session-start briefings. Cloned repo to Sharon's Mac for Cowork access.
 
 ---
 
