@@ -467,6 +467,48 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### March 26, 2026 | Claude.ai — Evening Strategy Session
+**Topic:** DOTSHOP competitive deep dive, deck work, Wellspring OS architecture
+
+**DOTSHOP competitive analysis:** Confirmed Lisa Ruffle (co-founder, former
+Moda Operandi buying director who bought FIL DE VIE) as warm outreach target
+— three potential conversations: FIL DE VIE on DOTSHOP, checkout infrastructure
+knowledge share, Wellspring OS licensing. Steve Jensen confirmed as COO not
+deep ML engineer — DOTSHOP's AI is likely collaborative filtering + lookalike
+modeling, not a taste genome. Their checkout infrastructure is almost certainly
+Violet.io + Stripe Connect.
+
+**Deck work:** "Engagement is not Taste" Pinterest comparison slide confirmed
+for deck — goes after "Luxury is Machine-Blind," before FDV solution. "Static
+Preference to Taste in Motion" slide needs revision — right side needs FDV's
+actual product answer (Hydra capsule), not just destination imagery. "When"
+thesis articulated as core moat: travel save = purchase intent with timestamp,
+context, mood, and price tolerance attached. No competitor has this signal.
+
+**Wellspring OS architecture:** Full Taste Infrastructure document set uploaded
+to project knowledge, organized into 5 layers:
+1. Ontology — WELLSPRING_CODES, AXIS_RUBRIC, ASSET_SCHEMA, TRANSLATION_RULES, TASTE_AXES
+2. Ingestion Pipeline — Gemini + Claude Governor + Claude Code
+3. User Model — events, vector state, self model, identity synthesis, snapshots
+4. Composition Engine — spec, rules, refusal logic, scoring, SQL mapping
+5. Governance — review queue, policy table, worker spec
+
+WELLSPRING_WORLDS_V1 confirmed complete (Hydra, Morocco, Mallorca defined).
+FDV_PRODUCT_GENOME_MAPPING_V1 uploaded — 88 products, most approved with
+atelier_codes, ~10 Phoebe Philo items pending_review with empty codes.
+
+**Build sequence confirmed:** Phase 1 (SQL migrations) → Phase 2 (asset
+ingestion pipeline) → Phase 3 (self model engine) → Phase 4 (composition
+engine) → Phase 5 (world layer).
+
+**Tomorrow:** Brand genome enrichment session — fill pending_review products,
+map atelier_codes to Wellspring vocabulary, add axis scores.
+
+**Key insight:** "You curate. I translate. Claude enforces. Claude Code stores.
+That's the stack."
+
+---
+
 ### March 26, 2026 | Claude Code (web) — Evening Session
 **Topic:** Full pilot launch build — all 9 items implemented and deployed
 
