@@ -53,7 +53,7 @@ systems-level infrastructure play.
 
 ---
 
-## SECTION 2 — CURRENT BUILD STATE (March 26, 2026)
+## SECTION 2 — CURRENT BUILD STATE (March 30, 2026)
 
 **Platform:** React/TypeScript, Vite, Tailwind, shadcn/ui
 **Database:** Neon Postgres + Drizzle ORM (11 tables)
@@ -181,11 +181,27 @@ systems-level infrastructure play.
 - Suggestion chips for common questions
 - Accessible from concierge-info page CTA + hamburger menu
 
-**Admin Dashboard (NEW — March 26):**
+**Admin Dashboard (EXPANDED — March 30):**
 - Pilot dashboard at /admin/pilot (ADMIN_KEY gated)
-- User list: name, email, signup date, last active, save count
-- Click user to expand saves
-- Aggregate stats: top saved items, top page views, curate usage
+- 6 tabs: Overview | Users | Content | Links | Products | Alerts
+- Overview: metric cards, conversion funnel (Visited → Signed Up → Saved → Chat)
+- Users: table with journey timeline, color-coded event types
+- Content: scroll depth per page (25/50/75/100%), affiliate clicks
+- Links: broken/warning link monitoring, approve/reject/manual/remove actions
+- Products: 103 products, inline URL editing, status dropdown, seed from genome
+- Alerts: zero-save users, inactive users (3+ days)
+
+**Link Health System (NEW — March 30):**
+- link_health table tracking URL status, fail counts, replacements
+- Manual link checker with HEAD requests, 500ms rate limiting
+- Admin Links tab with Run Link Check + action buttons
+- Client-side useLinkHealth() hook for broken link handling
+
+**Products Table (NEW — March 30):**
+- products table as source of truth for commerce data (URLs, prices, shop_status)
+- Eliminates split-brain between genome JSON and database
+- Admin Products tab with inline editing, syncs changes to saves table
+- Public /api/products endpoint for frontend consumption
 
 **Post-Save Nudge (NEW — March 26):**
 - After 3rd-5th save, shows aesthetic signal overlay
@@ -198,9 +214,12 @@ systems-level infrastructure play.
 - "Your Digital Passport is ready" — branded HTML template
 - From: onboarding@resend.dev (domain verification pending for custom domain)
 
-**Page View Tracking (NEW — March 26):**
-- usePageView hook fires page_view event on every route change
-- Data visible in admin dashboard
+**Event Tracking (EXPANDED — March 30):**
+- Session IDs via sessionStorage, session start/end events
+- Enhanced page_view: sessionId, viewport, referrer, timeOnPreviousPage
+- Scroll depth tracking at 25/50/75/100% on Morocco guide, Current, About
+- Concierge chat event tracking: message count, user message preview
+- sendBeacon for reliable session_end on page unload
 
 **User Features:**
 - Travel diary with photo uploads, notes, shareable story images
@@ -388,7 +407,7 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 ---
 
 ## SECTION 9 — BUILD HISTORY (March 2026)
-*52 commits across Claude Code desktop + web sessions. Grouped by feature.*
+*60+ commits across Claude Code desktop + web sessions. Grouped by feature.*
 
 ### Pilot Launch Build (March 26, 2026 — Claude Code web)
 - Auth system: signup/login with HMAC-signed cookie tokens, Passport Gate
@@ -515,6 +534,62 @@ found 6 critical issues:
 morocco.tsx, current.tsx, about.tsx, concierge-chat.tsx, admin/pilot.tsx
 **Files created:** session.ts, use-scroll-depth.ts
 **PR:** #9
+
+---
+
+### March 30, 2026 | Claude Code (web) — Link Health, Products, Riad Evenings
+**Topic:** Link health system + products table + broken link fixes + Evening Edit redesign + image fixes
+
+**PART 4 — Link health system:**
+- link_health table: stores URL, status (ok/broken/warning/replaced), last_checked,
+  fail_count, replacement_url, approved_by
+- GET /api/admin/check-links: manual link checker with HEAD requests, 500ms rate
+  limiting, 10s timeout, 2-failure threshold before marking broken
+- GET /api/admin/links: admin view of broken/warning/pending links
+- POST /api/admin/links/:id/action: approve, reject, manual replace, remove actions
+- GET /api/link-health: client-side broken link map (1hr cache)
+- useLinkHealth() hook + getHealthyUrl() for frontend broken link handling
+- Admin Links tab with Run Link Check button + approve/reject/manual/remove actions
+
+**PART 5 — Products table (eliminate split-brain):**
+- products table: source of truth for commerce data (URLs, prices, shop_status)
+- POST /api/admin/products/seed: imports 103 products from brand genome JSON
+- GET /api/admin/products: admin product list with filtering
+- PUT /api/admin/products/:id: inline editing of commerce fields, syncs to saves table
+- GET /api/products: public product commerce data endpoint
+- Admin Products tab with inline URL editing, status dropdown, Seed from Genome button
+
+**PART 6 — Broken product link fixes (immediate):**
+- Bottega Veneta Solstice Bag: net-a-porter → bergdorfgoodman
+- Demellier Santorini: demellierlondon → saksfifthavenue
+- Khaite Otto Slippers → Phoebe Philo Robe Slide (full product swap, $890)
+- Phoebe Philo Ankle Boot → Tilt Ankle Boot (Oxblood, $1,650, live URL)
+- Updated: brand-genome.ts image mapping, editorial_product_map.json, suitcase.tsx
+  dedup map, capsule-data.ts Desert Neutrals accessories
+
+**PART 7 — Riad Evenings capsule redesign:**
+- Evening Marrakech → "Riad Evenings" with new tagline + editorial copy
+- Hero image: morocco-motion-1 (woman in red at El Fenn) spans full-width
+- capsule-view.tsx: dynamic title from capsule.name, "Shop the Look" section header,
+  hero image gridColumn "1 / -1" with 4/3 aspect ratio
+- Dress-anchored product order: Isadora Dress first, then Alaïa mules, Chloé bag,
+  PP hoops, Hildegaard oil, PoppyKing lipstick
+- 5 mood images: morocco-motion-1 (hero), eat-1-large (El Fenn golden light),
+  ward-2-large (Isadora Dress), ward-2-small1 (Chloé Wristlette),
+  ward-2-small2 (Poppy King red)
+- Replaced 2 daylight images (eat-1-large, stay-3-large) with evening images from
+  Riad Evenings wardrobe section, then added eat-1-large back as 5th mood image
+  per Sharon's direction
+
+**PART 8 — Admin dashboard expanded to 6 tabs:**
+- Added Links tab and Products tab to existing Overview | Users | Content | Alerts
+
+**Files modified:** api/index.ts, capsule-data.ts, capsule-view.tsx,
+fdv_brand_genome.json, editorial_product_map.json, brand-genome.ts,
+suitcase.tsx, admin/pilot.tsx
+**Files created:** use-link-health.ts
+**PRs:** #10 (link health + products + broken links), #11 (Phoebe Philo fix),
+#12 (Riad Evenings redesign), #13 (evening image fix), #14 (El Fenn mood image)
 
 ---
 
