@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { Link } from "wouter";
 import { ArrowLeft, ExternalLink } from "lucide-react";
+import { useScrollDepth } from "@/hooks/use-scroll-depth";
 import { Button } from "@/components/ui/button";
 import { PinButton } from "@/components/pin-button";
 
@@ -1307,6 +1308,7 @@ function StoryDivider() {
 }
 
 export default function CurrentFeed({ embedded = false }: { embedded?: boolean }) {
+  useScrollDepth("/current");
   const [activeSection, setActiveSection] = useState("");
   const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);

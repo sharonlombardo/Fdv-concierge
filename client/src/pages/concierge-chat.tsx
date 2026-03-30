@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useUser } from "@/contexts/user-context";
+import { getSessionId } from "@/lib/session";
 
 interface Message {
   role: "user" | "assistant";
@@ -40,6 +41,21 @@ export default function ConciergeChat() {
 
       const data = await res.json();
       setMessages([...newMessages, { role: "assistant", content: data.reply }]);
+      // Track chat event
+      fetch("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventType: "concierge_chat",
+          sourcePage: "/concierge-chat",
+          metadata: {
+            sessionId: getSessionId(),
+            userEmail: user?.email || null,
+            messageCount: newMessages.length + 1,
+            userMessage: text.slice(0, 100),
+          },
+        }),
+      }).catch(() => {});
     } catch {
       setMessages([
         ...newMessages,

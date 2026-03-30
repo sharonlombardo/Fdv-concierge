@@ -577,13 +577,102 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
       const userCount = await pool.query('SELECT COUNT(*) as count FROM users');
 
+      // Session metrics
+      const sessionCount = await pool.query(
+        "SELECT COUNT(DISTINCT metadata->>'sessionId') as count FROM events WHERE metadata->>'sessionId' IS NOT NULL"
+      );
+      const avgPagesPerSession = await pool.query(
+        `SELECT AVG(page_count)::numeric(10,1) as avg_pages FROM (
+          SELECT metadata->>'sessionId' as sid, COUNT(*) as page_count
+          FROM events WHERE event_type = 'page_view' AND metadata->>'sessionId' IS NOT NULL
+          GROUP BY metadata->>'sessionId'
+        ) t`
+      );
+      const avgSessionDuration = await pool.query(
+        `SELECT AVG((metadata->>'sessionDuration')::int)::int as avg_ms
+         FROM events WHERE event_type = 'session_end' AND metadata->>'sessionDuration' IS NOT NULL`
+      );
+      // Scroll depth stats for editorial pages
+      const scrollDepth = await pool.query(
+        `SELECT source_page, (metadata->>'depth')::int as depth, COUNT(*) as count
+         FROM events WHERE event_type = 'scroll_depth'
+         GROUP BY source_page, metadata->>'depth'
+         ORDER BY source_page, depth`
+      );
+      // Chat usage
+      const chatCount = await pool.query(
+        "SELECT COUNT(*) as count FROM events WHERE event_type = 'concierge_chat'"
+      );
+      // Funnel data
+      const funnelVisited = await pool.query(
+        "SELECT COUNT(DISTINCT metadata->>'sessionId') as count FROM events WHERE event_type = 'page_view'"
+      );
+      const funnelSignedUp = await pool.query('SELECT COUNT(*) as count FROM users');
+      const funnelSaved1 = await pool.query(
+        "SELECT COUNT(DISTINCT user_email) as count FROM saves WHERE user_email IS NOT NULL"
+      );
+      const funnelSaved3 = await pool.query(
+        `SELECT COUNT(*) as count FROM (
+          SELECT user_email FROM saves WHERE user_email IS NOT NULL
+          GROUP BY user_email HAVING COUNT(*) >= 3
+        ) t`
+      );
+      const funnelViewedSuitcase = await pool.query(
+        "SELECT COUNT(DISTINCT metadata->>'userEmail') as count FROM events WHERE event_type = 'page_view' AND source_page = '/suitcase' AND metadata->>'userEmail' IS NOT NULL"
+      );
+      const funnelUsedChat = await pool.query(
+        "SELECT COUNT(DISTINCT metadata->>'userEmail') as count FROM events WHERE event_type = 'concierge_chat' AND metadata->>'userEmail' IS NOT NULL"
+      );
+      // Zero-save users alert
+      const zeroSaveUsers = await pool.query(
+        `SELECT u.email, u.name, u.created_at FROM users u
+         WHERE NOT EXISTS (SELECT 1 FROM saves WHERE user_email = u.email)
+         ORDER BY u.created_at DESC`
+      );
+
       return res.status(200).json({
         topSaved: topSaved.rows,
         topClicks: topClicks.rows,
         curateUsage: parseInt(curateCount.rows[0].count, 10),
         pageViews: pageViews.rows,
-        totalUsers: parseInt(userCount.rows[0].count, 10)
+        totalUsers: parseInt(userCount.rows[0].count, 10),
+        sessions: {
+          total: parseInt(sessionCount.rows[0]?.count || '0', 10),
+          avgPages: parseFloat(avgPagesPerSession.rows[0]?.avg_pages || '0'),
+          avgDurationMs: parseInt(avgSessionDuration.rows[0]?.avg_ms || '0', 10),
+        },
+        scrollDepth: scrollDepth.rows,
+        chatUsage: parseInt(chatCount.rows[0].count, 10),
+        funnel: {
+          visited: parseInt(funnelVisited.rows[0]?.count || '0', 10),
+          signedUp: parseInt(funnelSignedUp.rows[0]?.count || '0', 10),
+          saved1: parseInt(funnelSaved1.rows[0]?.count || '0', 10),
+          saved3: parseInt(funnelSaved3.rows[0]?.count || '0', 10),
+          viewedSuitcase: parseInt(funnelViewedSuitcase.rows[0]?.count || '0', 10),
+          usedChat: parseInt(funnelUsedChat.rows[0]?.count || '0', 10),
+        },
+        alerts: {
+          zeroSaveUsers: zeroSaveUsers.rows,
+        },
       });
+    }
+
+    // GET /api/admin/users/:email/journey — chronological event timeline
+    if (path.startsWith('/api/admin/users/') && path.endsWith('/journey') && method === 'GET') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const adminKey = urlObj.searchParams.get('admin_key');
+      if (adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+
+      const email = decodeURIComponent(path.split('/api/admin/users/')[1].split('/journey')[0]);
+      const events = await pool.query(
+        `SELECT event_type, source_page, metadata, created_at FROM events
+         WHERE metadata->>'userEmail' = $1 OR metadata->>'sessionId' IN (
+           SELECT DISTINCT metadata->>'sessionId' FROM events WHERE metadata->>'userEmail' = $1
+         )
+         ORDER BY created_at ASC LIMIT 500`,
+        [email]
+      );
+      return res.status(200).json(events.rows);
     }
 
     // POST /api/saves/associate-email — backfill anonymous saves with user email
