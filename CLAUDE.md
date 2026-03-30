@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** March 26, 2026
-**Updated by:** Claude.ai session with Sharon Lombardo
+**Last updated:** March 30, 2026
+**Updated by:** Claude Code session with Sharon Lombardo
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -240,6 +240,35 @@ systems-level infrastructure play.
 **Evening Edit Redesign (PRs #12-14):**
 - "Riad Evenings" — art directed by Sharon, hero + 5 mood images, curated products
 
+**Floating Concierge — "The Concierge, Everywhere" (PR #22):**
+- Gold chat icon (bottom-right) on every page, slide-up 75vh panel
+- Context-aware greetings based on current page
+- Tiered message limits: 3 anonymous / 15 free / unlimited Gold
+- Gate messages as chat bubbles (concierge speaks the gate, not system modals)
+- Conversation logging to concierge_conversations table (both sides)
+- Enhanced system prompt: voice docs + product catalog + user saves + page context
+
+**Voice Doc Infrastructure (PR #22):**
+- 5 destination knowledge files in /data/concierge/ loaded dynamically at runtime
+- Morocco + NYC: Sharon's personal voice. Hydra, Mallorca, Amangiri: editorial research
+- loadVoiceDocs() reads .md files, skips placeholders, joins into system prompt
+- loadProductCatalog() prefers DB products table, falls back to genome JSON
+- Adding a destination = adding a .md file to /data/concierge/
+
+**Guide/Itinerary Separation (PR #22):**
+- ItineraryTeaser slimmed from full Day 1-8 inline content to compact preview card
+- Mini day list (Days 1-3 titles + "5 more days") with gate to /concierge
+- Clean separation: guide = editorial discovery, itinerary = gated product
+
+**Curate Animation Polish (PR #22):**
+- Animation tuned from ~15s to ~7s (800-1100ms per phase)
+- Smooth text transitions (0.5s fade)
+- Eliminated suitcase page flash: overlay stays opaque until navigation
+
+**Weather API (PR #22):**
+- /api/weather?city={city} endpoint ready (OpenWeatherMap proxy)
+- Needs OPENWEATHER_API_KEY added to Vercel env vars
+
 ### What is COMING SOON (Notify Me capture):
 - Experiences, Culture, Objects of Desire, Daily Rituals, State of Mind
 - Hydra, Slow Travel, Retreat, New York destinations
@@ -414,11 +443,13 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 - Verify nightly link checker cron is running after first night
 
 **Ongoing / Not Blocking Pilot:**
+- Add OPENWEATHER_API_KEY to Vercel env vars (Sharon — tomorrow AM)
 - Resend domain verification — fdvconcierge.com DNS records on GoDaddy
 - Klaviyo access for email open rate (needed for financial model)
 - Trip purchase pricing/margins — flat fee structure, numbers TBD
 - Refund/cancellation policy for subscriptions and trip purchases
 - Curate My Edit algorithm deep build — Phase 2, ontology-driven (core IP)
+- Taste signal extraction from concierge conversations (Phase 2)
 - Remaining 4 Morocco stories for The Current Issue 1
 - Morocco route migration: /concierge → /destinations/morocco
 - Rotate Anthropic API key (was shared in chat — should regenerate)
@@ -502,6 +533,64 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### March 30, 2026 | Claude Code (web) — Evening Session
+**Topic:** Floating Concierge, Voice Docs, Animation Polish, Guide/Itinerary Separation
+
+**Floating Concierge — "The Concierge, Everywhere" (PR #22):**
+Built complete floating concierge widget. Gold chat icon bottom-right on every page
+(z-index 85, above bottom nav). Slide-up 75vh panel with context-aware greetings
+per route. Tiered message limits: 3 anonymous → 15 free → unlimited Gold. Gate
+messages spoken as chat bubbles by the concierge, not system modals. Anonymous gate
+triggers Passport Gate signup. Free gate shows subtle Gold upgrade card inline.
+Conversation logging to new concierge_conversations table (both user + assistant).
+Hidden on /concierge-chat and "/" (landing page).
+
+**Voice Doc Infrastructure (PR #22):**
+Created /data/concierge/ folder with 5 destination knowledge files. loadVoiceDocs()
+reads all .md files at runtime, skips placeholders, joins into system prompt with
+source notes (personal authority vs editorial research). loadProductCatalog() prefers
+DB products table, falls back to genome JSON. Sharon pushed real voice doc content
+from her Mac via git — Morocco + NYC (personal voice), Hydra + Mallorca + Amangiri
+(editorial research). All 5 now live in system prompt.
+
+**Guide/Itinerary Separation:**
+Slimmed ItineraryTeaser in morocco.tsx from rendering full Day 1-8 editorial content
+inline to a compact preview card. Shows El Fenn hero image, Days 1-3 titles,
+"+ 5 more days of curated Morocco", all unlock actions gate to /concierge.
+
+**Curate Animation Polish:**
+Tuned from ~15s to ~7s. Phase duration: 1100ms. Text fade: 0.5s. Image crossfade:
+0.8s. Fixed flickery text at 800ms. Eliminated suitcase page flash by keeping
+overlay at full opacity until navigation (root cause: overlay lived inside
+suitcase.tsx, navigating unmounted it before capsule page mounted).
+
+**Weather API:**
+Added /api/weather?city={city} endpoint as OpenWeatherMap proxy. Needs
+OPENWEATHER_API_KEY added to Vercel env vars (manual step).
+
+**Riad Evenings Updates:**
+Resolved PR #13 merge conflict (kept evening images over daylight). Added 5th
+mood image: eat-1-large.jpg (El Fenn golden light).
+
+**PRs Merged:** #22 (squash merge — floating concierge + voice docs + animation + guide separation)
+
+**Key Files Modified:**
+- client/src/components/floating-concierge.tsx (NEW)
+- api/index.ts (concierge chat rewrite, voice docs, product catalog, conversation logging, weather)
+- client/src/App.tsx (added FloatingConcierge)
+- client/src/pages/guides/morocco.tsx (ItineraryTeaser rewrite)
+- client/src/components/curating-animation.tsx (timing polish)
+- client/src/pages/suitcase.tsx (flash fix)
+- client/src/data/capsule-data.ts (evening images + 5th mood)
+- data/concierge/*.md (5 voice docs with real content)
+
+**Still Needed:**
+- OPENWEATHER_API_KEY in Vercel env vars (Sharon doing tomorrow AM)
+- Taste signal extraction from conversations (Phase 2)
+- Resend domain verification (ongoing)
 
 ---
 
