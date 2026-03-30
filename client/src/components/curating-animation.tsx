@@ -9,7 +9,9 @@ const PHASES = [
   { text: "Curating your experience...", image: `${BLOB}/curate-staircase-pink` },
 ];
 
-const PHASE_DURATION = 800;
+const PHASE_DURATION = 1100;
+const TEXT_FADE = "opacity 0.5s ease-in-out";
+const IMG_FADE = "opacity 0.8s ease-in-out";
 
 interface CuratingAnimationProps {
   capsuleName: string;
@@ -30,23 +32,23 @@ export function CuratingAnimation({
 
   // Fade in first text
   useEffect(() => {
-    const t = setTimeout(() => setTextVisible(true), 150);
+    const t = setTimeout(() => setTextVisible(true), 200);
     return () => clearTimeout(t);
   }, []);
 
-  // Phase transitions
+  // Phase transitions — text fades out, then image + text swap together
   const advancePhase = useCallback(() => {
     setTextVisible(false);
     setTimeout(() => {
       const next = currentPhase + 1;
       if (next < PHASES.length) {
         setCurrentPhase(next);
-        setTimeout(() => setTextVisible(true), 150);
+        setTimeout(() => setTextVisible(true), 250);
       } else {
         setIsReveal(true);
-        setTimeout(() => setRevealReady(true), 200);
+        setTimeout(() => setRevealReady(true), 300);
       }
-    }, 200);
+    }, 350);
   }, [currentPhase]);
 
   useEffect(() => {
@@ -58,8 +60,8 @@ export function CuratingAnimation({
   // Auto-complete after reveal
   useEffect(() => {
     if (revealReady) {
-      const t1 = setTimeout(() => setFadeOut(true), 800);
-      const t2 = setTimeout(onComplete, 1400);
+      const t1 = setTimeout(() => setFadeOut(true), 1000);
+      const t2 = setTimeout(onComplete, 1600);
       return () => { clearTimeout(t1); clearTimeout(t2); };
     }
   }, [revealReady, onComplete]);
@@ -86,7 +88,7 @@ export function CuratingAnimation({
             backgroundSize: "cover",
             backgroundPosition: "center",
             opacity: isReveal ? (i === PHASES.length - 1 ? 1 : 0) : currentPhase === i ? 1 : 0,
-            transition: "opacity 0.6s ease-in-out",
+            transition: IMG_FADE,
           }}
         />
       ))}
@@ -114,7 +116,7 @@ export function CuratingAnimation({
               color: "#fff",
               textShadow: "0 2px 20px rgba(0,0,0,0.4)",
               opacity: textVisible ? 1 : 0,
-              transition: "opacity 0.4s ease-in-out",
+              transition: TEXT_FADE,
               textAlign: "center",
               padding: "0 32px",
             }}
@@ -139,7 +141,7 @@ export function CuratingAnimation({
             padding: "0 32px",
             opacity: revealReady ? 1 : 0,
             transform: revealReady ? "translateY(0)" : "translateY(12px)",
-            transition: "opacity 0.4s ease-out, transform 0.4s ease-out",
+            transition: "opacity 0.5s ease-out, transform 0.5s ease-out",
           }}
         >
           <h1
