@@ -902,9 +902,10 @@ export default function SuitcasePage() {
     'velvet thongs': 'alaia-heel-thong',
     'heel thong mules': 'alaia-heel-thong',
     'heel thong mules in velvet': 'alaia-heel-thong',
-    'otto leather slippers': 'khaite-otto-slippers',
-    'khaite otto leather slippers': 'khaite-otto-slippers',
-    'otto leather slipper': 'khaite-otto-slippers',
+    'robe slide': 'phoebe-philo-robe-slide',
+    'phoebe philo robe slide': 'phoebe-philo-robe-slide',
+    'otto leather slippers': 'phoebe-philo-robe-slide',
+    'khaite otto leather slippers': 'phoebe-philo-robe-slide',
   };
 
   // Fuzzy lookup: try exact match, then check if normTitle CONTAINS any map key

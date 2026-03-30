@@ -139,6 +139,30 @@ async function runMigrations() {
     await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT');
     await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()');
     await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS last_active TIMESTAMP DEFAULT NOW()');
+    // Link health table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS link_health (
+        id SERIAL PRIMARY KEY,
+        source_table TEXT NOT NULL,
+        source_id TEXT NOT NULL,
+        url_field TEXT NOT NULL,
+        url TEXT NOT NULL,
+        status_code INTEGER,
+        is_healthy BOOLEAN NOT NULL DEFAULT true,
+        last_checked_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        first_broken_at TIMESTAMP,
+        consecutive_failures INTEGER DEFAULT 0,
+        item_title TEXT,
+        item_brand TEXT,
+        replacement_url TEXT,
+        replacement_status TEXT,
+        replacement_source TEXT,
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_link_health_unhealthy ON link_health (is_healthy) WHERE is_healthy = false');
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_link_health_source ON link_health (source_table, source_id)');
   } catch (e) {
     console.warn('Migration warning:', e);
   }
@@ -1079,6 +1103,205 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
       }
       return res.status(200).json({ success: true });
+    }
+
+    // GET /api/admin/check-links — manual link health check
+    if (path === '/api/admin/check-links' && method === 'GET') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const adminKey = urlObj.searchParams.get('admin_key');
+      if (adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+
+      // Gather all external URLs from saves and brand genome
+      const savesResult = await pool.query(
+        `SELECT DISTINCT item_id, shop_url, book_url, title, brand FROM saves
+         WHERE (shop_url IS NOT NULL AND shop_url != '') OR (book_url IS NOT NULL AND book_url != '')`
+      );
+
+      const linksToCheck: { sourceTable: string; sourceId: string; urlField: string; url: string; title: string; brand: string }[] = [];
+      for (const row of savesResult.rows) {
+        if (row.shop_url) linksToCheck.push({ sourceTable: 'saves', sourceId: row.item_id, urlField: 'shopUrl', url: row.shop_url, title: row.title || '', brand: row.brand || '' });
+        if (row.book_url) linksToCheck.push({ sourceTable: 'saves', sourceId: row.item_id, urlField: 'bookUrl', url: row.book_url, title: row.title || '', brand: row.brand || '' });
+      }
+
+      // Deduplicate by URL
+      const uniqueUrls = new Map<string, typeof linksToCheck[0]>();
+      for (const link of linksToCheck) {
+        if (!uniqueUrls.has(link.url)) uniqueUrls.set(link.url, link);
+      }
+
+      const results = { total: uniqueUrls.size, healthy: 0, broken: 0, warnings: 0, errors: [] as string[] };
+      const DELAY_MS = 500;
+      const TIMEOUT_MS = 10000;
+
+      for (const [checkUrl, link] of uniqueUrls) {
+        try {
+          await new Promise(r => setTimeout(r, DELAY_MS));
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+          const resp = await fetch(checkUrl, {
+            method: 'HEAD',
+            redirect: 'follow',
+            signal: controller.signal,
+            headers: { 'User-Agent': 'FDV-LinkChecker/1.0' },
+          }).catch(async () => {
+            // Fallback to GET if HEAD fails (some servers reject HEAD)
+            return fetch(checkUrl, {
+              method: 'GET',
+              redirect: 'follow',
+              signal: controller.signal,
+              headers: { 'User-Agent': 'FDV-LinkChecker/1.0' },
+            });
+          });
+          clearTimeout(timeout);
+
+          const statusCode = resp.status;
+          const isHealthy = statusCode >= 200 && statusCode < 400;
+          const isWarning = statusCode === 403 || statusCode >= 500;
+
+          // Upsert into link_health
+          const existing = await pool.query('SELECT id, consecutive_failures FROM link_health WHERE url = $1 LIMIT 1', [checkUrl]);
+          if (existing.rows.length > 0) {
+            const row = existing.rows[0];
+            if (isHealthy) {
+              await pool.query(
+                'UPDATE link_health SET status_code = $1, is_healthy = true, consecutive_failures = 0, last_checked_at = NOW() WHERE id = $2',
+                [statusCode, row.id]
+              );
+            } else {
+              const newFailures = (row.consecutive_failures || 0) + 1;
+              await pool.query(
+                `UPDATE link_health SET status_code = $1, consecutive_failures = $2, is_healthy = $3,
+                 first_broken_at = COALESCE(first_broken_at, NOW()), last_checked_at = NOW() WHERE id = $4`,
+                [statusCode, newFailures, newFailures < 2, row.id]
+              );
+            }
+          } else {
+            await pool.query(
+              `INSERT INTO link_health (source_table, source_id, url_field, url, status_code, is_healthy, item_title, item_brand, consecutive_failures, first_broken_at)
+               VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+              [link.sourceTable, link.sourceId, link.urlField, checkUrl, statusCode, isHealthy, link.title, link.brand, isHealthy ? 0 : 1, isHealthy ? null : new Date()]
+            );
+          }
+
+          if (isHealthy) results.healthy++;
+          else if (isWarning) results.warnings++;
+          else results.broken++;
+        } catch (err: any) {
+          results.broken++;
+          // Log DNS/connection failures
+          const existing = await pool.query('SELECT id, consecutive_failures FROM link_health WHERE url = $1 LIMIT 1', [checkUrl]);
+          if (existing.rows.length > 0) {
+            const row = existing.rows[0];
+            const newFailures = (row.consecutive_failures || 0) + 1;
+            await pool.query(
+              `UPDATE link_health SET status_code = 0, consecutive_failures = $1, is_healthy = $2,
+               first_broken_at = COALESCE(first_broken_at, NOW()), last_checked_at = NOW(), notes = $3 WHERE id = $4`,
+              [newFailures, newFailures < 2, err.message?.slice(0, 200), row.id]
+            );
+          } else {
+            await pool.query(
+              `INSERT INTO link_health (source_table, source_id, url_field, url, status_code, is_healthy, item_title, item_brand, consecutive_failures, first_broken_at, notes)
+               VALUES ($1, $2, $3, $4, 0, false, $5, $6, 1, NOW(), $7)`,
+              [link.sourceTable, link.sourceId, link.urlField, checkUrl, link.title, link.brand, err.message?.slice(0, 200)]
+            );
+          }
+          results.errors.push(`${link.title || checkUrl}: ${err.message?.slice(0, 100)}`);
+        }
+      }
+
+      return res.status(200).json(results);
+    }
+
+    // GET /api/admin/links — link health dashboard data
+    if (path === '/api/admin/links' && method === 'GET') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const adminKey = urlObj.searchParams.get('admin_key');
+      if (adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+
+      const all = await pool.query('SELECT COUNT(*) as count FROM link_health');
+      const healthy = await pool.query('SELECT COUNT(*) as count FROM link_health WHERE is_healthy = true');
+      const broken = await pool.query('SELECT * FROM link_health WHERE is_healthy = false ORDER BY first_broken_at DESC');
+      const warnings = await pool.query("SELECT * FROM link_health WHERE status_code IN (403, 500, 502, 503) AND is_healthy = true ORDER BY last_checked_at DESC");
+      const pending = await pool.query("SELECT * FROM link_health WHERE replacement_status = 'pending' ORDER BY first_broken_at DESC");
+
+      return res.status(200).json({
+        total: parseInt(all.rows[0].count, 10),
+        healthyCount: parseInt(healthy.rows[0].count, 10),
+        broken: broken.rows,
+        warnings: warnings.rows,
+        pendingReplacements: pending.rows,
+      });
+    }
+
+    // POST /api/admin/links/:id/action — approve, reject, manual replace
+    if (path.startsWith('/api/admin/links/') && path.endsWith('/action') && method === 'POST') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const adminKey = urlObj.searchParams.get('admin_key');
+      if (adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+
+      const linkId = path.split('/api/admin/links/')[1].split('/action')[0];
+      const { action, manualUrl } = req.body || {};
+
+      if (action === 'approve') {
+        // Apply the suggested replacement URL to the source saves
+        const link = await pool.query('SELECT * FROM link_health WHERE id = $1', [linkId]);
+        if (link.rows.length > 0 && link.rows[0].replacement_url) {
+          const row = link.rows[0];
+          // Update saves with the old URL
+          if (row.url_field === 'shopUrl') {
+            await pool.query('UPDATE saves SET shop_url = $1 WHERE shop_url = $2', [row.replacement_url, row.url]);
+          } else if (row.url_field === 'bookUrl') {
+            await pool.query('UPDATE saves SET book_url = $1 WHERE book_url = $2', [row.replacement_url, row.url]);
+          }
+          await pool.query("UPDATE link_health SET replacement_status = 'approved', is_healthy = true WHERE id = $1", [linkId]);
+        }
+      } else if (action === 'reject') {
+        await pool.query("UPDATE link_health SET replacement_status = 'rejected' WHERE id = $1", [linkId]);
+      } else if (action === 'manual' && manualUrl) {
+        const link = await pool.query('SELECT * FROM link_health WHERE id = $1', [linkId]);
+        if (link.rows.length > 0) {
+          const row = link.rows[0];
+          if (row.url_field === 'shopUrl') {
+            await pool.query('UPDATE saves SET shop_url = $1 WHERE shop_url = $2', [manualUrl, row.url]);
+          } else if (row.url_field === 'bookUrl') {
+            await pool.query('UPDATE saves SET book_url = $1 WHERE book_url = $2', [manualUrl, row.url]);
+          }
+          await pool.query(
+            "UPDATE link_health SET replacement_url = $1, replacement_status = 'approved', replacement_source = 'manual', is_healthy = true WHERE id = $2",
+            [manualUrl, linkId]
+          );
+        }
+      } else if (action === 'remove') {
+        // Mark as unavailable — hide the shop/book link
+        const link = await pool.query('SELECT * FROM link_health WHERE id = $1', [linkId]);
+        if (link.rows.length > 0) {
+          const row = link.rows[0];
+          if (row.url_field === 'shopUrl') {
+            await pool.query('UPDATE saves SET shop_url = NULL WHERE shop_url = $1', [row.url]);
+          } else if (row.url_field === 'bookUrl') {
+            await pool.query('UPDATE saves SET book_url = NULL WHERE book_url = $1', [row.url]);
+          }
+          await pool.query("UPDATE link_health SET replacement_status = 'removed', notes = 'Product marked unavailable' WHERE id = $1", [linkId]);
+        }
+      }
+
+      return res.status(200).json({ success: true });
+    }
+
+    // GET /api/link-health — client-side check for broken links (cached per-request)
+    if (path === '/api/link-health' && method === 'GET') {
+      const broken = await pool.query(
+        "SELECT url, replacement_url, replacement_status FROM link_health WHERE is_healthy = false"
+      );
+      const healthMap: Record<string, { broken: boolean; replacement?: string }> = {};
+      for (const row of broken.rows) {
+        healthMap[row.url] = {
+          broken: true,
+          replacement: row.replacement_status === 'approved' ? row.replacement_url : undefined,
+        };
+      }
+      return res.status(200).json(healthMap);
     }
 
     // POST /api/events — event tracking

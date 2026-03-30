@@ -65,9 +65,9 @@ export const PRESET_CAPSULES: Capsule[] = [
       {
         id: "dn-acc-1",
         database_match_key: "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
-        brand: "KHAITE",
-        name: "Otto Leather Slippers",
-        price: "$595",
+        brand: "PHOEBE PHILO",
+        name: "Robe Slide",
+        price: "$890",
         category: "footwear",
         pinType: "object",
       },

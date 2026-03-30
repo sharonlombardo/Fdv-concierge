@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface PilotUser {
   id: string;
@@ -31,6 +31,33 @@ interface JourneyEvent {
   created_at: string;
 }
 
+interface LinkHealthRow {
+  id: number;
+  source_table: string;
+  source_id: string;
+  url_field: string;
+  url: string;
+  status_code: number;
+  is_healthy: boolean;
+  last_checked_at: string;
+  first_broken_at: string | null;
+  consecutive_failures: number;
+  item_title: string | null;
+  item_brand: string | null;
+  replacement_url: string | null;
+  replacement_status: string | null;
+  replacement_source: string | null;
+  notes: string | null;
+}
+
+interface LinkHealthData {
+  total: number;
+  healthyCount: number;
+  broken: LinkHealthRow[];
+  warnings: LinkHealthRow[];
+  pendingReplacements: LinkHealthRow[];
+}
+
 const SECTION_LABEL: React.CSSProperties = { fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#999", marginBottom: 12, marginTop: 40, fontWeight: 600 };
 const CARD: React.CSSProperties = { background: "#fff", border: "1px solid #e8e0d4", padding: "20px 24px", marginBottom: 16 };
 const STAT_NUM: React.CSSProperties = { fontFamily: "Lora, serif", fontSize: 28, fontWeight: 600, color: "#2c2416" };
@@ -54,7 +81,10 @@ export default function AdminPilot() {
   });
   const [keyInput, setKeyInput] = useState("");
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "users" | "content" | "alerts">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "users" | "content" | "alerts" | "links">("overview");
+  const [manualUrlInput, setManualUrlInput] = useState<Record<number, string>>({});
+  const [checkingLinks, setCheckingLinks] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleUnlock = () => {
     const key = keyInput.trim();
@@ -104,6 +134,35 @@ export default function AdminPilot() {
     enabled: !!selectedUser && !!adminKey,
   });
 
+  const { data: linkHealth } = useQuery<LinkHealthData>({
+    queryKey: ["/api/admin/links", adminKey],
+    queryFn: async () => {
+      const res = await fetch(`/api/admin/links?admin_key=${encodeURIComponent(adminKey)}`);
+      if (!res.ok) throw new Error("Forbidden");
+      return res.json();
+    },
+    enabled: !!adminKey,
+    retry: false,
+  });
+
+  const runLinkCheck = async () => {
+    setCheckingLinks(true);
+    try {
+      await fetch(`/api/admin/check-links?admin_key=${encodeURIComponent(adminKey)}`);
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/links"] });
+    } catch {}
+    setCheckingLinks(false);
+  };
+
+  const linkAction = async (linkId: number, action: string, manualUrl?: string) => {
+    await fetch(`/api/admin/links/${linkId}/action?admin_key=${encodeURIComponent(adminKey)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action, manualUrl }),
+    });
+    queryClient.invalidateQueries({ queryKey: ["/api/admin/links"] });
+  };
+
   if (!adminKey) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#faf9f6" }}>
@@ -126,12 +185,14 @@ export default function AdminPilot() {
     );
   }
 
+  const brokenCount = linkHealth?.broken?.length || 0;
   const tabs = [
-    { key: "overview", label: "Overview" },
-    { key: "users", label: "Users" },
-    { key: "content", label: "Content" },
-    { key: "alerts", label: `Alerts${aggregate?.alerts?.zeroSaveUsers?.length ? ` (${aggregate.alerts.zeroSaveUsers.length})` : ""}` },
-  ] as const;
+    { key: "overview" as const, label: "Overview" },
+    { key: "users" as const, label: "Users" },
+    { key: "content" as const, label: "Content" },
+    { key: "links" as const, label: `Links${brokenCount ? ` (${brokenCount})` : ""}` },
+    { key: "alerts" as const, label: `Alerts${aggregate?.alerts?.zeroSaveUsers?.length ? ` (${aggregate.alerts.zeroSaveUsers.length})` : ""}` },
+  ];
 
   return (
     <div style={{ minHeight: "100vh", paddingTop: 70, paddingBottom: 100, background: "#faf9f6", fontFamily: "Inter, sans-serif" }}>
@@ -397,6 +458,103 @@ export default function AdminPilot() {
           </>
         )}
 
+        {/* LINKS TAB */}
+        {activeTab === "links" && (
+          <>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+              <p style={{ fontSize: 13, color: "#666" }}>
+                {linkHealth
+                  ? `${linkHealth.total} total · ${linkHealth.healthyCount} healthy · ${linkHealth.broken.length} broken · ${linkHealth.pendingReplacements.length} pending`
+                  : "No link data yet — run a check."}
+              </p>
+              <button
+                onClick={runLinkCheck}
+                disabled={checkingLinks}
+                style={{
+                  background: "#1a1a1a", color: "#fff", border: "none", padding: "8px 20px",
+                  fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase", cursor: checkingLinks ? "wait" : "pointer",
+                  opacity: checkingLinks ? 0.6 : 1,
+                }}
+              >
+                {checkingLinks ? "Checking..." : "Run Link Check"}
+              </button>
+            </div>
+
+            {/* Broken Links */}
+            <h3 style={SECTION_LABEL}>Broken Links</h3>
+            {linkHealth?.broken && linkHealth.broken.length > 0 ? (
+              linkHealth.broken.map((link) => (
+                <div key={link.id} style={{ ...CARD, borderLeft: "3px solid #c44" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                    <div>
+                      <strong style={{ fontSize: 14, color: "#333" }}>{link.item_title || link.source_id}</strong>
+                      {link.item_brand && <span style={{ color: "#999", marginLeft: 8 }}>{link.item_brand}</span>}
+                    </div>
+                    <span style={{ fontSize: 11, color: "#c44" }}>
+                      {link.status_code || "DNS fail"} · {link.consecutive_failures} failures
+                      {link.first_broken_at && ` · since ${formatDate(link.first_broken_at)}`}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 12, color: "#999", wordBreak: "break-all", marginBottom: 8 }}>
+                    {link.url}
+                  </div>
+                  {link.replacement_url && link.replacement_status === "pending" && (
+                    <div style={{ fontSize: 12, color: "#4caf50", marginBottom: 8 }}>
+                      Suggested: {link.replacement_url}
+                    </div>
+                  )}
+                  {link.notes && (
+                    <div style={{ fontSize: 11, color: "#999", fontStyle: "italic", marginBottom: 8 }}>{link.notes}</div>
+                  )}
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    {link.replacement_url && link.replacement_status === "pending" && (
+                      <button onClick={() => linkAction(link.id, "approve")} style={actionBtnStyle("#4caf50")}>Approve</button>
+                    )}
+                    {link.replacement_url && link.replacement_status === "pending" && (
+                      <button onClick={() => linkAction(link.id, "reject")} style={actionBtnStyle("#999")}>Reject</button>
+                    )}
+                    <button onClick={() => linkAction(link.id, "remove")} style={actionBtnStyle("#c44")}>Remove Link</button>
+                    <div style={{ display: "flex", gap: 4 }}>
+                      <input
+                        type="text"
+                        placeholder="Paste replacement URL"
+                        value={manualUrlInput[link.id] || ""}
+                        onChange={(e) => setManualUrlInput({ ...manualUrlInput, [link.id]: e.target.value })}
+                        style={{ border: "1px solid #ddd", padding: "4px 8px", fontSize: 11, width: 240 }}
+                      />
+                      <button
+                        onClick={() => { if (manualUrlInput[link.id]) linkAction(link.id, "manual", manualUrlInput[link.id]); }}
+                        style={actionBtnStyle("#2c2416")}
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p style={{ color: "#4caf50", fontSize: 13 }}>No broken links detected.</p>
+            )}
+
+            {/* Warnings */}
+            {linkHealth?.warnings && linkHealth.warnings.length > 0 && (
+              <>
+                <h3 style={SECTION_LABEL}>Warnings (403 / 5xx)</h3>
+                {linkHealth.warnings.map((link) => (
+                  <div key={link.id} style={{ ...CARD, borderLeft: "3px solid #e6a23c" }}>
+                    <div style={{ fontSize: 13, color: "#333" }}>
+                      <strong>{link.item_title || link.source_id}</strong>
+                      {link.item_brand && <span style={{ color: "#999", marginLeft: 8 }}>{link.item_brand}</span>}
+                      <span style={{ color: "#e6a23c", marginLeft: 12, fontSize: 11 }}>HTTP {link.status_code}</span>
+                    </div>
+                    <div style={{ fontSize: 12, color: "#999", wordBreak: "break-all", marginTop: 4 }}>{link.url}</div>
+                  </div>
+                ))}
+              </>
+            )}
+          </>
+        )}
+
         {/* ALERTS TAB */}
         {activeTab === "alerts" && aggregate && (
           <>
@@ -437,4 +595,11 @@ export default function AdminPilot() {
       </div>
     </div>
   );
+}
+
+function actionBtnStyle(color: string): React.CSSProperties {
+  return {
+    background: "none", border: `1px solid ${color}`, color, padding: "3px 12px",
+    fontSize: 11, cursor: "pointer", borderRadius: 3,
+  };
 }
