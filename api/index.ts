@@ -454,8 +454,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
       const user = result.rows[0];
 
-      // Associate any anonymous saves with this email
-      await pool.query('UPDATE saves SET user_email = $1 WHERE user_email IS NULL', [email]);
+      // Note: anonymous saves are not associated on signup since we can't distinguish
+      // which anonymous saves belong to which browser session. Saves made after signup
+      // are automatically associated via the auth cookie.
 
       // Send welcome email (non-blocking)
       sendWelcomeEmail(email, name).catch(() => {});
@@ -648,7 +649,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // GET /api/saves
     if (path === '/api/saves' && method === 'GET') {
-      const result = await pool.query('SELECT * FROM saves ORDER BY saved_at DESC');
+      const currentUserEmail = getUserEmailFromRequest(req);
+      const result = currentUserEmail
+        ? await pool.query('SELECT * FROM saves WHERE user_email = $1 ORDER BY saved_at DESC', [currentUserEmail])
+        : await pool.query('SELECT * FROM saves WHERE user_email IS NULL ORDER BY saved_at DESC');
       // Transform snake_case to camelCase for frontend
       const saves = result.rows.map(row => ({
         id: row.id,
@@ -678,10 +682,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // GET /api/saves/detail/:itemId
     if (path.startsWith('/api/saves/detail/')) {
       const itemId = path.replace('/api/saves/detail/', '');
-      const result = await pool.query(
-        'SELECT brand, price, shop_url, book_url, detail_description, category, is_curated FROM saves WHERE item_id = $1',
-        [itemId]
-      );
+      const currentUserEmail = getUserEmailFromRequest(req);
+      const result = currentUserEmail
+        ? await pool.query(
+            'SELECT brand, price, shop_url, book_url, detail_description, category, is_curated FROM saves WHERE item_id = $1 AND user_email = $2',
+            [itemId, currentUserEmail]
+          )
+        : await pool.query(
+            'SELECT brand, price, shop_url, book_url, detail_description, category, is_curated FROM saves WHERE item_id = $1 AND user_email IS NULL',
+            [itemId]
+          );
       if (result.rows.length === 0) {
         return res.status(200).json({});
       }
@@ -700,42 +710,62 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // GET /api/saves/check/:itemId
     if (path.startsWith('/api/saves/check/')) {
       const itemId = decodeURIComponent(path.replace('/api/saves/check/', ''));
-      const result = await pool.query('SELECT id FROM saves WHERE item_id = $1 LIMIT 1', [itemId]);
+      const currentUserEmail = getUserEmailFromRequest(req);
+      const result = currentUserEmail
+        ? await pool.query('SELECT id FROM saves WHERE item_id = $1 AND user_email = $2 LIMIT 1', [itemId, currentUserEmail])
+        : await pool.query('SELECT id FROM saves WHERE item_id = $1 AND user_email IS NULL LIMIT 1', [itemId]);
       return res.status(200).json({ isPinned: result.rows.length > 0 });
     }
 
     // POST /api/saves — create a new save
     if (path === '/api/saves' && method === 'POST') {
       const body = req.body || {};
-      const { itemType, itemId, sourceContext, aestheticTags, savedAt, metadata, editionTag, storyTag, editTag, purchaseStatus, title, assetUrl, brand, price, shopUrl, bookUrl, detailDescription, category, isCurated, userEmail } = body;
+      const { itemType, itemId, sourceContext, aestheticTags, savedAt, metadata, editionTag, storyTag, editTag, purchaseStatus, title, assetUrl, brand, price, shopUrl, bookUrl, detailDescription, category, isCurated } = body;
+
+      // Get user email from auth cookie (primary) or request body (fallback)
+      const userEmail = getUserEmailFromRequest(req) || body.userEmail || null;
 
       if (!itemType || !itemId) {
         return res.status(400).json({ error: 'itemType and itemId are required' });
       }
 
-      // Check if already exists — by exact itemId, image URL, or normalized title+brand
-      const existing = await pool.query('SELECT id FROM saves WHERE item_id = $1 LIMIT 1', [itemId]);
+      // Per-user dedup: check if THIS USER already saved this item
+      // If authenticated, scope to user; if anonymous, scope to anonymous saves
+      const dedupCondition = userEmail ? 'AND user_email = $2' : 'AND user_email IS NULL';
+      const dedupParams = userEmail ? [itemId, userEmail] : [itemId];
+
+      const existing = await pool.query(
+        `SELECT id FROM saves WHERE item_id = $1 ${dedupCondition} LIMIT 1`,
+        dedupParams
+      );
       if (existing.rows.length > 0) {
         return res.status(400).json({ error: 'Already pinned' });
       }
-      // Check by image URL — same image = same product
+      // Check by image URL — same image = same product (per-user)
       if (assetUrl) {
+        const imageCondition = userEmail ? 'AND user_email = $2' : 'AND user_email IS NULL';
+        const imageParams = userEmail ? [assetUrl, userEmail] : [assetUrl];
         const imageCheck = await pool.query(
-          'SELECT id FROM saves WHERE asset_url = $1 LIMIT 1',
-          [assetUrl]
+          `SELECT id FROM saves WHERE asset_url = $1 ${imageCondition} LIMIT 1`,
+          imageParams
         );
         if (imageCheck.rows.length > 0) {
           return res.status(400).json({ error: 'Already pinned' });
         }
       }
-      // Also check by normalized title+brand to prevent dupes from different surfaces
+      // Also check by normalized title+brand to prevent dupes from different surfaces (per-user)
       if (title) {
         const brandNorm = (brand || '').toLowerCase().trim();
         const titleNorm = (title || '').toLowerCase().trim();
-        // Fetch all saves with same brand, compare titles in app code
+        const sameBrandParams = userEmail
+          ? [brandNorm, userEmail]
+          : [brandNorm];
+        const sameBrandCondition = userEmail
+          ? `LOWER(TRIM(COALESCE(brand,''))) = $1 AND user_email = $2`
+          : `LOWER(TRIM(COALESCE(brand,''))) = $1 AND user_email IS NULL`;
         const sameBrand = await pool.query(
-          `SELECT id, title FROM saves WHERE LOWER(TRIM(COALESCE(brand,''))) = $1`,
-          [brandNorm]
+          `SELECT id, title FROM saves WHERE ${sameBrandCondition}`,
+          sameBrandParams
         );
         const normalize = (s: string) => s.toLowerCase().trim()
           .replace(/[éèê]/g, 'e').replace(/[àâä]/g, 'a').replace(/[ïîì]/g, 'i')
@@ -776,7 +806,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           detailDescription || null,
           category || null,
           isCurated || false,
-          userEmail || null,
+          userEmail,
         ]
       );
       const row = result.rows[0];
@@ -797,10 +827,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    // DELETE /api/saves/:itemId — remove a save
+    // DELETE /api/saves/:itemId — remove a save (per-user)
     if (path.startsWith('/api/saves/') && method === 'DELETE') {
       const itemId = decodeURIComponent(path.replace('/api/saves/', ''));
-      await pool.query('DELETE FROM saves WHERE item_id = $1', [itemId]);
+      const currentUserEmail = getUserEmailFromRequest(req);
+      if (currentUserEmail) {
+        await pool.query('DELETE FROM saves WHERE item_id = $1 AND user_email = $2', [itemId, currentUserEmail]);
+      } else {
+        await pool.query('DELETE FROM saves WHERE item_id = $1 AND user_email IS NULL', [itemId]);
+      }
       return res.status(200).json({ success: true });
     }
 
