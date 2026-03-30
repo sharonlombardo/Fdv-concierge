@@ -525,7 +525,7 @@ const PRODUCT_IMAGE_DIRECT: Record<string, string> = {
   "footwear, amery kit sandal.jpg": "product-aemery-kir-sandal",
   "footwear:alaia:black.jpg": "product-alaia-thong-sandal",
   "footwear:ferragamo:lolysandal:black.jpg": "product-ferragamo-loly-sandal",
-  "footwear:khaite:otto:wht.jpg": "product-khaite-otto-slipper",
+  "footwear:khaite:otto:wht.jpg": "product-phoebephilo-robe-slide",
   "footwear:phoebephilo:ankleboot:black.jpg": "product-phoebephilo-ankle-boot",
   // JEWELRY
   "accessory:bulgar:serpenti:blk.jpg": "product-bulgari-serpenti",

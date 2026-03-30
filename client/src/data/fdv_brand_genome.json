@@ -1073,7 +1073,7 @@
     "price": "$4200",
     "price_numeric": 4200,
     "description": "Large Shoulder Bag",
-    "url": "https://www.net-a-porter.com/product/1647597342778270",
+    "url": "https://www.bergdorfgoodman.com/p/bottega-veneta-small-solstice-shoulder-bag-prod178960146",
     "shop_status": "live",
     "wellspring_atelier_codes": [
       "Slouchy Volume",
@@ -1711,20 +1711,20 @@
   {
     "database_match_key": "FOOTWEAR:KHAITE:OTTO:WHT.jpg",
     "category": "FOOTWEAR",
-    "brand": "Khaite",
-    "name": "Otto Leather Slippers",
-    "color": "White",
+    "brand": "Phoebe Philo",
+    "name": "Robe Slide",
+    "color": "Cream",
     "sizes": [
       "7-10"
     ],
-    "price": "$595",
-    "price_numeric": 595,
-    "description": "White leather flat slippers",
-    "url": "https://www.mytheresa.com/us/en/women/khaite-otto-leather-slippers-white-p00883068",
+    "price": "$890",
+    "price_numeric": 890,
+    "description": "Cream leather slide with minimal form",
+    "url": "https://www.phoebephilo.com/products/robe-slide-cream-leather",
     "shop_status": "live",
     "wellspring_atelier_codes": [
       "Architectural Slip-On",
-      "Matte White Leather",
+      "Cream Leather",
       "Elevated Loungewear",
       "Purist Form"
     ]
@@ -2077,7 +2077,7 @@
     "price": "$355",
     "price_numeric": 355,
     "description": "Ethically handwoven in Morocco from 100% natural palm leaves. Each bag is a unique creation.",
-    "url": "https://demellierlondon.com/products/the-santorini-natural-basket-black",
+    "url": "https://www.saksfifthavenue.com/product/demellier-santorini-raffia-tote-bag-0400016036683.html",
     "shop_status": "live",
     "wellspring_atelier_codes": [
       "Artisanal Weave",
