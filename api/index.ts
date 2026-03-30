@@ -163,6 +163,29 @@ async function runMigrations() {
     `);
     await pool.query('CREATE INDEX IF NOT EXISTS idx_link_health_unhealthy ON link_health (is_healthy) WHERE is_healthy = false');
     await pool.query('CREATE INDEX IF NOT EXISTS idx_link_health_source ON link_health (source_table, source_id)');
+    // Products table — source of truth for commerce data (URLs, prices, availability)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS products (
+        id SERIAL PRIMARY KEY,
+        database_match_key TEXT UNIQUE NOT NULL,
+        category TEXT NOT NULL,
+        brand TEXT NOT NULL,
+        name TEXT NOT NULL,
+        color TEXT,
+        sizes TEXT[],
+        price TEXT,
+        price_numeric INTEGER,
+        description TEXT,
+        url TEXT,
+        shop_status TEXT DEFAULT 'live',
+        image_key TEXT,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_products_brand ON products (brand)');
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_products_status ON products (shop_status)');
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_products_match_key ON products (database_match_key)');
   } catch (e) {
     console.warn('Migration warning:', e);
   }
@@ -1287,6 +1310,131 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       return res.status(200).json({ success: true });
+    }
+
+    // POST /api/admin/products/seed — seed products table from brand genome JSON
+    if (path === '/api/admin/products/seed' && method === 'POST') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const adminKey = urlObj.searchParams.get('admin_key');
+      if (adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+
+      // Read genome data from request body (client sends it)
+      const { products: genomeProducts } = req.body || {};
+      if (!genomeProducts || !Array.isArray(genomeProducts)) {
+        return res.status(400).json({ error: 'products array required in body' });
+      }
+
+      let inserted = 0, skipped = 0;
+      for (const p of genomeProducts) {
+        const key = p.database_match_key;
+        if (!key) { skipped++; continue; }
+        try {
+          await pool.query(
+            `INSERT INTO products (database_match_key, category, brand, name, color, sizes, price, price_numeric, description, url, shop_status)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+             ON CONFLICT (database_match_key) DO UPDATE SET
+               category = EXCLUDED.category, brand = EXCLUDED.brand, name = EXCLUDED.name,
+               color = EXCLUDED.color, sizes = EXCLUDED.sizes, price = EXCLUDED.price,
+               price_numeric = EXCLUDED.price_numeric, description = EXCLUDED.description,
+               url = COALESCE(products.url, EXCLUDED.url),
+               shop_status = CASE WHEN products.url IS NOT NULL AND products.url != EXCLUDED.url THEN products.shop_status ELSE EXCLUDED.shop_status END,
+               updated_at = NOW()`,
+            [
+              key,
+              p.category || '',
+              p.brand || '',
+              p.name || '',
+              p.color || null,
+              p.sizes || null,
+              p.price || null,
+              p.price_numeric || null,
+              p.description || null,
+              p.url || null,
+              p.shop_status || 'live',
+            ]
+          );
+          inserted++;
+        } catch (e: any) {
+          console.warn(`Product seed skip: ${key}:`, e.message);
+          skipped++;
+        }
+      }
+      return res.status(200).json({ inserted, skipped, total: genomeProducts.length });
+    }
+
+    // GET /api/admin/products — admin product list
+    if (path === '/api/admin/products' && method === 'GET') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const adminKey = urlObj.searchParams.get('admin_key');
+      if (adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+
+      const result = await pool.query('SELECT * FROM products ORDER BY brand, name');
+      return res.status(200).json(result.rows);
+    }
+
+    // PUT /api/admin/products/:id — update product commerce fields
+    if (path.startsWith('/api/admin/products/') && method === 'PUT') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const adminKey = urlObj.searchParams.get('admin_key');
+      if (adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+
+      const productId = path.replace('/api/admin/products/', '');
+      const { url: newUrl, price, shop_status, name, color, description } = req.body || {};
+
+      const updates: string[] = [];
+      const values: any[] = [];
+      let idx = 1;
+      if (newUrl !== undefined) { updates.push(`url = $${idx++}`); values.push(newUrl); }
+      if (price !== undefined) { updates.push(`price = $${idx++}`); values.push(price); }
+      if (shop_status !== undefined) { updates.push(`shop_status = $${idx++}`); values.push(shop_status); }
+      if (name !== undefined) { updates.push(`name = $${idx++}`); values.push(name); }
+      if (color !== undefined) { updates.push(`color = $${idx++}`); values.push(color); }
+      if (description !== undefined) { updates.push(`description = $${idx++}`); values.push(description); }
+
+      if (updates.length === 0) return res.status(400).json({ error: 'No fields to update' });
+
+      updates.push(`updated_at = NOW()`);
+      values.push(productId);
+      await pool.query(
+        `UPDATE products SET ${updates.join(', ')} WHERE id = $${idx}`,
+        values
+      );
+
+      // Also update saves table if URL changed
+      if (newUrl !== undefined) {
+        const product = await pool.query('SELECT database_match_key FROM products WHERE id = $1', [productId]);
+        if (product.rows.length > 0) {
+          // Update any saves that reference this product's old URL
+          await pool.query(
+            `UPDATE saves SET shop_url = $1 WHERE item_id LIKE $2 OR item_id LIKE $3`,
+            [newUrl, `%${product.rows[0].database_match_key}%`, `%${product.rows[0].database_match_key.toLowerCase()}%`]
+          );
+        }
+      }
+
+      return res.status(200).json({ success: true });
+    }
+
+    // GET /api/products — public product commerce data (for frontend, cached)
+    if (path === '/api/products' && method === 'GET') {
+      const result = await pool.query(
+        'SELECT database_match_key, brand, name, price, url, shop_status, color, description FROM products WHERE shop_status != $1 ORDER BY brand, name',
+        ['discontinued']
+      );
+      // Return as a map keyed by database_match_key for fast lookups
+      const productMap: Record<string, any> = {};
+      for (const row of result.rows) {
+        productMap[row.database_match_key] = {
+          brand: row.brand,
+          name: row.name,
+          price: row.price,
+          url: row.url,
+          shopStatus: row.shop_status,
+          color: row.color,
+          description: row.description,
+        };
+      }
+      return res.status(200).json(productMap);
     }
 
     // GET /api/link-health — client-side check for broken links (cached per-request)

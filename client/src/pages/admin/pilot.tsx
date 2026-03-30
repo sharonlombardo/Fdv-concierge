@@ -81,9 +81,12 @@ export default function AdminPilot() {
   });
   const [keyInput, setKeyInput] = useState("");
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "users" | "content" | "alerts" | "links">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "users" | "content" | "alerts" | "links" | "products">("overview");
   const [manualUrlInput, setManualUrlInput] = useState<Record<number, string>>({});
   const [checkingLinks, setCheckingLinks] = useState(false);
+  const [seedingProducts, setSeedingProducts] = useState(false);
+  const [productEdits, setProductEdits] = useState<Record<number, Record<string, string>>>({});
+  const [productFilter, setProductFilter] = useState("");
   const queryClient = useQueryClient();
 
   const handleUnlock = () => {
@@ -163,6 +166,60 @@ export default function AdminPilot() {
     queryClient.invalidateQueries({ queryKey: ["/api/admin/links"] });
   };
 
+  interface ProductRow {
+    id: number;
+    database_match_key: string;
+    category: string;
+    brand: string;
+    name: string;
+    color: string | null;
+    price: string | null;
+    url: string | null;
+    shop_status: string;
+    updated_at: string;
+  }
+
+  const { data: products } = useQuery<ProductRow[]>({
+    queryKey: ["/api/admin/products", adminKey],
+    queryFn: async () => {
+      const res = await fetch(`/api/admin/products?admin_key=${encodeURIComponent(adminKey)}`);
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!adminKey && activeTab === "products",
+    retry: false,
+  });
+
+  const seedProducts = async () => {
+    setSeedingProducts(true);
+    try {
+      // Fetch the genome JSON from the client bundle
+      const genomeModule = await import("@/data/fdv_brand_genome.json");
+      const genomeProducts = Array.isArray(genomeModule.default) ? genomeModule.default : genomeModule;
+      await fetch(`/api/admin/products/seed?admin_key=${encodeURIComponent(adminKey)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ products: genomeProducts }),
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
+    } catch (e) {
+      console.error("Seed failed:", e);
+    }
+    setSeedingProducts(false);
+  };
+
+  const updateProduct = async (productId: number) => {
+    const edits = productEdits[productId];
+    if (!edits || Object.keys(edits).length === 0) return;
+    await fetch(`/api/admin/products/${productId}?admin_key=${encodeURIComponent(adminKey)}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(edits),
+    });
+    setProductEdits(prev => { const next = { ...prev }; delete next[productId]; return next; });
+    queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
+  };
+
   if (!adminKey) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#faf9f6" }}>
@@ -191,6 +248,7 @@ export default function AdminPilot() {
     { key: "users" as const, label: "Users" },
     { key: "content" as const, label: "Content" },
     { key: "links" as const, label: `Links${brokenCount ? ` (${brokenCount})` : ""}` },
+    { key: "products" as const, label: `Products${products ? ` (${products.length})` : ""}` },
     { key: "alerts" as const, label: `Alerts${aggregate?.alerts?.zeroSaveUsers?.length ? ` (${aggregate.alerts.zeroSaveUsers.length})` : ""}` },
   ];
 
@@ -551,6 +609,94 @@ export default function AdminPilot() {
                   </div>
                 ))}
               </>
+            )}
+          </>
+        )}
+
+        {/* PRODUCTS TAB */}
+        {activeTab === "products" && (
+          <>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                <input
+                  type="text"
+                  placeholder="Filter by brand or name..."
+                  value={productFilter}
+                  onChange={(e) => setProductFilter(e.target.value)}
+                  style={{ border: "1px solid #ddd", padding: "6px 12px", fontSize: 13, width: 260 }}
+                />
+                <span style={{ fontSize: 12, color: "#999" }}>
+                  {products ? `${products.filter(p => !productFilter || p.brand.toLowerCase().includes(productFilter.toLowerCase()) || p.name.toLowerCase().includes(productFilter.toLowerCase())).length} shown` : ""}
+                </span>
+              </div>
+              <button
+                onClick={seedProducts}
+                disabled={seedingProducts}
+                style={{
+                  background: "#1a1a1a", color: "#fff", border: "none", padding: "8px 20px",
+                  fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase",
+                  cursor: seedingProducts ? "wait" : "pointer", opacity: seedingProducts ? 0.6 : 1,
+                }}
+              >
+                {seedingProducts ? "Seeding..." : "Seed from Genome"}
+              </button>
+            </div>
+
+            {products && products.length > 0 ? (
+              <div>
+                {products
+                  .filter(p => !productFilter || p.brand.toLowerCase().includes(productFilter.toLowerCase()) || p.name.toLowerCase().includes(productFilter.toLowerCase()))
+                  .map((p) => {
+                    const edits = productEdits[p.id] || {};
+                    const hasEdits = Object.keys(edits).length > 0;
+                    const statusColor = p.shop_status === "live" ? "#4caf50" : p.shop_status === "sold_out" ? "#c44" : p.shop_status === "coming_soon" ? "#e6a23c" : "#999";
+                    return (
+                      <div key={p.id} style={{ ...CARD, borderLeft: `3px solid ${statusColor}` }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                          <div>
+                            <strong style={{ fontSize: 13 }}>{p.brand}</strong>
+                            <span style={{ color: "#333", marginLeft: 8, fontSize: 13 }}>{p.name}</span>
+                            {p.color && <span style={{ color: "#999", marginLeft: 8, fontSize: 12 }}>{p.color}</span>}
+                          </div>
+                          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                            <span style={{ fontSize: 13, fontWeight: 600 }}>{p.price || "—"}</span>
+                            <select
+                              value={edits.shop_status || p.shop_status}
+                              onChange={(e) => setProductEdits(prev => ({ ...prev, [p.id]: { ...edits, shop_status: e.target.value } }))}
+                              style={{ border: "1px solid #ddd", padding: "2px 8px", fontSize: 11, color: statusColor }}
+                            >
+                              <option value="live">Live</option>
+                              <option value="coming_soon">Coming Soon</option>
+                              <option value="sold_out">Sold Out</option>
+                              <option value="discontinued">Discontinued</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                          <input
+                            type="text"
+                            value={edits.url !== undefined ? edits.url : (p.url || "")}
+                            onChange={(e) => setProductEdits(prev => ({ ...prev, [p.id]: { ...edits, url: e.target.value } }))}
+                            placeholder="Shop URL"
+                            style={{ border: "1px solid #e0ddd6", padding: "4px 8px", fontSize: 11, flex: 1, color: p.url ? "#333" : "#c44" }}
+                          />
+                          {hasEdits && (
+                            <button onClick={() => updateProduct(p.id)} style={actionBtnStyle("#4caf50")}>Save</button>
+                          )}
+                          {p.url && (
+                            <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "#6b9bd2" }}>Test</a>
+                          )}
+                        </div>
+                        <div style={{ fontSize: 10, color: "#bbb", marginTop: 4 }}>{p.database_match_key}</div>
+                      </div>
+                    );
+                  })}
+              </div>
+            ) : (
+              <div style={{ textAlign: "center", padding: "40px 0" }}>
+                <p style={{ color: "#999", fontSize: 13, marginBottom: 16 }}>No products in database yet.</p>
+                <p style={{ color: "#999", fontSize: 12 }}>Click "Seed from Genome" to import all 103 products from the brand genome JSON.</p>
+              </div>
             )}
           </>
         )}

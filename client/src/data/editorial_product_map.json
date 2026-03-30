@@ -733,16 +733,16 @@
       "isProduct": true,
       "pinType": "style",
       "brand": "Phoebe Philo",
-      "productName": "Ankle Boots",
+      "productName": "Tilt Ankle Boot",
       "genomeKey": "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg",
       "caption": "A sharp black boot that can handle pavement, gallery floors, and a late-night walk home.",
-      "brandLine": "Phoebe Philo — Ankle Boots. Coming soon.",
-      "price": "$1,200",
+      "brandLine": "Phoebe Philo — Tilt Ankle Boot",
+      "price": "$1,650",
       "sizes": "36-41",
-      "color": "Black Leather",
-      "description": "Smooth calfskin leather ankle boot with angled block heel.",
-      "shopUrl": "http://www.phoebephilo.com/",
-      "status": "Coming Soon"
+      "color": "Oxblood Leather",
+      "description": "Goatskin glove leather ankle boot with 90mm heel.",
+      "shopUrl": "https://us.phoebephilo.com/products/tilt-ankle-boot-oxblood-leather",
+      "status": "live"
     },
     "ny-9": {
       "position": 9,
@@ -975,7 +975,7 @@
     "newyork": [
       {"tileId": "ny-2", "genomeKey": "look:phoebephilo:cashmereovercoat:tobacco.jpg", "label": "Phoebe Philo — Cashmere Overcoat", "price": "$3,500"},
       {"tileId": "ny-7", "genomeKey": "fil de vie look grecian dress.jpg", "label": "FIL DE VIE — Isabelle Coat", "price": "$1,250"},
-      {"tileId": "ny-8", "genomeKey": "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg", "label": "Phoebe Philo — Ankle Boots", "price": "$1,200"},
+      {"tileId": "ny-8", "genomeKey": "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg", "label": "Phoebe Philo — Tilt Ankle Boot", "price": "$1,650"},
       {"tileId": "ny-9", "genomeKey": "look:fdv:daradressfurstole:bone:black.jpg", "label": "FIL DE VIE — Dara Dress and Fur Stole", "price": "$1,850"},
       {"tileId": "ny-11", "genomeKey": "LOOK:FILDEVIE:HERADRESS:BONE.jpg", "label": "FIL DE VIE — Hera Dress", "price": "$850"},
       {"tileId": "ny-13", "genomeKey": "ACCESSORY:BAG:PHOEBEPHILO:DRIVEBAG.jpg", "label": "Phoebe Philo — Drive Bag", "price": "$4,500"},
