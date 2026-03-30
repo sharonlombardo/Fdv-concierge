@@ -1,8 +1,8 @@
 import { useState, FormEvent } from 'react';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { ItemModal, type ItemModalData } from '@/components/item-modal';
 import { PinButton } from '@/components/pin-button';
-import { EditorialDaySection, extractEditorialData } from '@/components/editorial-sections';
+// editorial-sections only needed by /concierge — ItineraryTeaser is now a slim preview card
 import { useCustomImages } from '@/hooks/use-custom-images';
 import { getProductByKey, getProductDisplayName, isShoppable, getShopImageUrl, FLOW_LOOK_GENOME_KEY, SECTION_LOOK_GENOME_KEY } from '@/lib/brand-genome';
 import { useScrollDepth } from '@/hooks/use-scroll-depth';
@@ -69,26 +69,16 @@ function CarouselItem({ product, onOpenModal }: { product: CarouselProduct; onOp
   );
 }
 
-/* ── Itinerary Teaser — uses same hooks + components as /concierge ── */
+/* ── Itinerary Teaser — slim preview card that gates access to /concierge ── */
 
-interface ItineraryTeaserProps {
-  getImageUrl: (key: string, defaultUrl: string) => string;
-  hasCustomImage: (key: string) => boolean;
-  onOpenProductModal: (data: { title: string; imageUrl: string; itemId: string; brand?: string; description?: string; shopUrl?: string; pinType?: string; genomeKey?: string }) => void;
-}
+const TEASER_IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/stay-1-large.jpg';
 
-function ItineraryTeaser({ getImageUrl, hasCustomImage, onOpenProductModal }: ItineraryTeaserProps) {
+function ItineraryTeaser() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const editorialData = extractEditorialData();
+  const [, setLocation] = useLocation();
 
-  const day1 = editorialData.find(d => d.dayNumber === 1);
-  const day2 = editorialData.find(d => d.dayNumber === 2);
-  const day3 = editorialData.find(d => d.dayNumber === 3);
-  const remainingDays = editorialData.filter(d => d.dayNumber >= 3);
-
-  const handleUnlock = () => setIsUnlocked(true);
+  const navigateToItinerary = () => setLocation('/concierge');
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -100,10 +90,10 @@ function ItineraryTeaser({ getImageUrl, hasCustomImage, onOpenProductModal }: It
         body: JSON.stringify({ email, source: 'itinerary_gate' }),
       });
       setSubmitted(true);
-      handleUnlock();
     } catch {
-      handleUnlock();
+      // still navigate on failure
     }
+    navigateToItinerary();
   };
 
   return (
@@ -118,113 +108,96 @@ function ItineraryTeaser({ getImageUrl, hasCustomImage, onOpenProductModal }: It
         </h3>
       </div>
 
-      {/* Days 1 & 2 — always visible, identical to /concierge */}
-      <div style={{ maxWidth: 1024, margin: '0 auto', padding: '0 16px' }}>
-        {day1 && (
-          <EditorialDaySection
-            day={day1}
-            getImageUrl={getImageUrl}
-            hasCustomImage={hasCustomImage}
-            onOpenProductModal={onOpenProductModal}
+      {/* Hero preview image — blurred teaser */}
+      <div style={{ position: 'relative', marginTop: 24, maxHeight: 520, overflow: 'hidden' }}>
+        <div style={{ filter: 'blur(4px)', opacity: 0.6, pointerEvents: 'none', userSelect: 'none' }}>
+          <img
+            src={TEASER_IMG}
+            alt="Morocco itinerary preview"
+            style={{ width: '100%', height: 520, objectFit: 'cover', display: 'block' }}
           />
-        )}
-        {day2 && (
-          <EditorialDaySection
-            day={day2}
-            getImageUrl={getImageUrl}
-            hasCustomImage={hasCustomImage}
-            onOpenProductModal={onOpenProductModal}
-          />
-        )}
+        </div>
+
+        {/* Day glimpse overlay — floating itinerary preview */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(250, 249, 246, 0.82)', padding: '40px 20px', textAlign: 'center', zIndex: 10,
+        }}>
+          {/* Mini day list — a glimpse of what's inside */}
+          <div style={{ marginBottom: 28, maxWidth: 360 }}>
+            {[
+              { day: 1, title: 'Arrival & the Atlas Mountains' },
+              { day: 2, title: 'The Medina, Slowly' },
+              { day: 3, title: 'Jardin Majorelle & the Souks' },
+            ].map((d, i) => (
+              <div key={d.day} style={{
+                display: 'flex', alignItems: 'baseline', gap: 12, padding: '6px 0',
+                borderBottom: i < 2 ? '1px solid rgba(44, 36, 22, 0.08)' : 'none',
+              }}>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#c9a84c', minWidth: 44 }}>
+                  Day {d.day}
+                </span>
+                <span style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 15, fontStyle: 'italic', color: '#2c2416' }}>
+                  {d.title}
+                </span>
+              </div>
+            ))}
+            <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 13, fontStyle: 'italic', color: 'rgba(44, 36, 22, 0.4)', marginTop: 8 }}>
+              + 5 more days of curated Morocco
+            </div>
+          </div>
+
+          <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 22, fontStyle: 'italic', color: '#2c2416', marginBottom: 12 }}>
+            Unlock your complete Morocco experience.
+          </div>
+          <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(44, 36, 22, 0.6)', marginBottom: 28, maxWidth: 440, lineHeight: 1.6 }}>
+            8 days of curated events, restaurants, and wardrobe — every detail planned so you don't have to.
+          </div>
+
+          {!submitted ? (
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={{
+                  background: 'transparent', border: '1px solid rgba(0,0,0,0.2)', color: '#2c2416',
+                  padding: '12px 16px', width: 300, maxWidth: '90vw', fontSize: 14,
+                  fontFamily: "'Inter', sans-serif", borderRadius: 0, outline: 'none',
+                }}
+              />
+              <button
+                type="submit"
+                style={{
+                  display: 'inline-block', fontFamily: "'Inter', sans-serif", fontSize: 12,
+                  fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase',
+                  background: '#c9a84c', color: '#1a1a1a', padding: '14px 40px',
+                  textDecoration: 'none', marginTop: 12, transition: 'opacity 0.3s',
+                  border: 'none', cursor: 'pointer',
+                }}
+              >
+                Go Gold to Unlock
+              </button>
+            </form>
+          ) : null}
+
+          <button
+            onClick={navigateToItinerary}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              fontFamily: "'Inter', sans-serif", fontSize: 12, color: 'rgba(44, 36, 22, 0.4)',
+              textDecoration: 'none', marginTop: 20, padding: 0, transition: 'color 0.3s',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(44, 36, 22, 0.7)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(44, 36, 22, 0.4)')}
+          >
+            For pilot testers: Continue without unlocking →
+          </button>
+        </div>
       </div>
-
-      {/* LOCKED: Day 3 blurred + gate overlay (capped at ~1 screen height) */}
-      {!isUnlocked && (
-        <div style={{ position: 'relative', marginTop: 20, maxHeight: 700, overflow: 'hidden' }}>
-          <div style={{ filter: 'blur(8px)', opacity: 0.5, pointerEvents: 'none', userSelect: 'none' }}>
-            <div style={{ maxWidth: 1024, margin: '0 auto', padding: '0 16px' }}>
-              {day3 && (
-                <EditorialDaySection
-                  day={day3}
-                  getImageUrl={getImageUrl}
-                  hasCustomImage={hasCustomImage}
-                />
-              )}
-            </div>
-          </div>
-
-          {/* Gate overlay */}
-          <div style={{
-            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-            background: 'rgba(250, 249, 246, 0.85)', padding: '40px 20px', textAlign: 'center', zIndex: 10,
-          }}>
-            <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 22, fontStyle: 'italic', color: '#2c2416', marginBottom: 12 }}>
-              Unlock your complete Morocco experience.
-            </div>
-            <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(44, 36, 22, 0.6)', marginBottom: 28, maxWidth: 440, lineHeight: 1.6 }}>
-              8 days of curated events, restaurants, and wardrobe — every detail planned so you don't have to.
-            </div>
-
-            {!submitted ? (
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  style={{
-                    background: 'transparent', border: '1px solid rgba(0,0,0,0.2)', color: '#2c2416',
-                    padding: '12px 16px', width: 300, maxWidth: '90vw', fontSize: 14,
-                    fontFamily: "'Inter', sans-serif", borderRadius: 0, outline: 'none',
-                  }}
-                />
-                <button
-                  type="submit"
-                  style={{
-                    display: 'inline-block', fontFamily: "'Inter', sans-serif", fontSize: 12,
-                    fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase',
-                    background: '#c9a84c', color: '#1a1a1a', padding: '14px 40px',
-                    textDecoration: 'none', marginTop: 12, transition: 'opacity 0.3s',
-                    border: 'none', cursor: 'pointer',
-                  }}
-                >
-                  Go Gold to Unlock
-                </button>
-              </form>
-            ) : null}
-
-            <button
-              onClick={handleUnlock}
-              style={{
-                background: 'none', border: 'none', cursor: 'pointer',
-                fontFamily: "'Inter', sans-serif", fontSize: 12, color: 'rgba(44, 36, 22, 0.4)',
-                textDecoration: 'none', marginTop: 20, padding: 0, transition: 'color 0.3s',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(44, 36, 22, 0.7)')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(44, 36, 22, 0.4)')}
-            >
-              For pilot testers: Continue without unlocking →
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* UNLOCKED: Days 3-8 fully visible — identical to /concierge */}
-      {isUnlocked && (
-        <div style={{ maxWidth: 1024, margin: '0 auto', padding: '0 16px' }}>
-          {remainingDays.map(day => (
-            <EditorialDaySection
-              key={day.dayNumber}
-              day={day}
-              getImageUrl={getImageUrl}
-              hasCustomImage={hasCustomImage}
-              onOpenProductModal={onOpenProductModal}
-            />
-          ))}
-        </div>
-      )}
     </section>
   );
 }
@@ -785,7 +758,7 @@ export default function MoroccoGuide() {
       <hr className="divider" />
 
       {/* ═══ ITINERARY TEASER — Real editorial overview from /concierge ═══ */}
-      <ItineraryTeaser getImageUrl={getImageUrl} hasCustomImage={hasCustomImage} onOpenProductModal={openProductModal} />
+      <ItineraryTeaser />
 
       {/* ═══ FOOTER ═══ */}
       <div className="guide-footer">
