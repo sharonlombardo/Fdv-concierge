@@ -822,13 +822,12 @@ export default function SuitcasePage() {
   };
 
   const handleCuratingComplete = () => {
-    // Navigate FIRST so the capsule page renders underneath the overlay
     setSavedCapsuleIds(getSavedCapsuleIds());
     if (curatingCapsule) {
       navigate(`/capsule/${curatingCapsule.id}?from=curate`);
     }
-    // Hide overlay after a tick so navigation completes first
-    requestAnimationFrame(() => setShowCurating(false));
+    // Wait for capsule page to mount before removing overlay
+    setTimeout(() => setShowCurating(false), 300);
   };
 
   const nextCapsule = peekNextCapsule();
