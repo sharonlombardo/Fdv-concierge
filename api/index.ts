@@ -5,12 +5,30 @@ import fs from 'fs';
 import path from 'path';
 const { Pool } = pg;
 
-// Build product catalog for concierge system prompt
-let PRODUCT_CATALOG_PROMPT = '';
+// Load destination voice docs for concierge system prompt
+function loadVoiceDocs(): string {
+  try {
+    const voiceDir = path.join(process.cwd(), 'data/concierge');
+    if (!fs.existsSync(voiceDir)) return '';
+    const files = fs.readdirSync(voiceDir).filter(f => f.endsWith('.md')).sort();
+    return files.map(f => {
+      const content = fs.readFileSync(path.join(voiceDir, f), 'utf8');
+      // Skip placeholder files
+      if (content.includes('Placeholder — awaiting voice doc content')) return '';
+      return content;
+    }).filter(Boolean).join('\n\n---\n\n');
+  } catch (e) {
+    console.warn('Could not load voice docs:', e);
+    return '';
+  }
+}
+
+// Build product catalog from genome JSON (fallback; DB preferred when available)
+let PRODUCT_CATALOG_FALLBACK = '';
 try {
   const genomePath = path.join(process.cwd(), 'client/src/data/fdv_brand_genome.json');
   const genome = JSON.parse(fs.readFileSync(genomePath, 'utf8'));
-  PRODUCT_CATALOG_PROMPT = genome
+  PRODUCT_CATALOG_FALLBACK = genome
     .filter((p: any) => p.shop_status === 'live' || p.shop_status === 'coming_soon')
     .map((p: any) => {
       const status = p.shop_status === 'coming_soon' ? ' [coming soon]' : '';
@@ -20,6 +38,25 @@ try {
     .join('\n');
 } catch (e) {
   console.warn('Could not load product genome for concierge:', e);
+}
+
+// Load product catalog from DB (preferred, falls back to genome JSON)
+async function loadProductCatalog(): Promise<string> {
+  try {
+    const result = await pool.query(
+      `SELECT brand, name, price, description, shop_status FROM products WHERE shop_status IN ('live', 'coming_soon') ORDER BY brand, name`
+    );
+    if (result.rows.length > 0) {
+      return result.rows.map((p: any) => {
+        const status = p.shop_status === 'coming_soon' ? ' [coming soon]' : '';
+        const desc = p.description ? p.description.split('.')[0] + '.' : '';
+        return `- ${p.brand} ${p.name} (${p.price || 'TBD'})${desc ? ' — ' + desc : ''}${status}`;
+      }).join('\n');
+    }
+  } catch (e) {
+    // DB not seeded yet — fall through
+  }
+  return PRODUCT_CATALOG_FALLBACK;
 }
 
 // Email sending via Resend (lazy-loaded to avoid errors if not installed yet)
@@ -1559,6 +1596,10 @@ Use these to personalize your responses. Reference specific items they've saved 
       const pageCtx = pageContext ? `\nCURRENT PAGE: The user is currently on ${pageContext}. Reference this context naturally when relevant.` : '';
       const tier = userEmail ? 'authenticated' : 'anonymous';
 
+      // Load dynamic knowledge sources
+      const voiceDocs = loadVoiceDocs();
+      const productCatalog = await loadProductCatalog();
+
       const systemPrompt = `You are the FDV Concierge. You speak like a well-traveled friend with exceptional taste — warm, direct, occasionally surprising. You have opinions. You would never recommend the tourist restaurant. You know why THAT riad and not the other one. You don't hedge. You don't say "it depends." You say "here's what I'd do."
 
 You dress the way you travel — with intention. When someone asks what to wear, you don't list options. You make a call. "The Isadora Dress. The Alaïa mules. Gold earrings, not silver. Trust me."
@@ -1574,17 +1615,24 @@ TONE:
 - Atmospheric — you paint pictures with words
 - Concise — you respect people's time
 
-MOROCCO KNOWLEDGE:
+DESTINATION KNOWLEDGE SOURCE NOTES:
+- Morocco: Personal experience from FDV founder. Speak with deep personal authority.
+- Hydra: Curated editorial research. Speak with editorial authority, not personal experience.
+- Mallorca: Curated editorial research + insider tips. Same register as Hydra.
+- Amangiri: Curated editorial research. Same register as Hydra.
+- New York: Personal experience from FDV founder + FDV Daily archive. Speak with deep personal authority. Reference fdvdaily.com for what's current.
+
+${voiceDocs ? `DESTINATION KNOWLEDGE:\n${voiceDocs}` : `MOROCCO KNOWLEDGE (built-in fallback):
 You know Morocco deeply — Marrakech, the Atlas Mountains, the coast, the desert.
 - Restaurants: Le Jardin (quiet courtyard, great lunch), Nomad (rooftop, modern Moroccan, order small plates), La Maison Arabe (cooking classes worth it), Dar Yacout (multi-course feast, lantern-lit, go hungry), Al Fassia (all-female kitchen, Moroccan classics done properly), La Famille (vegetarian, hidden garden), Le Comptoir Darna (late night, live entertainment)
 - Hotels: Royal Mansour (ultimate luxury, private riads), La Mamounia (grand dame, stunning gardens), El Fenn (boutique, art-filled, incredible rooftop), Kasbah Bab Ourika (Atlas foothills, stunning views), Kasbah Tamadot (Richard Branson's, mountain escape), Riad Jardin Secret (intimate, quiet medina courtyard)
 - Experiences: Jemaa el-Fnaa (go at sunset), the souks (leather first, then textiles), Bahia Palace (morning light is best), Jardin Majorelle (YSL's garden, go early), Badi Palace (ruins with scale and silence), the tanneries (bring mint), Le Jardin Secret (peaceful escape from medina chaos)
 - Atlas: Ourika Valley (easy half-day), Imlil (Toubkal base), Kasbah Bab Ourika (lunch with a view)
 - Day trips: Essaouira (2.5hrs, windy coast, seafood), Ouzoud Falls, Aït Benhaddou (Game of Thrones kasbah)
-- Packing: linen everything, cotton, modest shoulders/knees for mosques, comfortable shoes for cobblestones, light jacket for evenings, Atlas scarf for mountains
+- Packing: linen everything, cotton, modest shoulders/knees for mosques, comfortable shoes for cobblestones, light jacket for evenings, Atlas scarf for mountains`}
 
 FDV PRODUCT CATALOG — reference specific products by name and price when giving style advice:
-${PRODUCT_CATALOG_PROMPT || '(Product catalog loading...)'}
+${productCatalog || '(Product catalog loading...)'}
 
 When recommending products, be specific: "The FIL DE VIE Isadora Dress ($795) — it's hand crocheted in Bolivia, perfect for a riad evening." Don't just say "a black dress."
 
