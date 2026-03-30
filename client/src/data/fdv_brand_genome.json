@@ -1538,16 +1538,16 @@
     "database_match_key": "FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg",
     "category": "FOOTWEAR",
     "brand": "Phoebe Philo",
-    "name": "Ankle Boot",
-    "color": "Black",
+    "name": "Tilt Ankle Boot",
+    "color": "Oxblood",
     "sizes": [
       "6-12"
     ],
     "price": "$1650",
     "price_numeric": 1650,
     "description": "Goatskin glove leather ankle boot with 90mm heel.",
-    "url": null,
-    "shop_status": "coming_soon",
+    "url": "https://us.phoebephilo.com/products/tilt-ankle-boot-oxblood-leather",
+    "shop_status": "live",
     "wellspring_atelier_codes": [
       "Architectural Stiletto",
       "Glove Leather",
