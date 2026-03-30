@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** March 30, 2026
-**Updated by:** Claude Code session — save bug fix + tracking + dashboard
+**Last updated:** March 26, 2026
+**Updated by:** Claude.ai session with Sharon Lombardo
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -53,7 +53,7 @@ systems-level infrastructure play.
 
 ---
 
-## SECTION 2 — CURRENT BUILD STATE (March 30, 2026)
+## SECTION 2 — CURRENT BUILD STATE (March 26, 2026)
 
 **Platform:** React/TypeScript, Vite, Tailwind, shadcn/ui
 **Database:** Neon Postgres + Drizzle ORM (11 tables)
@@ -181,27 +181,11 @@ systems-level infrastructure play.
 - Suggestion chips for common questions
 - Accessible from concierge-info page CTA + hamburger menu
 
-**Admin Dashboard (EXPANDED — March 30):**
+**Admin Dashboard (NEW — March 26):**
 - Pilot dashboard at /admin/pilot (ADMIN_KEY gated)
-- 6 tabs: Overview | Users | Content | Links | Products | Alerts
-- Overview: metric cards, conversion funnel (Visited → Signed Up → Saved → Chat)
-- Users: table with journey timeline, color-coded event types
-- Content: scroll depth per page (25/50/75/100%), affiliate clicks
-- Links: broken/warning link monitoring, approve/reject/manual/remove actions
-- Products: 103 products, inline URL editing, status dropdown, seed from genome
-- Alerts: zero-save users, inactive users (3+ days)
-
-**Link Health System (NEW — March 30):**
-- link_health table tracking URL status, fail counts, replacements
-- Manual link checker with HEAD requests, 500ms rate limiting
-- Admin Links tab with Run Link Check + action buttons
-- Client-side useLinkHealth() hook for broken link handling
-
-**Products Table (NEW — March 30):**
-- products table as source of truth for commerce data (URLs, prices, shop_status)
-- Eliminates split-brain between genome JSON and database
-- Admin Products tab with inline editing, syncs changes to saves table
-- Public /api/products endpoint for frontend consumption
+- User list: name, email, signup date, last active, save count
+- Click user to expand saves
+- Aggregate stats: top saved items, top page views, curate usage
 
 **Post-Save Nudge (NEW — March 26):**
 - After 3rd-5th save, shows aesthetic signal overlay
@@ -214,12 +198,9 @@ systems-level infrastructure play.
 - "Your Digital Passport is ready" — branded HTML template
 - From: onboarding@resend.dev (domain verification pending for custom domain)
 
-**Event Tracking (EXPANDED — March 30):**
-- Session IDs via sessionStorage, session start/end events
-- Enhanced page_view: sessionId, viewport, referrer, timeOnPreviousPage
-- Scroll depth tracking at 25/50/75/100% on Morocco guide, Current, About
-- Concierge chat event tracking: message count, user message preview
-- sendBeacon for reliable session_end on page unload
+**Page View Tracking (NEW — March 26):**
+- usePageView hook fires page_view event on every route change
+- Data visible in admin dashboard
 
 **User Features:**
 - Travel diary with photo uploads, notes, shareable story images
@@ -230,6 +211,34 @@ systems-level infrastructure play.
 ### What is IN PROGRESS:
 - Morocco route migration: /concierge → /destinations/morocco
 - Resend domain verification for custom from-email (fdvconcierge.com on GoDaddy)
+- Pilot monitoring — 3 users signed up Day 1, watching dashboard for journey data
+
+### Key Features BUILT (March 30 — Post-Pilot Fixes):
+
+**Saves Bug Fix (PR #9):**
+- All save endpoints now scoped to authenticated user (was globally unscoped)
+- Passport gate race condition fixed
+- Signup endpoint fixed: only grabs signing-up user's anonymous saves
+
+**Event Tracking (PR #9):**
+- Session IDs, enhanced page views, scroll depth (25/50/75/100%), concierge
+  chat tracking, session start/end with duration
+
+**Admin Dashboard Rebuild (PR #9):**
+- 6 tabs: Overview (funnel), Users (journey timeline), Content (scroll depth),
+  Alerts (zero-save/inactive), Links (broken link scanner), Products (editable catalog)
+
+**Link Health System (PR #10):**
+- link_health table, manual + nightly cron URL checking, rate-limited HEAD requests
+- Admin approve/reject/manual replace for broken links
+
+**Products Table — Split Brain (PR #11):**
+- Commerce data (URLs, prices, shop_status) in database, editable from admin
+- Taste data (atelier codes) stays in genome JSON
+- Shop status: Live / Coming Soon / Sold Out / Discontinued
+
+**Evening Edit Redesign (PRs #12-14):**
+- "Riad Evenings" — art directed by Sharon, hero + 5 mood images, curated products
 
 ### What is COMING SOON (Notify Me capture):
 - Experiences, Culture, Objects of Desire, Daily Rituals, State of Mind
@@ -392,14 +401,24 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
-## SECTION 8 — OPEN ITEMS (not blocking pilot)
+## SECTION 8 — OPEN ITEMS (updated March 30, 2026)
 
+**Post-Pilot Active:**
+- Lisa Ruffle outreach message (warm, peer-to-peer)
+- Product genome enrichment — ~10 Phoebe Philo items need atelier_codes
+- "Static Preference to Taste in Motion" slide revision
+- Phase 1 SQL migrations brief (Wellspring build sequence)
+- Map atelier_codes to Wellspring controlled vocabulary
+- Gillian intro via April (creative director, Brooklyn, modern marketplace)
+- Check admin dashboard Wed/Thu for real user journey data
+- Verify nightly link checker cron is running after first night
+
+**Ongoing / Not Blocking Pilot:**
 - Resend domain verification — fdvconcierge.com DNS records on GoDaddy
-  (needed for welcome emails from custom domain)
+- Klaviyo access for email open rate (needed for financial model)
 - Trip purchase pricing/margins — flat fee structure, numbers TBD
 - Refund/cancellation policy for subscriptions and trip purchases
 - Curate My Edit algorithm deep build — Phase 2, ontology-driven (core IP)
-- Klaviyo access for email open rate (needed for financial model)
 - Remaining 4 Morocco stories for The Current Issue 1
 - Morocco route migration: /concierge → /destinations/morocco
 - Rotate Anthropic API key (was shared in chat — should regenerate)
@@ -407,7 +426,7 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 ---
 
 ## SECTION 9 — BUILD HISTORY (March 2026)
-*60+ commits across Claude Code desktop + web sessions. Grouped by feature.*
+*52 commits across Claude Code desktop + web sessions. Grouped by feature.*
 
 ### Pilot Launch Build (March 26, 2026 — Claude Code web)
 - Auth system: signup/login with HMAC-signed cookie tokens, Passport Gate
@@ -486,188 +505,97 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
-### March 30, 2026 | Claude Code (web) — Guide/Itinerary Separation + Animation Polish
-**Topic:** Separate guide from itinerary, speed up Curate animation, fix page flash
+### March 30, 2026 | Claude.ai — Full Day Session
+**Topic:** Critical bug fixes, admin dashboard rebuild, link health, products table, Evening Edit
 
-**PART 9 — Guide/Itinerary separation (PR #16):**
-- ItineraryTeaser in morocco.tsx was rendering full Day 1-8 editorial content inline,
-  duplicating what /concierge already shows and creating an endless scroll
-- Replaced with a slim preview card: blurred hero image (El Fenn / stay-1-large),
-  mini day list (Days 1-3 titles + "+ 5 more days"), email gate overlay
-- All unlock actions (email submit, Go Gold, pilot bypass) now navigate to /concierge
-  instead of revealing content inline via setIsUnlocked
-- Uses wouter's useLocation/setLocation for navigation
-- Removed ~150 lines of EditorialDaySection renders and the extractEditorialData import
-- /concierge page untouched — it already renders the full 8-day itinerary correctly
-- Navigation flow: /guides/morocco → editorial → preview card → /concierge
+**Pilot Day 1 Results:** 3 users signed up (Maggie Meade, Christina Glickman, April).
+April reported saves not working — led to critical bug discovery. April's feedback:
+"You have taken a shopping/discovery experience to the next level. Bravo!!!"
+April also offered intro to Gillian — creative director in Brooklyn building a
+modern marketplace/concept shop, connected to The Board community.
 
-**PART 10 — Riad Evenings 5th mood image (PR #14):**
-- Added eat-1-large.jpg (El Fenn golden light) as 5th mood image in Riad Evenings capsule
-- Balances the 2-column grid and ties to hero image ("woman in red at El Fenn")
+**Critical Bug Fix — Saves Not Working (PR #9):**
+6 critical issues found. Save endpoints were operating globally with no per-user
+scoping — every query hit entire saves table. Fixed: all endpoints now use
+authenticated user's email from auth cookie. Fixed passport gate race condition.
+Fixed signup endpoint grabbing ALL anonymous saves instead of just the signing-up
+user's. Saves now work correctly for all pilot users.
 
-**PART 11 — Curate for Me animation speed + polish (PRs #17, #18, #19, #20):**
-- Original animation was ~15 seconds — too long for repeated curations during pilot
-- First pass: cut to ~5s — felt flickery, text didn't have time to register
-- Final timing: PHASE_DURATION 2500ms → 1100ms, text fade 0.5s, image crossfade 0.8s
-- Total ~7s — smooth enough to read each phrase, fast enough for repeat use
-- Fixed suitcase page flash after animation: CuratingAnimation overlay lived inside
-  suitcase.tsx, so navigating away unmounted the overlay before capsule page mounted.
-  Fix: removed fade-out entirely, keep overlay opaque through reveal, navigate
-  immediately in onComplete. Clean cut from overlay → capsule page.
-- Fix applies to both Desert Neutrals and Riad Evenings capsules (single component)
+**Event Tracking Expansion (PR #9):**
+Session IDs per-session in sessionStorage. Enhanced page view events (viewport,
+referrer, time-on-page). Scroll depth tracking on 3 editorial pages (25/50/75/100%).
+Concierge chat tracking (start, message count). Session start/end with duration.
 
-**Files modified:** client/src/pages/guides/morocco.tsx, client/src/components/curating-animation.tsx,
-client/src/pages/suitcase.tsx
-**PRs:** #14, #15 (CLAUDE.md), #16, #17, #18, #19, #20
+**Admin Dashboard Rebuild (PR #9):**
+6 tabs: Overview, Users, Content, Alerts, Links, Products. Overview has metric
+cards + conversion funnel. Users tab shows saves + chronological journey timeline.
+Content tab has editorial scroll depth + affiliate clicks. Alerts for zero-save
+and inactive users. Links tab with broken link scanner. Products tab: full catalog
+editable from admin panel.
 
----
+**Link Health System (PR #10):**
+New link_health table. Manual "Run Link Check" button scans all product URLs via
+HEAD requests with rate limiting (500ms between, grouped by domain). Nightly cron
+at 3 AM ET for automated checking. Admin Links tab: see broken, approve replacements,
+paste manual URLs. Frontend hook (use-link-health.ts) ready to hide broken links.
 
-### March 30, 2026 | Claude Code (web) — Critical Bug Fix + Dashboard
-**Topic:** Fix saves not persisting for pilot users + event tracking + admin dashboard overhaul
+**Products Table — Split Brain Fix (PR #11):**
+New products database table seeded from brand genome JSON. Commerce data (URLs,
+prices, shop_status) now lives in database, editable from admin Products tab.
+Brand genome JSON remains source of truth for taste data (atelier codes, Wellspring
+vocabulary). Shop status dropdown: Live / Coming Soon / Sold Out / Discontinued.
 
-**PART 1 — Critical save bug fix:**
-Sharon reported 3 pilot users signed up but saves not working. Root cause analysis
-found 6 critical issues:
-1. POST /api/saves extracted `userEmail` from request body — client never sent it.
-   Fix: use `getUserEmailFromRequest(req)` to get email from auth cookie.
-2. GET /api/saves returned ALL saves unfiltered — every user saw Sharon's 191 saves.
-   Fix: filter by `WHERE user_email = $1` for authenticated users.
-3. GET /api/saves/check/:itemId was global — items pinned by one user showed as
-   pinned for everyone. Fix: per-user check.
-4. All dedup checks (itemId, assetUrl, title+brand normalization) were global —
-   if Sharon saved an item, no other user could save it. Fix: add `AND user_email`
-   to all dedup queries.
-5. DELETE /api/saves was global — one user could delete another's saves. Fix: scope.
-6. Signup `UPDATE saves SET user_email = $1 WHERE user_email IS NULL` claimed ALL
-   anonymous saves for the signing-up user. Fix: removed (saves now associate via
-   auth cookie from the moment they're created).
-7. Passport gate pending save used 1200ms setTimeout race condition. Fix: poll
-   /api/auth/me to confirm cookie is set before firing save callback.
-8. pin-button.tsx now sends `userEmail` as failsafe in POST body.
+**Product URL Fixes:**
+- Bottega Veneta Solstice Bag: Net-a-Porter → Bergdorf Goodman
+- Demellier Santorini Basket: brand site → Saks Fifth Avenue
+- Khaite Otto Slippers → Phoebe Philo Robe Slide (full swap: $595→$890, cream leather)
+- Phoebe Philo Ankle Boot: null/coming_soon → Tilt Ankle Boot Oxblood, $1,650, live
+- 2 additional broken links fixed via admin Links tab
+- All fixes propagated: saves table, genome JSON, capsule data, editorial map, suitcase dedup
 
-**PART 2 — Event tracking expansion:**
-- Session tracking: unique session IDs via sessionStorage, persists across page
-  navigations, resets on tab close
-- Enhanced page_view events: sessionId, viewport, referrer, userEmail, timeOnPreviousPage
-- Session start event (once per session) + session end event (sendBeacon on unload)
-- Scroll depth tracking: 25/50/75/100% thresholds on Morocco guide, Current, About
-- Concierge chat event tracking: message count, user message preview
-- New files: `client/src/lib/session.ts`, `client/src/hooks/use-scroll-depth.ts`
+**Evening Edit Redesign (PRs #12-14):**
+Art directed by Sharon. Title: "Your Capsule" → "Riad Evenings". Subtitle:
+"Marrakech does drama. You might as well participate." Hero: woman in red at
+El Fenn. 5 mood images, all evening-appropriate. Anchor look: FIL DE VIE
+Isadora Dress ($795). Supporting: Alaïa Velvet Thong Mules, Chloé Wristlette,
+Phoebe Philo Mini Hoops, Hildegaard Oil.
 
-**PART 3 — Admin dashboard overhaul:**
-- Tabbed layout: Overview | Users | Content | Alerts
-- Overview tab: 4 key metric cards (users, sessions, avg pages, avg duration),
-  conversion funnel with progress bars (Visited → Signed Up → Saved 1+ → Saved 3+
-  → Viewed Suitcase → Used Chat), top pages + most saved items side by side
-- Users tab: table with click-to-expand, per-user saves list, chronological journey
-  timeline with color-coded event types
-- Content tab: editorial scroll depth breakdown per page (25/50/75/100%), affiliate clicks
-- Alerts tab: zero-save users, inactive users (3+ days)
-- New API: GET /api/admin/users/:email/journey — chronological event timeline
-- Enhanced /api/admin/aggregate: session metrics, funnel data, scroll depth, alerts
+**Architecture Decision — Data Separation:**
+Database (products table): URLs, prices, shop_status — editable from admin.
+Genome JSON (repo): atelier codes, Wellspring taste data — stays in code.
+When a URL breaks → fix in admin panel → done. No JSON commits needed.
 
-**Files modified:** api/index.ts, pin-button.tsx, passport-gate.tsx, use-page-view.ts,
-morocco.tsx, current.tsx, about.tsx, concierge-chat.tsx, admin/pilot.tsx
-**Files created:** session.ts, use-scroll-depth.ts
-**PR:** #9
+**Key Numbers:** 4 users in system (3 pilot + Sharon test), 6 sessions recorded,
+103 products in database, 5 broken URLs fixed, 4 PRs merged (#9-#14), 6 admin
+dashboard tabs live.
 
 ---
 
-### March 30, 2026 | Claude Code (web) — Link Health, Products, Riad Evenings
-**Topic:** Link health system + products table + broken link fixes + Evening Edit redesign + image fixes
+### March 30, 2026 | Cowork — Morning Session
+**Topic:** New Cowork project setup + full context transfer from maxed-out thread
 
-**PART 4 — Link health system:**
-- link_health table: stores URL, status (ok/broken/warning/replaced), last_checked,
-  fail_count, replacement_url, approved_by
-- GET /api/admin/check-links: manual link checker with HEAD requests, 500ms rate
-  limiting, 10s timeout, 2-failure threshold before marking broken
-- GET /api/admin/links: admin view of broken/warning/pending links
-- POST /api/admin/links/:id/action: approve, reject, manual replace, remove actions
-- GET /api/link-health: client-side broken link map (1hr cache)
-- useLinkHealth() hook + getHealthyUrl() for frontend broken link handling
-- Admin Links tab with Run Link Check button + approve/reject/manual/remove actions
+Pilot launched to 10 women on March 29 (Sunday). Set up new FDV Concierge
+Cowork project with dedicated workspace (separate from FDV Daily). Loaded
+full project context from Desktop CLAUDE folder (memory files, chat transcripts,
+glossary, competitive insights, people profiles), repo project files
+(FDV_CONCIERGE_SUMMARY.md, CANONICAL_DATA_REFERENCE.md, design_guidelines.md),
+and project knowledge PDFs.
 
-**PART 5 — Products table (eliminate split-brain):**
-- products table: source of truth for commerce data (URLs, prices, shop_status)
-- POST /api/admin/products/seed: imports 103 products from brand genome JSON
-- GET /api/admin/products: admin product list with filtering
-- PUT /api/admin/products/:id: inline editing of commerce fields, syncs to saves table
-- GET /api/products: public product commerce data endpoint
-- Admin Products tab with inline URL editing, status dropdown, Seed from Genome button
+Handoff from maxed-out Claude.ai thread — 5 open items carried forward:
+1. Admin dashboard enrichment brief for Claude Code (page views per user,
+   items saved, Curate for Me usage, affiliate clicks, drop-off points)
+2. Product genome enrichment — pending_review Phoebe Philo items need atelier_codes
+3. Lisa Ruffle outreach draft
+4. Phase 1 SQL migrations brief
+5. "Static Preference to Taste in Motion" slide revision
 
-**PART 6 — Broken product link fixes (immediate):**
-- Bottega Veneta Solstice Bag: net-a-porter → bergdorfgoodman
-- Demellier Santorini: demellierlondon → saksfifthavenue
-- Khaite Otto Slippers → Phoebe Philo Robe Slide (full product swap, $890)
-- Phoebe Philo Ankle Boot → Tilt Ankle Boot (Oxblood, $1,650, live URL)
-- Updated: brand-genome.ts image mapping, editorial_product_map.json, suitcase.tsx
-  dedup map, capsule-data.ts Desert Neutrals accessories
+Admin dashboard currently shows: who signed up, save counts. Needs richer
+pilot analytics before first check-in with testers.
 
-**PART 7 — Riad Evenings capsule redesign:**
-- Evening Marrakech → "Riad Evenings" with new tagline + editorial copy
-- Hero image: morocco-motion-1 (woman in red at El Fenn) spans full-width
-- capsule-view.tsx: dynamic title from capsule.name, "Shop the Look" section header,
-  hero image gridColumn "1 / -1" with 4/3 aspect ratio
-- Dress-anchored product order: Isadora Dress first, then Alaïa mules, Chloé bag,
-  PP hoops, Hildegaard oil, PoppyKing lipstick
-- 5 mood images: morocco-motion-1 (hero), eat-1-large (El Fenn golden light),
-  ward-2-large (Isadora Dress), ward-2-small1 (Chloé Wristlette),
-  ward-2-small2 (Poppy King red)
-- Replaced 2 daylight images (eat-1-large, stay-3-large) with evening images from
-  Riad Evenings wardrobe section, then added eat-1-large back as 5th mood image
-  per Sharon's direction
+Image upload was broken in previous thread — needs resolution in new session.
 
-**PART 8 — Admin dashboard expanded to 6 tabs:**
-- Added Links tab and Products tab to existing Overview | Users | Content | Alerts
-
-**Files modified:** api/index.ts, capsule-data.ts, capsule-view.tsx,
-fdv_brand_genome.json, editorial_product_map.json, brand-genome.ts,
-suitcase.tsx, admin/pilot.tsx
-**Files created:** use-link-health.ts
-**PRs:** #10 (link health + products + broken links), #11 (Phoebe Philo fix),
-#12 (Riad Evenings redesign), #13 (evening image fix), #14 (El Fenn mood image)
-
----
-
-### March 26, 2026 | Claude.ai — Evening Strategy Session
-**Topic:** DOTSHOP competitive deep dive, deck work, Wellspring OS architecture
-
-**DOTSHOP competitive analysis:** Confirmed Lisa Ruffle (co-founder, former
-Moda Operandi buying director who bought FIL DE VIE) as warm outreach target
-— three potential conversations: FIL DE VIE on DOTSHOP, checkout infrastructure
-knowledge share, Wellspring OS licensing. Steve Jensen confirmed as COO not
-deep ML engineer — DOTSHOP's AI is likely collaborative filtering + lookalike
-modeling, not a taste genome. Their checkout infrastructure is almost certainly
-Violet.io + Stripe Connect.
-
-**Deck work:** "Engagement is not Taste" Pinterest comparison slide confirmed
-for deck — goes after "Luxury is Machine-Blind," before FDV solution. "Static
-Preference to Taste in Motion" slide needs revision — right side needs FDV's
-actual product answer (Hydra capsule), not just destination imagery. "When"
-thesis articulated as core moat: travel save = purchase intent with timestamp,
-context, mood, and price tolerance attached. No competitor has this signal.
-
-**Wellspring OS architecture:** Full Taste Infrastructure document set uploaded
-to project knowledge, organized into 5 layers:
-1. Ontology — WELLSPRING_CODES, AXIS_RUBRIC, ASSET_SCHEMA, TRANSLATION_RULES, TASTE_AXES
-2. Ingestion Pipeline — Gemini + Claude Governor + Claude Code
-3. User Model — events, vector state, self model, identity synthesis, snapshots
-4. Composition Engine — spec, rules, refusal logic, scoring, SQL mapping
-5. Governance — review queue, policy table, worker spec
-
-WELLSPRING_WORLDS_V1 confirmed complete (Hydra, Morocco, Mallorca defined).
-FDV_PRODUCT_GENOME_MAPPING_V1 uploaded — 88 products, most approved with
-atelier_codes, ~10 Phoebe Philo items pending_review with empty codes.
-
-**Build sequence confirmed:** Phase 1 (SQL migrations) → Phase 2 (asset
-ingestion pipeline) → Phase 3 (self model engine) → Phase 4 (composition
-engine) → Phase 5 (world layer).
-
-**Tomorrow:** Brand genome enrichment session — fill pending_review products,
-map atelier_codes to Wellspring vocabulary, add axis scores.
-
-**Key insight:** "You curate. I translate. Claude enforces. Claude Code stores.
-That's the stack."
+Context saved to Cowork auto-memory (6 memory files) and this session log
+for cross-environment alignment.
 
 ---
 
