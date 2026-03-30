@@ -17,6 +17,35 @@ interface AggregateData {
   curateUsage: number;
   pageViews: { source_page: string; view_count: string }[];
   totalUsers: number;
+  sessions: { total: number; avgPages: number; avgDurationMs: number };
+  scrollDepth: { source_page: string; depth: number; count: string }[];
+  chatUsage: number;
+  funnel: { visited: number; signedUp: number; saved1: number; saved3: number; viewedSuitcase: number; usedChat: number };
+  alerts: { zeroSaveUsers: { email: string; name: string | null; created_at: string }[] };
+}
+
+interface JourneyEvent {
+  event_type: string;
+  source_page: string;
+  metadata: any;
+  created_at: string;
+}
+
+const SECTION_LABEL: React.CSSProperties = { fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#999", marginBottom: 12, marginTop: 40, fontWeight: 600 };
+const CARD: React.CSSProperties = { background: "#fff", border: "1px solid #e8e0d4", padding: "20px 24px", marginBottom: 16 };
+const STAT_NUM: React.CSSProperties = { fontFamily: "Lora, serif", fontSize: 28, fontWeight: 600, color: "#2c2416" };
+const STAT_LABEL: React.CSSProperties = { fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "#999", marginTop: 4 };
+
+function formatDuration(ms: number): string {
+  if (!ms) return "—";
+  const sec = Math.round(ms / 1000);
+  if (sec < 60) return `${sec}s`;
+  return `${Math.floor(sec / 60)}m ${sec % 60}s`;
+}
+
+function formatDate(d: string): string {
+  if (!d) return "—";
+  return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 }
 
 export default function AdminPilot() {
@@ -25,6 +54,7 @@ export default function AdminPilot() {
   });
   const [keyInput, setKeyInput] = useState("");
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"overview" | "users" | "content" | "alerts">("overview");
 
   const handleUnlock = () => {
     const key = keyInput.trim();
@@ -64,6 +94,16 @@ export default function AdminPilot() {
     enabled: !!selectedUser && !!adminKey,
   });
 
+  const { data: userJourney } = useQuery<JourneyEvent[]>({
+    queryKey: ["/api/admin/users", selectedUser, "journey", adminKey],
+    queryFn: async () => {
+      const res = await fetch(`/api/admin/users/${encodeURIComponent(selectedUser!)}/journey?admin_key=${encodeURIComponent(adminKey)}`);
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!selectedUser && !!adminKey,
+  });
+
   if (!adminKey) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#faf9f6" }}>
@@ -86,96 +126,313 @@ export default function AdminPilot() {
     );
   }
 
+  const tabs = [
+    { key: "overview", label: "Overview" },
+    { key: "users", label: "Users" },
+    { key: "content", label: "Content" },
+    { key: "alerts", label: `Alerts${aggregate?.alerts?.zeroSaveUsers?.length ? ` (${aggregate.alerts.zeroSaveUsers.length})` : ""}` },
+  ] as const;
+
   return (
     <div style={{ minHeight: "100vh", paddingTop: 70, paddingBottom: 100, background: "#faf9f6", fontFamily: "Inter, sans-serif" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 24px" }}>
+      <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 24px" }}>
         <h1 style={{ fontFamily: "Lora, serif", fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 8 }}>
           PILOT DASHBOARD
         </h1>
-        <p style={{ fontSize: 13, color: "#999", marginBottom: 32 }}>
-          {aggregate ? `${aggregate.totalUsers} users | ${aggregate.curateUsage} curate uses` : "Loading..."}
+        <p style={{ fontSize: 13, color: "#999", marginBottom: 24 }}>
+          {aggregate ? `${aggregate.totalUsers} users · ${aggregate.sessions.total} sessions · ${aggregate.chatUsage} chats · ${aggregate.curateUsage} curates` : "Loading..."}
         </p>
 
-        {/* Aggregate Stats */}
-        {aggregate && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 40 }}>
-            <div>
-              <h3 style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#999", marginBottom: 12 }}>Most Saved Items</h3>
-              {aggregate.topSaved.slice(0, 10).map((item, i) => (
-                <div key={i} style={{ fontSize: 13, marginBottom: 6, color: "#333" }}>
-                  <strong>{item.save_count}x</strong> {item.title || item.item_id} <span style={{ color: "#999" }}>({item.item_type})</span>
+        {/* Tabs */}
+        <div style={{ display: "flex", gap: 0, borderBottom: "1px solid #e0ddd6", marginBottom: 32 }}>
+          {tabs.map(t => (
+            <button
+              key={t.key}
+              onClick={() => setActiveTab(t.key)}
+              style={{
+                padding: "10px 20px",
+                fontSize: 12,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                background: "none",
+                border: "none",
+                borderBottom: activeTab === t.key ? "2px solid #c9a84c" : "2px solid transparent",
+                color: activeTab === t.key ? "#2c2416" : "#999",
+                fontWeight: activeTab === t.key ? 600 : 400,
+                cursor: "pointer",
+              }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* OVERVIEW TAB */}
+        {activeTab === "overview" && aggregate && (
+          <>
+            {/* Key Metrics */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 32 }}>
+              {[
+                { num: aggregate.totalUsers, label: "Users" },
+                { num: aggregate.sessions.total, label: "Sessions" },
+                { num: aggregate.sessions.avgPages || "—", label: "Avg Pages/Session" },
+                { num: formatDuration(aggregate.sessions.avgDurationMs), label: "Avg Session" },
+              ].map((s, i) => (
+                <div key={i} style={CARD}>
+                  <div style={STAT_NUM}>{s.num}</div>
+                  <div style={STAT_LABEL}>{s.label}</div>
                 </div>
               ))}
             </div>
-            <div>
-              <h3 style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#999", marginBottom: 12 }}>Top Page Views</h3>
-              {aggregate.pageViews.slice(0, 10).map((pv, i) => (
-                <div key={i} style={{ fontSize: 13, marginBottom: 6, color: "#333" }}>
-                  <strong>{pv.view_count}</strong> {pv.source_page}
-                </div>
-              ))}
+
+            {/* Funnel */}
+            <h3 style={SECTION_LABEL}>Conversion Funnel</h3>
+            <div style={CARD}>
+              {[
+                { label: "Visited", count: aggregate.funnel.visited },
+                { label: "Signed Up", count: aggregate.funnel.signedUp },
+                { label: "Saved 1+", count: aggregate.funnel.saved1 },
+                { label: "Saved 3+", count: aggregate.funnel.saved3 },
+                { label: "Viewed Suitcase", count: aggregate.funnel.viewedSuitcase },
+                { label: "Used Chat", count: aggregate.funnel.usedChat },
+              ].map((step, i, arr) => {
+                const maxCount = arr[0].count || 1;
+                const pct = maxCount > 0 ? Math.round((step.count / maxCount) * 100) : 0;
+                return (
+                  <div key={i} style={{ marginBottom: 12 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 4 }}>
+                      <span style={{ color: "#333" }}>{step.label}</span>
+                      <span style={{ color: "#666" }}>{step.count} <span style={{ color: "#bbb" }}>({pct}%)</span></span>
+                    </div>
+                    <div style={{ height: 6, background: "#f0ede8", borderRadius: 3 }}>
+                      <div style={{ height: 6, background: "#c9a84c", borderRadius: 3, width: `${pct}%`, transition: "width 0.3s" }} />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          </div>
+
+            {/* Top Pages + Top Saved side by side */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+              <div>
+                <h3 style={SECTION_LABEL}>Top Pages</h3>
+                {aggregate.pageViews.slice(0, 12).map((pv, i) => (
+                  <div key={i} style={{ fontSize: 13, marginBottom: 6, color: "#333", display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "70%" }}>{pv.source_page}</span>
+                    <strong>{pv.view_count}</strong>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <h3 style={SECTION_LABEL}>Most Saved Items</h3>
+                {aggregate.topSaved.slice(0, 12).map((item, i) => (
+                  <div key={i} style={{ fontSize: 13, marginBottom: 6, color: "#333" }}>
+                    <strong>{item.save_count}x</strong> {item.title || item.item_id} <span style={{ color: "#999" }}>({item.item_type})</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
         )}
 
-        {/* Users Table */}
-        <h2 style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#999", marginBottom: 12 }}>Users</h2>
-        {usersLoading ? (
-          <p style={{ color: "#999" }}>Loading...</p>
-        ) : users && users.length > 0 ? (
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-            <thead>
-              <tr style={{ borderBottom: "1px solid #e0ddd6", textAlign: "left" }}>
-                <th style={{ padding: "8px 12px", color: "#999", fontWeight: 500 }}>Name</th>
-                <th style={{ padding: "8px 12px", color: "#999", fontWeight: 500 }}>Email</th>
-                <th style={{ padding: "8px 12px", color: "#999", fontWeight: 500 }}>Signed Up</th>
-                <th style={{ padding: "8px 12px", color: "#999", fontWeight: 500 }}>Last Active</th>
-                <th style={{ padding: "8px 12px", color: "#999", fontWeight: 500 }}>Saves</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => (
-                <tr
-                  key={u.id}
-                  onClick={() => setSelectedUser(selectedUser === u.email ? null : u.email)}
-                  style={{
-                    borderBottom: "1px solid #f0ede8",
-                    cursor: "pointer",
-                    background: selectedUser === u.email ? "#f5f1e8" : "transparent",
-                  }}
-                >
-                  <td style={{ padding: "10px 12px", color: "#333" }}>{u.name || "—"}</td>
-                  <td style={{ padding: "10px 12px", color: "#333" }}>{u.email}</td>
-                  <td style={{ padding: "10px 12px", color: "#666" }}>{u.created_at ? new Date(u.created_at).toLocaleDateString() : "—"}</td>
-                  <td style={{ padding: "10px 12px", color: "#666" }}>{u.last_active ? new Date(u.last_active).toLocaleDateString() : "—"}</td>
-                  <td style={{ padding: "10px 12px", color: "#333", fontWeight: 600 }}>{u.save_count}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p style={{ color: "#999" }}>No users yet.</p>
-        )}
-
-        {/* Selected User's Saves */}
-        {selectedUser && userSaves && (
-          <div style={{ marginTop: 24, padding: 20, background: "#fff", border: "1px solid #e8e0d4" }}>
-            <h3 style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 12 }}>
-              Saves — {selectedUser}
-            </h3>
-            {userSaves.length === 0 ? (
-              <p style={{ color: "#999", fontSize: 13 }}>No saves yet.</p>
+        {/* USERS TAB */}
+        {activeTab === "users" && (
+          <>
+            <h2 style={SECTION_LABEL}>Users</h2>
+            {usersLoading ? (
+              <p style={{ color: "#999" }}>Loading...</p>
+            ) : users && users.length > 0 ? (
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid #e0ddd6", textAlign: "left" }}>
+                    <th style={{ padding: "8px 12px", color: "#999", fontWeight: 500 }}>Name</th>
+                    <th style={{ padding: "8px 12px", color: "#999", fontWeight: 500 }}>Email</th>
+                    <th style={{ padding: "8px 12px", color: "#999", fontWeight: 500 }}>Signed Up</th>
+                    <th style={{ padding: "8px 12px", color: "#999", fontWeight: 500 }}>Last Active</th>
+                    <th style={{ padding: "8px 12px", color: "#999", fontWeight: 500 }}>Saves</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((u) => (
+                    <tr
+                      key={u.id}
+                      onClick={() => setSelectedUser(selectedUser === u.email ? null : u.email)}
+                      style={{
+                        borderBottom: "1px solid #f0ede8",
+                        cursor: "pointer",
+                        background: selectedUser === u.email ? "#f5f1e8" : "transparent",
+                      }}
+                    >
+                      <td style={{ padding: "10px 12px", color: "#333" }}>{u.name || "—"}</td>
+                      <td style={{ padding: "10px 12px", color: "#333" }}>{u.email}</td>
+                      <td style={{ padding: "10px 12px", color: "#666" }}>{formatDate(u.created_at)}</td>
+                      <td style={{ padding: "10px 12px", color: "#666" }}>{formatDate(u.last_active)}</td>
+                      <td style={{ padding: "10px 12px", color: "#333", fontWeight: 600 }}>
+                        {u.save_count}
+                        {parseInt(u.save_count) === 0 && <span style={{ color: "#c44", marginLeft: 6, fontSize: 10 }}>!</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             ) : (
-              userSaves.map((save: any, i: number) => (
-                <div key={i} style={{ fontSize: 13, marginBottom: 8, color: "#333", display: "flex", gap: 12 }}>
-                  <span style={{ color: "#999", minWidth: 80 }}>{save.item_type}</span>
-                  <span>{save.title || save.item_id}</span>
-                  {save.brand && <span style={{ color: "#999" }}>{save.brand}</span>}
-                  {save.story_tag && <span style={{ color: "#c9a84c" }}>{save.story_tag}</span>}
+              <p style={{ color: "#999" }}>No users yet.</p>
+            )}
+
+            {/* Selected User Detail */}
+            {selectedUser && (
+              <div style={{ marginTop: 24 }}>
+                {/* User Saves */}
+                <div style={CARD}>
+                  <h3 style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 12 }}>
+                    Saves — {selectedUser}
+                  </h3>
+                  {userSaves && userSaves.length > 0 ? (
+                    userSaves.map((save: any, i: number) => (
+                      <div key={i} style={{ fontSize: 13, marginBottom: 8, color: "#333", display: "flex", gap: 12 }}>
+                        <span style={{ color: "#999", minWidth: 80 }}>{save.item_type}</span>
+                        <span>{save.title || save.item_id}</span>
+                        {save.brand && <span style={{ color: "#999" }}>{save.brand}</span>}
+                        {save.story_tag && <span style={{ color: "#c9a84c" }}>{save.story_tag}</span>}
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{ color: "#999", fontSize: 13 }}>No saves yet.</p>
+                  )}
+                </div>
+
+                {/* User Journey Timeline */}
+                <div style={CARD}>
+                  <h3 style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 12 }}>
+                    Journey — {selectedUser}
+                  </h3>
+                  {userJourney && userJourney.length > 0 ? (
+                    <div style={{ maxHeight: 400, overflowY: "auto" }}>
+                      {userJourney.map((evt, i) => {
+                        const meta = typeof evt.metadata === "string" ? JSON.parse(evt.metadata) : evt.metadata;
+                        const typeColors: Record<string, string> = {
+                          page_view: "#6b9bd2",
+                          session_start: "#4caf50",
+                          session_end: "#999",
+                          scroll_depth: "#e6a23c",
+                          concierge_chat: "#c9a84c",
+                          save_item: "#c44",
+                          curate_for_me: "#9c27b0",
+                        };
+                        return (
+                          <div key={i} style={{ display: "flex", gap: 12, marginBottom: 8, fontSize: 12 }}>
+                            <span style={{ color: "#bbb", minWidth: 110, flexShrink: 0 }}>
+                              {formatDate(evt.created_at)}
+                            </span>
+                            <span style={{
+                              background: typeColors[evt.event_type] || "#999",
+                              color: "#fff",
+                              padding: "1px 8px",
+                              borderRadius: 10,
+                              fontSize: 10,
+                              minWidth: 80,
+                              textAlign: "center",
+                              flexShrink: 0,
+                            }}>
+                              {evt.event_type.replace(/_/g, " ")}
+                            </span>
+                            <span style={{ color: "#333" }}>
+                              {evt.source_page}
+                              {meta?.depth && ` (${meta.depth}%)`}
+                              {meta?.messageCount && ` — msg #${meta.messageCount}`}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p style={{ color: "#999", fontSize: 13 }}>No events yet.</p>
+                  )}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* CONTENT TAB */}
+        {activeTab === "content" && aggregate && (
+          <>
+            {/* Scroll Depth by Page */}
+            <h3 style={SECTION_LABEL}>Editorial Scroll Depth</h3>
+            {(() => {
+              const pages = [...new Set(aggregate.scrollDepth.map(r => r.source_page))];
+              if (pages.length === 0) return <p style={{ color: "#999", fontSize: 13 }}>No scroll data yet.</p>;
+              return pages.map(page => (
+                <div key={page} style={{ ...CARD, marginBottom: 12 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 8 }}>{page}</div>
+                  <div style={{ display: "flex", gap: 16 }}>
+                    {[25, 50, 75, 100].map(depth => {
+                      const row = aggregate.scrollDepth.find(r => r.source_page === page && r.depth === depth);
+                      return (
+                        <div key={depth} style={{ textAlign: "center" }}>
+                          <div style={{ fontSize: 18, fontWeight: 600, color: depth === 100 ? "#c9a84c" : "#333" }}>
+                            {row ? row.count : "0"}
+                          </div>
+                          <div style={{ fontSize: 10, color: "#999" }}>{depth}%</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ));
+            })()}
+
+            {/* Affiliate Clicks */}
+            <h3 style={SECTION_LABEL}>Affiliate Clicks</h3>
+            {aggregate.topClicks.length > 0 ? (
+              aggregate.topClicks.slice(0, 10).map((c, i) => (
+                <div key={i} style={{ fontSize: 13, marginBottom: 6, color: "#333" }}>
+                  <strong>{c.click_count}x</strong>{" "}
+                  <span style={{ color: "#666", wordBreak: "break-all" }}>{c.destination_url}</span>
                 </div>
               ))
+            ) : (
+              <p style={{ color: "#999", fontSize: 13 }}>No affiliate clicks yet.</p>
             )}
-          </div>
+          </>
+        )}
+
+        {/* ALERTS TAB */}
+        {activeTab === "alerts" && aggregate && (
+          <>
+            {/* Zero-save users */}
+            <h3 style={SECTION_LABEL}>Zero-Save Users</h3>
+            {aggregate.alerts.zeroSaveUsers.length > 0 ? (
+              <div style={CARD}>
+                {aggregate.alerts.zeroSaveUsers.map((u, i) => (
+                  <div key={i} style={{ fontSize: 13, marginBottom: 8, color: "#333", display: "flex", justifyContent: "space-between" }}>
+                    <span>{u.name || u.email}</span>
+                    <span style={{ color: "#999" }}>signed up {formatDate(u.created_at)}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: "#4caf50", fontSize: 13 }}>All users have saves.</p>
+            )}
+
+            {/* Inactive users (no activity in 3+ days) */}
+            <h3 style={SECTION_LABEL}>Inactive Users (3+ days)</h3>
+            {users ? (() => {
+              const threeDaysAgo = Date.now() - 3 * 24 * 60 * 60 * 1000;
+              const inactive = users.filter(u => u.last_active && new Date(u.last_active).getTime() < threeDaysAgo);
+              if (inactive.length === 0) return <p style={{ color: "#4caf50", fontSize: 13 }}>All users active recently.</p>;
+              return (
+                <div style={CARD}>
+                  {inactive.map((u, i) => (
+                    <div key={i} style={{ fontSize: 13, marginBottom: 8, color: "#333", display: "flex", justifyContent: "space-between" }}>
+                      <span>{u.name || u.email}</span>
+                      <span style={{ color: "#c44" }}>last active {formatDate(u.last_active)}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })() : null}
+          </>
         )}
       </div>
     </div>

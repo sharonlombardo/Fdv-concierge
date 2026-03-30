@@ -5,6 +5,7 @@ import { PinButton } from '@/components/pin-button';
 import { EditorialDaySection, extractEditorialData } from '@/components/editorial-sections';
 import { useCustomImages } from '@/hooks/use-custom-images';
 import { getProductByKey, getProductDisplayName, isShoppable, getShopImageUrl, FLOW_LOOK_GENOME_KEY, SECTION_LOOK_GENOME_KEY } from '@/lib/brand-genome';
+import { useScrollDepth } from '@/hooks/use-scroll-depth';
 import './morocco-guide.css';
 
 const IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco';
@@ -229,6 +230,7 @@ function ItineraryTeaser({ getImageUrl, hasCustomImage, onOpenProductModal }: It
 }
 
 export default function MoroccoGuide() {
+  useScrollDepth("/guides/morocco");
   const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { getImageUrl, hasCustomImage } = useCustomImages();

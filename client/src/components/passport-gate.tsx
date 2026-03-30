@@ -25,20 +25,31 @@ export default function PassportGate() {
 
     if (result.success) {
       setSuccess(true);
-      // Execute pending save after brief welcome flash
-      setTimeout(() => {
+      // Wait for auth cookie to be set (verify with /api/auth/me), then fire pending save
+      const waitForAuth = async () => {
+        // Poll /api/auth/me up to 5 times to confirm cookie is set
+        for (let i = 0; i < 5; i++) {
+          await new Promise(r => setTimeout(r, 400));
+          try {
+            const check = await fetch('/api/auth/me', { credentials: 'same-origin' });
+            if (check.ok) {
+              const data = await check.json();
+              if (data.user) break;
+            }
+          } catch {}
+        }
         if (pendingSaveCallback) {
           pendingSaveCallback();
           setPendingSaveCallback(null);
         }
         setShowPassportGate(false);
         setSuccess(false);
-        // Reset form
         setName("");
         setEmail("");
         setPassword("");
         setMode("signup");
-      }, 1200);
+      };
+      waitForAuth();
     } else {
       setError(result.error || "Something went wrong");
     }

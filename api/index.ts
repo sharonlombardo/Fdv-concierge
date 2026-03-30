@@ -454,8 +454,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
       const user = result.rows[0];
 
-      // Associate any anonymous saves with this email
-      await pool.query('UPDATE saves SET user_email = $1 WHERE user_email IS NULL', [email]);
+      // Note: anonymous saves are not associated on signup since we can't distinguish
+      // which anonymous saves belong to which browser session. Saves made after signup
+      // are automatically associated via the auth cookie.
 
       // Send welcome email (non-blocking)
       sendWelcomeEmail(email, name).catch(() => {});
@@ -576,13 +577,102 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
       const userCount = await pool.query('SELECT COUNT(*) as count FROM users');
 
+      // Session metrics
+      const sessionCount = await pool.query(
+        "SELECT COUNT(DISTINCT metadata->>'sessionId') as count FROM events WHERE metadata->>'sessionId' IS NOT NULL"
+      );
+      const avgPagesPerSession = await pool.query(
+        `SELECT AVG(page_count)::numeric(10,1) as avg_pages FROM (
+          SELECT metadata->>'sessionId' as sid, COUNT(*) as page_count
+          FROM events WHERE event_type = 'page_view' AND metadata->>'sessionId' IS NOT NULL
+          GROUP BY metadata->>'sessionId'
+        ) t`
+      );
+      const avgSessionDuration = await pool.query(
+        `SELECT AVG((metadata->>'sessionDuration')::int)::int as avg_ms
+         FROM events WHERE event_type = 'session_end' AND metadata->>'sessionDuration' IS NOT NULL`
+      );
+      // Scroll depth stats for editorial pages
+      const scrollDepth = await pool.query(
+        `SELECT source_page, (metadata->>'depth')::int as depth, COUNT(*) as count
+         FROM events WHERE event_type = 'scroll_depth'
+         GROUP BY source_page, metadata->>'depth'
+         ORDER BY source_page, depth`
+      );
+      // Chat usage
+      const chatCount = await pool.query(
+        "SELECT COUNT(*) as count FROM events WHERE event_type = 'concierge_chat'"
+      );
+      // Funnel data
+      const funnelVisited = await pool.query(
+        "SELECT COUNT(DISTINCT metadata->>'sessionId') as count FROM events WHERE event_type = 'page_view'"
+      );
+      const funnelSignedUp = await pool.query('SELECT COUNT(*) as count FROM users');
+      const funnelSaved1 = await pool.query(
+        "SELECT COUNT(DISTINCT user_email) as count FROM saves WHERE user_email IS NOT NULL"
+      );
+      const funnelSaved3 = await pool.query(
+        `SELECT COUNT(*) as count FROM (
+          SELECT user_email FROM saves WHERE user_email IS NOT NULL
+          GROUP BY user_email HAVING COUNT(*) >= 3
+        ) t`
+      );
+      const funnelViewedSuitcase = await pool.query(
+        "SELECT COUNT(DISTINCT metadata->>'userEmail') as count FROM events WHERE event_type = 'page_view' AND source_page = '/suitcase' AND metadata->>'userEmail' IS NOT NULL"
+      );
+      const funnelUsedChat = await pool.query(
+        "SELECT COUNT(DISTINCT metadata->>'userEmail') as count FROM events WHERE event_type = 'concierge_chat' AND metadata->>'userEmail' IS NOT NULL"
+      );
+      // Zero-save users alert
+      const zeroSaveUsers = await pool.query(
+        `SELECT u.email, u.name, u.created_at FROM users u
+         WHERE NOT EXISTS (SELECT 1 FROM saves WHERE user_email = u.email)
+         ORDER BY u.created_at DESC`
+      );
+
       return res.status(200).json({
         topSaved: topSaved.rows,
         topClicks: topClicks.rows,
         curateUsage: parseInt(curateCount.rows[0].count, 10),
         pageViews: pageViews.rows,
-        totalUsers: parseInt(userCount.rows[0].count, 10)
+        totalUsers: parseInt(userCount.rows[0].count, 10),
+        sessions: {
+          total: parseInt(sessionCount.rows[0]?.count || '0', 10),
+          avgPages: parseFloat(avgPagesPerSession.rows[0]?.avg_pages || '0'),
+          avgDurationMs: parseInt(avgSessionDuration.rows[0]?.avg_ms || '0', 10),
+        },
+        scrollDepth: scrollDepth.rows,
+        chatUsage: parseInt(chatCount.rows[0].count, 10),
+        funnel: {
+          visited: parseInt(funnelVisited.rows[0]?.count || '0', 10),
+          signedUp: parseInt(funnelSignedUp.rows[0]?.count || '0', 10),
+          saved1: parseInt(funnelSaved1.rows[0]?.count || '0', 10),
+          saved3: parseInt(funnelSaved3.rows[0]?.count || '0', 10),
+          viewedSuitcase: parseInt(funnelViewedSuitcase.rows[0]?.count || '0', 10),
+          usedChat: parseInt(funnelUsedChat.rows[0]?.count || '0', 10),
+        },
+        alerts: {
+          zeroSaveUsers: zeroSaveUsers.rows,
+        },
       });
+    }
+
+    // GET /api/admin/users/:email/journey — chronological event timeline
+    if (path.startsWith('/api/admin/users/') && path.endsWith('/journey') && method === 'GET') {
+      const urlObj = new URL(url || '', `http://${req.headers.host}`);
+      const adminKey = urlObj.searchParams.get('admin_key');
+      if (adminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+
+      const email = decodeURIComponent(path.split('/api/admin/users/')[1].split('/journey')[0]);
+      const events = await pool.query(
+        `SELECT event_type, source_page, metadata, created_at FROM events
+         WHERE metadata->>'userEmail' = $1 OR metadata->>'sessionId' IN (
+           SELECT DISTINCT metadata->>'sessionId' FROM events WHERE metadata->>'userEmail' = $1
+         )
+         ORDER BY created_at ASC LIMIT 500`,
+        [email]
+      );
+      return res.status(200).json(events.rows);
     }
 
     // POST /api/saves/associate-email — backfill anonymous saves with user email
@@ -648,7 +738,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // GET /api/saves
     if (path === '/api/saves' && method === 'GET') {
-      const result = await pool.query('SELECT * FROM saves ORDER BY saved_at DESC');
+      const currentUserEmail = getUserEmailFromRequest(req);
+      const result = currentUserEmail
+        ? await pool.query('SELECT * FROM saves WHERE user_email = $1 ORDER BY saved_at DESC', [currentUserEmail])
+        : await pool.query('SELECT * FROM saves WHERE user_email IS NULL ORDER BY saved_at DESC');
       // Transform snake_case to camelCase for frontend
       const saves = result.rows.map(row => ({
         id: row.id,
@@ -678,10 +771,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // GET /api/saves/detail/:itemId
     if (path.startsWith('/api/saves/detail/')) {
       const itemId = path.replace('/api/saves/detail/', '');
-      const result = await pool.query(
-        'SELECT brand, price, shop_url, book_url, detail_description, category, is_curated FROM saves WHERE item_id = $1',
-        [itemId]
-      );
+      const currentUserEmail = getUserEmailFromRequest(req);
+      const result = currentUserEmail
+        ? await pool.query(
+            'SELECT brand, price, shop_url, book_url, detail_description, category, is_curated FROM saves WHERE item_id = $1 AND user_email = $2',
+            [itemId, currentUserEmail]
+          )
+        : await pool.query(
+            'SELECT brand, price, shop_url, book_url, detail_description, category, is_curated FROM saves WHERE item_id = $1 AND user_email IS NULL',
+            [itemId]
+          );
       if (result.rows.length === 0) {
         return res.status(200).json({});
       }
@@ -700,42 +799,62 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // GET /api/saves/check/:itemId
     if (path.startsWith('/api/saves/check/')) {
       const itemId = decodeURIComponent(path.replace('/api/saves/check/', ''));
-      const result = await pool.query('SELECT id FROM saves WHERE item_id = $1 LIMIT 1', [itemId]);
+      const currentUserEmail = getUserEmailFromRequest(req);
+      const result = currentUserEmail
+        ? await pool.query('SELECT id FROM saves WHERE item_id = $1 AND user_email = $2 LIMIT 1', [itemId, currentUserEmail])
+        : await pool.query('SELECT id FROM saves WHERE item_id = $1 AND user_email IS NULL LIMIT 1', [itemId]);
       return res.status(200).json({ isPinned: result.rows.length > 0 });
     }
 
     // POST /api/saves — create a new save
     if (path === '/api/saves' && method === 'POST') {
       const body = req.body || {};
-      const { itemType, itemId, sourceContext, aestheticTags, savedAt, metadata, editionTag, storyTag, editTag, purchaseStatus, title, assetUrl, brand, price, shopUrl, bookUrl, detailDescription, category, isCurated, userEmail } = body;
+      const { itemType, itemId, sourceContext, aestheticTags, savedAt, metadata, editionTag, storyTag, editTag, purchaseStatus, title, assetUrl, brand, price, shopUrl, bookUrl, detailDescription, category, isCurated } = body;
+
+      // Get user email from auth cookie (primary) or request body (fallback)
+      const userEmail = getUserEmailFromRequest(req) || body.userEmail || null;
 
       if (!itemType || !itemId) {
         return res.status(400).json({ error: 'itemType and itemId are required' });
       }
 
-      // Check if already exists — by exact itemId, image URL, or normalized title+brand
-      const existing = await pool.query('SELECT id FROM saves WHERE item_id = $1 LIMIT 1', [itemId]);
+      // Per-user dedup: check if THIS USER already saved this item
+      // If authenticated, scope to user; if anonymous, scope to anonymous saves
+      const dedupCondition = userEmail ? 'AND user_email = $2' : 'AND user_email IS NULL';
+      const dedupParams = userEmail ? [itemId, userEmail] : [itemId];
+
+      const existing = await pool.query(
+        `SELECT id FROM saves WHERE item_id = $1 ${dedupCondition} LIMIT 1`,
+        dedupParams
+      );
       if (existing.rows.length > 0) {
         return res.status(400).json({ error: 'Already pinned' });
       }
-      // Check by image URL — same image = same product
+      // Check by image URL — same image = same product (per-user)
       if (assetUrl) {
+        const imageCondition = userEmail ? 'AND user_email = $2' : 'AND user_email IS NULL';
+        const imageParams = userEmail ? [assetUrl, userEmail] : [assetUrl];
         const imageCheck = await pool.query(
-          'SELECT id FROM saves WHERE asset_url = $1 LIMIT 1',
-          [assetUrl]
+          `SELECT id FROM saves WHERE asset_url = $1 ${imageCondition} LIMIT 1`,
+          imageParams
         );
         if (imageCheck.rows.length > 0) {
           return res.status(400).json({ error: 'Already pinned' });
         }
       }
-      // Also check by normalized title+brand to prevent dupes from different surfaces
+      // Also check by normalized title+brand to prevent dupes from different surfaces (per-user)
       if (title) {
         const brandNorm = (brand || '').toLowerCase().trim();
         const titleNorm = (title || '').toLowerCase().trim();
-        // Fetch all saves with same brand, compare titles in app code
+        const sameBrandParams = userEmail
+          ? [brandNorm, userEmail]
+          : [brandNorm];
+        const sameBrandCondition = userEmail
+          ? `LOWER(TRIM(COALESCE(brand,''))) = $1 AND user_email = $2`
+          : `LOWER(TRIM(COALESCE(brand,''))) = $1 AND user_email IS NULL`;
         const sameBrand = await pool.query(
-          `SELECT id, title FROM saves WHERE LOWER(TRIM(COALESCE(brand,''))) = $1`,
-          [brandNorm]
+          `SELECT id, title FROM saves WHERE ${sameBrandCondition}`,
+          sameBrandParams
         );
         const normalize = (s: string) => s.toLowerCase().trim()
           .replace(/[éèê]/g, 'e').replace(/[àâä]/g, 'a').replace(/[ïîì]/g, 'i')
@@ -776,7 +895,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           detailDescription || null,
           category || null,
           isCurated || false,
-          userEmail || null,
+          userEmail,
         ]
       );
       const row = result.rows[0];
@@ -797,10 +916,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    // DELETE /api/saves/:itemId — remove a save
+    // DELETE /api/saves/:itemId — remove a save (per-user)
     if (path.startsWith('/api/saves/') && method === 'DELETE') {
       const itemId = decodeURIComponent(path.replace('/api/saves/', ''));
-      await pool.query('DELETE FROM saves WHERE item_id = $1', [itemId]);
+      const currentUserEmail = getUserEmailFromRequest(req);
+      if (currentUserEmail) {
+        await pool.query('DELETE FROM saves WHERE item_id = $1 AND user_email = $2', [itemId, currentUserEmail]);
+      } else {
+        await pool.query('DELETE FROM saves WHERE item_id = $1 AND user_email IS NULL', [itemId]);
+      }
       return res.status(200).json({ success: true });
     }
 

@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { useScrollDepth } from "@/hooks/use-scroll-depth";
 
 const BLOB = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2';
 
@@ -11,6 +12,7 @@ const fullWidthImg: React.CSSProperties = {
 };
 
 export default function About() {
+  useScrollDepth("/about");
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#fafaf9" }}>
       <style>{`

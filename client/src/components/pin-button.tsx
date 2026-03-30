@@ -95,6 +95,7 @@ export function PinButton({
             price: itemData.price ? String(itemData.price) : undefined,
             shopUrl: itemData.shopUrl || undefined,
             bookUrl: itemData.bookUrl || undefined,
+            userEmail: email || undefined,
             category: (() => {
               const key = itemData.assetKey || itemData.genomeKey || itemId;
               const product = getProductByKey(key);
