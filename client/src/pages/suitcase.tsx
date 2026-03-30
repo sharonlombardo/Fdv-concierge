@@ -823,11 +823,10 @@ export default function SuitcasePage() {
 
   const handleCuratingComplete = () => {
     setSavedCapsuleIds(getSavedCapsuleIds());
+    setShowCurating(false);
     if (curatingCapsule) {
       navigate(`/capsule/${curatingCapsule.id}?from=curate`);
     }
-    // Wait for capsule page to mount before removing overlay
-    setTimeout(() => setShowCurating(false), 300);
   };
 
   const nextCapsule = peekNextCapsule();

@@ -28,7 +28,6 @@ export function CuratingAnimation({
   const [textVisible, setTextVisible] = useState(false);
   const [isReveal, setIsReveal] = useState(false);
   const [revealReady, setRevealReady] = useState(false);
-  const [fadeOut, setFadeOut] = useState(false);
 
   // Fade in first text
   useEffect(() => {
@@ -57,12 +56,11 @@ export function CuratingAnimation({
     return () => clearTimeout(t);
   }, [currentPhase, isReveal, advancePhase]);
 
-  // Auto-complete after reveal
+  // Auto-complete after reveal — stay fully opaque so navigation cuts cleanly
   useEffect(() => {
     if (revealReady) {
-      const t1 = setTimeout(() => setFadeOut(true), 1000);
-      const t2 = setTimeout(onComplete, 1600);
-      return () => { clearTimeout(t1); clearTimeout(t2); };
+      const t = setTimeout(onComplete, 1200);
+      return () => clearTimeout(t);
     }
   }, [revealReady, onComplete]);
 
@@ -73,8 +71,7 @@ export function CuratingAnimation({
         inset: 0,
         zIndex: 9999,
         background: "#000",
-        opacity: fadeOut ? 0 : 1,
-        transition: "opacity 0.6s ease-out",
+        opacity: 1,
       }}
     >
       {/* Background images — all rendered, opacity controlled */}
