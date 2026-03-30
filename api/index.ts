@@ -1,7 +1,26 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import pg from 'pg';
 import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
 const { Pool } = pg;
+
+// Build product catalog for concierge system prompt
+let PRODUCT_CATALOG_PROMPT = '';
+try {
+  const genomePath = path.join(process.cwd(), 'client/src/data/fdv_brand_genome.json');
+  const genome = JSON.parse(fs.readFileSync(genomePath, 'utf8'));
+  PRODUCT_CATALOG_PROMPT = genome
+    .filter((p: any) => p.shop_status === 'live' || p.shop_status === 'coming_soon')
+    .map((p: any) => {
+      const status = p.shop_status === 'coming_soon' ? ' [coming soon]' : '';
+      const desc = p.description ? p.description.split('.')[0] + '.' : '';
+      return `- ${p.brand} ${p.name} (${p.price || 'TBD'})${p.color ? ', ' + p.color : ''}${desc ? ' — ' + desc : ''}${status}`;
+    })
+    .join('\n');
+} catch (e) {
+  console.warn('Could not load product genome for concierge:', e);
+}
 
 // Email sending via Resend (lazy-loaded to avoid errors if not installed yet)
 async function sendWelcomeEmail(email: string, name?: string | null) {
@@ -186,6 +205,20 @@ async function runMigrations() {
     await pool.query('CREATE INDEX IF NOT EXISTS idx_products_brand ON products (brand)');
     await pool.query('CREATE INDEX IF NOT EXISTS idx_products_status ON products (shop_status)');
     await pool.query('CREATE INDEX IF NOT EXISTS idx_products_match_key ON products (database_match_key)');
+    // Concierge conversation logging
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS concierge_conversations (
+        id SERIAL PRIMARY KEY,
+        user_email TEXT,
+        session_id TEXT NOT NULL,
+        role TEXT NOT NULL,
+        content TEXT NOT NULL,
+        page_context TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_convo_user ON concierge_conversations (user_email)');
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_convo_session ON concierge_conversations (session_id)');
   } catch (e) {
     console.warn('Migration warning:', e);
   }
@@ -719,7 +752,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
          ORDER BY created_at ASC LIMIT 500`,
         [email]
       );
-      return res.status(200).json(events.rows);
+      // Also load concierge conversations for this user
+      let conversations: any[] = [];
+      try {
+        const convoResult = await pool.query(
+          `SELECT role, content, page_context, session_id, created_at FROM concierge_conversations
+           WHERE user_email = $1 ORDER BY created_at ASC LIMIT 200`,
+          [email]
+        );
+        conversations = convoResult.rows.map((r: any) => ({
+          event_type: 'concierge_message',
+          source_page: r.page_context,
+          metadata: { role: r.role, content: r.content, sessionId: r.session_id },
+          created_at: r.created_at,
+        }));
+      } catch (e) { /* table might not exist yet */ }
+      // Merge and sort by timestamp
+      const merged = [...events.rows, ...conversations].sort(
+        (a: any, b: any) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+      return res.status(200).json(merged);
     }
 
     // POST /api/saves/associate-email — backfill anonymous saves with user email
@@ -1469,43 +1521,90 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ success: true, eventType, itemId });
     }
 
-    // POST /api/concierge/chat — AI concierge chat
+    // POST /api/concierge/chat — AI concierge chat with logging, context, knowledge
     if (path === '/api/concierge/chat' && method === 'POST') {
       const apiKey = process.env.ANTHROPIC_API_KEY;
       if (!apiKey) {
         return res.status(500).json({ error: 'Concierge not configured' });
       }
 
-      const { messages } = req.body || {};
+      const { messages, pageContext, sessionId: clientSessionId } = req.body || {};
       if (!messages || !Array.isArray(messages) || messages.length === 0) {
         return res.status(400).json({ error: 'messages array is required' });
       }
 
-      const systemPrompt = `You are the FDV Concierge — a warm, knowledgeable travel companion for Fil de Vie Concierge, a luxury travel and style platform. You speak like a trusted friend who happens to have impeccable taste, deep knowledge of Morocco, and a gift for logistics.
+      const userEmail = getUserEmailFromRequest(req);
+      const sessionId = clientSessionId || 'unknown';
 
-Your tone is:
+      // Load user's recent saves for personalization (authenticated users only)
+      let userSavesContext = '';
+      if (userEmail) {
+        try {
+          const savesResult = await pool.query(
+            `SELECT title, brand, "storyTag", "pinType" FROM saves WHERE user_email = $1 ORDER BY id DESC LIMIT 20`,
+            [userEmail]
+          );
+          if (savesResult.rows.length > 0) {
+            const saveLines = savesResult.rows.map((s: any) =>
+              `${s.brand ? s.brand + ' ' : ''}${s.title || 'Untitled'}${s.storyTag ? ' (from ' + s.storyTag + ')' : ''}`
+            ).join(', ');
+            userSavesContext = `\n\nUSER'S RECENT SAVES: ${saveLines}
+Use these to personalize your responses. Reference specific items they've saved when relevant. For example, if they saved the Isadora Dress, mention it when discussing evening wear.`;
+          }
+        } catch (e) {
+          // Non-critical — continue without save context
+        }
+      }
+
+      const pageCtx = pageContext ? `\nCURRENT PAGE: The user is currently on ${pageContext}. Reference this context naturally when relevant.` : '';
+      const tier = userEmail ? 'authenticated' : 'anonymous';
+
+      const systemPrompt = `You are the FDV Concierge. You speak like a well-traveled friend with exceptional taste — warm, direct, occasionally surprising. You have opinions. You would never recommend the tourist restaurant. You know why THAT riad and not the other one. You don't hedge. You don't say "it depends." You say "here's what I'd do."
+
+You dress the way you travel — with intention. When someone asks what to wear, you don't list options. You make a call. "The Isadora Dress. The Alaïa mules. Gold earrings, not silver. Trust me."
+
+You're not a search engine. You're not a customer service bot. You're the friend who's already been everywhere and packed perfectly.
+
+IMPORTANT: You are NOT a general-purpose AI assistant. You help with travel, style, the FDV platform, and taste. If someone asks you to write code or solve math problems, gracefully redirect: "That's not really my world — but if you want to talk about where to eat in Marrakech, I'm your person."
+
+TONE:
 - Warm but not effusive
-- Confident but never pretentious
-- Specific — you give real names, real places, real details
+- Confident, never pretentious — you have opinions and share them
+- Specific — you give real names, real places, real details, real prices
 - Atmospheric — you paint pictures with words
 - Concise — you respect people's time
 
-You know Morocco deeply — Marrakech, the Atlas Mountains, the coast, the desert. You know:
-- The best restaurants (Le Jardin, Nomad, La Maison Arabe, Dar Yacout, Al Fassia)
-- The best riads and hotels (Royal Mansour, La Mamounia, Kasbah Bab Ourika, Kasbah Tamadot)
-- Marrakech's Medina: Jemaa el-Fnaa, the souks, Bahia Palace, Jardin Majorelle, the tanneries
-- Atlas foothills: Ourika Valley, Imlil, Toubkal region
-- Day trips: Essaouira (2.5hrs), Ouzoud Falls, Aït Benhaddou
-- Weather: warm days, cool desert nights, layer for the mountains
-- What to wear: linen, cotton, modest shoulders/knees for mosques, comfortable shoes for medina cobblestones, a light jacket for evenings
+MOROCCO KNOWLEDGE:
+You know Morocco deeply — Marrakech, the Atlas Mountains, the coast, the desert.
+- Restaurants: Le Jardin (quiet courtyard, great lunch), Nomad (rooftop, modern Moroccan, order small plates), La Maison Arabe (cooking classes worth it), Dar Yacout (multi-course feast, lantern-lit, go hungry), Al Fassia (all-female kitchen, Moroccan classics done properly), La Famille (vegetarian, hidden garden), Le Comptoir Darna (late night, live entertainment)
+- Hotels: Royal Mansour (ultimate luxury, private riads), La Mamounia (grand dame, stunning gardens), El Fenn (boutique, art-filled, incredible rooftop), Kasbah Bab Ourika (Atlas foothills, stunning views), Kasbah Tamadot (Richard Branson's, mountain escape), Riad Jardin Secret (intimate, quiet medina courtyard)
+- Experiences: Jemaa el-Fnaa (go at sunset), the souks (leather first, then textiles), Bahia Palace (morning light is best), Jardin Majorelle (YSL's garden, go early), Badi Palace (ruins with scale and silence), the tanneries (bring mint), Le Jardin Secret (peaceful escape from medina chaos)
+- Atlas: Ourika Valley (easy half-day), Imlil (Toubkal base), Kasbah Bab Ourika (lunch with a view)
+- Day trips: Essaouira (2.5hrs, windy coast, seafood), Ouzoud Falls, Aït Benhaddou (Game of Thrones kasbah)
+- Packing: linen everything, cotton, modest shoulders/knees for mosques, comfortable shoes for cobblestones, light jacket for evenings, Atlas scarf for mountains
 
-You also know the FDV product catalog — luxury resort wear, desert neutrals, evening looks. When someone asks about packing or what to wear, you can suggest categories (flowing dresses, linen sets, leather sandals, a statement bag) without being overly commercial.
+FDV PRODUCT CATALOG — reference specific products by name and price when giving style advice:
+${PRODUCT_CATALOG_PROMPT || '(Product catalog loading...)'}
 
-If someone asks about booking, say that the full concierge booking service is coming soon with the Black Passport tier, but you're happy to help them plan.
+When recommending products, be specific: "The FIL DE VIE Isadora Dress ($795) — it's hand crocheted in Bolivia, perfect for a riad evening." Don't just say "a black dress."
 
-Keep responses focused and helpful. Use paragraph breaks for readability. Don't use bullet points unless listing specific items.`;
+For items marked [coming soon], mention them but note availability: "The Gaia Dress would be perfect — it's coming soon to FDV."
+
+${pageCtx}
+USER TIER: ${tier}${userSavesContext}
+
+Keep responses focused and helpful. Use paragraph breaks for readability. Don't use bullet points unless listing specific items or making a packing list.`;
 
       try {
+        // Log user's latest message
+        const latestUserMsg = messages[messages.length - 1];
+        if (latestUserMsg && latestUserMsg.role === 'user') {
+          pool.query(
+            `INSERT INTO concierge_conversations (user_email, session_id, role, content, page_context) VALUES ($1, $2, $3, $4, $5)`,
+            [userEmail, sessionId, 'user', latestUserMsg.content, pageContext || null]
+          ).catch(() => {});
+        }
+
         const response = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: {
@@ -1529,10 +1628,51 @@ Keep responses focused and helpful. Use paragraph breaks for readability. Don't 
 
         const data = await response.json();
         const reply = data.content?.[0]?.text || 'I wasn\'t able to respond. Please try again.';
+
+        // Log assistant response
+        pool.query(
+          `INSERT INTO concierge_conversations (user_email, session_id, role, content, page_context) VALUES ($1, $2, $3, $4, $5)`,
+          [userEmail, sessionId, 'assistant', reply, pageContext || null]
+        ).catch(() => {});
+
         return res.status(200).json({ reply });
       } catch (err) {
         console.error('Concierge chat error:', err);
         return res.status(500).json({ error: 'Concierge unavailable' });
+      }
+    }
+
+    // GET /api/admin/conversations — admin view of concierge conversations
+    if (path === '/api/admin/conversations' && method === 'GET') {
+      const { email: filterEmail, limit: limitParam } = req.query || {};
+      const lim = Math.min(parseInt(limitParam as string) || 100, 500);
+      let query = 'SELECT * FROM concierge_conversations';
+      const params: any[] = [];
+      if (filterEmail) {
+        query += ' WHERE user_email = $1';
+        params.push(filterEmail);
+      }
+      query += ' ORDER BY created_at DESC LIMIT $' + (params.length + 1);
+      params.push(lim);
+      const result = await pool.query(query, params);
+      return res.status(200).json(result.rows);
+    }
+
+    // GET /api/weather — real-time weather for concierge
+    if (path === '/api/weather' && method === 'GET') {
+      const city = req.query?.city as string;
+      if (!city) return res.status(400).json({ error: 'city parameter required' });
+      const weatherKey = process.env.OPENWEATHER_API_KEY;
+      if (!weatherKey) return res.status(500).json({ error: 'Weather not configured' });
+      try {
+        const weatherRes = await fetch(
+          `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&units=imperial&appid=${weatherKey}`
+        );
+        if (!weatherRes.ok) return res.status(502).json({ error: 'Weather service error' });
+        const weatherData = await weatherRes.json();
+        return res.status(200).json(weatherData);
+      } catch (err) {
+        return res.status(500).json({ error: 'Weather fetch failed' });
       }
     }
 

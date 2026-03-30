@@ -32,7 +32,8 @@ export default function ConciergeChat() {
       const res = await fetch("/api/concierge/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages }),
+        credentials: "include",
+        body: JSON.stringify({ messages: newMessages, pageContext: "/concierge-chat", sessionId: getSessionId() }),
       });
 
       if (!res.ok) {
