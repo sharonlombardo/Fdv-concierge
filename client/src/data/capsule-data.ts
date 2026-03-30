@@ -130,16 +130,16 @@ export const PRESET_CAPSULES: Capsule[] = [
         alt: "Pattern moving in heat — woman in red at El Fenn",
       },
       {
-        imageUrl: `${GUIDE_IMG}/eat-1-large.jpg`,
-        alt: "El Fenn — gold light pooling over stone and olive branches",
-      },
-      {
         imageUrl: `${GUIDE_IMG}/ward-2-large_fdv_isadora_dress.jpg`,
         alt: "Isadora Dress — evening wardrobe",
       },
       {
-        imageUrl: `${GUIDE_IMG}/stay-3-large.jpg`,
-        alt: "Riad evening — candlelight and warm stone",
+        imageUrl: `${GUIDE_IMG}/ward-2-small1_chloe_wristless_bag.jpg`,
+        alt: "Chloé Wristlette — evening detail",
+      },
+      {
+        imageUrl: `${GUIDE_IMG}/ward-2-small2_poppyking_red.jpg`,
+        alt: "Poppy King red — the finishing touch",
       },
     ],
     accessories: [
