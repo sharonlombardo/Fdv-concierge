@@ -202,7 +202,7 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
             margin: "0 0 12px",
           }}
         >
-          Your Capsule
+          {capsule.name}
         </h1>
 
         {/* Subtitle */}
@@ -249,10 +249,11 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
             key={idx}
             style={{
               position: "relative",
-              aspectRatio: "3 / 4",
+              aspectRatio: idx === 0 ? "4 / 3" : "3 / 4",
               overflow: "hidden",
               borderRadius: 3,
               background: "#f0ece4",
+              gridColumn: idx === 0 ? "1 / -1" : undefined,
             }}
           >
             <img
@@ -306,7 +307,18 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
             margin: 0,
           }}
         >
-          Style & Objects of Desire
+          Shop the Look
+        </p>
+        <p
+          style={{
+            fontFamily: "'Lora', serif",
+            fontStyle: "italic",
+            fontSize: 12,
+            color: "#a89a88",
+            margin: "6px 0 0",
+          }}
+        >
+          {capsule.name} — Every Piece
         </p>
       </div>
 
