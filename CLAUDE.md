@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** March 26, 2026
-**Updated by:** Claude.ai session with Sharon Lombardo
+**Last updated:** March 30, 2026
+**Updated by:** Claude Code session — save bug fix + tracking + dashboard
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -464,6 +464,57 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### March 30, 2026 | Claude Code (web) — Critical Bug Fix + Dashboard
+**Topic:** Fix saves not persisting for pilot users + event tracking + admin dashboard overhaul
+
+**PART 1 — Critical save bug fix:**
+Sharon reported 3 pilot users signed up but saves not working. Root cause analysis
+found 6 critical issues:
+1. POST /api/saves extracted `userEmail` from request body — client never sent it.
+   Fix: use `getUserEmailFromRequest(req)` to get email from auth cookie.
+2. GET /api/saves returned ALL saves unfiltered — every user saw Sharon's 191 saves.
+   Fix: filter by `WHERE user_email = $1` for authenticated users.
+3. GET /api/saves/check/:itemId was global — items pinned by one user showed as
+   pinned for everyone. Fix: per-user check.
+4. All dedup checks (itemId, assetUrl, title+brand normalization) were global —
+   if Sharon saved an item, no other user could save it. Fix: add `AND user_email`
+   to all dedup queries.
+5. DELETE /api/saves was global — one user could delete another's saves. Fix: scope.
+6. Signup `UPDATE saves SET user_email = $1 WHERE user_email IS NULL` claimed ALL
+   anonymous saves for the signing-up user. Fix: removed (saves now associate via
+   auth cookie from the moment they're created).
+7. Passport gate pending save used 1200ms setTimeout race condition. Fix: poll
+   /api/auth/me to confirm cookie is set before firing save callback.
+8. pin-button.tsx now sends `userEmail` as failsafe in POST body.
+
+**PART 2 — Event tracking expansion:**
+- Session tracking: unique session IDs via sessionStorage, persists across page
+  navigations, resets on tab close
+- Enhanced page_view events: sessionId, viewport, referrer, userEmail, timeOnPreviousPage
+- Session start event (once per session) + session end event (sendBeacon on unload)
+- Scroll depth tracking: 25/50/75/100% thresholds on Morocco guide, Current, About
+- Concierge chat event tracking: message count, user message preview
+- New files: `client/src/lib/session.ts`, `client/src/hooks/use-scroll-depth.ts`
+
+**PART 3 — Admin dashboard overhaul:**
+- Tabbed layout: Overview | Users | Content | Alerts
+- Overview tab: 4 key metric cards (users, sessions, avg pages, avg duration),
+  conversion funnel with progress bars (Visited → Signed Up → Saved 1+ → Saved 3+
+  → Viewed Suitcase → Used Chat), top pages + most saved items side by side
+- Users tab: table with click-to-expand, per-user saves list, chronological journey
+  timeline with color-coded event types
+- Content tab: editorial scroll depth breakdown per page (25/50/75/100%), affiliate clicks
+- Alerts tab: zero-save users, inactive users (3+ days)
+- New API: GET /api/admin/users/:email/journey — chronological event timeline
+- Enhanced /api/admin/aggregate: session metrics, funnel data, scroll depth, alerts
+
+**Files modified:** api/index.ts, pin-button.tsx, passport-gate.tsx, use-page-view.ts,
+morocco.tsx, current.tsx, about.tsx, concierge-chat.tsx, admin/pilot.tsx
+**Files created:** session.ts, use-scroll-depth.ts
+**PR:** #9
 
 ---
 
