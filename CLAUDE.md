@@ -486,6 +486,42 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### March 30, 2026 | Claude Code (web) — Guide/Itinerary Separation + Animation Polish
+**Topic:** Separate guide from itinerary, speed up Curate animation, fix page flash
+
+**PART 9 — Guide/Itinerary separation (PR #16):**
+- ItineraryTeaser in morocco.tsx was rendering full Day 1-8 editorial content inline,
+  duplicating what /concierge already shows and creating an endless scroll
+- Replaced with a slim preview card: blurred hero image (El Fenn / stay-1-large),
+  mini day list (Days 1-3 titles + "+ 5 more days"), email gate overlay
+- All unlock actions (email submit, Go Gold, pilot bypass) now navigate to /concierge
+  instead of revealing content inline via setIsUnlocked
+- Uses wouter's useLocation/setLocation for navigation
+- Removed ~150 lines of EditorialDaySection renders and the extractEditorialData import
+- /concierge page untouched — it already renders the full 8-day itinerary correctly
+- Navigation flow: /guides/morocco → editorial → preview card → /concierge
+
+**PART 10 — Riad Evenings 5th mood image (PR #14):**
+- Added eat-1-large.jpg (El Fenn golden light) as 5th mood image in Riad Evenings capsule
+- Balances the 2-column grid and ties to hero image ("woman in red at El Fenn")
+
+**PART 11 — Curate for Me animation speed + polish (PRs #17, #18, #19, #20):**
+- Original animation was ~15 seconds — too long for repeated curations during pilot
+- First pass: cut to ~5s — felt flickery, text didn't have time to register
+- Final timing: PHASE_DURATION 2500ms → 1100ms, text fade 0.5s, image crossfade 0.8s
+- Total ~7s — smooth enough to read each phrase, fast enough for repeat use
+- Fixed suitcase page flash after animation: CuratingAnimation overlay lived inside
+  suitcase.tsx, so navigating away unmounted the overlay before capsule page mounted.
+  Fix: removed fade-out entirely, keep overlay opaque through reveal, navigate
+  immediately in onComplete. Clean cut from overlay → capsule page.
+- Fix applies to both Desert Neutrals and Riad Evenings capsules (single component)
+
+**Files modified:** client/src/pages/guides/morocco.tsx, client/src/components/curating-animation.tsx,
+client/src/pages/suitcase.tsx
+**PRs:** #14, #15 (CLAUDE.md), #16, #17, #18, #19, #20
+
+---
+
 ### March 30, 2026 | Claude Code (web) — Critical Bug Fix + Dashboard
 **Topic:** Fix saves not persisting for pilot users + event tracking + admin dashboard overhaul
 
