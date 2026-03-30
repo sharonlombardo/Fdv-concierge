@@ -130,6 +130,10 @@ export const PRESET_CAPSULES: Capsule[] = [
         alt: "Pattern moving in heat — woman in red at El Fenn",
       },
       {
+        imageUrl: `${GUIDE_IMG}/eat-1-large.jpg`,
+        alt: "El Fenn — gold light pooling over stone and olive branches",
+      },
+      {
         imageUrl: `${GUIDE_IMG}/ward-2-large_fdv_isadora_dress.jpg`,
         alt: "Isadora Dress — evening wardrobe",
       },
