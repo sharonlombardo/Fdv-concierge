@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** March 30, 2026
-**Updated by:** Claude Code session with Sharon Lombardo
+**Last updated:** March 31, 2026
+**Updated by:** Claude Code session (Oren feedback + auto-deploy fix)
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -430,7 +430,15 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
-## SECTION 8 — OPEN ITEMS (updated March 30, 2026)
+## SECTION 8 — OPEN ITEMS (updated March 31, 2026)
+
+**Immediate (from Oren feedback session):**
+- OpenWeatherMap API key → add to Vercel environment variables
+- Fix Bottega Solstice 403 broken link
+- Fix Phoebe Philo boot 503 warning link
+- User journey redesign — scope TBD (FDV_USER_JOURNEY_BRIEF.md created)
+- Navigation redesign: persistent visible nav (CURRENT · GUIDES · STYLE · SUITCASE · SHOP)
+- First-60-seconds problem: features exist but are invisible to new users
 
 **Post-Pilot Active:**
 - Lisa Ruffle outreach message (warm, peer-to-peer)
@@ -439,8 +447,6 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 - Phase 1 SQL migrations brief (Wellspring build sequence)
 - Map atelier_codes to Wellspring controlled vocabulary
 - Gillian intro via April (creative director, Brooklyn, modern marketplace)
-- Check admin dashboard Wed/Thu for real user journey data
-- Verify nightly link checker cron is running after first night
 
 **Ongoing / Not Blocking Pilot:**
 - Add OPENWEATHER_API_KEY to Vercel env vars (Sharon — tomorrow AM)
@@ -591,6 +597,79 @@ mood image: eat-1-large.jpg (El Fenn golden light).
 - OPENWEATHER_API_KEY in Vercel env vars (Sharon doing tomorrow AM)
 - Taste signal extraction from conversations (Phase 2)
 - Resend domain verification (ongoing)
+
+---
+
+### March 31, 2026 | Claude.ai — Oren Zaslansky Feedback Session
+**Topic:** Pilot feedback analysis, user journey brief, navigation redesign direction
+
+**Oren Zaslansky** (Sharon's brother, Flock Freight founder, FDV strategic advisor)
+tested the pilot. Key dynamic: his verbal feedback ("confused," "doesn't make sense")
+contradicts his actual behavior — 40-minute session, 9 saves, 100% scroll depth on
+The Current, used concierge chat, came back after a 16-minute break.
+
+**His Core Feedback:**
+- "Doesn't want to look at instructions — makes him feel stupid"
+- "Want it to be a funnel that gets narrower, not bigger and repetitive"
+- "Need more context and understanding right from the get go"
+- "Think about beginning, middle, end of the user journey"
+- Referenced Akinator as narrowing-curation example
+- Wants clarity on ICP: demographics, psychographics
+
+**Key Insight:** The product held him despite the friction. Features aren't missing —
+features are invisible. The first 60 seconds is the problem, not the product itself.
+Sharon was the concierge on the phone, pointing him where to click. The product needs
+to do what Sharon did on that call.
+
+**User Journey Brief Created:** FDV_USER_JOURNEY_BRIEF.md
+- 5 phases: Arrival → Hook → Save Moment → Gate → Return
+- New vs. returning user detection
+- Welcome screen for first-time visitors
+- Progress indicators throughout
+- ICP definition included
+
+**Brainstorm — Frictionless Entry Ideas:**
+1. Motion not text — 10-second visual sequence showing the concept without words
+2. Start with a single choice — two images, "where are you drawn?" = first taste signal
+3. Scroll IS the signal — dwell time tracking, no saves needed to start learning
+4. Concierge as narrator — quiet margin notes while you scroll, not a chatbot
+5. Show the output first — a completed edit as the landing
+6. Onboarding IS the content — tooltips woven into The Current
+
+**Net-a-Porter Navigation Analysis:**
+- Persistent visible nav (not hamburger) — user always knows what they can do
+- FDV should NOT become Net-a-Porter (no inventory to fill categories)
+- FDV SHOULD borrow navigation clarity
+- Proposed persistent nav: CURRENT · GUIDES · STYLE · SUITCASE · SHOP
+
+**Dashboard Status:** 5 users, 78 sessions, 2 chats, 0 curates.
+Morocco guide completions: everyone who starts finishes (3→3→3→3 at 25/50/75/100%).
+Links: 1 broken (Bottega Solstice 403), 1 warning (Phoebe Philo boot 503).
+
+**Open Items:**
+- OpenWeatherMap API key → Vercel env var
+- Fix Bottega Solstice 403 and Phoebe Philo boot 503 links
+- User journey redesign — scope TBD
+- Lisa Ruffle outreach message
+- Product genome enrichment (~10 items)
+- "Taste in Motion" slide revision
+- Gillian intro via April
+
+---
+
+### March 31, 2026 | Claude Code — FDV Daily Deploy + Auto-Deploy Fix
+**Topic:** Deployed Mar 31 FDV Daily edition, fixed Vercel auto-deploy integration
+
+Deployed March 31 edition (Rauschenberg at Guggenheim, Colbo, Le Dive) via manual
+`vercel --prod` after discovering auto-deploy wasn't triggering on push. Diagnosed
+root cause: Vercel-GitHub integration link was stale. CLI `vercel git disconnect/connect`
+updated the record but didn't fix the trigger. Fixed via Vercel dashboard: Settings → Git
+→ Disconnect → Reconnect to sharonlombardo/Fdv-daily-. Verified with empty commit —
+new build triggered within seconds. Updated FDV Daily CLAUDE.md with new deploy pipeline
+(no more manual `vercel --prod` needed) and fallback instructions.
+
+Note: GitHub App permissions were NOT the issue ("All repositories" was already selected).
+The fix was the Vercel-side dashboard reconnect.
 
 ---
 
