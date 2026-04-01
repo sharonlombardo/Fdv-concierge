@@ -119,7 +119,7 @@ function getTextDuration(moment: TextMoment): number {
     case "greeting": return [2200, 2000, 2400, 2100, 2300][Math.floor(Math.random() * 5)];
     case "section": return [1800, 1600, 2000, 1700, 1900][Math.floor(Math.random() * 5)];
     case "silent": return [800, 900, 1000, 850, 950][Math.floor(Math.random() * 5)];
-    case "whitecard": return [1200, 1300, 1100, 1400][Math.floor(Math.random() * 4)];
+    case "whitecard": return [650, 700, 750, 600][Math.floor(Math.random() * 4)];
   }
 }
 
