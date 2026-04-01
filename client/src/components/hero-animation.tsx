@@ -37,17 +37,15 @@ const HERO_IMAGES = [
   `${BLOB_BASE}/destination-new-york`,
 ];
 
-// Image cut timing — energetic but not frantic
-const IMAGE_DURATIONS = [600, 450, 800, 400, 650, 500, 900, 450, 700, 500];
+// Image cut timing — varied, energetic
+const IMAGE_DURATIONS = [700, 500, 900, 550, 750, 600, 850, 500, 800, 650];
 
 // --- TEXT MOMENTS ---
-// Typewriter effect on text. Scattered syllables for greetings.
-// White cards get a clean silent beat before them.
 
 interface Syllable {
   text: string;
   position: React.CSSProperties;
-  delay?: number;
+  delay: number;
 }
 
 interface TextMoment {
@@ -58,100 +56,137 @@ interface TextMoment {
   fontSize?: string;
 }
 
-const SIZE_DEFAULT = "clamp(42px, 8vw, 56px)";
-const SIZE_LARGE = "clamp(63px, 12vw, 84px)";
-const SIZE_XL = "clamp(80px, 16vw, 110px)";
+const SIZE_DEFAULT = "clamp(36px, 7vw, 48px)";
+const SIZE_LARGE = "clamp(52px, 10vw, 72px)";
+const SIZE_XL = "clamp(72px, 15vw, 100px)";
 
+// The full sequence — greetings in 7 languages, feature words, white card destinations
+// Scattered syllable treatments for HOLA and SALUTE
 const TEXT_SEQUENCE: TextMoment[] = [
-  // -- open with just images (3 beats)
+  // -- open with images (3 beats of breathing)
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-  // -- HO · LA scattered large across screen
+
+  // -- HO · LA scattered large
   { type: "scattered", syllables: [
     { text: "HO", position: { top: "22%", left: "8%" }, delay: 0 },
-    { text: "LA", position: { bottom: "25%", right: "8%" }, delay: 800 },
+    { text: "LA", position: { bottom: "22%", right: "8%" }, delay: 600 },
   ]},
   { type: "silent" },
   { type: "silent" },
-  // -- DISCOVER types out
-  { type: "text", word: "DISCOVER", position: { bottom: "30%", left: "50%", transform: "translateX(-50%)" } },
+
+  // -- TRAVEL types out center-bottom
+  { type: "text", word: "TRAVEL", position: { bottom: "30%", left: "50%", transform: "translateX(-50%)" } },
   { type: "silent" },
-  // -- clean beat, then white card
+  { type: "silent" },
+  { type: "silent" },
+
+  // -- clean beat then white card
   { type: "silent" },
   { type: "whitecard", word: "MOROCCO" },
+
   // -- images breathe
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-  // -- TRAVEL types out bottom-right
-  { type: "text", word: "TRAVEL", position: { bottom: "30%", right: "8%" } },
-  { type: "silent" },
-  { type: "silent" },
-  // -- EAT types out, large
-  { type: "text", word: "EAT", fontSize: SIZE_LARGE, position: { top: "40%", left: "10%" } },
-  { type: "silent" },
-  // -- ΓΕΙΑ large bottom-left
+
+  // -- ΓΕΙΑ (Greek hello) large
   { type: "text", word: "\u0393\u0395\u0399\u0391", fontSize: SIZE_LARGE, position: { bottom: "28%", left: "10%" } },
   { type: "silent" },
   { type: "silent" },
-  // -- clean beat, then white card
+
+  // -- TIPS types out
+  { type: "text", word: "TIPS", position: { bottom: "30%", left: "50%", transform: "translateX(-50%)" } },
+  { type: "silent" },
+  { type: "silent" },
+  { type: "silent" },
+
+  // -- clean beat then white card
   { type: "silent" },
   { type: "whitecard", word: "HYDRA" },
+
   // -- images breathe
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-  // -- MEMORIES center, large
-  { type: "text", word: "MEMORIES", fontSize: SIZE_LARGE, position: { top: "50%", left: "50%", transform: "translate(-50%, -50%)" } },
+
+  // -- こんにちは (Japanese hello)
+  { type: "text", word: "\u3053\u3093\u306B\u3061\u306F", fontSize: SIZE_LARGE, position: { top: "40%", right: "8%" } },
   { type: "silent" },
   { type: "silent" },
-  // -- RITUAL types out
-  { type: "text", word: "RITUAL", position: { top: "38%", right: "8%" } },
+
+  // -- MEMORIES types out center
+  { type: "text", word: "MEMORIES", position: { bottom: "30%", left: "50%", transform: "translateX(-50%)" } },
   { type: "silent" },
   { type: "silent" },
-  // -- SA · LU · TE scattered large across screen
+  { type: "silent" },
+
+  // -- SA · LU · TE scattered large
   { type: "scattered", syllables: [
-    { text: "SA", position: { top: "20%", right: "10%" }, delay: 0 },
-    { text: "LU", position: { top: "48%", left: "12%" }, delay: 700 },
-    { text: "TE", position: { bottom: "22%", right: "15%" }, delay: 1400 },
+    { text: "SA", position: { top: "20%", left: "8%" }, delay: 0 },
+    { text: "LU", position: { top: "45%", right: "8%" }, delay: 500 },
+    { text: "TE", position: { bottom: "20%", left: "12%" }, delay: 1000 },
   ]},
   { type: "silent" },
   { type: "silent" },
-  // -- EXPLORE types out
-  { type: "text", word: "EXPLORE", position: { bottom: "32%", left: "50%", transform: "translateX(-50%)" } },
   { type: "silent" },
-  // -- clean beat, then white card
+
+  // -- clean beat then white card
   { type: "silent" },
   { type: "whitecard", word: "MALLORCA" },
+
   // -- images breathe
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-  // -- SHOP types out, large
-  { type: "text", word: "SHOP", fontSize: SIZE_LARGE, position: { bottom: "30%", left: "12%" } },
+
+  // -- مرحبا (Arabic hello)
+  { type: "text", word: "\u0645\u0631\u062D\u0628\u0627", fontSize: SIZE_LARGE, position: { bottom: "28%", right: "10%" } },
   { type: "silent" },
   { type: "silent" },
-  // -- HELLO types out, center
-  { type: "text", word: "HELLO", position: { bottom: "28%", left: "50%", transform: "translateX(-50%)" } },
+
+  // -- SHOP types out center
+  { type: "text", word: "SHOP", position: { bottom: "30%", left: "50%", transform: "translateX(-50%)" } },
+  { type: "silent" },
+  { type: "silent" },
+
+  // -- שלום (Hebrew hello)
+  { type: "text", word: "\u05E9\u05DC\u05D5\u05DD", fontSize: SIZE_LARGE, position: { top: "38%", left: "10%" } },
+  { type: "silent" },
+  { type: "silent" },
+  { type: "silent" },
+
+  // -- HELLO types out center
+  { type: "text", word: "HELLO", position: { bottom: "30%", left: "50%", transform: "translateX(-50%)" } },
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
 ];
 
-// Durations — text moments longer to accommodate slow typewriter (~3s typing + hold)
+// Durations per moment type
 function getTextDuration(moment: TextMoment): number {
   switch (moment.type) {
-    case "text": return [4200, 4000, 4400, 4100, 4300][Math.floor(Math.random() * 5)];
-    case "scattered": return [4800, 5000, 5200][Math.floor(Math.random() * 3)];
-    case "silent": return [1100, 1200, 1400, 1000, 1300][Math.floor(Math.random() * 5)];
-    case "whitecard": return [650, 700, 750, 600][Math.floor(Math.random() * 4)];
+    // Text: typing time (~200ms/char) + 1s hold after
+    case "text": {
+      const len = moment.word?.length || 5;
+      return len * 200 + 1000;
+    }
+    // Scattered: stagger delays + typing + hold
+    case "scattered": return 3500;
+    // Silent: breathing room
+    case "silent": return [1100, 1300, 1500, 1200, 1400][Math.floor(Math.random() * 5)];
+    // White card: typing + hold — Zara holds these ~2.5s
+    case "whitecard": {
+      const len = moment.word?.length || 6;
+      return len * 200 + 1200;
+    }
   }
 }
 
 // --- TYPEWRITER HOOK ---
-// Adaptive speed: every word takes ~3 seconds to type out
-function useTypewriter(text: string, targetDuration: number = 3000) {
+// Fixed speed per character (~200ms) like Zara
+function useTypewriter(text: string, charSpeed: number = 200) {
   const [displayed, setDisplayed] = useState("");
   const indexRef = useRef(0);
 
@@ -160,23 +195,22 @@ function useTypewriter(text: string, targetDuration: number = 3000) {
     indexRef.current = 0;
     if (!text) return;
 
-    const speed = Math.floor(targetDuration / text.length);
     const timer = setInterval(() => {
       indexRef.current++;
       setDisplayed(text.slice(0, indexRef.current));
       if (indexRef.current >= text.length) {
         clearInterval(timer);
       }
-    }, speed);
+    }, charSpeed);
 
     return () => clearInterval(timer);
-  }, [text, targetDuration]);
+  }, [text, charSpeed]);
 
   return displayed;
 }
 
-// --- DELAYED TYPEWRITER HOOK ---
-function useDelayedTypewriter(text: string, delay: number, targetDuration: number = 2000) {
+// --- DELAYED TYPEWRITER HOOK (for scattered syllables) ---
+function useDelayedTypewriter(text: string, delay: number, charSpeed: number = 200) {
   const [displayed, setDisplayed] = useState("");
   const indexRef = useRef(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -186,7 +220,6 @@ function useDelayedTypewriter(text: string, delay: number, targetDuration: numbe
     indexRef.current = 0;
     if (!text) return;
 
-    const speed = Math.floor(targetDuration / text.length);
     const delayTimer = setTimeout(() => {
       intervalRef.current = setInterval(() => {
         indexRef.current++;
@@ -194,14 +227,14 @@ function useDelayedTypewriter(text: string, delay: number, targetDuration: numbe
         if (indexRef.current >= text.length && intervalRef.current) {
           clearInterval(intervalRef.current);
         }
-      }, speed);
+      }, charSpeed);
     }, delay);
 
     return () => {
       clearTimeout(delayTimer);
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [text, delay, targetDuration]);
+  }, [text, delay, charSpeed]);
 
   return displayed;
 }
@@ -230,23 +263,27 @@ const SUBTITLE_STYLE: React.CSSProperties = {
 };
 
 // --- Typewriter text component (positioned absolutely) ---
-function TypewriterText({ word, style, color, fontSize }: { word: string; style: React.CSSProperties; color: string; fontSize?: string }) {
-  const displayed = useTypewriter(word, 3000);
+function TypewriterText({ word, style, color, fontSize }: {
+  word: string; style: React.CSSProperties; color: string; fontSize?: string;
+}) {
+  const displayed = useTypewriter(word, 200);
   return (
     <p style={{ ...TEXT_STYLE, position: "absolute", fontSize: fontSize || SIZE_DEFAULT, ...style, color }}>
       {displayed}
-      <span style={{ opacity: displayed.length < word.length ? 0.6 : 0, transition: "opacity 0.1s" }}>|</span>
+      <span style={{ opacity: displayed.length < word.length ? 0.5 : 0, transition: "opacity 0.15s" }}>|</span>
     </p>
   );
 }
 
 // --- Scattered syllable component ---
-function ScatteredSyllable({ text, position, delay, color }: { text: string; position: React.CSSProperties; delay: number; color: string }) {
-  const displayed = useDelayedTypewriter(text, delay, 1500);
+function ScatteredSyllable({ text, position, delay, color }: {
+  text: string; position: React.CSSProperties; delay: number; color: string;
+}) {
+  const displayed = useDelayedTypewriter(text, delay, 250);
   return (
     <p style={{ ...TEXT_STYLE, position: "absolute", fontSize: SIZE_XL, ...position, color }}>
       {displayed}
-      <span style={{ opacity: displayed.length < text.length ? 0.6 : 0, transition: "opacity 0.1s" }}>|</span>
+      <span style={{ opacity: displayed.length < text.length && displayed.length > 0 ? 0.5 : 0, transition: "opacity 0.15s" }}>|</span>
     </p>
   );
 }
@@ -261,7 +298,7 @@ export function HeroAnimation() {
   const currentMoment = TEXT_SEQUENCE[textIndex];
   const isWhiteCard = currentMoment.type === "whitecard";
 
-  // Preload first batch of images
+  // Preload first batch
   useEffect(() => {
     let loaded = 0;
     const total = Math.min(HERO_IMAGES.length, 8);
@@ -329,7 +366,7 @@ export function HeroAnimation() {
         />
       )}
 
-      {/* Overlay for text legibility — only when text/scattered is showing */}
+      {/* Overlay for text legibility */}
       {showOverlay && (
         <div style={{ position: "absolute", inset: 0, background: "rgba(0, 0, 0, 0.25)" }} />
       )}
@@ -352,7 +389,7 @@ export function HeroAnimation() {
           </>
         )}
 
-        {/* Scattered syllables — large, positioned across screen */}
+        {/* Scattered syllables — large, staggered, at different positions */}
         {currentMoment.type === "scattered" && currentMoment.syllables && (
           <>
             {currentMoment.syllables.map((syl, i) => (
@@ -360,7 +397,7 @@ export function HeroAnimation() {
                 key={i}
                 text={syl.text}
                 position={syl.position}
-                delay={syl.delay || 0}
+                delay={syl.delay}
                 color="#ffffff"
               />
             ))}
@@ -370,15 +407,14 @@ export function HeroAnimation() {
           </>
         )}
 
-        {/* White card — typewriter in black on white */}
+        {/* White card — typewriter in black, positioned lower-left like Zara */}
         {isWhiteCard && currentMoment.word && (
-          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <TypewriterText
-              word={currentMoment.word}
-              style={{ position: "relative" }}
-              color="#1A1A18"
-            />
-          </div>
+          <TypewriterText
+            word={currentMoment.word}
+            style={{ bottom: "35%", left: "8%" }}
+            color="#1A1A18"
+            fontSize={SIZE_LARGE}
+          />
         )}
       </div>
     </section>
