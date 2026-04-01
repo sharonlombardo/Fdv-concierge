@@ -31,89 +31,131 @@ const HERO_IMAGES = [
   `${BLOB_BASE}/newyork-ritual-1`,
 ];
 
-// Variable image durations — each image holds long enough to register, then cuts.
-const IMAGE_DURATIONS = [1200, 900, 1500, 800, 1100, 1000, 1800, 900, 1300, 1000];
+// Variable image durations — mid-range, enough to register but still energetic
+const IMAGE_DURATIONS = [700, 550, 900, 500, 750, 600, 1000, 550, 800, 600];
 
-// --- TEXT SEQUENCE: 4 treatment types ---
+// --- TEXT SEQUENCE ---
+// Each moment has a position so nothing repeats in the same spot back to back.
+// Positions: "center", "top-left", "top-right", "bottom-left", "bottom-right", "lower-center"
 
-type TextMoment =
-  | { type: "greeting"; word: string; lang: string; scattered?: ScatteredPiece[] }
-  | { type: "section"; word: string }
-  | { type: "silent" }
-  | { type: "whitecard"; word: string };
-
-interface ScatteredPiece {
-  text: string;
-  style: React.CSSProperties;
+interface TextMoment {
+  type: "greeting" | "section" | "silent" | "whitecard";
+  word?: string;
+  lang?: string;
+  // For positioned/scattered text — array of pieces with absolute positioning
+  pieces?: { text: string; style: React.CSSProperties }[];
+  // Show subtitle line?
+  subtitle?: boolean;
 }
 
+// Shared font sizes
+const SIZE_DEFAULT = "clamp(42px, 8vw, 56px)";
+const SIZE_LARGE = "clamp(63px, 12vw, 84px)";
+const SIZE_SMALL = "clamp(32px, 6vw, 42px)";
+
 const TEXT_SEQUENCE: TextMoment[] = [
-  // 1. HOLA scattered
+  // 1. HOLA scattered — large
   {
-    type: "greeting", word: "HOLA", lang: "es", scattered: [
-      { text: "HO", style: { position: "absolute", top: "22%", left: "12%", fontSize: "clamp(63px, 12vw, 84px)" } },
-      { text: "LA", style: { position: "absolute", bottom: "25%", right: "10%", fontSize: "clamp(63px, 12vw, 84px)" } },
+    type: "greeting", word: "HOLA", lang: "es", subtitle: true, pieces: [
+      { text: "HO", style: { position: "absolute", top: "22%", left: "12%", fontSize: SIZE_LARGE } },
+      { text: "LA", style: { position: "absolute", bottom: "25%", right: "10%", fontSize: SIZE_LARGE } },
     ],
   },
   // 2. Silent
   { type: "silent" },
-  // 3. TRAVEL
-  { type: "section", word: "TRAVEL" },
-  // 4. White card: MOROCCO
-  { type: "whitecard", word: "MOROCCO" },
-  // 5. ΓΕΙΑ off-center left
+  // 3. TRAVEL — top right, smaller
   {
-    type: "greeting", word: "ΓΕΙΑ", lang: "el", scattered: [
-      { text: "ΓΕΙΑ", style: { position: "absolute", bottom: "30%", left: "10%" } },
+    type: "section", subtitle: true, pieces: [
+      { text: "TRAVEL", style: { position: "absolute", top: "28%", right: "8%", fontSize: SIZE_DEFAULT } },
     ],
   },
-  // 6. MEMORIES
-  { type: "section", word: "MEMORIES" },
-  // 7. SALUTE scattered
+  // 4. White card: MOROCCO
+  { type: "whitecard", word: "MOROCCO" },
+  // 5. ΓΕΙΑ — bottom left
   {
-    type: "greeting", word: "SALUTE", lang: "it", scattered: [
-      { text: "SA", style: { position: "absolute", top: "18%", left: "8%", fontSize: "clamp(63px, 12vw, 84px)" } },
-      { text: "LU", style: { position: "absolute", top: "48%", right: "12%", fontSize: "clamp(63px, 12vw, 84px)" } },
-      { text: "TE", style: { position: "absolute", bottom: "22%", left: "22%", fontSize: "clamp(63px, 12vw, 84px)" } },
+    type: "greeting", word: "ΓΕΙΑ", lang: "el", subtitle: true, pieces: [
+      { text: "ΓΕΙΑ", style: { position: "absolute", bottom: "30%", left: "10%", fontSize: SIZE_DEFAULT } },
+    ],
+  },
+  // 6. MEMORIES — center, large
+  {
+    type: "section", subtitle: true, pieces: [
+      { text: "MEMORIES", style: { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", fontSize: SIZE_LARGE } },
+    ],
+  },
+  // 7. SALUTE scattered — large
+  {
+    type: "greeting", word: "SALUTE", lang: "it", subtitle: true, pieces: [
+      { text: "SA", style: { position: "absolute", top: "18%", left: "8%", fontSize: SIZE_LARGE } },
+      { text: "LU", style: { position: "absolute", top: "48%", right: "12%", fontSize: SIZE_LARGE } },
+      { text: "TE", style: { position: "absolute", bottom: "22%", left: "22%", fontSize: SIZE_LARGE } },
     ],
   },
   // 8. Silent
   { type: "silent" },
-  // 9. THE NEW
-  { type: "section", word: "THE NEW" },
+  // 9. THE NEW — bottom right, small
+  {
+    type: "section", subtitle: true, pieces: [
+      { text: "THE NEW", style: { position: "absolute", bottom: "25%", right: "8%", fontSize: SIZE_SMALL } },
+    ],
+  },
   // 10. White card: HYDRA
   { type: "whitecard", word: "HYDRA" },
-  // 11. ようこそ centered
-  { type: "greeting", word: "ようこそ", lang: "ja" },
-  // 12. TIPS
-  { type: "section", word: "TIPS" },
-  // 13. שָׁלוֹם off-center right
+  // 11. ようこそ — top left area
   {
-    type: "greeting", word: "שָׁלוֹם", lang: "he", scattered: [
-      { text: "שָׁלוֹם", style: { position: "absolute", top: "35%", right: "12%" } },
+    type: "greeting", word: "ようこそ", lang: "ja", subtitle: true, pieces: [
+      { text: "ようこそ", style: { position: "absolute", top: "25%", left: "8%", fontSize: SIZE_DEFAULT } },
+    ],
+  },
+  // 12. TIPS — lower center
+  {
+    type: "section", subtitle: true, pieces: [
+      { text: "TIPS", style: { position: "absolute", bottom: "28%", left: "50%", transform: "translateX(-50%)", fontSize: SIZE_DEFAULT } },
+    ],
+  },
+  // 13. שָׁלוֹם — off-center right
+  {
+    type: "greeting", word: "שָׁלוֹם", lang: "he", subtitle: true, pieces: [
+      { text: "שָׁלוֹם", style: { position: "absolute", top: "35%", right: "12%", fontSize: SIZE_DEFAULT } },
     ],
   },
   // 14. Silent
   { type: "silent" },
-  // 15. SHOP
-  { type: "section", word: "SHOP" },
-  // 16. White card: MALLORCA
-  { type: "whitecard", word: "MALLORCA" },
-  // 17. HELLO lower-center
+  // 15. SHOP — top left, large
   {
-    type: "greeting", word: "HELLO", lang: "en", scattered: [
-      { text: "HELLO", style: { position: "absolute", bottom: "22%", left: "50%", transform: "translateX(-50%)" } },
+    type: "section", subtitle: true, pieces: [
+      { text: "SHOP", style: { position: "absolute", top: "22%", left: "10%", fontSize: SIZE_LARGE } },
     ],
   },
-  // 18. TRAVEL
-  { type: "section", word: "TRAVEL" },
-  // 19. مرحبا centered
-  { type: "greeting", word: "مرحبا", lang: "ar" },
-  // 20. MEMORIES
-  { type: "section", word: "MEMORIES" },
+  // 16. White card: MALLORCA
+  { type: "whitecard", word: "MALLORCA" },
+  // 17. HELLO — lower center
+  {
+    type: "greeting", word: "HELLO", lang: "en", subtitle: true, pieces: [
+      { text: "HELLO", style: { position: "absolute", bottom: "22%", left: "50%", transform: "translateX(-50%)", fontSize: SIZE_DEFAULT } },
+    ],
+  },
+  // 18. TRAVEL — bottom left, small
+  {
+    type: "section", subtitle: true, pieces: [
+      { text: "TRAVEL", style: { position: "absolute", bottom: "30%", left: "10%", fontSize: SIZE_SMALL } },
+    ],
+  },
+  // 19. مرحبا — top right
+  {
+    type: "greeting", word: "مرحبا", lang: "ar", subtitle: true, pieces: [
+      { text: "مرحبا", style: { position: "absolute", top: "30%", right: "10%", fontSize: SIZE_DEFAULT } },
+    ],
+  },
+  // 20. MEMORIES — top center, small
+  {
+    type: "section", subtitle: true, pieces: [
+      { text: "MEMORIES", style: { position: "absolute", top: "25%", left: "50%", transform: "translateX(-50%)", fontSize: SIZE_SMALL } },
+    ],
+  },
 ];
 
-// Duration per treatment type (ms) — generous holds so each moment breathes
+// Duration per treatment type (ms)
 function getTextDuration(moment: TextMoment): number {
   switch (moment.type) {
     case "greeting": return [2200, 2000, 2400, 2100, 2300][Math.floor(Math.random() * 5)];
@@ -125,11 +167,11 @@ function getTextDuration(moment: TextMoment): number {
 
 const SHARED_TEXT_STYLE: React.CSSProperties = {
   fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
-  fontSize: "clamp(42px, 8vw, 56px)",
   fontWeight: 700,
   letterSpacing: "0.18em",
   lineHeight: 1.1,
   margin: 0,
+  color: "#ffffff",
 };
 
 const SUBTITLE_STYLE: React.CSSProperties = {
@@ -138,7 +180,6 @@ const SUBTITLE_STYLE: React.CSSProperties = {
   fontStyle: "italic",
   color: "rgba(255, 255, 255, 0.85)",
   letterSpacing: "0.04em",
-  marginTop: 16,
 };
 
 export function HeroAnimation() {
@@ -182,7 +223,7 @@ export function HeroAnimation() {
     return () => clearTimeout(timer);
   }, [imageIndex, imagesLoaded, cycleImage, isWhiteCard]);
 
-  // Text cycling — independent timer with variable durations per treatment
+  // Text cycling
   const cycleText = useCallback(() => {
     setTextIndex((prev) => (prev + 1) % TEXT_SEQUENCE.length);
   }, []);
@@ -194,9 +235,6 @@ export function HeroAnimation() {
     return () => clearTimeout(timer);
   }, [textIndex, imagesLoaded, cycleText]);
 
-  // Show subtitle for greetings and section words only
-  const showSubtitle = currentMoment.type === "greeting" || currentMoment.type === "section";
-
   return (
     <section
       style={{
@@ -205,7 +243,6 @@ export function HeroAnimation() {
         height: "100vh",
         overflow: "hidden",
         backgroundColor: isWhiteCard ? "#F7F5F1" : "#0a0a0a",
-        transition: "background-color 0.1s ease",
       }}
     >
       {/* Image layer — hidden during white card */}
@@ -226,84 +263,52 @@ export function HeroAnimation() {
         <div style={{ position: "absolute", inset: 0, background: "rgba(0, 0, 0, 0.3)" }} />
       )}
 
-      {/* TEXT LAYER */}
-      <div
-        key={textIndex}
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 2,
-          animation: "heroTextFadeIn 0.6s ease-in-out",
-        }}
-      >
-        {/* Treatment 1: Scattered greeting */}
-        {currentMoment.type === "greeting" && currentMoment.scattered && (
-          <>
-            {currentMoment.scattered.map((piece, i) => (
-              <p
-                key={i}
-                lang={currentMoment.lang}
-                style={{
-                  ...SHARED_TEXT_STYLE,
-                  ...piece.style,
-                  color: "#ffffff",
-                  textTransform: currentMoment.lang === "ar" || currentMoment.lang === "he" || currentMoment.lang === "ja" ? "none" : "uppercase",
-                }}
-              >
-                {piece.text}
-              </p>
-            ))}
-            <p style={{ ...SUBTITLE_STYLE, position: "absolute", bottom: "8%", left: "50%", transform: "translateX(-50%)", textAlign: "center" }}>
-              Discover the world of FIL DE VIE
-            </p>
-          </>
-        )}
-
-        {/* Treatment 1 alt: Centered greeting (no scattered config) */}
-        {currentMoment.type === "greeting" && !currentMoment.scattered && (
-          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+      {/* TEXT LAYER — sharp cut, no fade */}
+      <div key={textIndex} style={{ position: "absolute", inset: 0, zIndex: 2 }}>
+        {/* Positioned text pieces (greetings + section words) */}
+        {currentMoment.pieces && currentMoment.pieces.map((piece, i) => {
+          const isRtl = currentMoment.lang === "ar" || currentMoment.lang === "he";
+          return (
             <p
+              key={i}
               lang={currentMoment.lang}
               style={{
                 ...SHARED_TEXT_STYLE,
-                color: "#ffffff",
-                textTransform: currentMoment.lang === "ar" || currentMoment.lang === "he" || currentMoment.lang === "ja" ? "none" : "uppercase",
+                fontSize: SIZE_DEFAULT,
+                ...piece.style,
+                color: isWhiteCard ? "#1A1A18" : "#ffffff",
+                textTransform: isRtl || currentMoment.lang === "ja" ? "none" : "uppercase",
               }}
             >
-              {currentMoment.word}
+              {piece.text}
             </p>
-            <p style={SUBTITLE_STYLE}>Discover the world of FIL DE VIE</p>
-          </div>
+          );
+        })}
+
+        {/* Subtitle — positioned bottom center, only for moments that want it */}
+        {currentMoment.subtitle && !isWhiteCard && (
+          <p style={{
+            ...SUBTITLE_STYLE,
+            position: "absolute",
+            bottom: "8%",
+            left: "50%",
+            transform: "translateX(-50%)",
+            textAlign: "center",
+            whiteSpace: "nowrap",
+          }}>
+            Discover the world of FIL DE VIE
+          </p>
         )}
 
-        {/* Treatment 2: Section flash word */}
-        {currentMoment.type === "section" && (
-          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-            <p style={{ ...SHARED_TEXT_STYLE, color: "#ffffff", textTransform: "uppercase" }}>
-              {currentMoment.word}
-            </p>
-            <p style={SUBTITLE_STYLE}>Discover the world of FIL DE VIE</p>
-          </div>
-        )}
-
-        {/* Treatment 3: Silent — nothing rendered */}
-
-        {/* Treatment 4: White title card */}
-        {currentMoment.type === "whitecard" && (
+        {/* White card — centered destination name */}
+        {isWhiteCard && (
           <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <p style={{ ...SHARED_TEXT_STYLE, color: "#1A1A18", textTransform: "uppercase" }}>
+            <p style={{ ...SHARED_TEXT_STYLE, fontSize: SIZE_DEFAULT, color: "#1A1A18", textTransform: "uppercase" }}>
               {currentMoment.word}
             </p>
           </div>
         )}
       </div>
-
-      <style>{`
-        @keyframes heroTextFadeIn {
-          0% { opacity: 0; }
-          100% { opacity: 1; }
-        }
-      `}</style>
     </section>
   );
 }
