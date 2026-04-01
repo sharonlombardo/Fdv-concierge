@@ -27,7 +27,6 @@ const HERO_IMAGES = [
   `${BLOB_BASE}/destination-slow-travel`,
   `${BLOB_BASE}/retreat-hero`,
   `${BLOB_BASE}/retreat-motion-1`,
-  `${BLOB_BASE}/retreat-place-1`,
   `${BLOB_BASE}/retreat-ritual-1`,
   `${BLOB_BASE}/destination-retreat`,
   `${BLOB_BASE}/newyork-hero`,
