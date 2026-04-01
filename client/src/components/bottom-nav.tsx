@@ -64,15 +64,20 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-[80] bg-white border-t border-[#f0f0f0] flex justify-around items-center"
-      style={{ height: 60, paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="fixed bottom-0 left-0 right-0 z-[80] flex justify-around items-center"
+      style={{
+        height: 60,
+        paddingBottom: "env(safe-area-inset-bottom)",
+        backgroundColor: "#1A1A18",
+        borderTop: "1px solid rgba(255,255,255,0.08)",
+      }}
     >
       {tabs.map((tab) => (
         <Link key={tab.label} href={tab.href}>
           <button
             className="flex flex-col items-center justify-center gap-1 w-full h-full bg-transparent border-none cursor-pointer px-2"
             style={{
-              color: tab.active ? "#1a1a1a" : "#999999",
+              color: tab.active ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.45)",
               fontFamily: "Inter, sans-serif",
             }}
           >

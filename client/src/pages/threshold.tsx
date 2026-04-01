@@ -1,11 +1,13 @@
 
 import CurrentFeed from "./current";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { ChevronRight, Pin } from "lucide-react";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { queryClient } from "@/lib/queryClient";
+import { useUser } from "@/contexts/user-context";
+import { HeroAnimation } from "@/components/hero-animation";
 
 const MOOD_KEYS = [
   "todays-edit-mood-1",
@@ -179,6 +181,16 @@ function CategoryNav() {
 }
 
 export default function Threshold() {
+  const { isLoggedIn, authLoading } = useUser();
+  const [, setLocation] = useLocation();
+
+  // Returning authenticated users skip the hero — go straight to /current
+  useEffect(() => {
+    if (!authLoading && isLoggedIn) {
+      setLocation("/current");
+    }
+  }, [authLoading, isLoggedIn, setLocation]);
+
   const { data: imageSlotsData } = useImageSlots();
   const getImageUrl = (assetKey: string): string => {
     if (imageSlotsData?.slots) {
@@ -191,108 +203,15 @@ export default function Threshold() {
     return defaultSlot?.defaultUrl || "";
   };
 
-  const heroImage = getImageUrl("landing-hero");
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    // Ensure video plays — Safari sometimes blocks even muted autoplay
-    const playVideo = () => {
-      v.play().catch(() => {});
-    };
-    playVideo();
-    // Also try on user interaction as fallback
-    v.addEventListener("loadeddata", playVideo);
-    return () => v.removeEventListener("loadeddata", playVideo);
-  }, []);
-
-  const handleScrollToContent = () => {
-    const contentSection = document.getElementById('current-content');
-    if (contentSection) {
-      contentSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  // While checking auth, show nothing to prevent flash
+  if (authLoading) return null;
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
       {/* TopBar handles navigation at app level */}
 
-      {/* LANDING HERO — video background with logo + wordmark */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center bg-black">
-        {/* Static hero image as base layer (always visible as fallback) */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url('${heroImage || "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/landing-hero"}')`,
-          }}
-        />
-        {/* Video background — plays on top of static image */}
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="/landing-video.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#fafaf9]" />
-
-        <div className="relative z-10 w-full mx-auto flex flex-col items-center text-white flex-1 justify-center">
-          {/* Wordmark logo image — white on transparent, HUGE like reference */}
-          <img
-            src="/logo-wordmark-white.png"
-            alt="FIL DE VIE CONCIERGE"
-            className="w-[85vw] max-w-[900px] sm:w-[80vw] md:w-[75vw] drop-shadow-lg mb-10 md:mb-14 mx-auto"
-            draggable={false}
-            data-testid="text-threshold-title"
-          />
-
-          {/* Taglines */}
-          <p
-            className="text-lg font-bold text-white mb-2 drop-shadow-md"
-            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-          >
-            Discover the world of{" "}
-            <span className="tracking-[0.15em]">FIL DE VIE</span>
-          </p>
-          <p
-            className="text-lg font-semibold italic text-white mb-16 md:mb-20 drop-shadow-md"
-            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-          >
-            Places, objects, and experiences worth returning to.
-          </p>
-        </div>
-
-        {/* A STATE OF MIND — anchored near bottom of hero */}
-        <div className="relative z-10 pb-10 md:pb-14">
-          <button
-            onClick={handleScrollToContent}
-            className="cursor-pointer group flex flex-col items-center gap-4"
-            data-testid="button-scroll-down"
-            aria-label="Scroll to content"
-          >
-            <p
-              className="text-white text-xl md:text-2xl tracking-[0.5em] uppercase font-semibold drop-shadow-sm"
-              style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-            >
-              A STATE OF MIND
-            </p>
-            <svg
-              className="w-4 h-4 text-white/40 group-hover:text-white/70 transition-colors animate-bounce"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </button>
-        </div>
-      </section>
+      {/* ANIMATED HERO — destination photography + greeting words */}
+      <HeroAnimation />
 
       {/* Intro section — orients new users */}
       <section
