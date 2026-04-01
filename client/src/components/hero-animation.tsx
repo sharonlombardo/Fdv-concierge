@@ -2,37 +2,48 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 const BLOB_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2";
 
-// Destination images — atmospheric/editorial photography already in the codebase
+// Destination images — deeper pool so the animation has more visual variety
+const GUIDE_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco";
 const HERO_IMAGES = [
-  // Morocco
+  // Morocco — hero + editorial guide photography
   `${BLOB_BASE}/morocco-hero`,
   `${BLOB_BASE}/morocco-motion-1`,
   `${BLOB_BASE}/morocco-experience-1`,
   `${BLOB_BASE}/morocco-ritual-1`,
+  `${BLOB_BASE}/destination-morocco`,
+  `${GUIDE_BASE}/hero.jpg`,
+  `${GUIDE_BASE}/stay-1-large.jpg`,
+  `${GUIDE_BASE}/eat-1-large.jpg`,
+  `${GUIDE_BASE}/exp-1-large.jpg`,
+  `${GUIDE_BASE}/shop-1-large.jpg`,
   // Hydra
   `${BLOB_BASE}/hydra-hero`,
   `${BLOB_BASE}/hydra-light-1`,
   `${BLOB_BASE}/hydra-light-2`,
   `${BLOB_BASE}/hydra-ritual-1`,
+  `${BLOB_BASE}/destination-hydra`,
   // Mallorca
   `${BLOB_BASE}/slow-travel-hero`,
   `${BLOB_BASE}/slow-culture-1`,
   `${BLOB_BASE}/slow-museum`,
   `${BLOB_BASE}/slow-lunch`,
+  `${BLOB_BASE}/destination-slow-travel`,
   // Amangiri
   `${BLOB_BASE}/retreat-hero`,
   `${BLOB_BASE}/retreat-motion-1`,
   `${BLOB_BASE}/retreat-place-1`,
   `${BLOB_BASE}/retreat-ritual-1`,
+  `${BLOB_BASE}/destination-retreat`,
   // New York
   `${BLOB_BASE}/newyork-hero`,
   `${BLOB_BASE}/newyork-culture-1`,
   `${BLOB_BASE}/newyork-experience-1`,
   `${BLOB_BASE}/newyork-ritual-1`,
+  `${BLOB_BASE}/destination-new-york`,
 ];
 
-// Variable image durations — mid-range, enough to register but still energetic
-const IMAGE_DURATIONS = [700, 550, 900, 500, 750, 600, 1000, 550, 800, 600];
+// Variable image durations — energetic cuts, the silent frames provide the breathing room
+const IMAGE_DURATIONS = [600, 450, 800, 400, 650, 500, 900, 450, 700, 500];
 
 // --- TEXT SEQUENCE ---
 // Each moment has a position so nothing repeats in the same spot back to back.
@@ -53,37 +64,43 @@ const SIZE_DEFAULT = "clamp(42px, 8vw, 56px)";
 const SIZE_LARGE = "clamp(63px, 12vw, 84px)";
 const SIZE_SMALL = "clamp(32px, 6vw, 42px)";
 
+// ~50% of moments are silent (just images). Text is punctuation, not constant.
+// Every white card has a clean silent frame before it.
 const TEXT_SEQUENCE: TextMoment[] = [
-  // 1. HOLA scattered — large
+  // -- opening: images only, then first word
+  { type: "silent" },
+  { type: "silent" },
   {
     type: "greeting", word: "HOLA", lang: "es", subtitle: true, pieces: [
       { text: "HO", style: { position: "absolute", top: "22%", left: "12%", fontSize: SIZE_LARGE } },
       { text: "LA", style: { position: "absolute", bottom: "25%", right: "10%", fontSize: SIZE_LARGE } },
     ],
   },
-  // 2. Silent
   { type: "silent" },
-  // 3. TRAVEL — top right, smaller
   {
     type: "section", subtitle: true, pieces: [
       { text: "TRAVEL", style: { position: "absolute", top: "28%", right: "8%", fontSize: SIZE_DEFAULT } },
     ],
   },
-  // 4. White card: MOROCCO
+  { type: "silent" },
+  // -- clean beat before white card
+  { type: "silent" },
   { type: "whitecard", word: "MOROCCO" },
-  // 5. ΓΕΙΑ — bottom left
+  // -- images breathe, then greeting
+  { type: "silent" },
+  { type: "silent" },
   {
     type: "greeting", word: "ΓΕΙΑ", lang: "el", subtitle: true, pieces: [
       { text: "ΓΕΙΑ", style: { position: "absolute", bottom: "30%", left: "10%", fontSize: SIZE_DEFAULT } },
     ],
   },
-  // 6. MEMORIES — center, large
+  { type: "silent" },
   {
     type: "section", subtitle: true, pieces: [
       { text: "MEMORIES", style: { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", fontSize: SIZE_LARGE } },
     ],
   },
-  // 7. SALUTE scattered — large
+  { type: "silent" },
   {
     type: "greeting", word: "SALUTE", lang: "it", subtitle: true, pieces: [
       { text: "SA", style: { position: "absolute", top: "18%", left: "8%", fontSize: SIZE_LARGE } },
@@ -91,68 +108,56 @@ const TEXT_SEQUENCE: TextMoment[] = [
       { text: "TE", style: { position: "absolute", bottom: "22%", left: "22%", fontSize: SIZE_LARGE } },
     ],
   },
-  // 8. Silent
   { type: "silent" },
-  // 9. THE NEW — bottom right, small
-  {
-    type: "section", subtitle: true, pieces: [
-      { text: "THE NEW", style: { position: "absolute", bottom: "25%", right: "8%", fontSize: SIZE_SMALL } },
-    ],
-  },
-  // 10. White card: HYDRA
+  // -- clean beat before white card
+  { type: "silent" },
   { type: "whitecard", word: "HYDRA" },
-  // 11. ようこそ — top left area
+  // -- images breathe
+  { type: "silent" },
+  { type: "silent" },
   {
     type: "greeting", word: "ようこそ", lang: "ja", subtitle: true, pieces: [
       { text: "ようこそ", style: { position: "absolute", top: "25%", left: "8%", fontSize: SIZE_DEFAULT } },
     ],
   },
-  // 12. TIPS — lower center
-  {
-    type: "section", subtitle: true, pieces: [
-      { text: "TIPS", style: { position: "absolute", bottom: "28%", left: "50%", transform: "translateX(-50%)", fontSize: SIZE_DEFAULT } },
-    ],
-  },
-  // 13. שָׁלוֹם — off-center right
-  {
-    type: "greeting", word: "שָׁלוֹם", lang: "he", subtitle: true, pieces: [
-      { text: "שָׁלוֹם", style: { position: "absolute", top: "35%", right: "12%", fontSize: SIZE_DEFAULT } },
-    ],
-  },
-  // 14. Silent
   { type: "silent" },
-  // 15. SHOP — top left, large
   {
     type: "section", subtitle: true, pieces: [
       { text: "SHOP", style: { position: "absolute", top: "22%", left: "10%", fontSize: SIZE_LARGE } },
     ],
   },
-  // 16. White card: MALLORCA
+  { type: "silent" },
+  {
+    type: "greeting", word: "שָׁלוֹם", lang: "he", subtitle: true, pieces: [
+      { text: "שָׁלוֹם", style: { position: "absolute", top: "35%", right: "12%", fontSize: SIZE_DEFAULT } },
+    ],
+  },
+  { type: "silent" },
+  // -- clean beat before white card
+  { type: "silent" },
   { type: "whitecard", word: "MALLORCA" },
-  // 17. HELLO — lower center
+  // -- final stretch
+  { type: "silent" },
   {
     type: "greeting", word: "HELLO", lang: "en", subtitle: true, pieces: [
       { text: "HELLO", style: { position: "absolute", bottom: "22%", left: "50%", transform: "translateX(-50%)", fontSize: SIZE_DEFAULT } },
     ],
   },
-  // 18. TRAVEL — bottom left, small
+  { type: "silent" },
+  { type: "silent" },
   {
     type: "section", subtitle: true, pieces: [
-      { text: "TRAVEL", style: { position: "absolute", bottom: "30%", left: "10%", fontSize: SIZE_SMALL } },
+      { text: "THE NEW", style: { position: "absolute", bottom: "25%", right: "8%", fontSize: SIZE_SMALL } },
     ],
   },
-  // 19. مرحبا — top right
+  { type: "silent" },
   {
     type: "greeting", word: "مرحبا", lang: "ar", subtitle: true, pieces: [
       { text: "مرحبا", style: { position: "absolute", top: "30%", right: "10%", fontSize: SIZE_DEFAULT } },
     ],
   },
-  // 20. MEMORIES — top center, small
-  {
-    type: "section", subtitle: true, pieces: [
-      { text: "MEMORIES", style: { position: "absolute", top: "25%", left: "50%", transform: "translateX(-50%)", fontSize: SIZE_SMALL } },
-    ],
-  },
+  { type: "silent" },
+  { type: "silent" },
 ];
 
 // Duration per treatment type (ms)
@@ -160,7 +165,7 @@ function getTextDuration(moment: TextMoment): number {
   switch (moment.type) {
     case "greeting": return [2200, 2000, 2400, 2100, 2300][Math.floor(Math.random() * 5)];
     case "section": return [1800, 1600, 2000, 1700, 1900][Math.floor(Math.random() * 5)];
-    case "silent": return [800, 900, 1000, 850, 950][Math.floor(Math.random() * 5)];
+    case "silent": return [1100, 1200, 1400, 1000, 1300][Math.floor(Math.random() * 5)];
     case "whitecard": return [650, 700, 750, 600][Math.floor(Math.random() * 4)];
   }
 }
