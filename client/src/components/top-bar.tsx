@@ -2,6 +2,20 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import HamburgerDrawer from "./hamburger-drawer";
 
+// Top nav links — Zara Travel Mode reference styling
+const NAV_LINKS = [
+  { label: "ABOUT", href: "/about" },
+  { label: "THE GUIDES", href: "/guides" },
+  { label: "SHOP", href: "/shop" },
+];
+
+function isNavActive(href: string, location: string): boolean {
+  if (href === "/about") return location === "/about";
+  if (href === "/guides") return location.startsWith("/guides") || location.startsWith("/destinations");
+  if (href === "/shop") return location === "/shop";
+  return false;
+}
+
 export default function TopBar() {
   const [location] = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -34,6 +48,9 @@ export default function TopBar() {
 
   // Always visible — but transparent over hero, white after scroll
   const iconColor = isLanding && !scrolled ? "#ffffff" : "#2c2416";
+  const navTextColor = isLanding && !scrolled ? "#ffffff" : "#2c2416";
+  const navMutedColor = isLanding && !scrolled ? "rgba(255,255,255,0.55)" : "rgba(44,36,22,0.45)";
+  const navBorderColor = isLanding && !scrolled ? "rgba(255,255,255,0.8)" : "#1A1A18";
 
   return (
     <>
@@ -48,15 +65,14 @@ export default function TopBar() {
           background: scrolled ? "rgba(255, 255, 255, 0.95)" : "transparent",
           backdropFilter: scrolled ? "blur(12px)" : "none",
           borderBottom: scrolled ? "1px solid rgba(0, 0, 0, 0.06)" : "1px solid transparent",
-          display: "grid",
-          gridTemplateColumns: "1fr auto 1fr",
+          display: "flex",
           alignItems: "center",
-          padding: "0 16px",
+          padding: "0 12px",
           transition: "background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease",
         }}
       >
-        {/* Left — Back arrow + Hamburger */}
-        <div style={{ justifySelf: "start", display: "flex", alignItems: "center", gap: 0 }}>
+        {/* Left — Hamburger */}
+        <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
           {!isLanding && (
             <button
               onClick={() => window.history.back()}
@@ -101,8 +117,8 @@ export default function TopBar() {
           </button>
         </div>
 
-        {/* Center — Logo (dark logo, inverted white over hero) */}
-        <div style={{ justifySelf: "center" }}>
+        {/* Center — Logo */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto", marginLeft: 4, marginRight: "auto" }}>
           <Link href="/">
             <button
               style={{
@@ -131,30 +147,35 @@ export default function TopBar() {
           </Link>
         </div>
 
-        {/* Right — Concierge icon */}
-        <div style={{ justifySelf: "end" }}>
-          <Link href="/concierge-info">
-            <button
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                padding: 8,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: iconColor,
-                transition: "color 0.4s ease",
-              }}
-              aria-label="Concierge"
-            >
-              {/* Chat/sparkle icon for concierge */}
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-              </svg>
-            </button>
-          </Link>
-        </div>
+        {/* Right — ABOUT · THE GUIDES · SHOP */}
+        <nav style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+          {NAV_LINKS.map((link) => {
+            const active = isNavActive(link.href, location);
+            return (
+              <Link key={link.href} href={link.href}>
+                <button
+                  style={{
+                    background: "none",
+                    border: active ? `0.5px solid ${navBorderColor}` : "0.5px solid transparent",
+                    borderRadius: 0,
+                    cursor: "pointer",
+                    padding: "4px 7px",
+                    fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
+                    fontSize: 9,
+                    fontWeight: active ? 600 : 400,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase" as const,
+                    color: active ? navTextColor : navMutedColor,
+                    transition: "color 0.4s ease, border-color 0.4s ease",
+                    whiteSpace: "nowrap" as const,
+                  }}
+                >
+                  {link.label}
+                </button>
+              </Link>
+            );
+          })}
+        </nav>
       </header>
 
       <HamburgerDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
