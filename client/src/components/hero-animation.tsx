@@ -31,8 +31,8 @@ const HERO_IMAGES = [
   `${BLOB_BASE}/newyork-ritual-1`,
 ];
 
-// Variable image durations — NOT uniform. Fast cuts mixed with slightly longer holds.
-const IMAGE_DURATIONS = [300, 250, 500, 200, 400, 300, 600, 250, 350, 200];
+// Variable image durations — NOT uniform. Mix of medium cuts and longer holds.
+const IMAGE_DURATIONS = [500, 400, 700, 350, 600, 450, 800, 400, 550, 350];
 
 // --- TEXT SEQUENCE: 4 treatment types ---
 
@@ -113,13 +113,13 @@ const TEXT_SEQUENCE: TextMoment[] = [
   { type: "section", word: "MEMORIES" },
 ];
 
-// Duration per treatment type (ms)
+// Duration per treatment type (ms) — generous holds so each moment breathes
 function getTextDuration(moment: TextMoment): number {
   switch (moment.type) {
-    case "greeting": return [1400, 1200, 1600, 1300, 1500][Math.floor(Math.random() * 5)];
-    case "section": return [900, 1000, 1100, 800, 1200][Math.floor(Math.random() * 5)];
-    case "silent": return [400, 500, 450, 550, 600][Math.floor(Math.random() * 5)];
-    case "whitecard": return [650, 700, 750, 800][Math.floor(Math.random() * 4)];
+    case "greeting": return [2200, 2000, 2400, 2100, 2300][Math.floor(Math.random() * 5)];
+    case "section": return [1800, 1600, 2000, 1700, 1900][Math.floor(Math.random() * 5)];
+    case "silent": return [800, 900, 1000, 850, 950][Math.floor(Math.random() * 5)];
+    case "whitecard": return [1200, 1300, 1100, 1400][Math.floor(Math.random() * 4)];
   }
 }
 
@@ -233,7 +233,7 @@ export function HeroAnimation() {
           position: "absolute",
           inset: 0,
           zIndex: 2,
-          animation: "heroTextFadeIn 0.25s ease-out",
+          animation: "heroTextFadeIn 0.6s ease-in-out",
         }}
       >
         {/* Treatment 1: Scattered greeting */}
@@ -300,8 +300,8 @@ export function HeroAnimation() {
 
       <style>{`
         @keyframes heroTextFadeIn {
-          from { opacity: 0; transform: translateY(4px); }
-          to { opacity: 1; transform: translateY(0); }
+          0% { opacity: 0; }
+          100% { opacity: 1; }
         }
       `}</style>
     </section>
