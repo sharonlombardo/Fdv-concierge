@@ -430,26 +430,35 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
-## SECTION 8 — OPEN ITEMS (updated March 31, 2026)
+## SECTION 8 — OPEN ITEMS (updated April 1, 2026)
 
-**Immediate (from Oren feedback session):**
+**Immediate (User Journey Redesign — from Oren/Susannah feedback):**
+- Navigation restructure: DESTINATIONS · SHOP · SUITCASE🧳 · CONCIERGE · PASSPORT
+- Destinations grid (5 cards: Morocco, Hydra, Mallorca, Amangiri, New York)
+- Tappable image mechanic (Zara Home split screen: editorial LEFT, product(s) RIGHT)
+- Early sign-up prompt (taste profile framing, access not friction)
+- Save moment enhancement ("Saved to your Edit. The more you save, the better I know you.")
+- Gate 1: end of guide → Digital Passport → Itinerary Overview
+- Returning user detection
+- Concierge woven into journey moments (floating widget from arrival)
+- About page with tiers clearly explained
+- Gates 2 + 3 (Gold/Black upsells)
+
+**Technical:**
 - OpenWeatherMap API key → add to Vercel environment variables
 - Fix Bottega Solstice 403 broken link
 - Fix Phoebe Philo boot 503 warning link
-- User journey redesign — scope TBD (FDV_USER_JOURNEY_BRIEF.md created)
-- Navigation redesign: persistent visible nav (CURRENT · GUIDES · STYLE · SUITCASE · SHOP)
-- First-60-seconds problem: features exist but are invisible to new users
 
 **Post-Pilot Active:**
 - Lisa Ruffle outreach message (warm, peer-to-peer)
+- Gillian intro via April (creative director, Brooklyn, modern marketplace)
 - Product genome enrichment — ~10 Phoebe Philo items need atelier_codes
 - "Static Preference to Taste in Motion" slide revision
 - Phase 1 SQL migrations brief (Wellspring build sequence)
 - Map atelier_codes to Wellspring controlled vocabulary
-- Gillian intro via April (creative director, Brooklyn, modern marketplace)
+- Financial model completion
 
 **Ongoing / Not Blocking Pilot:**
-- Add OPENWEATHER_API_KEY to Vercel env vars (Sharon — tomorrow AM)
 - Resend domain verification — fdvconcierge.com DNS records on GoDaddy
 - Klaviyo access for email open rate (needed for financial model)
 - Trip purchase pricing/margins — flat fee structure, numbers TBD
@@ -539,6 +548,71 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 1, 2026 | Claude.ai — Afternoon: User Journey Redesign
+**Topic:** Competitive UX research (Zara Travel, Net-a-Porter, Zara Home) + full user journey architecture
+
+**The Problem:** Oren Zaslansky (founder, strategic advisor) and Susannah (exact ICP)
+both confirmed confusion about what the site is and what to do without external
+guidance. Site is feature-first, not journey-first.
+
+**Competitive UX Research:**
+- Zara Travel: numbered nav as sequence, destination grid, full-screen about
+- Net-a-Porter: early modal sign-up (access-framed), "walking through doors" mechanic
+- Zara Home: KEY MECHANIC — story is spine, tap image → split opens (editorial LEFT,
+  product(s) RIGHT, scrollable), close → back exactly where you were. No navigation loss.
+
+**Strategic Decision LOCKED: Travel First.**
+Amazon/books analogy. Travel saves carry intent, timing, mood, price tolerance.
+That's the proprietary signal. Travel-first surfaces moat data AND solves UX confusion.
+
+**Architecture Decisions LOCKED:**
+- The Current + Guides merged → THE GUIDE (one editorial product per destination)
+- Nav: DESTINATIONS · SHOP · SUITCASE🧳 · CONCIERGE · PASSPORT
+- Suitcase contains: My Edit (all saves) + My Trips (purchased itineraries)
+- "Your Trips" as separate nav section eliminated — lives inside Suitcase
+- Save reframe: "Saved to your Edit. The more you save, the better I know you."
+- After 3-4 saves: "I'm starting to see your world. Want me to pull this together?"
+
+**Gate Architecture (LOCKED):**
+- Gate 1 (end of guide): Digital Passport (free) → Itinerary Overview
+- Gate 2 (end of itinerary overview): Gold ($29/mo) → Full itinerary + daily flow
+- Gate 3 (first moment in Gold): Black ($59/mo) → Concierge, packing, customization
+- Gates feel earned not imposed — she always gets something real first
+
+**Concierge = PRIMARY Differentiator:**
+- Not a chatbot. A travel companion that knows her.
+- Floating widget on every page from arrival: "New here? I can show you around."
+- The Akinator principle: for some users Concierge IS the onboarding
+- PRIMARY nav item, not buried support feature
+- Woven into journey at specific moments (end of guide, after saves, inside edit)
+
+**Early Sign-Up Prompt (new — not previously built):**
+- After first page view or first scroll
+- Framing: ACCESS not discount. "Start building your travel world."
+- → "Create your Digital Passport" / "Not now"
+
+**Implementation Priority for Claude Code:**
+1. Navigation restructure
+2. Destinations grid
+3. Tappable image mechanic (Zara Home split screen)
+4. Early sign-up prompt
+5. Save moment enhancement
+6. Gate 1 (end of guide → passport → itinerary overview)
+7. Returning user detection
+8. Concierge woven into journey moments
+9. About page with tiers
+10. Gates 2 + 3
+
+**Success Criteria:**
+- Oren understands FDV in 30 seconds without instructions
+- Susannah (exact ICP) knows immediately what to do and wants to sign up
+- New user reaches first save within 3 minutes
+- Concierge can fully onboard a confused user conversationally
+
+**Files Produced:** FDV_SESSION_APRIL1.md, FDV_USER_JOURNEY_MASTER_BRIEF.md
 
 ---
 
