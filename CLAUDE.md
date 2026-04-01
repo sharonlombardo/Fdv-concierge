@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** March 31, 2026
-**Updated by:** Claude Code session (Oren feedback + auto-deploy fix)
+**Last updated:** April 1, 2026
+**Updated by:** Cowork session (Moda.app competitive intel + outreach)
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -539,6 +539,46 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 1, 2026 | Claude.ai — Moda.app Competitive Intelligence + Outreach
+**Topic:** Discovered Moda.app, strategic read, investor/founder outreach
+
+**Moda.app Discovery:**
+Anvisha Pai, MIT founder, raised $7.5M from General Catalyst (Quentin Clark)
+and Pear VC (Warren Shaeffer). Launched "world's first design agent with taste" —
+editable canvas with brand-aligned AI design execution. 3,000+ users last month.
+
+**Strategic Read:**
+Moda is a design productivity tool. B2B, horizontal, marketing teams.
+Their "taste" = visual brand consistency in execution.
+FDV taste = longitudinal personal preference intelligence across travel,
+commerce, and experience over time.
+Not competitive. Adjacent.
+
+Key framing locked: **Moda is a product. Wellspring is infrastructure.**
+Canva/Adobe can eventually ship what Moda does. They cannot ship a taste genome
+built on behavioral data and a self-model. That's the moat distinction.
+
+**Why GC/Pear Funded Moda:**
+- Editable canvas is genuine technical wedge vs current AI tools
+- Anvisha's track record ($300M exit) de-risks the bet
+- Window is real but probably short — Canva/Adobe will catch up
+- Makes GC/Pear fluent in taste-AI conversation — could be an opening
+  in 60-90 days, not now
+
+**Outreach Executed:**
+1. Connection requests sent to Warren Shaeffer (Pear) and Quentin Clark (GC)
+2. Direct message sent to Anvisha Pai
+   Subject: "The taste thesis — from the luxury side"
+   Tone: peer-to-peer, no ask, non-competing positioning clear,
+   FIL DE VIE and FDV Concierge named
+
+**Next on This Thread:**
+- Let Anvisha outreach breathe, no follow up
+- Revisit GC/Pear in 60-90 days when Moda story has developed
+- Watch for warm path into either firm through network
 
 ---
 
