@@ -2,12 +2,15 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 const BLOB_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2";
 const GUIDE_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco";
+const VIDEO_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com";
 
-// Deep image pool — 30 editorial photos across 5 destinations
-const HERO_IMAGES = [
+// Media pool — images + video clips mixed together
+// Videos are spread evenly through the pool for variety
+const HERO_MEDIA = [
   `${BLOB_BASE}/morocco-hero`,
   `${BLOB_BASE}/morocco-motion-1`,
   `${BLOB_BASE}/morocco-experience-1`,
+  `${VIDEO_BASE}/hero-video-1.MP4`,
   `${BLOB_BASE}/morocco-ritual-1`,
   `${BLOB_BASE}/destination-morocco`,
   `${GUIDE_BASE}/hero.jpg`,
@@ -16,6 +19,7 @@ const HERO_IMAGES = [
   `${GUIDE_BASE}/exp-1-large.jpg`,
   `${GUIDE_BASE}/shop-1-large.jpg`,
   `${BLOB_BASE}/hydra-hero`,
+  `${VIDEO_BASE}/hero-video-2.MP4`,
   `${BLOB_BASE}/hydra-light-1`,
   `${BLOB_BASE}/hydra-light-2`,
   `${BLOB_BASE}/hydra-ritual-1`,
@@ -23,20 +27,28 @@ const HERO_IMAGES = [
   `${BLOB_BASE}/slow-travel-hero`,
   `${BLOB_BASE}/slow-culture-1`,
   `${BLOB_BASE}/slow-museum`,
+  `${VIDEO_BASE}/hero-video-3.MP4`,
   `${BLOB_BASE}/slow-lunch`,
   `${BLOB_BASE}/destination-slow-travel`,
   `${BLOB_BASE}/retreat-motion-1`,
   `${BLOB_BASE}/retreat-ritual-1`,
   `${BLOB_BASE}/destination-retreat`,
   `${BLOB_BASE}/newyork-hero`,
+  `${VIDEO_BASE}/hero-video-4.MP4`,
   `${BLOB_BASE}/newyork-culture-1`,
   `${BLOB_BASE}/newyork-experience-1`,
   `${BLOB_BASE}/newyork-ritual-1`,
   `${BLOB_BASE}/destination-new-york`,
 ];
 
+function isVideo(url: string): boolean {
+  return /\.(mp4|MP4|webm|mov)$/i.test(url);
+}
+
 // Image cut timing — varied, energetic
 const IMAGE_DURATIONS = [700, 500, 900, 550, 750, 600, 850, 500, 800, 650];
+// Videos hold longer so you actually see the motion
+const VIDEO_DURATION = 3500;
 
 // --- TEXT MOMENTS ---
 
@@ -287,7 +299,7 @@ function ScatteredSyllable({ text, position, delay, color }: {
 }
 
 export function HeroAnimation() {
-  const [imageIndex, setImageIndex] = useState(0);
+  const [mediaIndex, setMediaIndex] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const imageDurationIndex = useRef(0);
@@ -295,12 +307,15 @@ export function HeroAnimation() {
 
   const currentMoment = TEXT_SEQUENCE[textIndex];
   const isWhiteCard = currentMoment.type === "whitecard";
+  const currentMedia = HERO_MEDIA[mediaIndex];
+  const currentIsVideo = isVideo(currentMedia);
 
-  // Preload first batch
+  // Preload first batch of images (skip videos)
   useEffect(() => {
     let loaded = 0;
-    const total = Math.min(HERO_IMAGES.length, 8);
-    HERO_IMAGES.slice(0, total).forEach((src) => {
+    const imagesToPreload = HERO_MEDIA.filter(src => !isVideo(src)).slice(0, 8);
+    const total = imagesToPreload.length;
+    imagesToPreload.forEach((src) => {
       const img = new Image();
       img.onload = () => { loaded++; if (loaded >= total) setImagesLoaded(true); };
       img.onerror = () => { loaded++; if (loaded >= total) setImagesLoaded(true); };
@@ -310,9 +325,9 @@ export function HeroAnimation() {
     return () => clearTimeout(fallback);
   }, []);
 
-  // Image cycling — pauses during white cards
-  const cycleImage = useCallback(() => {
-    setImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+  // Media cycling — pauses during white cards, videos hold longer
+  const cycleMedia = useCallback(() => {
+    setMediaIndex((prev) => (prev + 1) % HERO_MEDIA.length);
     imageDurationIndex.current = (imageDurationIndex.current + 1) % IMAGE_DURATIONS.length;
   }, []);
 
@@ -322,10 +337,10 @@ export function HeroAnimation() {
 
   useEffect(() => {
     if (!imagesLoaded || imageTimerPaused.current) return;
-    const duration = IMAGE_DURATIONS[imageDurationIndex.current];
-    const timer = setTimeout(cycleImage, duration);
+    const duration = currentIsVideo ? VIDEO_DURATION : IMAGE_DURATIONS[imageDurationIndex.current];
+    const timer = setTimeout(cycleMedia, duration);
     return () => clearTimeout(timer);
-  }, [imageIndex, imagesLoaded, cycleImage, isWhiteCard]);
+  }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard, currentIsVideo]);
 
   // Text sequence cycling
   const cycleText = useCallback(() => {
@@ -351,17 +366,34 @@ export function HeroAnimation() {
         backgroundColor: isWhiteCard ? "#F7F5F1" : "#0a0a0a",
       }}
     >
-      {/* Image layer — hidden during white card */}
+      {/* Media layer — image or video, hidden during white card */}
       {!isWhiteCard && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: `url('${HERO_IMAGES[imageIndex]}')`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
+        currentIsVideo ? (
+          <video
+            key={currentMedia}
+            autoPlay
+            muted
+            playsInline
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+            src={currentMedia}
+          />
+        ) : (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: `url('${currentMedia}')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+        )
       )}
 
       {/* Overlay for text legibility */}
