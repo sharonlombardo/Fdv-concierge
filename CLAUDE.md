@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
 **Last updated:** April 1, 2026
-**Updated by:** Cowork session (Moda.app competitive intel + outreach)
+**Updated by:** Claude Code session (Landing page redesign + hero animation)
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -548,6 +548,62 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 1, 2026 | Claude Code (web) — Evening: Landing Page Redesign + Hero Animation
+**Topic:** Full landing page rebuild, Zara Travel Mode-inspired hero animation with video
+
+**Landing Page Redesign (3 changes):**
+1. Full-screen 100vh animated hero replacing static video landing
+2. Top nav restructured: hamburger + FDV badge + ABOUT · THE GUIDES · SHOP (transparent overlay on hero, Zara-style 9px uppercase links)
+3. Bottom nav background changed to black (#1A1A18) with white icons
+
+**Hero Animation — Multiple Iteration Rounds:**
+Built from scratch, iterated 8+ times based on Sharon's live feedback + Zara Travel Mode
+video reference (frame-by-frame analysis from 40-second screen recording).
+
+Final version features:
+- **Typewriter effect**: letter-by-letter text appearance at 200ms/char (matched to Zara pacing)
+- **7 multilingual greetings**: HOLA (scattered syllables HO·LA), ΓΕΙΑ, こんにちは, SALUTE (scattered SA·LU·TE), مرحبا, שלום, HELLO
+- **4 feature words**: TRAVEL, TIPS, MEMORIES, SHOP
+- **3 white card destinations**: MOROCCO, HYDRA, MALLORCA — typewriter on cream background, lower-left positioned like Zara
+- **Scattered syllable treatment**: HO·LA and SA·LU·TE appear as extra-large syllables at different screen positions with staggered delays (inspired by Zara's SALUTI treatment at 0:34-0:36)
+- **4 video clips** mixed into 32-item media pool (uploaded to Vercel Blob), hold 3.5s vs 0.5-0.9s for images
+- **28 editorial photos** across 5 destinations (removed 2 low-res desert images)
+- **~60% silent frames**: most of the sequence is images/video cycling with no text overlay
+- **Dark overlay** only appears when text is showing (not during silent or white card moments)
+
+**Iteration History (what was tried/fixed):**
+1. Initial build: simple greeting words cycling over images — too plain
+2. Added 4 text treatments (scattered, section words, silent frames, white cards) — too flickery
+3. Multiple timing/speed adjustments — words too fast, then too slow
+4. Typewriter attempt #1: text had no `position: absolute` → everything rendered at top-left over nav
+5. Word set accidentally stripped to 7 — restored full multilingual set
+6. Typewriter at 3s/word (adaptive) was too slow, words cut off mid-type — fixed to 200ms/char
+7. Sharon provided frame-by-frame Zara screenshots (~25 frames across 40s) — used to match exact pacing, white card position (lower-left), and scattered syllable treatment
+8. Final: added video clips from Vercel Blob storage for Zara-like motion energy
+
+**Key Files Modified/Created:**
+- client/src/components/hero-animation.tsx (NEW — core animation, heavily iterated)
+- client/src/pages/threshold.tsx (replaced video hero with HeroAnimation component)
+- client/src/components/top-bar.tsx (nav restructure: ABOUT · THE GUIDES · SHOP)
+- client/src/components/bottom-nav.tsx (black #1A1A18 background)
+
+**Technical Decisions:**
+- Dual independent timer system: images/video cycle on their own rhythm, text sequence on a separate timer
+- Videos render as `<video autoPlay muted playsInline>` with object-fit: cover
+- `isVideo()` helper checks URL extension to choose between image div and video element
+- White cards pause the image/video timer (no cycling behind white)
+- Auth redirect: logged-in users skip hero → go straight to /current
+- Wouter routing (not react-router) for navigation
+
+**PRs/Commits:** 10 commits across the session, all merged to main via fast-forward
+
+**Also Done This Session:**
+- Merged PR #22 (floating concierge + voice docs)
+- Committed April 1 Claude.ai session recaps to CLAUDE.md (user journey redesign + Moda competitive intel)
+- Voice docs copied from brand voice/ folder to data/concierge/
 
 ---
 
