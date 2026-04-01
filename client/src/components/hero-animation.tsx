@@ -31,8 +31,8 @@ const HERO_IMAGES = [
   `${BLOB_BASE}/newyork-ritual-1`,
 ];
 
-// Variable image durations — NOT uniform. Mix of medium cuts and longer holds.
-const IMAGE_DURATIONS = [500, 400, 700, 350, 600, 450, 800, 400, 550, 350];
+// Variable image durations — each image holds long enough to register, then cuts.
+const IMAGE_DURATIONS = [1200, 900, 1500, 800, 1100, 1000, 1800, 900, 1300, 1000];
 
 // --- TEXT SEQUENCE: 4 treatment types ---
 
@@ -51,8 +51,8 @@ const TEXT_SEQUENCE: TextMoment[] = [
   // 1. HOLA scattered
   {
     type: "greeting", word: "HOLA", lang: "es", scattered: [
-      { text: "HO", style: { position: "absolute", top: "22%", left: "12%" } },
-      { text: "LA", style: { position: "absolute", bottom: "25%", right: "10%" } },
+      { text: "HO", style: { position: "absolute", top: "22%", left: "12%", fontSize: "clamp(63px, 12vw, 84px)" } },
+      { text: "LA", style: { position: "absolute", bottom: "25%", right: "10%", fontSize: "clamp(63px, 12vw, 84px)" } },
     ],
   },
   // 2. Silent
@@ -72,9 +72,9 @@ const TEXT_SEQUENCE: TextMoment[] = [
   // 7. SALUTE scattered
   {
     type: "greeting", word: "SALUTE", lang: "it", scattered: [
-      { text: "SA", style: { position: "absolute", top: "18%", left: "8%" } },
-      { text: "LU", style: { position: "absolute", top: "48%", right: "12%" } },
-      { text: "TE", style: { position: "absolute", bottom: "22%", left: "22%" } },
+      { text: "SA", style: { position: "absolute", top: "18%", left: "8%", fontSize: "clamp(63px, 12vw, 84px)" } },
+      { text: "LU", style: { position: "absolute", top: "48%", right: "12%", fontSize: "clamp(63px, 12vw, 84px)" } },
+      { text: "TE", style: { position: "absolute", bottom: "22%", left: "22%", fontSize: "clamp(63px, 12vw, 84px)" } },
     ],
   },
   // 8. Silent
