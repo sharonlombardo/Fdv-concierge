@@ -45,10 +45,10 @@ function isVideo(url: string): boolean {
   return /\.(mp4|MP4|webm|mov)$/i.test(url);
 }
 
-// Image cut timing — varied, energetic
-const IMAGE_DURATIONS = [700, 500, 900, 550, 750, 600, 850, 500, 800, 650];
-// Videos hold longer so you actually see the motion
-const VIDEO_DURATION = 3500;
+// Image cut timing — ~1 second per still (matched to Zara pacing)
+const IMAGE_DURATION = 1000;
+// Videos hold ~2 seconds so you see the motion
+const VIDEO_DURATION = 2000;
 
 // --- TEXT MOMENTS ---
 
@@ -302,7 +302,6 @@ export function HeroAnimation() {
   const [mediaIndex, setMediaIndex] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const imageDurationIndex = useRef(0);
   const imageTimerPaused = useRef(false);
 
   const currentMoment = TEXT_SEQUENCE[textIndex];
@@ -328,7 +327,6 @@ export function HeroAnimation() {
   // Media cycling — pauses during white cards, videos hold longer
   const cycleMedia = useCallback(() => {
     setMediaIndex((prev) => (prev + 1) % HERO_MEDIA.length);
-    imageDurationIndex.current = (imageDurationIndex.current + 1) % IMAGE_DURATIONS.length;
   }, []);
 
   useEffect(() => {
@@ -337,7 +335,7 @@ export function HeroAnimation() {
 
   useEffect(() => {
     if (!imagesLoaded || imageTimerPaused.current) return;
-    const duration = currentIsVideo ? VIDEO_DURATION : IMAGE_DURATIONS[imageDurationIndex.current];
+    const duration = currentIsVideo ? VIDEO_DURATION : IMAGE_DURATION;
     const timer = setTimeout(cycleMedia, duration);
     return () => clearTimeout(timer);
   }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard, currentIsVideo]);
