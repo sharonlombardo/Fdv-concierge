@@ -28,6 +28,7 @@ const HERO_MEDIA = [
   `${BLOB_BASE}/hydra-ritual-1`,
   `${VIDEO_BASE}/guide%201.mp4`,
   `${BLOB_BASE}/destination-hydra`,
+  `${VIDEO_BASE}/guide%202.mp4`,
   `${BLOB_BASE}/slow-travel-hero`,
   `${VIDEO_BASE}/hero-video-3.MP4`,
   `${BLOB_BASE}/slow-culture-1`,
