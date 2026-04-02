@@ -4,41 +4,49 @@ const BLOB_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/image
 const GUIDE_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco";
 const VIDEO_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com";
 
-// Media pool — images + video clips mixed together
-// Videos are spread evenly through the pool for variety
+// Media pool — 28 stills + 12 video clips
+// General videos spread early/middle, guide clips in order mid-to-late, postcard last
 const HERO_MEDIA = [
   `${BLOB_BASE}/morocco-hero`,
   `${BLOB_BASE}/morocco-motion-1`,
-  `${BLOB_BASE}/morocco-experience-1`,
   `${VIDEO_BASE}/hero-video-1.MP4`,
+  `${BLOB_BASE}/morocco-experience-1`,
+  `${VIDEO_BASE}/A%20model%20standing%20completely%20still%20on%20roc.mp4`,
   `${BLOB_BASE}/morocco-ritual-1`,
   `${BLOB_BASE}/destination-morocco`,
   `${GUIDE_BASE}/hero.jpg`,
+  `${VIDEO_BASE}/blowing%20shirt%20cliop.mp4`,
   `${GUIDE_BASE}/stay-1-large.jpg`,
   `${GUIDE_BASE}/eat-1-large.jpg`,
   `${GUIDE_BASE}/exp-1-large.jpg`,
+  `${VIDEO_BASE}/hero-video-2.MP4`,
   `${GUIDE_BASE}/shop-1-large.jpg`,
   `${BLOB_BASE}/hydra-hero`,
-  `${VIDEO_BASE}/hero-video-2.MP4`,
+  `${VIDEO_BASE}/A%20realistic%20fashion%20editorial%20video%20of%20a%20model%20in%20a%20white%20dress%20and%20sunglasses%2C%20with%20a%20gentle%20breeze%20blowing%20her%20hair%20and%20dress.%20She%20is%20slowly%20walking%20along%20a%20stone%20wall%20next%20to%20the%20ocean%2C%20with%20a%20rocky%20cliff%20in%20the%20background.%20The%20camera%20captures%20%E2%80%A6.mp4`,
   `${BLOB_BASE}/hydra-light-1`,
   `${BLOB_BASE}/hydra-light-2`,
   `${BLOB_BASE}/hydra-ritual-1`,
+  `${VIDEO_BASE}/guide%201.mp4`,
   `${BLOB_BASE}/destination-hydra`,
   `${BLOB_BASE}/slow-travel-hero`,
+  `${VIDEO_BASE}/hero-video-3.MP4`,
   `${BLOB_BASE}/slow-culture-1`,
   `${BLOB_BASE}/slow-museum`,
-  `${VIDEO_BASE}/hero-video-3.MP4`,
+  `${VIDEO_BASE}/guide%203.mp4`,
   `${BLOB_BASE}/slow-lunch`,
   `${BLOB_BASE}/destination-slow-travel`,
   `${BLOB_BASE}/retreat-motion-1`,
+  `${VIDEO_BASE}/guide%20clip%204.MP4`,
   `${BLOB_BASE}/retreat-ritual-1`,
   `${BLOB_BASE}/destination-retreat`,
   `${BLOB_BASE}/newyork-hero`,
   `${VIDEO_BASE}/hero-video-4.MP4`,
+  `${VIDEO_BASE}/guide%20clip%205.MP4`,
   `${BLOB_BASE}/newyork-culture-1`,
   `${BLOB_BASE}/newyork-experience-1`,
   `${BLOB_BASE}/newyork-ritual-1`,
   `${BLOB_BASE}/destination-new-york`,
+  `${VIDEO_BASE}/last%20video%20clip.mp4`,
 ];
 
 function isVideo(url: string): boolean {
