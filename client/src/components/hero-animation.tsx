@@ -222,11 +222,24 @@ export function HeroAnimation() {
   const [mediaIndex, setMediaIndex] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const lastVideoSrcRef = useRef("");
 
   const currentMoment = TEXT_SEQUENCE[textIndex];
   const isWhiteCard = currentMoment.type === "whitecard";
   const currentMedia = HERO_MEDIA[mediaIndex];
   const currentIsVideo = isVideo(currentMedia);
+
+  // When switching between videos, update src on the persistent element
+  // instead of unmounting/remounting (which causes fallback still to flash)
+  useEffect(() => {
+    if (currentIsVideo && videoRef.current && currentMedia !== lastVideoSrcRef.current) {
+      lastVideoSrcRef.current = currentMedia;
+      videoRef.current.src = currentMedia;
+      videoRef.current.load();
+      videoRef.current.play().catch(() => {});
+    }
+  }, [currentMedia, currentIsVideo]);
 
   // Preload all stills
   useEffect(() => {
@@ -290,11 +303,12 @@ export function HeroAnimation() {
         }}
       />
 
-      {/* Video layer — only mounted when current media is a video.
-          The still layer behind acts as fallback while video loads. */}
+      {/* Video layer — persistent element when videos are playing.
+          No key prop: stays mounted across consecutive videos so the
+          fallback still doesn't flash between video-to-video transitions. */}
       {currentIsVideo && (
         <video
-          key={currentMedia}
+          ref={videoRef}
           autoPlay
           muted
           playsInline
@@ -305,7 +319,6 @@ export function HeroAnimation() {
             height: "100%",
             objectFit: "cover",
           }}
-          src={currentMedia}
         />
       )}
 
