@@ -3,10 +3,12 @@ import { useState, useEffect, useRef, useCallback } from "react";
 const BLOB_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2";
 const GUIDE_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco";
 const VIDEO_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com";
+const V2 = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/4.3";
 
-// Media pool — 30 stills + 10 video clips = 40 items
-// Removed duplicate hero shots; videos spread by destination
+// Media pool — 36 stills + 22 video clips = 58 items
+// Woven by destination: Morocco → Hydra/Greece → Med/Italy → Slow Travel → Retreat → New York
 const HERO_MEDIA = [
+  // — Morocco —
   `${BLOB_BASE}/morocco-hero`,
   `${BLOB_BASE}/morocco-motion-1`,
   `${VIDEO_BASE}/hero-video-1.MP4`,
@@ -22,13 +24,31 @@ const HERO_MEDIA = [
   `${GUIDE_BASE}/exp-1-large.jpg`,
   `${VIDEO_BASE}/hero-video-2.MP4`,
   `${GUIDE_BASE}/shop-1-large.jpg`,
+  // — Hydra / Greece —
   `${BLOB_BASE}/hydra-hero`,
   `${VIDEO_BASE}/hydra%20clip%201.MP4`,
-  `${VIDEO_BASE}/A%20realistic%20fashion%20editorial%20video%20of%20a%20model%20in%20a%20white%20dress%20and%20sunglasses%2C%20with%20a%20gentle%20breeze%20blowing%20her%20hair%20and%20dress.%20She%20is%20slowly%20walking%20along%20a%20stone%20wall%20next%20to%20the%20ocean%2C%20with%20a%20rocky%20cliff%20in%20the%20background.%20The%20camera%20captures%20%E2%80%A6.mp4`,
+  `${V2}/greece.MP4`,
+  `${V2}/hydra_cave_hotel.jpg`,
+  `${V2}/hydra_caftan_beach_walk.mp4`,
   `${BLOB_BASE}/hydra-light-1`,
+  `${V2}/hydra_water_panormaic.MP4`,
+  `${V2}/hydra_interior_arches.mp4`,
   `${BLOB_BASE}/hydra-ritual-1`,
+  `${V2}/hydra_white_look_boar.mp4`,
   `${BLOB_BASE}/destination-hydra`,
+  `${VIDEO_BASE}/A%20realistic%20fashion%20editorial%20video%20of%20a%20model%20in%20a%20white%20dress%20and%20sunglasses%2C%20with%20a%20gentle%20breeze%20blowing%20her%20hair%20and%20dress.%20She%20is%20slowly%20walking%20along%20a%20stone%20wall%20next%20to%20the%20ocean%2C%20with%20a%20rocky%20cliff%20in%20the%20background.%20The%20camera%20captures%20%E2%80%A6.mp4`,
+  // — Mediterranean / Italy / Fashion —
+  `${V2}/med_balcony_water_drapes.mp4`,
+  `${V2}/med_woman_floating_back.JPG`,
+  `${V2}/striped%20shirt%20on%20boat.mp4`,
   `${VIDEO_BASE}/italy%20coast.MP4`,
+  `${V2}/italy_coast_pan.mp4`,
+  `${V2}/med_black_oneshoulder_dress.mp4`,
+  `${V2}/SIU%20_%20Perfume%20for%20spring%20_%20Spring%20_%20Parfum%20in%20Spring%20_%20Aesthetic%20_%20Parfum.jpeg`,
+  `${V2}/med_interior_drapes.mp4`,
+  `${V2}/interior%20of%20villa.mp4`,
+  `${V2}/resort%20with%20curtains.mp4`,
+  // — Slow Travel / Mallorca —
   `${BLOB_BASE}/slow-travel-hero`,
   `${VIDEO_BASE}/mallorca.MP4`,
   `${VIDEO_BASE}/hero-video-3.MP4`,
@@ -36,17 +56,23 @@ const HERO_MEDIA = [
   `${BLOB_BASE}/slow-museum`,
   `${BLOB_BASE}/slow-lunch`,
   `${BLOB_BASE}/destination-slow-travel`,
+  // — Retreat —
   `${BLOB_BASE}/retreat-motion-1`,
   `${BLOB_BASE}/retreat-ritual-1`,
   `${BLOB_BASE}/destination-retreat`,
+  // — New York —
   `${VIDEO_BASE}/new%20york%201.jpeg`,
+  `${V2}/newyork_swan_room.jpeg`,
   `${BLOB_BASE}/newyork-hero`,
   `${VIDEO_BASE}/hero-video-4.MP4`,
+  `${V2}/nyc_washington_square.jpeg`,
   `${VIDEO_BASE}/new%20york%202.jpeg`,
   `${BLOB_BASE}/newyork-culture-1`,
   `${BLOB_BASE}/newyork-experience-1`,
   `${BLOB_BASE}/newyork-ritual-1`,
   `${BLOB_BASE}/destination-new-york`,
+  // — Lifestyle —
+  `${V2}/suitcase_open.jpg`,
 ];
 
 function isVideo(url: string): boolean {
