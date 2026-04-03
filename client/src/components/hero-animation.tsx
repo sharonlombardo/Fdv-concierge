@@ -278,13 +278,17 @@ export function HeroAnimation() {
       }
 
       // Create a fresh video element — avoids all Safari compositor bugs
+      // Start invisible so no partial rectangle flashes before first frame
       const video = document.createElement("video");
       video.muted = true;
       video.playsInline = true;
       video.autoplay = true;
       video.preload = "auto";
-      video.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
+      video.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;";
       video.src = url;
+      // Only reveal once the first frame is decoded and ready to paint
+      const reveal = () => { video.style.opacity = "1"; };
+      video.addEventListener("loadeddata", reveal, { once: true });
       vidContainer.appendChild(video);
       currentVideoRef.current = video;
       video.play().catch(() => {});
