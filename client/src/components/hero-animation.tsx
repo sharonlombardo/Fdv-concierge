@@ -54,8 +54,9 @@ function isVideo(url: string): boolean {
   return /\.(mp4|MP4|webm|mov)$/i.test(url);
 }
 
-// All media cuts at ~1 second — matched to Zara (stills AND videos)
-const MEDIA_DURATION = 1000;
+// Stills cut at 1s, videos hold 2s for motion
+const IMAGE_DURATION = 1000;
+const VIDEO_DURATION = 2000;
 
 // --- TEXT MOMENTS ---
 
@@ -342,9 +343,10 @@ export function HeroAnimation() {
 
   useEffect(() => {
     if (!imagesLoaded || imageTimerPaused.current) return;
-    const timer = setTimeout(cycleMedia, MEDIA_DURATION);
+    const duration = isVideo(currentMedia) ? VIDEO_DURATION : IMAGE_DURATION;
+    const timer = setTimeout(cycleMedia, duration);
     return () => clearTimeout(timer);
-  }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard]);
+  }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard, currentMedia]);
 
   // Text sequence cycling
   const cycleText = useCallback(() => {
