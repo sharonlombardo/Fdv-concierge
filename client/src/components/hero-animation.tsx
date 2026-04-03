@@ -4,8 +4,8 @@ const BLOB_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/image
 const GUIDE_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco";
 const VIDEO_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com";
 
-// Media pool — 32 stills + 10 video clips
-// Videos spread by destination, new place clips woven in
+// Media pool — 30 stills + 10 video clips = 40 items
+// Removed duplicate hero shots; videos spread by destination
 const HERO_MEDIA = [
   `${BLOB_BASE}/morocco-hero`,
   `${BLOB_BASE}/morocco-motion-1`,
@@ -15,7 +15,6 @@ const HERO_MEDIA = [
   `${BLOB_BASE}/morocco-ritual-1`,
   `${VIDEO_BASE}/morocco%20blk%20outfit.jpeg`,
   `${BLOB_BASE}/destination-morocco`,
-  `${GUIDE_BASE}/hero.jpg`,
   `${VIDEO_BASE}/blowing%20shirt%20cliop.mp4`,
   `${VIDEO_BASE}/morocco%20cream%20skirt.jpeg`,
   `${GUIDE_BASE}/stay-1-large.jpg`,
@@ -27,7 +26,6 @@ const HERO_MEDIA = [
   `${VIDEO_BASE}/hydra%20clip%201.MP4`,
   `${VIDEO_BASE}/A%20realistic%20fashion%20editorial%20video%20of%20a%20model%20in%20a%20white%20dress%20and%20sunglasses%2C%20with%20a%20gentle%20breeze%20blowing%20her%20hair%20and%20dress.%20She%20is%20slowly%20walking%20along%20a%20stone%20wall%20next%20to%20the%20ocean%2C%20with%20a%20rocky%20cliff%20in%20the%20background.%20The%20camera%20captures%20%E2%80%A6.mp4`,
   `${BLOB_BASE}/hydra-light-1`,
-  `${BLOB_BASE}/hydra-light-2`,
   `${BLOB_BASE}/hydra-ritual-1`,
   `${BLOB_BASE}/destination-hydra`,
   `${VIDEO_BASE}/italy%20coast.MP4`,
@@ -343,11 +341,11 @@ export function HeroAnimation() {
   }, [isWhiteCard]);
 
   useEffect(() => {
-    if (!imagesLoaded || imageTimerPaused.current) return;
-    const duration = isVideo(currentMedia) ? VIDEO_DURATION : IMAGE_DURATION;
+    if (!imagesLoaded || isWhiteCard) return;
+    const duration = isVideo(HERO_MEDIA[mediaIndex]) ? VIDEO_DURATION : IMAGE_DURATION;
     const timer = setTimeout(cycleMedia, duration);
     return () => clearTimeout(timer);
-  }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard, currentMedia]);
+  }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard]);
 
   // Text sequence cycling
   const cycleText = useCallback(() => {
