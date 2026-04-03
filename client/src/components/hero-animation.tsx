@@ -222,18 +222,11 @@ export function HeroAnimation() {
   const [mediaIndex, setMediaIndex] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const prevMediaRef = useRef(0);
 
   const currentMoment = TEXT_SEQUENCE[textIndex];
   const isWhiteCard = currentMoment.type === "whitecard";
   const currentMedia = HERO_MEDIA[mediaIndex];
   const currentIsVideo = isVideo(currentMedia);
-
-  // Track the last still shown (for fallback behind videos)
-  const lastStillRef = useRef(HERO_MEDIA[0]);
-  if (!currentIsVideo && !isWhiteCard) {
-    lastStillRef.current = currentMedia;
-  }
 
   // Preload all stills
   useEffect(() => {
@@ -285,45 +278,35 @@ export function HeroAnimation() {
         backgroundColor: isWhiteCard ? "#F7F5F1" : "#0a0a0a",
       }}
     >
-      {/* Permanent fallback still — prevents black frames during transitions */}
+      {/* Still layer — ALWAYS rendered, never unmounted. backgroundImage swaps are
+          instant from preloaded cache. Shows the nearest still as fallback behind videos. */}
       <div
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: `url('${lastStillRef.current}')`,
+          backgroundImage: `url('${currentIsVideo ? NEAREST_STILL[mediaIndex] : currentMedia}')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       />
 
-      {/* Media layer — image or video, hidden during white card */}
-      {!isWhiteCard && (
-        currentIsVideo ? (
-          <video
-            key={currentMedia}
-            autoPlay
-            muted
-            playsInline
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-            src={currentMedia}
-          />
-        ) : (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              backgroundImage: `url('${currentMedia}')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-        )
+      {/* Video layer — only mounted when current media is a video.
+          The still layer behind acts as fallback while video loads. */}
+      {currentIsVideo && (
+        <video
+          key={currentMedia}
+          autoPlay
+          muted
+          playsInline
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+          src={currentMedia}
+        />
       )}
 
       {/* Overlay for text legibility */}
