@@ -339,14 +339,21 @@ export function HeroAnimation() {
   const [mediaIndex, setMediaIndex] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  // Keep previous media visible until next one is ready
-  const [displayedMedia, setDisplayedMedia] = useState(0);
-  const prevMediaRef = useRef(0);
+  // Track the last still shown — always available as fallback to prevent black frames
+  const lastStillRef = useRef(HERO_MEDIA.find(src => !isVideo(src)) || HERO_MEDIA[0]);
+  const wasWhiteCardRef = useRef(false);
 
   const currentMoment = TEXT_SEQUENCE[textIndex];
   const isWhiteCard = currentMoment.type === "whitecard";
+  const currentMedia = HERO_MEDIA[mediaIndex];
+  const currentIsVideo = isVideo(currentMedia);
 
-  // Preload ALL still images on mount (not just first 8)
+  // Track last still for fallback
+  if (!currentIsVideo && !isWhiteCard) {
+    lastStillRef.current = currentMedia;
+  }
+
+  // Preload ALL still images on mount
   useEffect(() => {
     let loaded = 0;
     const allStills = HERO_MEDIA.filter(src => !isVideo(src));
@@ -357,12 +364,11 @@ export function HeroAnimation() {
       img.onerror = () => { loaded++; if (loaded >= total) setImagesLoaded(true); };
       img.src = src;
     });
-    // Fallback if some images are slow — start after 4s
     const fallback = setTimeout(() => setImagesLoaded(true), 4000);
     return () => clearTimeout(fallback);
   }, []);
 
-  // Preload upcoming video (next in queue) so it's buffered
+  // Preload upcoming video so it's buffered
   useEffect(() => {
     const nextIdx = (mediaIndex + 1) % HERO_MEDIA.length;
     const nextUrl = HERO_MEDIA[nextIdx];
@@ -376,17 +382,18 @@ export function HeroAnimation() {
     }
   }, [mediaIndex]);
 
-  // Update displayed media — for stills, update immediately
-  // For videos, update immediately (they'll start playing)
-  useEffect(() => {
-    prevMediaRef.current = displayedMedia;
-    setDisplayedMedia(mediaIndex);
-  }, [mediaIndex]);
-
   // Media cycling — pauses during white cards
   const cycleMedia = useCallback(() => {
     setMediaIndex((prev) => (prev + 1) % HERO_MEDIA.length);
   }, []);
+
+  // When exiting a white card, advance media so you don't see the same shot before and after
+  useEffect(() => {
+    if (wasWhiteCardRef.current && !isWhiteCard) {
+      cycleMedia();
+    }
+    wasWhiteCardRef.current = isWhiteCard;
+  }, [isWhiteCard, cycleMedia]);
 
   useEffect(() => {
     if (!imagesLoaded || isWhiteCard) return;
@@ -409,11 +416,6 @@ export function HeroAnimation() {
   }, [textIndex, imagesLoaded, cycleText]);
 
   const showOverlay = currentMoment.type === "text" || currentMoment.type === "scattered";
-  const currentMedia = HERO_MEDIA[displayedMedia];
-  const currentIsVideo = isVideo(currentMedia);
-  // Keep previous still as fallback behind current to prevent black flash
-  const prevMedia = HERO_MEDIA[prevMediaRef.current];
-  const prevIsVideo = isVideo(prevMedia);
 
   return (
     <section
@@ -425,20 +427,20 @@ export function HeroAnimation() {
         backgroundColor: isWhiteCard ? "#F7F5F1" : "#0a0a0a",
       }}
     >
-      {/* Previous media layer — prevents black flash between transitions */}
-      {!isWhiteCard && !prevIsVideo && (
+      {/* Fallback layer — last still image always visible behind everything to prevent black flash */}
+      {!isWhiteCard && (
         <div
           style={{
             position: "absolute",
             inset: 0,
-            backgroundImage: `url('${prevMedia}')`,
+            backgroundImage: `url('${lastStillRef.current}')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         />
       )}
 
-      {/* Current media layer — image or video, hidden during white card */}
+      {/* Current media layer — video or image on top of fallback */}
       {!isWhiteCard && (
         currentIsVideo ? (
           <video
