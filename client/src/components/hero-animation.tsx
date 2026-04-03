@@ -38,7 +38,7 @@ const HERO_MEDIA = [
   `${BLOB_BASE}/hydra-light-1`,
   `${BLOB_BASE}/hydra-ritual-1`,
   // — Hydra videos —
-  `${V2}/hydra_water_panormaic.MP4`,
+  `${V2}/hydra_water_panoramic.mp4`,
   `${V2}/hydra_interior_arches.mp4`,
   `${V2}/hydra_white_look_boar.mp4`,
   // — Hydra still + transition —
