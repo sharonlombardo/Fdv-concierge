@@ -6,74 +6,54 @@ const VIDEO_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com";
 const V2 = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/4.3";
 
 // Media pool — 35 stills + 18 video clips = 53 items
-// Rule: stills always appear in groups of 2+, never a lone still between videos
 const HERO_MEDIA = [
-  // — Morocco stills (3) —
   `${BLOB_BASE}/morocco-hero`,
   `${BLOB_BASE}/morocco-motion-1`,
   `${BLOB_BASE}/morocco-ritual-1`,
-  // — Morocco videos (3) —
   `${VIDEO_BASE}/hero-video-1.MP4`,
   `${VIDEO_BASE}/woman%20in%20white%20in%20water.MP4`,
   `${VIDEO_BASE}/blowing%20shirt%20cliop.mp4`,
-  // — Morocco stills (5) —
   `${VIDEO_BASE}/morocco%20blk%20outfit.jpeg`,
   `${BLOB_BASE}/destination-morocco`,
   `${VIDEO_BASE}/morocco%20cream%20skirt.jpeg`,
   `${GUIDE_BASE}/stay-1-large.jpg`,
   `${GUIDE_BASE}/eat-1-large.jpg`,
-  // — Morocco video (1) —
   `${VIDEO_BASE}/hero-video-2.MP4`,
-  // — Hydra stills (3) —
   `${GUIDE_BASE}/shop-1-large.jpg`,
   `${BLOB_BASE}/hydra-hero`,
   `${V2}/hydra_cave_hotel.jpg`,
-  // — Hydra video (1) —
   `${VIDEO_BASE}/hydra%20clip%201.MP4`,
-  // — Hydra stills (2) —
   `${BLOB_BASE}/hydra-light-1`,
   `${BLOB_BASE}/hydra-ritual-1`,
-  // — Hydra videos (2) —
   `${V2}/hydra_interior_arches.mp4`,
   `${V2}/hydra_white_look_boar.mp4`,
-  // — Hydra/Med stills (2) —
   `${BLOB_BASE}/destination-hydra`,
   `${V2}/med_woman_floating_back.JPG`,
-  // — Med / Italy videos (3) —
   `${VIDEO_BASE}/A%20realistic%20fashion%20editorial%20video%20of%20a%20model%20in%20a%20white%20dress%20and%20sunglasses%2C%20with%20a%20gentle%20breeze%20blowing%20her%20hair%20and%20dress.%20She%20is%20slowly%20walking%20along%20a%20stone%20wall%20next%20to%20the%20ocean%2C%20with%20a%20rocky%20cliff%20in%20the%20background.%20The%20camera%20captures%20%E2%80%A6.mp4`,
   `${V2}/med_blacony_drapes.mp4`,
   `${V2}/striped%20shirt%20on%20boat.mp4`,
-  // — Med stills (3) —
   `${V2}/SIU%20_%20Perfume%20for%20spring%20_%20Spring%20_%20Parfum%20in%20Spring%20_%20Aesthetic%20_%20Parfum.jpeg`,
   `${V2}/amalfi_lunch.jpeg`,
   `${V2}/suitcase_open.jpg`,
-  // — Italy / Med videos (5) —
   `${V2}/portofion_cliffside.mp4`,
   `${V2}/med_stroll.mp4`,
   `${V2}/med_interior_drapes.mp4`,
   `${V2}/interior%20of%20villa.mp4`,
   `${V2}/resort%20with%20curtains.mp4`,
-  // — Slow Travel stills (2) —
   `${BLOB_BASE}/slow-travel-hero`,
   `${BLOB_BASE}/slow-culture-1`,
-  // — Slow Travel videos (2) —
   `${VIDEO_BASE}/mallorca.MP4`,
   `${VIDEO_BASE}/hero-video-3.MP4`,
-  // — Slow Travel stills (3) —
   `${BLOB_BASE}/slow-museum`,
   `${BLOB_BASE}/slow-lunch`,
   `${BLOB_BASE}/destination-slow-travel`,
-  // — Retreat stills (3) —
   `${BLOB_BASE}/retreat-motion-1`,
   `${BLOB_BASE}/retreat-ritual-1`,
   `${BLOB_BASE}/destination-retreat`,
-  // — New York stills (3) —
   `${VIDEO_BASE}/new%20york%201.jpeg`,
   `${V2}/newyork_swan_room.jpeg`,
   `${BLOB_BASE}/newyork-hero`,
-  // — New York video (1) —
   `${VIDEO_BASE}/hero-video-4.MP4`,
-  // — New York stills (6) —
   `${V2}/nyc_washington_square.jpeg`,
   `${VIDEO_BASE}/new%20york%202.jpeg`,
   `${BLOB_BASE}/newyork-culture-1`,
@@ -89,7 +69,17 @@ function isVideo(url: string): boolean {
 const IMAGE_DURATION = 750;
 const VIDEO_DURATION = 2000;
 
-// --- TEXT ---
+// Precompute: for each index, find the nearest preceding still (for fallback behind videos)
+const NEAREST_STILL: string[] = [];
+{
+  let lastStill = HERO_MEDIA.find(u => !isVideo(u)) || HERO_MEDIA[0];
+  for (let i = 0; i < HERO_MEDIA.length; i++) {
+    if (!isVideo(HERO_MEDIA[i])) lastStill = HERO_MEDIA[i];
+    NEAREST_STILL[i] = lastStill;
+  }
+}
+
+// ---- TEXT ----
 
 interface Syllable { text: string; position: React.CSSProperties; delay: number; }
 interface TextMoment {
@@ -158,7 +148,11 @@ function useTypewriter(text: string, speed = 200) {
   useEffect(() => {
     setD(""); i.current = 0;
     if (!text) return;
-    const t = setInterval(() => { i.current++; setD(text.slice(0, i.current)); if (i.current >= text.length) clearInterval(t); }, speed);
+    const t = setInterval(() => {
+      i.current++;
+      setD(text.slice(0, i.current));
+      if (i.current >= text.length) clearInterval(t);
+    }, speed);
     return () => clearInterval(t);
   }, [text, speed]);
   return d;
@@ -172,7 +166,11 @@ function useDelayedTypewriter(text: string, delay: number, speed = 200) {
     setD(""); i.current = 0;
     if (!text) return;
     const dt = setTimeout(() => {
-      iv.current = setInterval(() => { i.current++; setD(text.slice(0, i.current)); if (i.current >= text.length && iv.current) clearInterval(iv.current); }, speed);
+      iv.current = setInterval(() => {
+        i.current++;
+        setD(text.slice(0, i.current));
+        if (i.current >= text.length && iv.current) clearInterval(iv.current);
+      }, speed);
     }, delay);
     return () => { clearTimeout(dt); if (iv.current) clearInterval(iv.current); };
   }, [text, delay, speed]);
@@ -190,55 +188,54 @@ const SUBTITLE_STYLE: React.CSSProperties = {
   transform: "translateX(-50%)", textAlign: "center", whiteSpace: "nowrap",
 };
 
-function TypewriterText({ word, style, color, fontSize }: { word: string; style: React.CSSProperties; color: string; fontSize?: string }) {
+function TypewriterText({ word, style, color, fontSize }: {
+  word: string; style: React.CSSProperties; color: string; fontSize?: string;
+}) {
   const d = useTypewriter(word, 200);
-  return <p style={{ ...TEXT_STYLE, position: "absolute", fontSize: fontSize || SIZE_DEFAULT, ...style, color }}>{d}<span style={{ opacity: d.length < word.length ? 0.5 : 0, transition: "opacity 0.15s" }}>|</span></p>;
+  return (
+    <p style={{ ...TEXT_STYLE, position: "absolute", fontSize: fontSize || SIZE_DEFAULT, ...style, color }}>
+      {d}<span style={{ opacity: d.length < word.length ? 0.5 : 0, transition: "opacity 0.15s" }}>|</span>
+    </p>
+  );
 }
 
-function ScatteredSyllable({ text, position, delay, color }: { text: string; position: React.CSSProperties; delay: number; color: string }) {
+function ScatteredSyllable({ text, position, delay, color }: {
+  text: string; position: React.CSSProperties; delay: number; color: string;
+}) {
   const d = useDelayedTypewriter(text, delay, 250);
-  return <p style={{ ...TEXT_STYLE, position: "absolute", fontSize: SIZE_XL, ...position, color }}>{d}<span style={{ opacity: d.length < text.length && d.length > 0 ? 0.5 : 0, transition: "opacity 0.15s" }}>|</span></p>;
+  return (
+    <p style={{ ...TEXT_STYLE, position: "absolute", fontSize: SIZE_XL, ...position, color }}>
+      {d}<span style={{ opacity: d.length < text.length && d.length > 0 ? 0.5 : 0, transition: "opacity 0.15s" }}>|</span>
+    </p>
+  );
 }
 
 /*
- * SIMPLE APPROACH — no double-buffer state machine.
+ * Pure React state approach — no imperative DOM manipulation.
+ * This is the original architecture that worked without rectangle artifacts.
  *
- * Uses DOM refs to directly manage two video elements and swap their src,
- * avoiding React's unmount/remount cycle entirely. For stills, uses
- * background-image which is already preloaded.
- *
- * Layers (bottom to top):
- * 0. Permanent fallback still — ALWAYS visible, never black
- * 1. Previous media (still div OR video element)
- * 2. Current media (still div OR video element)
- * 5. White card overlay
- * 6. Dark text overlay
- * 7. Text layer
+ * Added: permanent fallback still behind media to prevent black frames
+ * during React unmount/mount transitions.
  */
-
-const FALLBACK_STILL = HERO_MEDIA.find(src => !isVideo(src)) || HERO_MEDIA[0];
 
 export function HeroAnimation() {
   const [mediaIndex, setMediaIndex] = useState(0);
-  const [prevIndex, setPrevIndex] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const wasWhiteCardRef = useRef(false);
-
-  // Direct refs to video elements — avoids React key-based remounting
-  const videoARef = useRef<HTMLVideoElement>(null);
-  const videoBRef = useRef<HTMLVideoElement>(null);
-  // Track which video element is "current" (A or B alternate)
-  const videoSlotRef = useRef<"A" | "B">("A");
+  const prevMediaRef = useRef(0);
 
   const currentMoment = TEXT_SEQUENCE[textIndex];
   const isWhiteCard = currentMoment.type === "whitecard";
-  const currentUrl = HERO_MEDIA[mediaIndex];
-  const prevUrl = HERO_MEDIA[prevIndex];
-  const currentIsVideo = isVideo(currentUrl);
-  const prevIsVideo = isVideo(prevUrl);
+  const currentMedia = HERO_MEDIA[mediaIndex];
+  const currentIsVideo = isVideo(currentMedia);
 
-  // Preload all stills on mount
+  // Track the last still shown (for fallback behind videos)
+  const lastStillRef = useRef(HERO_MEDIA[0]);
+  if (!currentIsVideo && !isWhiteCard) {
+    lastStillRef.current = currentMedia;
+  }
+
+  // Preload all stills
   useEffect(() => {
     let loaded = 0;
     const stills = HERO_MEDIA.filter(s => !isVideo(s));
@@ -252,49 +249,11 @@ export function HeroAnimation() {
     setTimeout(() => setImagesLoaded(true), 4000);
   }, []);
 
-  // When mediaIndex changes, load video into the next slot via ref (no React remount)
-  useEffect(() => {
-    if (!currentIsVideo) return;
-    const slot = videoSlotRef.current;
-    const el = slot === "A" ? videoARef.current : videoBRef.current;
-    if (el) {
-      el.src = currentUrl;
-      el.currentTime = 0;
-      el.load();
-      el.play().catch(() => {});
-    }
-  }, [mediaIndex, currentIsVideo, currentUrl]);
-
-  // Preload next video
-  useEffect(() => {
-    const nextUrl = HERO_MEDIA[(mediaIndex + 1) % HERO_MEDIA.length];
-    if (isVideo(nextUrl)) {
-      const v = document.createElement("video");
-      v.preload = "auto";
-      v.src = nextUrl;
-      v.load();
-    }
-  }, [mediaIndex]);
-
+  // Media cycling — pauses during white cards
   const cycleMedia = useCallback(() => {
-    setPrevIndex(mediaIndex);
-    const nextIdx = (mediaIndex + 1) % HERO_MEDIA.length;
-    // Alternate video slot for next video
-    if (isVideo(HERO_MEDIA[nextIdx])) {
-      videoSlotRef.current = videoSlotRef.current === "A" ? "B" : "A";
-    }
-    setMediaIndex(nextIdx);
-  }, [mediaIndex]);
+    setMediaIndex(prev => (prev + 1) % HERO_MEDIA.length);
+  }, []);
 
-  // White card exit → advance
-  useEffect(() => {
-    if (wasWhiteCardRef.current && !isWhiteCard) {
-      cycleMedia();
-    }
-    wasWhiteCardRef.current = isWhiteCard;
-  }, [isWhiteCard, cycleMedia]);
-
-  // Media timer
   useEffect(() => {
     if (!imagesLoaded || isWhiteCard) return;
     const duration = isVideo(HERO_MEDIA[mediaIndex]) ? VIDEO_DURATION : IMAGE_DURATION;
@@ -302,87 +261,78 @@ export function HeroAnimation() {
     return () => clearTimeout(timer);
   }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard]);
 
-  // Text timer
+  // Text sequence cycling
   const cycleText = useCallback(() => {
-    setTextIndex(p => (p + 1) % TEXT_SEQUENCE.length);
+    setTextIndex(prev => (prev + 1) % TEXT_SEQUENCE.length);
   }, []);
+
   useEffect(() => {
     if (!imagesLoaded) return;
-    const timer = setTimeout(cycleText, getTextDuration(TEXT_SEQUENCE[textIndex]));
+    const duration = getTextDuration(TEXT_SEQUENCE[textIndex]);
+    const timer = setTimeout(cycleText, duration);
     return () => clearTimeout(timer);
   }, [textIndex, imagesLoaded, cycleText]);
 
   const showOverlay = currentMoment.type === "text" || currentMoment.type === "scattered";
-  const currentVideoSlot = videoSlotRef.current;
 
   return (
-    <section style={{ position: "relative", width: "100%", height: "100vh", overflow: "hidden", backgroundColor: "#0a0a0a" }}>
-
-      {/* z-0: Permanent fallback still — NEVER see black */}
-      <div style={{
-        position: "absolute", inset: 0, zIndex: 0,
-        backgroundImage: `url('${FALLBACK_STILL}')`,
-        backgroundSize: "cover", backgroundPosition: "center",
-      }} />
-
-      {/* z-1: Previous media — stays visible behind current */}
-      {!prevIsVideo && (
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 1,
-          backgroundImage: `url('${prevUrl}')`,
-          backgroundSize: "cover", backgroundPosition: "center",
-        }} />
-      )}
-
-      {/* z-2: Current still (only rendered when current is a still) */}
-      {!currentIsVideo && (
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 2,
-          backgroundImage: `url('${currentUrl}')`,
-          backgroundSize: "cover", backgroundPosition: "center",
-        }} />
-      )}
-
-      {/* z-2/z-3: Two persistent video elements — NEVER unmount, swap via src ref */}
-      <video
-        ref={videoARef}
-        muted
-        playsInline
-        preload="auto"
+    <section
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100vh",
+        overflow: "hidden",
+        backgroundColor: isWhiteCard ? "#F7F5F1" : "#0a0a0a",
+      }}
+    >
+      {/* Permanent fallback still — prevents black frames during transitions */}
+      <div
         style={{
-          position: "absolute", inset: 0, width: "100%", height: "100%",
-          objectFit: "cover",
-          zIndex: currentIsVideo && currentVideoSlot === "A" ? 3 : 0,
-          visibility: currentIsVideo && currentVideoSlot === "A" ? "visible" : "hidden",
-        }}
-      />
-      <video
-        ref={videoBRef}
-        muted
-        playsInline
-        preload="auto"
-        style={{
-          position: "absolute", inset: 0, width: "100%", height: "100%",
-          objectFit: "cover",
-          zIndex: currentIsVideo && currentVideoSlot === "B" ? 3 : 0,
-          visibility: currentIsVideo && currentVideoSlot === "B" ? "visible" : "hidden",
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `url('${lastStillRef.current}')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       />
 
-      {/* z-5: White card overlay */}
-      <div style={{
-        position: "absolute", inset: 0, backgroundColor: "#F7F5F1",
-        zIndex: 5, opacity: isWhiteCard ? 1 : 0,
-        pointerEvents: isWhiteCard ? "auto" : "none",
-      }} />
+      {/* Media layer — image or video, hidden during white card */}
+      {!isWhiteCard && (
+        currentIsVideo ? (
+          <video
+            key={currentMedia}
+            autoPlay
+            muted
+            playsInline
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+            src={currentMedia}
+          />
+        ) : (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: `url('${currentMedia}')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+        )
+      )}
 
-      {/* z-6: Dark overlay for text */}
+      {/* Overlay for text legibility */}
       {showOverlay && (
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.15)", zIndex: 6 }} />
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0, 0, 0, 0.15)", zIndex: 2 }} />
       )}
 
-      {/* z-7: Text */}
-      <div key={textIndex} style={{ position: "absolute", inset: 0, zIndex: 7 }}>
+      {/* Text layer */}
+      <div key={textIndex} style={{ position: "absolute", inset: 0, zIndex: 3 }}>
         {currentMoment.type === "text" && currentMoment.word && (
           <>
             <TypewriterText word={currentMoment.word} style={currentMoment.position || {}} color="#ffffff" fontSize={currentMoment.fontSize} />
