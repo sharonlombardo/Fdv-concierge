@@ -24,8 +24,6 @@ const HERO_MEDIA = [
   `${GUIDE_BASE}/eat-1-large.jpg`,
   // — Morocco video —
   `${VIDEO_BASE}/hero-video-2.MP4`,
-  // — Morocco stills —
-  `${GUIDE_BASE}/exp-1-large.jpg`,
   `${GUIDE_BASE}/shop-1-large.jpg`,
   // — Hydra stills —
   `${BLOB_BASE}/hydra-hero`,
