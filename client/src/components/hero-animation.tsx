@@ -5,7 +5,7 @@ const GUIDE_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/imag
 const VIDEO_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com";
 const V2 = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/4.3";
 
-// Media pool — 35 stills + 22 video clips = 57 items
+// Media pool — 35 stills + 19 video clips = 54 items
 // Rule: stills always appear in groups of 2+, never a lone still between videos
 const HERO_MEDIA = [
   // — Morocco stills (3) —
@@ -28,15 +28,12 @@ const HERO_MEDIA = [
   `${GUIDE_BASE}/shop-1-large.jpg`,
   `${BLOB_BASE}/hydra-hero`,
   `${V2}/hydra_cave_hotel.jpg`,
-  // — Hydra / Greece videos (3) —
+  // — Hydra / Greece videos (1) —
   `${VIDEO_BASE}/hydra%20clip%201.MP4`,
-  `${V2}/greece_water_pan.mp4?v=2`,
-  `${V2}/hydra_black_fringe_caftan_video.mp4`,
   // — Hydra stills (2) —
   `${BLOB_BASE}/hydra-light-1`,
   `${BLOB_BASE}/hydra-ritual-1`,
-  // — Hydra videos (3) —
-  `${V2}/hydra_water_panoramic.mp4?v=2`,
+  // — Hydra videos (2) —
   `${V2}/hydra_interior_arches.mp4`,
   `${V2}/hydra_white_look_boar.mp4`,
   // — Hydra/Med stills (2) —
