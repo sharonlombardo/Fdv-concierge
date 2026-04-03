@@ -5,79 +5,79 @@ const GUIDE_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/imag
 const VIDEO_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com";
 const V2 = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/4.3";
 
-// Media pool — 36 stills + 22 video clips = 58 items
+// Media pool — 35 stills + 22 video clips = 57 items
 // Rule: stills always appear in groups of 2+, never a lone still between videos
 const HERO_MEDIA = [
-  // — Morocco stills —
+  // — Morocco stills (3) —
   `${BLOB_BASE}/morocco-hero`,
   `${BLOB_BASE}/morocco-motion-1`,
   `${BLOB_BASE}/morocco-ritual-1`,
-  // — Morocco videos —
+  // — Morocco videos (3) —
   `${VIDEO_BASE}/hero-video-1.MP4`,
   `${VIDEO_BASE}/woman%20in%20white%20in%20water.MP4`,
   `${VIDEO_BASE}/blowing%20shirt%20cliop.mp4`,
-  // — Morocco stills —
+  // — Morocco stills (5) —
   `${VIDEO_BASE}/morocco%20blk%20outfit.jpeg`,
   `${BLOB_BASE}/destination-morocco`,
   `${VIDEO_BASE}/morocco%20cream%20skirt.jpeg`,
   `${GUIDE_BASE}/stay-1-large.jpg`,
   `${GUIDE_BASE}/eat-1-large.jpg`,
-  // — Morocco video —
+  // — Morocco video (1) —
   `${VIDEO_BASE}/hero-video-2.MP4`,
+  // — Hydra stills (2) — shop-1 moved here to avoid lone still
   `${GUIDE_BASE}/shop-1-large.jpg`,
-  // — Hydra stills —
   `${BLOB_BASE}/hydra-hero`,
   `${V2}/hydra_cave_hotel.jpg`,
-  // — Hydra / Greece videos —
+  // — Hydra / Greece videos (3) —
   `${VIDEO_BASE}/hydra%20clip%201.MP4`,
   `${V2}/greece_water_pan.mp4?v=2`,
   `${V2}/hydra_black_fringe_caftan_video.mp4`,
-  // — Hydra stills —
+  // — Hydra stills (2) —
   `${BLOB_BASE}/hydra-light-1`,
   `${BLOB_BASE}/hydra-ritual-1`,
-  // — Hydra videos —
+  // — Hydra videos (3) —
   `${V2}/hydra_water_panoramic.mp4?v=2`,
   `${V2}/hydra_interior_arches.mp4`,
   `${V2}/hydra_white_look_boar.mp4`,
-  // — Hydra still + transition —
+  // — Hydra/Med stills (2) —
   `${BLOB_BASE}/destination-hydra`,
   `${V2}/med_woman_floating_back.JPG`,
-  // — Med / Italy videos —
+  // — Med / Italy videos (3) —
   `${VIDEO_BASE}/A%20realistic%20fashion%20editorial%20video%20of%20a%20model%20in%20a%20white%20dress%20and%20sunglasses%2C%20with%20a%20gentle%20breeze%20blowing%20her%20hair%20and%20dress.%20She%20is%20slowly%20walking%20along%20a%20stone%20wall%20next%20to%20the%20ocean%2C%20with%20a%20rocky%20cliff%20in%20the%20background.%20The%20camera%20captures%20%E2%80%A6.mp4`,
   `${V2}/med_blacony_drapes.mp4`,
   `${V2}/striped%20shirt%20on%20boat.mp4`,
-  // — Med stills —
+  // — Med stills (3) —
   `${V2}/SIU%20_%20Perfume%20for%20spring%20_%20Spring%20_%20Parfum%20in%20Spring%20_%20Aesthetic%20_%20Parfum.jpeg`,
   `${V2}/amalfi_lunch.jpeg`,
   `${V2}/suitcase_open.jpg`,
-  // — Italy / Med videos —
+  // — Italy / Med videos (6) —
   `${VIDEO_BASE}/italy%20coast.MP4`,
   `${V2}/portofion_cliffside.mp4`,
   `${V2}/med_stroll.mp4`,
   `${V2}/med_interior_drapes.mp4`,
   `${V2}/interior%20of%20villa.mp4`,
   `${V2}/resort%20with%20curtains.mp4`,
-  // — Slow Travel stills —
+  // — Slow Travel stills (2) —
   `${BLOB_BASE}/slow-travel-hero`,
   `${BLOB_BASE}/slow-culture-1`,
-  // — Slow Travel videos —
+  // — Slow Travel videos (2) —
   `${VIDEO_BASE}/mallorca.MP4`,
   `${VIDEO_BASE}/hero-video-3.MP4`,
-  // — Slow Travel stills —
+  // — Slow Travel stills (3) —
   `${BLOB_BASE}/slow-museum`,
   `${BLOB_BASE}/slow-lunch`,
   `${BLOB_BASE}/destination-slow-travel`,
-  // — Retreat stills —
+  // — Retreat stills (3) —
   `${BLOB_BASE}/retreat-motion-1`,
   `${BLOB_BASE}/retreat-ritual-1`,
   `${BLOB_BASE}/destination-retreat`,
-  // — New York stills —
+  // — New York stills (3) —
   `${VIDEO_BASE}/new%20york%201.jpeg`,
   `${V2}/newyork_swan_room.jpeg`,
   `${BLOB_BASE}/newyork-hero`,
-  // — New York video —
+  // — New York video (1) —
   `${VIDEO_BASE}/hero-video-4.MP4`,
-  // — New York stills —
+  // — New York stills (6) —
   `${V2}/nyc_washington_square.jpeg`,
   `${VIDEO_BASE}/new%20york%202.jpeg`,
   `${BLOB_BASE}/newyork-culture-1`,
@@ -90,7 +90,7 @@ function isVideo(url: string): boolean {
   return /\.(mp4|webm|mov)(\?.*)?$/i.test(url);
 }
 
-// Stills cut at 1s, videos hold 2s for motion
+// Stills at 750ms, videos hold 2s
 const IMAGE_DURATION = 750;
 const VIDEO_DURATION = 2000;
 
@@ -218,19 +218,15 @@ const TEXT_SEQUENCE: TextMoment[] = [
   { type: "silent" },
 ];
 
-// Durations per moment type
+// Fixed durations per moment type (no randomness — prevents timing jitter)
 function getTextDuration(moment: TextMoment): number {
   switch (moment.type) {
-    // Text: typing time (~200ms/char) + 1s hold after
     case "text": {
       const len = moment.word?.length || 5;
       return len * 200 + 1000;
     }
-    // Scattered: stagger delays + typing + hold
     case "scattered": return 3500;
-    // Silent: breathing room
-    case "silent": return [1100, 1300, 1500, 1200, 1400][Math.floor(Math.random() * 5)];
-    // White card: typing + hold — Zara holds these ~2.5s
+    case "silent": return 1300;
     case "whitecard": {
       const len = moment.word?.length || 6;
       return len * 200 + 1200;
@@ -239,7 +235,6 @@ function getTextDuration(moment: TextMoment): number {
 }
 
 // --- TYPEWRITER HOOK ---
-// Fixed speed per character (~200ms) like Zara
 function useTypewriter(text: string, charSpeed: number = 200) {
   const [displayed, setDisplayed] = useState("");
   const indexRef = useRef(0);
@@ -316,7 +311,6 @@ const SUBTITLE_STYLE: React.CSSProperties = {
   whiteSpace: "nowrap",
 };
 
-// --- Typewriter text component (positioned absolutely) ---
 function TypewriterText({ word, style, color, fontSize }: {
   word: string; style: React.CSSProperties; color: string; fontSize?: string;
 }) {
@@ -329,7 +323,6 @@ function TypewriterText({ word, style, color, fontSize }: {
   );
 }
 
-// --- Scattered syllable component ---
 function ScatteredSyllable({ text, position, delay, color }: {
   text: string; position: React.CSSProperties; delay: number; color: string;
 }) {
@@ -346,40 +339,59 @@ export function HeroAnimation() {
   const [mediaIndex, setMediaIndex] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const imageTimerPaused = useRef(false);
+  // Keep previous media visible until next one is ready
+  const [displayedMedia, setDisplayedMedia] = useState(0);
+  const prevMediaRef = useRef(0);
 
   const currentMoment = TEXT_SEQUENCE[textIndex];
   const isWhiteCard = currentMoment.type === "whitecard";
-  const currentMedia = HERO_MEDIA[mediaIndex];
-  const currentIsVideo = isVideo(currentMedia);
 
-  // Preload first batch of images (skip videos)
+  // Preload ALL still images on mount (not just first 8)
   useEffect(() => {
     let loaded = 0;
-    const imagesToPreload = HERO_MEDIA.filter(src => !isVideo(src)).slice(0, 8);
-    const total = imagesToPreload.length;
-    imagesToPreload.forEach((src) => {
+    const allStills = HERO_MEDIA.filter(src => !isVideo(src));
+    const total = allStills.length;
+    allStills.forEach((src) => {
       const img = new Image();
       img.onload = () => { loaded++; if (loaded >= total) setImagesLoaded(true); };
       img.onerror = () => { loaded++; if (loaded >= total) setImagesLoaded(true); };
       img.src = src;
     });
-    const fallback = setTimeout(() => setImagesLoaded(true), 2000);
+    // Fallback if some images are slow — start after 4s
+    const fallback = setTimeout(() => setImagesLoaded(true), 4000);
     return () => clearTimeout(fallback);
   }, []);
 
-  // Media cycling — pauses during white cards, videos hold longer
+  // Preload upcoming video (next in queue) so it's buffered
+  useEffect(() => {
+    const nextIdx = (mediaIndex + 1) % HERO_MEDIA.length;
+    const nextUrl = HERO_MEDIA[nextIdx];
+    if (isVideo(nextUrl)) {
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "video";
+      link.href = nextUrl;
+      document.head.appendChild(link);
+      return () => { document.head.removeChild(link); };
+    }
+  }, [mediaIndex]);
+
+  // Update displayed media — for stills, update immediately
+  // For videos, update immediately (they'll start playing)
+  useEffect(() => {
+    prevMediaRef.current = displayedMedia;
+    setDisplayedMedia(mediaIndex);
+  }, [mediaIndex]);
+
+  // Media cycling — pauses during white cards
   const cycleMedia = useCallback(() => {
     setMediaIndex((prev) => (prev + 1) % HERO_MEDIA.length);
   }, []);
 
   useEffect(() => {
-    imageTimerPaused.current = isWhiteCard;
-  }, [isWhiteCard]);
-
-  useEffect(() => {
     if (!imagesLoaded || isWhiteCard) return;
-    const duration = isVideo(HERO_MEDIA[mediaIndex]) ? VIDEO_DURATION : IMAGE_DURATION;
+    const url = HERO_MEDIA[mediaIndex];
+    const duration = isVideo(url) ? VIDEO_DURATION : IMAGE_DURATION;
     const timer = setTimeout(cycleMedia, duration);
     return () => clearTimeout(timer);
   }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard]);
@@ -397,6 +409,11 @@ export function HeroAnimation() {
   }, [textIndex, imagesLoaded, cycleText]);
 
   const showOverlay = currentMoment.type === "text" || currentMoment.type === "scattered";
+  const currentMedia = HERO_MEDIA[displayedMedia];
+  const currentIsVideo = isVideo(currentMedia);
+  // Keep previous still as fallback behind current to prevent black flash
+  const prevMedia = HERO_MEDIA[prevMediaRef.current];
+  const prevIsVideo = isVideo(prevMedia);
 
   return (
     <section
@@ -408,7 +425,20 @@ export function HeroAnimation() {
         backgroundColor: isWhiteCard ? "#F7F5F1" : "#0a0a0a",
       }}
     >
-      {/* Media layer — image or video, hidden during white card */}
+      {/* Previous media layer — prevents black flash between transitions */}
+      {!isWhiteCard && !prevIsVideo && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `url('${prevMedia}')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+      )}
+
+      {/* Current media layer — image or video, hidden during white card */}
       {!isWhiteCard && (
         currentIsVideo ? (
           <video
