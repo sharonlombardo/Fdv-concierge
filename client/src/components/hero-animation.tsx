@@ -66,10 +66,9 @@ function isVideo(url: string): boolean {
   return /\.(mp4|webm|mov)(\?.*)?$/i.test(url);
 }
 
-// DEBUG MODE — slow timing + index overlay. Remove after debugging.
-const DEBUG = true;
-const IMAGE_DURATION = DEBUG ? 3000 : 750;
-const VIDEO_DURATION = DEBUG ? 5000 : 2000;
+// Normal speed for everyone. Add ?debug=1 to URL for slow mode + overlay.
+const IMAGE_DURATION = 750;
+const VIDEO_DURATION = 2000;
 
 // Short labels for debug overlay
 const MEDIA_LABELS = HERO_MEDIA.map((url, i) => {
@@ -233,6 +232,11 @@ export function HeroAnimation() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const lastVideoSrcRef = useRef("");
 
+  // ?debug=1 in URL → slow mode + overlay (normal users see regular speed)
+  const isDebug = typeof window !== "undefined" && new URLSearchParams(window.location.search).has("debug");
+  const imgDur = isDebug ? 3000 : IMAGE_DURATION;
+  const vidDur = isDebug ? 5000 : VIDEO_DURATION;
+
   const currentMoment = TEXT_SEQUENCE[textIndex];
   const isWhiteCard = currentMoment.type === "whitecard";
   const currentMedia = HERO_MEDIA[mediaIndex];
@@ -270,7 +274,7 @@ export function HeroAnimation() {
 
   useEffect(() => {
     if (!imagesLoaded || isWhiteCard) return;
-    const duration = isVideo(HERO_MEDIA[mediaIndex]) ? VIDEO_DURATION : IMAGE_DURATION;
+    const duration = isVideo(HERO_MEDIA[mediaIndex]) ? vidDur : imgDur;
     const timer = setTimeout(cycleMedia, duration);
     return () => clearTimeout(timer);
   }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard]);
@@ -357,8 +361,8 @@ export function HeroAnimation() {
         )}
       </div>
 
-      {/* DEBUG OVERLAY — shows current index, type, and filename */}
-      {DEBUG && (
+      {/* DEBUG OVERLAY — only visible with ?debug=1 in URL */}
+      {isDebug && (
         <div style={{
           position: "absolute", bottom: 12, left: 12, zIndex: 99,
           background: "rgba(0,0,0,0.75)", color: "#0f0", padding: "6px 10px",
