@@ -42,7 +42,6 @@ const HERO_MEDIA = [
   `${BLOB_BASE}/destination-retreat`,
   `${BLOB_BASE}/newyork-hero`,
   `${VIDEO_BASE}/hero-video-4.MP4`,
-  `${VIDEO_BASE}/guide%20clip%205.MP4`,
   `${BLOB_BASE}/newyork-culture-1`,
   `${BLOB_BASE}/newyork-experience-1`,
   `${BLOB_BASE}/newyork-ritual-1`,
