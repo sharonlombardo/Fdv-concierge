@@ -55,7 +55,7 @@ function isVideo(url: string): boolean {
 }
 
 // Stills cut at 1s, videos hold 2s for motion
-const IMAGE_DURATION = 1000;
+const IMAGE_DURATION = 750;
 const VIDEO_DURATION = 2000;
 
 // --- TEXT MOMENTS ---
