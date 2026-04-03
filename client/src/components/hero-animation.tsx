@@ -5,13 +5,12 @@ const GUIDE_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/imag
 const VIDEO_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com";
 const V2 = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/4.3";
 
-// Media pool — 36 stills + 22 video clips = 58 items
+// Media pool — 35 stills + 22 video clips = 57 items
 // Rule: stills always appear in groups of 2+, never a lone still between videos
 const HERO_MEDIA = [
   // — Morocco stills —
   `${BLOB_BASE}/morocco-hero`,
   `${BLOB_BASE}/morocco-motion-1`,
-  `${BLOB_BASE}/morocco-experience-1`,
   `${BLOB_BASE}/morocco-ritual-1`,
   // — Morocco videos —
   `${VIDEO_BASE}/hero-video-1.MP4`,
