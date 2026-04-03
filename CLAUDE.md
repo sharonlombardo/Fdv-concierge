@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** April 1, 2026
-**Updated by:** Claude Code session (Landing page redesign + hero animation)
+**Last updated:** April 2, 2026
+**Updated by:** Claude Code session (Hero animation video integration + media pool expansion)
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -548,6 +548,89 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 2, 2026 | Claude Code (web) — Hero Animation Video Integration + Media Pool Expansion
+**Topic:** Multiple rounds of video integration, timing refinement, and media curation for the Zara-inspired hero animation
+
+**Session Overview:**
+Extended the hero animation from a stills-only experience to a mixed media loop with editorial video clips, closely matching the Zara Travel Mode reference video. Multiple rounds of feedback from Sharon with live screenshots drove iterative refinement of timing, media selection, and visual quality.
+
+**Video Integration (Major Feature):**
+- Added video clips mixed into the hero media pool (first 4, then expanded to 10)
+- Videos render as `<video autoPlay muted playsInline>` with object-fit: cover
+- `isVideo()` helper checks URL extension (.mp4/.MP4/.webm/.mov) to choose between image div and video element
+- Videos uploaded by Sharon to Vercel Blob storage, URLs provided for each batch
+- Dual timer system: videos hold longer than stills (separate durations)
+
+**Timing Refinement (Multiple Iterations):**
+- Analyzed Zara Travel Mode video pacing: stills ~1s, videos ~2s
+- Had Gemini analyze Sharon's Zara screen recording for shot-by-shot breakdown with timestamps
+- Started at 3.5s video / variable still durations → too slow
+- Went to 2s video / 1s still → good but stills slightly long
+- Final state: **750ms stills / 2s videos** — matches Zara's rapid-fire energy for stills while letting video clips breathe
+
+**Media Pool Curation (42 items final — 32 stills + 10 videos):**
+
+*Videos added (10 total):*
+- hero-video-1 through hero-video-4 (original batch — fashion/destination clips)
+- blowing shirt clip (fashion editorial)
+- woman in white in water (replaced model on rock)
+- hydra clip 1 (destination)
+- Gemini-generated model in white dress by ocean (long descriptive filename)
+- italy coast (destination)
+- mallorca (destination)
+
+*Stills added from Vercel Blob (4):*
+- morocco blk outfit, morocco cream skirt (fashion stills)
+- new york 1, new york 2 (destination stills)
+
+*Media removed:*
+- retreat-place-1 and retreat-hero (desert tent images) — too low resolution, Sharon identified via screenshots
+- guide-1 through guide-4 clips (screen recordings of scrolling through the app) — looked like demo footage, not editorial content, Sharon said "the guide shots just aren't working"
+- postcard clip — removed alongside guide clips
+
+**Zara Reference Analysis:**
+- Sharon provided ~25 frame-by-frame screenshots from the Zara Travel Mode video across 5 batches
+- Sharon had Gemini analyze the full video, producing a shot-by-shot CSV breakdown with timestamps, durations, and content types
+- Key insight: Gemini miscategorized ~half the shots (listed videos as stills), but the timing data was useful
+- Zara mix is roughly 50/50 stills and video, with stills at ~1s and videos at ~2s
+- Used this analysis to calibrate our timing and media ratio
+
+**Bugs Fixed:**
+- **Text overlapping nav bar**: TypewriterText missing `position: "absolute"` — CSS position properties (top/right/bottom/left) were ignored, all text rendered at top-left over nav. Fixed by adding absolute positioning.
+- **Wrong word set (multiple times)**: Iterations accidentally stripped words or added wrong ones (DISCOVER, EAT, RITUAL). Restored correct set: 7 multilingual greetings + TRAVEL, TIPS, MEMORIES, SHOP.
+- **Typewriter speed**: 80ms/char too fast, 3000ms adaptive too slow and cut off mid-type. Settled on 200ms/char fixed (matched Zara pacing).
+- **useDelayedTypewriter window.__heroTimer bug**: Using `(window as any).__heroTimer` for interval storage got overwritten when multiple ScatteredSyllable components rendered simultaneously. Fixed with `useRef` per component instance.
+- **Low-res images spotted by Sharon**: retreat-place-1 and retreat-hero identified via screenshots and removed.
+
+**Final Animation State:**
+- 42 media items: 32 stills (750ms each) + 10 videos (2s each)
+- Full loop duration: ~44 seconds
+- Text sequence: 7 multilingual greetings (HO·LA scattered, ΓΕΙΑ, こんにちは, SA·LU·TE scattered, مرحبا, שלום, HELLO) + 4 feature words (TRAVEL, TIPS, MEMORIES, SHOP) + 3 white card destinations (MOROCCO, HYDRA, MALLORCA) + ~60% silent frames
+- Typewriter effect: 200ms/char letter-by-letter reveal with cursor blink
+- Dark overlay at 0.15 opacity only during text/scattered moments
+- White cards: cream background (#F7F5F1), text positioned lower-left like Zara
+- Scattered syllables: extra-large type at different screen positions with staggered delays
+
+**Key Files Modified:**
+- client/src/components/hero-animation.tsx (video support, timing changes, media pool updates across multiple commits)
+- CLAUDE.md (April 1 session recap added)
+
+**Technical Decisions:**
+- Vercel Blob storage for all video + new still uploads (URL-encoded filenames)
+- VIDEO_BASE constant points to blob root (not images-v2 subfolder) for new uploads
+- 16:9 aspect ratio recommended for new video clips (Sharon asked for specs)
+- Stills can be any high-res proportion, rendered with backgroundSize: cover
+
+**PRs/Commits:** Multiple commits across the session, all pushed to main, auto-deployed via Vercel
+
+**Still Pending (carried forward):**
+- Sharon may add more destination videos
+- OpenWeatherMap API key → Vercel env vars
+- Resend domain verification for custom from-email
+- Navigation restructure from April 1 user journey redesign brief
 
 ---
 
