@@ -24,7 +24,7 @@ const HERO_MEDIA = [
   `${GUIDE_BASE}/eat-1-large.jpg`,
   // — Morocco video (1) —
   `${VIDEO_BASE}/hero-video-2.MP4`,
-  // — Hydra stills (2) — shop-1 moved here to avoid lone still
+  // — Hydra stills (3) — shop-1 moved here to avoid lone still
   `${GUIDE_BASE}/shop-1-large.jpg`,
   `${BLOB_BASE}/hydra-hero`,
   `${V2}/hydra_cave_hotel.jpg`,
@@ -90,7 +90,6 @@ function isVideo(url: string): boolean {
   return /\.(mp4|webm|mov)(\?.*)?$/i.test(url);
 }
 
-// Stills at 750ms, videos hold 2s
 const IMAGE_DURATION = 750;
 const VIDEO_DURATION = 2000;
 
@@ -114,69 +113,44 @@ const SIZE_DEFAULT = "clamp(36px, 7vw, 48px)";
 const SIZE_LARGE = "clamp(52px, 10vw, 72px)";
 const SIZE_XL = "clamp(72px, 15vw, 100px)";
 
-// The full sequence — greetings in 7 languages, feature words, white card destinations
-// Scattered syllable treatments for HOLA and SALUTE
 const TEXT_SEQUENCE: TextMoment[] = [
-  // -- open with images (3 beats of breathing)
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-
-  // -- HO · LA scattered large
   { type: "scattered", syllables: [
     { text: "HO", position: { top: "22%", left: "8%" }, delay: 0 },
     { text: "LA", position: { bottom: "22%", right: "8%" }, delay: 600 },
   ]},
   { type: "silent" },
   { type: "silent" },
-
-  // -- TRAVEL types out center-bottom
   { type: "text", word: "TRAVEL", position: { bottom: "30%", left: "50%", transform: "translateX(-50%)" } },
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-
-  // -- clean beat then white card
   { type: "silent" },
   { type: "whitecard", word: "MOROCCO" },
-
-  // -- images breathe
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-
-  // -- ΓΕΙΑ (Greek hello) large
   { type: "text", word: "\u0393\u0395\u0399\u0391", fontSize: SIZE_LARGE, position: { bottom: "28%", left: "10%" } },
   { type: "silent" },
   { type: "silent" },
-
-  // -- TIPS types out
   { type: "text", word: "TIPS", position: { bottom: "30%", left: "50%", transform: "translateX(-50%)" } },
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-
-  // -- clean beat then white card
   { type: "silent" },
   { type: "whitecard", word: "HYDRA" },
-
-  // -- images breathe
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-
-  // -- こんにちは (Japanese hello)
   { type: "text", word: "\u3053\u3093\u306B\u3061\u306F", fontSize: SIZE_LARGE, position: { top: "40%", right: "8%" } },
   { type: "silent" },
   { type: "silent" },
-
-  // -- MEMORIES types out center
   { type: "text", word: "MEMORIES", position: { bottom: "30%", left: "50%", transform: "translateX(-50%)" } },
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-
-  // -- SA · LU · TE scattered large
   { type: "scattered", syllables: [
     { text: "SA", position: { top: "20%", left: "8%" }, delay: 0 },
     { text: "LU", position: { top: "45%", right: "8%" }, delay: 500 },
@@ -185,40 +159,27 @@ const TEXT_SEQUENCE: TextMoment[] = [
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-
-  // -- clean beat then white card
   { type: "silent" },
   { type: "whitecard", word: "MALLORCA" },
-
-  // -- images breathe
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-
-  // -- مرحبا (Arabic hello)
   { type: "text", word: "\u0645\u0631\u062D\u0628\u0627", fontSize: SIZE_LARGE, position: { bottom: "28%", right: "10%" } },
   { type: "silent" },
   { type: "silent" },
-
-  // -- SHOP types out center
   { type: "text", word: "SHOP", position: { bottom: "30%", left: "50%", transform: "translateX(-50%)" } },
   { type: "silent" },
   { type: "silent" },
-
-  // -- שלום (Hebrew hello)
   { type: "text", word: "\u05E9\u05DC\u05D5\u05DD", fontSize: SIZE_LARGE, position: { top: "38%", left: "10%" } },
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
-
-  // -- HELLO types out center
   { type: "text", word: "HELLO", position: { bottom: "30%", left: "50%", transform: "translateX(-50%)" } },
   { type: "silent" },
   { type: "silent" },
   { type: "silent" },
 ];
 
-// Fixed durations per moment type (no randomness — prevents timing jitter)
 function getTextDuration(moment: TextMoment): number {
   switch (moment.type) {
     case "text": {
@@ -234,57 +195,43 @@ function getTextDuration(moment: TextMoment): number {
   }
 }
 
-// --- TYPEWRITER HOOK ---
 function useTypewriter(text: string, charSpeed: number = 200) {
   const [displayed, setDisplayed] = useState("");
   const indexRef = useRef(0);
-
   useEffect(() => {
     setDisplayed("");
     indexRef.current = 0;
     if (!text) return;
-
     const timer = setInterval(() => {
       indexRef.current++;
       setDisplayed(text.slice(0, indexRef.current));
-      if (indexRef.current >= text.length) {
-        clearInterval(timer);
-      }
+      if (indexRef.current >= text.length) clearInterval(timer);
     }, charSpeed);
-
     return () => clearInterval(timer);
   }, [text, charSpeed]);
-
   return displayed;
 }
 
-// --- DELAYED TYPEWRITER HOOK (for scattered syllables) ---
 function useDelayedTypewriter(text: string, delay: number, charSpeed: number = 200) {
   const [displayed, setDisplayed] = useState("");
   const indexRef = useRef(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
   useEffect(() => {
     setDisplayed("");
     indexRef.current = 0;
     if (!text) return;
-
     const delayTimer = setTimeout(() => {
       intervalRef.current = setInterval(() => {
         indexRef.current++;
         setDisplayed(text.slice(0, indexRef.current));
-        if (indexRef.current >= text.length && intervalRef.current) {
-          clearInterval(intervalRef.current);
-        }
+        if (indexRef.current >= text.length && intervalRef.current) clearInterval(intervalRef.current);
       }, charSpeed);
     }, delay);
-
     return () => {
       clearTimeout(delayTimer);
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [text, delay, charSpeed]);
-
   return displayed;
 }
 
@@ -336,58 +283,79 @@ function ScatteredSyllable({ text, position, delay, color }: {
 }
 
 /*
- * TRUE DOUBLE-BUFFER MEDIA SYSTEM
- *
- * Two permanent DOM layers (A and B) that NEVER unmount. They alternate:
- * - Active buffer is visible (opacity 1), showing current media
- * - Inactive buffer is hidden (opacity 0), preloading the NEXT media
- * - On transition: swap which buffer is active — instant, no flicker
- *
- * For videos: the inactive buffer's video element loads via src change,
- * and we wait for onLoadedData before allowing the swap.
- * For stills: already preloaded on mount, swap is instant.
- *
- * This eliminates ALL React unmount/remount flicker because no media
- * elements are ever removed from the DOM.
+ * DOUBLE-BUFFER with READY-GATE:
+ * - Two buffers (A & B), only one visible at a time via z-index + visibility
+ * - OLD buffer stays visible until NEW buffer signals ready
+ * - Videos signal ready on onLoadedData
+ * - Stills signal ready after double-rAF (ensures paint)
+ * - A permanent fallback still sits behind both — you NEVER see black
  */
 
-function MediaBuffer({ src, active, onReady }: {
+const FALLBACK_STILL = HERO_MEDIA.find(src => !isVideo(src)) || HERO_MEDIA[0];
+
+function MediaBuffer({ src, isFront, onReady }: {
   src: string;
-  active: boolean;
+  isFront: boolean;
   onReady: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const isVid = isVideo(src);
+  const readyFiredRef = useRef(false);
+  const prevSrcRef = useRef(src);
 
-  // When src changes on this buffer, signal ready for stills immediately
+  // Reset readyFired when src changes; signal ready for stills after paint
   useEffect(() => {
+    if (src === prevSrcRef.current) return;
+    prevSrcRef.current = src;
+    readyFiredRef.current = false;
+
     if (!isVid) {
-      // Still image — already preloaded, ready immediately
-      onReady();
+      // Double rAF ensures the browser has actually painted the new background-image
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (!readyFiredRef.current) {
+            readyFiredRef.current = true;
+            onReady();
+          }
+        });
+      });
     }
   }, [src, isVid, onReady]);
 
-  // For videos, play when active, pause when not
+  // Video: play when front, pause when back
   useEffect(() => {
     if (!isVid || !videoRef.current) return;
-    if (active) {
+    if (isFront) {
+      videoRef.current.currentTime = 0;
       videoRef.current.play().catch(() => {});
+    } else {
+      videoRef.current.pause();
     }
-  }, [active, isVid]);
+  }, [isFront, isVid, src]);
+
+  const handleVideoLoaded = useCallback(() => {
+    if (!readyFiredRef.current) {
+      readyFiredRef.current = true;
+      onReady();
+    }
+  }, [onReady]);
 
   return (
     <div style={{
       position: "absolute",
       inset: 0,
-      opacity: active ? 1 : 0,
-      // No transition — we want instant swap since content is pre-loaded
+      zIndex: isFront ? 2 : 1,
+      // Front is visible; back is hidden but still in DOM loading content
+      visibility: isFront ? "visible" : "hidden",
     }}>
       {isVid ? (
         <video
           ref={videoRef}
           muted
           playsInline
-          onLoadedData={onReady}
+          preload="auto"
+          onLoadedData={handleVideoLoaded}
+          onCanPlay={handleVideoLoaded}
           style={{
             position: "absolute",
             inset: 0,
@@ -398,30 +366,27 @@ function MediaBuffer({ src, active, onReady }: {
           src={src}
         />
       ) : (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: `url('${src}')`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `url('${src}')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }} />
       )}
     </div>
   );
 }
 
 export function HeroAnimation() {
-  // Which buffer (A=0, B=1) is currently visible
-  const [activeBuffer, setActiveBuffer] = useState<0 | 1>(0);
-  // What media index each buffer is showing
+  const [frontBuffer, setFrontBuffer] = useState<0 | 1>(0);
   const [bufferSrc, setBufferSrc] = useState<[string, string]>([
     HERO_MEDIA[0],
     HERO_MEDIA[1],
   ]);
   const mediaIndexRef = useRef(0);
-  const nextReadyRef = useRef(false);
+  const pendingSwapRef = useRef(false);
+  const safetyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [textIndex, setTextIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const wasWhiteCardRef = useRef(false);
@@ -444,47 +409,71 @@ export function HeroAnimation() {
     return () => clearTimeout(fallback);
   }, []);
 
-  // Called by the INACTIVE buffer when its content is ready to display
-  const onNextReady = useCallback(() => {
-    nextReadyRef.current = true;
+  // Preload the next video into browser cache
+  useEffect(() => {
+    const nextIdx = (mediaIndexRef.current + 1) % HERO_MEDIA.length;
+    const nextUrl = HERO_MEDIA[nextIdx];
+    if (isVideo(nextUrl)) {
+      const vid = document.createElement("video");
+      vid.preload = "auto";
+      vid.src = nextUrl;
+      vid.load();
+    }
+  }, [frontBuffer]);
+
+  // Called by the BACK buffer when its content is ready to display
+  const doSwap = useCallback(() => {
+    if (!pendingSwapRef.current) return;
+    pendingSwapRef.current = false;
+    if (safetyTimerRef.current) {
+      clearTimeout(safetyTimerRef.current);
+      safetyTimerRef.current = null;
+    }
+    setFrontBuffer(prev => (prev === 0 ? 1 : 0) as 0 | 1);
   }, []);
 
-  // Advance to next media: swap active buffer, then load next-next into the now-inactive buffer
-  const cycleMedia = useCallback(() => {
-    const newActive = activeBuffer === 0 ? 1 : 0;
+  // Request transition: load next media into back buffer, DON'T swap yet
+  const requestTransition = useCallback(() => {
+    if (pendingSwapRef.current) return; // already transitioning
+
     const nextIdx = (mediaIndexRef.current + 1) % HERO_MEDIA.length;
     mediaIndexRef.current = nextIdx;
+    const backBuffer = frontBuffer === 0 ? 1 : 0;
 
-    // Swap: the buffer that was loading is now visible
-    setActiveBuffer(newActive as 0 | 1);
+    pendingSwapRef.current = true;
 
-    // Load the NEXT media into the buffer that just became inactive
-    const preloadIdx = (nextIdx + 1) % HERO_MEDIA.length;
-    nextReadyRef.current = false;
+    // Load next media into back buffer
     setBufferSrc(prev => {
       const next: [string, string] = [...prev] as [string, string];
-      // The now-inactive buffer (old active) gets the next-next media
-      next[activeBuffer] = HERO_MEDIA[preloadIdx];
+      next[backBuffer] = HERO_MEDIA[nextIdx];
       return next;
     });
-  }, [activeBuffer]);
+
+    // Safety: if onReady never fires (broken video/image), force swap after 800ms
+    safetyTimerRef.current = setTimeout(() => {
+      if (pendingSwapRef.current) {
+        pendingSwapRef.current = false;
+        setFrontBuffer(prev => (prev === 0 ? 1 : 0) as 0 | 1);
+      }
+    }, 800);
+  }, [frontBuffer]);
 
   // When exiting a white card, advance media
   useEffect(() => {
     if (wasWhiteCardRef.current && !isWhiteCard) {
-      cycleMedia();
+      requestTransition();
     }
     wasWhiteCardRef.current = isWhiteCard;
-  }, [isWhiteCard, cycleMedia]);
+  }, [isWhiteCard, requestTransition]);
 
-  // Timer to cycle media
+  // Timer to cycle media — only starts AFTER a swap completes (frontBuffer changes)
   useEffect(() => {
     if (!imagesLoaded || isWhiteCard) return;
-    const currentSrc = bufferSrc[activeBuffer];
+    const currentSrc = bufferSrc[frontBuffer];
     const duration = isVideo(currentSrc) ? VIDEO_DURATION : IMAGE_DURATION;
-    const timer = setTimeout(cycleMedia, duration);
+    const timer = setTimeout(requestTransition, duration);
     return () => clearTimeout(timer);
-  }, [activeBuffer, imagesLoaded, cycleMedia, isWhiteCard, bufferSrc]);
+  }, [frontBuffer, imagesLoaded, requestTransition, isWhiteCard, bufferSrc]);
 
   // Text sequence cycling
   const cycleText = useCallback(() => {
@@ -510,12 +499,22 @@ export function HeroAnimation() {
         backgroundColor: "#0a0a0a",
       }}
     >
-      {/* White card overlay */}
+      {/* PERMANENT FALLBACK — always-visible still behind both buffers, never see black */}
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        backgroundImage: `url('${FALLBACK_STILL}')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        zIndex: 0,
+      }} />
+
+      {/* White card overlay — high z-index covers everything */}
       <div style={{
         position: "absolute",
         inset: 0,
         backgroundColor: "#F7F5F1",
-        zIndex: 1,
+        zIndex: 5,
         opacity: isWhiteCard ? 1 : 0,
         pointerEvents: isWhiteCard ? "auto" : "none",
       }} />
@@ -523,25 +522,24 @@ export function HeroAnimation() {
       {/* BUFFER A — permanent, never unmounts */}
       <MediaBuffer
         src={bufferSrc[0]}
-        active={activeBuffer === 0 && !isWhiteCard}
-        onReady={activeBuffer === 0 ? () => {} : onNextReady}
+        isFront={frontBuffer === 0}
+        onReady={frontBuffer === 0 ? () => {} : doSwap}
       />
 
       {/* BUFFER B — permanent, never unmounts */}
       <MediaBuffer
         src={bufferSrc[1]}
-        active={activeBuffer === 1 && !isWhiteCard}
-        onReady={activeBuffer === 1 ? () => {} : onNextReady}
+        isFront={frontBuffer === 1}
+        onReady={frontBuffer === 1 ? () => {} : doSwap}
       />
 
       {/* Overlay for text legibility */}
       {showOverlay && (
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0, 0, 0, 0.15)", zIndex: 1 }} />
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0, 0, 0, 0.15)", zIndex: 6 }} />
       )}
 
       {/* TEXT LAYER */}
-      <div key={textIndex} style={{ position: "absolute", inset: 0, zIndex: 2 }}>
-
+      <div key={textIndex} style={{ position: "absolute", inset: 0, zIndex: 7 }}>
         {currentMoment.type === "text" && currentMoment.word && (
           <>
             <TypewriterText
