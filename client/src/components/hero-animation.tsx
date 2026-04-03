@@ -305,20 +305,18 @@ export function HeroAnimation() {
       // Clear all videos — stills render underneath
       clearContainer(vidContainer);
 
-      // Create new img, decode it, then stack on top and remove old
+      // Fully synchronous: create img, append on top, remove old.
+      // All stills are preloaded into memory cache, so src swap is instant.
+      // No async decode() — eliminates out-of-order promise race conditions.
       const img = document.createElement("img");
       img.style.cssText = MEDIA_STYLE;
       img.alt = "";
       img.src = url;
-      img.decode().then(() => {
-        stillContainer.appendChild(img);
-        // Remove all stills except the newest (now on top)
-        clearContainer(stillContainer, true);
-      }).catch(() => {
-        // Fallback: add anyway
-        stillContainer.appendChild(img);
-        clearContainer(stillContainer, true);
-      });
+      stillContainer.appendChild(img);
+      // Remove all children except the newest (last)
+      while (stillContainer.children.length > 1) {
+        stillContainer.removeChild(stillContainer.firstChild!);
+      }
     }
   }, [clearContainer]);
 
