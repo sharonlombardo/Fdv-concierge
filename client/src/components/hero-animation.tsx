@@ -54,10 +54,8 @@ function isVideo(url: string): boolean {
   return /\.(mp4|MP4|webm|mov)$/i.test(url);
 }
 
-// Image cut timing — ~1 second per still (matched to Zara pacing)
-const IMAGE_DURATION = 1000;
-// Videos hold ~2 seconds so you see the motion
-const VIDEO_DURATION = 2000;
+// All media cuts at ~1 second — matched to Zara (stills AND videos)
+const MEDIA_DURATION = 1000;
 
 // --- TEXT MOMENTS ---
 
@@ -344,10 +342,9 @@ export function HeroAnimation() {
 
   useEffect(() => {
     if (!imagesLoaded || imageTimerPaused.current) return;
-    const duration = currentIsVideo ? VIDEO_DURATION : IMAGE_DURATION;
-    const timer = setTimeout(cycleMedia, duration);
+    const timer = setTimeout(cycleMedia, MEDIA_DURATION);
     return () => clearTimeout(timer);
-  }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard, currentIsVideo]);
+  }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard]);
 
   // Text sequence cycling
   const cycleText = useCallback(() => {
@@ -405,7 +402,7 @@ export function HeroAnimation() {
 
       {/* Overlay for text legibility */}
       {showOverlay && (
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0, 0, 0, 0.25)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0, 0, 0, 0.15)" }} />
       )}
 
       {/* TEXT LAYER */}
