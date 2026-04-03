@@ -32,13 +32,13 @@ const HERO_MEDIA = [
   `${V2}/hydra_cave_hotel.jpg`,
   // — Hydra / Greece videos —
   `${VIDEO_BASE}/hydra%20clip%201.MP4`,
-  `${V2}/greece_water_pan.mp4`,
+  `${V2}/greece_water_pan.mp4?v=2`,
   `${V2}/hydra_black_fringe_caftan_video.mp4`,
   // — Hydra stills —
   `${BLOB_BASE}/hydra-light-1`,
   `${BLOB_BASE}/hydra-ritual-1`,
   // — Hydra videos —
-  `${V2}/hydra_water_panoramic.mp4`,
+  `${V2}/hydra_water_panoramic.mp4?v=2`,
   `${V2}/hydra_interior_arches.mp4`,
   `${V2}/hydra_white_look_boar.mp4`,
   // — Hydra still + transition —
@@ -89,7 +89,7 @@ const HERO_MEDIA = [
 ];
 
 function isVideo(url: string): boolean {
-  return /\.(mp4|MP4|webm|mov)$/i.test(url);
+  return /\.(mp4|webm|mov)(\?.*)?$/i.test(url);
 }
 
 // Stills cut at 1s, videos hold 2s for motion
