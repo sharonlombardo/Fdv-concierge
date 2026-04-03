@@ -211,18 +211,19 @@ function ScatteredSyllable({ text, position, delay, color }: {
 }
 
 /*
- * MEDIA ENGINE — double-buffered stills + imperative video creation.
+ * MEDIA ENGINE — create/destroy pattern for both stills and videos.
  *
- * Stills use two <img> elements (A/B). The new image is loaded into the hidden
- * buffer and decoded via img.decode() BEFORE being revealed. The old image stays
- * fully visible until the swap — no partial painting, no Safari backgroundImage
- * rectangle artifacts.
+ * NO persistent hidden elements in the DOM. Every media item is:
+ * 1. Created as a new DOM element
+ * 2. Fully decoded/loaded OFF-SCREEN before being shown
+ * 3. Appended ON TOP of the current media
+ * 4. Old element removed AFTER new one is painted
  *
- * Videos are created/destroyed via DOM API (not React state) to avoid Safari
- * compositor ghost frames from hidden <video> elements.
+ * This eliminates Safari compositor artifacts from hidden elements
+ * leaking partial frames.
  */
 
-const IMG_STYLE = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
+const MEDIA_STYLE = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
 
 export function HeroAnimation() {
   const [textIndex, setTextIndex] = useState(0);
@@ -230,14 +231,11 @@ export function HeroAnimation() {
 
   // Refs for imperative media management
   const containerRef = useRef<HTMLDivElement>(null);
-  const stillARef = useRef<HTMLImageElement>(null);
-  const stillBRef = useRef<HTMLImageElement>(null);
-  const activeStillRef = useRef<"A" | "B">("A");
+  const stillContainerRef = useRef<HTMLDivElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const mediaIndexRef = useRef(0);
   const mediaTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isWhiteCardRef = useRef(false);
-  const currentVideoRef = useRef<HTMLVideoElement | null>(null);
 
   const currentMoment = TEXT_SEQUENCE[textIndex];
   const isWhiteCard = currentMoment.type === "whitecard";
@@ -251,7 +249,6 @@ export function HeroAnimation() {
     stills.forEach(src => {
       const img = new Image();
       img.onload = () => {
-        // Pre-decode so future decode() calls are instant
         img.decode().catch(() => {});
         loaded++;
         if (loaded >= total) setImagesLoaded(true);
@@ -262,70 +259,68 @@ export function HeroAnimation() {
     setTimeout(() => setImagesLoaded(true), 4000);
   }, []);
 
-  // Remove all video elements from container
-  const clearVideos = useCallback(() => {
-    const vidContainer = videoContainerRef.current;
-    if (!vidContainer) return;
-    // Clear ALL children, not just tracked ref — prevents orphaned elements
-    while (vidContainer.firstChild) {
-      const child = vidContainer.firstChild as HTMLVideoElement;
-      if (child.pause) child.pause();
-      vidContainer.removeChild(child);
+  // Remove all children from a container
+  const clearContainer = useCallback((container: HTMLDivElement, keepLast = false) => {
+    if (keepLast) {
+      while (container.children.length > 1) {
+        const child = container.firstChild as HTMLElement;
+        if ((child as HTMLVideoElement).pause) (child as HTMLVideoElement).pause();
+        container.removeChild(child);
+      }
+    } else {
+      while (container.firstChild) {
+        const child = container.firstChild as HTMLElement;
+        if ((child as HTMLVideoElement).pause) (child as HTMLVideoElement).pause();
+        container.removeChild(child);
+      }
     }
-    currentVideoRef.current = null;
   }, []);
 
-  // Show a specific media item — called imperatively, no React state
+  // Show a specific media item
   const showMedia = useCallback((index: number) => {
     const url = HERO_MEDIA[index];
     const isVid = isVideo(url);
-    const stillA = stillARef.current;
-    const stillB = stillBRef.current;
+    const stillContainer = stillContainerRef.current;
     const vidContainer = videoContainerRef.current;
-    if (!stillA || !stillB || !vidContainer) return;
+    if (!stillContainer || !vidContainer) return;
 
     if (isVid) {
-      // Remove ALL existing video elements
-      clearVideos();
+      // Clear all videos first
+      clearContainer(vidContainer);
 
-      // Create a fresh video element
-      // Start invisible — only reveal when first frame is decoded
+      // Create video element — hidden until first frame is ready
       const video = document.createElement("video");
       video.muted = true;
       video.playsInline = true;
       video.autoplay = true;
       video.preload = "auto";
-      video.style.cssText = IMG_STYLE + "opacity:0;";
-      // Listen for first frame BEFORE setting src
+      video.style.cssText = MEDIA_STYLE + "opacity:0;";
       video.addEventListener("loadeddata", () => {
         video.style.opacity = "1";
       }, { once: true });
       video.src = url;
       vidContainer.appendChild(video);
-      currentVideoRef.current = video;
       video.play().catch(() => {});
     } else {
-      // Remove ALL video elements
-      clearVideos();
+      // Clear all videos — stills render underneath
+      clearContainer(vidContainer);
 
-      // Double-buffer: load into standby img, decode, then swap
-      const isA = activeStillRef.current === "A";
-      const active = isA ? stillA : stillB;
-      const standby = isA ? stillB : stillA;
-
-      standby.src = url;
-      standby.decode().then(() => {
-        standby.style.opacity = "1";
-        active.style.opacity = "0";
-        activeStillRef.current = isA ? "B" : "A";
+      // Create new img, decode it, then stack on top and remove old
+      const img = document.createElement("img");
+      img.style.cssText = MEDIA_STYLE;
+      img.alt = "";
+      img.src = url;
+      img.decode().then(() => {
+        stillContainer.appendChild(img);
+        // Remove all stills except the newest (now on top)
+        clearContainer(stillContainer, true);
       }).catch(() => {
-        // Fallback: swap immediately even if decode fails
-        standby.style.opacity = "1";
-        active.style.opacity = "0";
-        activeStillRef.current = isA ? "B" : "A";
+        // Fallback: add anyway
+        stillContainer.appendChild(img);
+        clearContainer(stillContainer, true);
       });
     }
-  }, [clearVideos]);
+  }, [clearContainer]);
 
   // Advance to next media
   const advance = useCallback(() => {
@@ -347,18 +342,13 @@ export function HeroAnimation() {
   // Start media cycling when images are loaded
   useEffect(() => {
     if (!imagesLoaded) return;
-    // Initialize: show first still on buffer A
-    const stillA = stillARef.current;
-    if (stillA) {
-      stillA.src = HERO_MEDIA[0];
-      stillA.style.opacity = "1";
-    }
     scheduleNext(0);
     return () => {
       if (mediaTimerRef.current) clearTimeout(mediaTimerRef.current);
-      clearVideos();
+      const vidContainer = videoContainerRef.current;
+      if (vidContainer) clearContainer(vidContainer);
     };
-  }, [imagesLoaded, scheduleNext, clearVideos]);
+  }, [imagesLoaded, scheduleNext, clearContainer]);
 
   // Handle white card enter/exit
   const wasWhiteCardRef = useRef(false);
@@ -366,13 +356,11 @@ export function HeroAnimation() {
     if (!imagesLoaded) return;
 
     if (isWhiteCard && !wasWhiteCardRef.current) {
-      // Entering white card — pause media timer
       if (mediaTimerRef.current) {
         clearTimeout(mediaTimerRef.current);
         mediaTimerRef.current = null;
       }
     } else if (!isWhiteCard && wasWhiteCardRef.current) {
-      // Exiting white card — advance and resume
       const nextIdx = (mediaIndexRef.current + 1) % HERO_MEDIA.length;
       mediaIndexRef.current = nextIdx;
       showMedia(nextIdx);
@@ -392,7 +380,7 @@ export function HeroAnimation() {
     return () => clearTimeout(timer);
   }, [textIndex, imagesLoaded, cycleText]);
 
-  // Preload the next upcoming video in the sequence
+  // Preload the next upcoming video
   useEffect(() => {
     if (!imagesLoaded) return;
     const idx = mediaIndexRef.current;
@@ -421,35 +409,26 @@ export function HeroAnimation() {
         backgroundColor: "#0a0a0a",
       }}
     >
-      {/* Layer 0: Still buffer A — starts visible with first image */}
-      <img
-        ref={stillARef}
-        alt=""
-        src={HERO_MEDIA[0]}
-        style={{
-          position: "absolute", inset: 0, width: "100%", height: "100%",
-          objectFit: "cover" as const, opacity: 1,
-        }}
-      />
+      {/* Layer 0: Still container — img elements created/destroyed here */}
+      <div ref={stillContainerRef} style={{ position: "absolute", inset: 0 }}>
+        {/* First image rendered by React as permanent base — never removed */}
+        <img
+          src={HERO_MEDIA[0]}
+          alt=""
+          style={{
+            position: "absolute", inset: 0, width: "100%", height: "100%",
+            objectFit: "cover" as const,
+          }}
+        />
+      </div>
 
-      {/* Layer 1: Still buffer B — starts hidden */}
-      <img
-        ref={stillBRef}
-        alt=""
-        src={HERO_MEDIA[0]}
-        style={{
-          position: "absolute", inset: 0, width: "100%", height: "100%",
-          objectFit: "cover" as const, opacity: 0,
-        }}
-      />
-
-      {/* Layer 2: Video container — video elements created/destroyed imperatively */}
+      {/* Layer 1: Video container — video elements created/destroyed here */}
       <div
         ref={videoContainerRef}
         style={{ position: "absolute", inset: 0 }}
       />
 
-      {/* Layer 3: White card overlay */}
+      {/* Layer 2: White card overlay */}
       <div style={{
         position: "absolute", inset: 0, backgroundColor: "#F7F5F1",
         zIndex: 5, opacity: isWhiteCard ? 1 : 0,
@@ -457,12 +436,12 @@ export function HeroAnimation() {
         pointerEvents: isWhiteCard ? "auto" : "none",
       }} />
 
-      {/* Layer 4: Dark overlay for text */}
+      {/* Layer 3: Dark overlay for text */}
       {showOverlay && (
         <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.15)", zIndex: 6 }} />
       )}
 
-      {/* Layer 5: Text */}
+      {/* Layer 4: Text */}
       <div key={textIndex} style={{ position: "absolute", inset: 0, zIndex: 7 }}>
         {currentMoment.type === "text" && currentMoment.word && (
           <>
