@@ -31,11 +31,6 @@ const HERO_MEDIA = [
   `${VIDEO_BASE}/hero-video-3.MP4`,
   `${BLOB_BASE}/slow-culture-1`,
   `${BLOB_BASE}/slow-museum`,
-  // Guide scroll clips — clumped together like Zara's quick scroll sequence
-  `${VIDEO_BASE}/guide%201.mp4`,
-  `${VIDEO_BASE}/guide%202.mp4`,
-  `${VIDEO_BASE}/guide%203.mp4`,
-  `${VIDEO_BASE}/guide%20clip%204.MP4`,
   `${BLOB_BASE}/slow-lunch`,
   `${BLOB_BASE}/destination-slow-travel`,
   `${BLOB_BASE}/retreat-motion-1`,
@@ -47,7 +42,6 @@ const HERO_MEDIA = [
   `${BLOB_BASE}/newyork-experience-1`,
   `${BLOB_BASE}/newyork-ritual-1`,
   `${BLOB_BASE}/destination-new-york`,
-  `${VIDEO_BASE}/last%20video%20clip.mp4`,
 ];
 
 function isVideo(url: string): boolean {
