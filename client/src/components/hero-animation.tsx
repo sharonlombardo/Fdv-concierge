@@ -69,7 +69,7 @@ function isVideo(url: string): boolean {
 const IMAGE_DURATION = 750;
 const VIDEO_DURATION = 2000;
 
-// Precompute: for each index, find the nearest preceding still (for fallback)
+// Precompute: for each index, find the nearest preceding still (for fallback behind videos)
 const NEAREST_STILL: string[] = [];
 {
   let lastStill = HERO_MEDIA.find(u => !isVideo(u)) || HERO_MEDIA[0];
@@ -211,170 +211,65 @@ function ScatteredSyllable({ text, position, delay, color }: {
 }
 
 /*
- * MEDIA ENGINE — create/destroy pattern for both stills and videos.
+ * Pure React state approach — no imperative DOM manipulation.
+ * This is the original architecture that worked without rectangle artifacts.
  *
- * NO persistent hidden elements in the DOM. Every media item is:
- * 1. Created as a new DOM element
- * 2. Fully decoded/loaded OFF-SCREEN before being shown
- * 3. Appended ON TOP of the current media
- * 4. Old element removed AFTER new one is painted
- *
- * This eliminates Safari compositor artifacts from hidden elements
- * leaking partial frames.
+ * Added: permanent fallback still behind media to prevent black frames
+ * during React unmount/mount transitions.
  */
 
-const MEDIA_STYLE = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
-
 export function HeroAnimation() {
+  const [mediaIndex, setMediaIndex] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-
-  // Refs for imperative media management
-  const containerRef = useRef<HTMLDivElement>(null);
-  const stillContainerRef = useRef<HTMLDivElement>(null);
-  const videoContainerRef = useRef<HTMLDivElement>(null);
-  const mediaIndexRef = useRef(0);
-  const mediaTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isWhiteCardRef = useRef(false);
+  const prevMediaRef = useRef(0);
 
   const currentMoment = TEXT_SEQUENCE[textIndex];
   const isWhiteCard = currentMoment.type === "whitecard";
-  isWhiteCardRef.current = isWhiteCard;
+  const currentMedia = HERO_MEDIA[mediaIndex];
+  const currentIsVideo = isVideo(currentMedia);
 
-  // Preload all stills and decode them into browser cache
+  // Track the last still shown (for fallback behind videos)
+  const lastStillRef = useRef(HERO_MEDIA[0]);
+  if (!currentIsVideo && !isWhiteCard) {
+    lastStillRef.current = currentMedia;
+  }
+
+  // Preload all stills
   useEffect(() => {
     let loaded = 0;
     const stills = HERO_MEDIA.filter(s => !isVideo(s));
     const total = stills.length;
     stills.forEach(src => {
       const img = new Image();
-      img.onload = () => {
-        img.decode().catch(() => {});
-        loaded++;
-        if (loaded >= total) setImagesLoaded(true);
-      };
+      img.onload = () => { loaded++; if (loaded >= total) setImagesLoaded(true); };
       img.onerror = () => { loaded++; if (loaded >= total) setImagesLoaded(true); };
       img.src = src;
     });
     setTimeout(() => setImagesLoaded(true), 4000);
   }, []);
 
-  // Remove all children from a container
-  const clearContainer = useCallback((container: HTMLDivElement, keepLast = false) => {
-    if (keepLast) {
-      while (container.children.length > 1) {
-        const child = container.firstChild as HTMLElement;
-        if ((child as HTMLVideoElement).pause) (child as HTMLVideoElement).pause();
-        container.removeChild(child);
-      }
-    } else {
-      while (container.firstChild) {
-        const child = container.firstChild as HTMLElement;
-        if ((child as HTMLVideoElement).pause) (child as HTMLVideoElement).pause();
-        container.removeChild(child);
-      }
-    }
+  // Media cycling — pauses during white cards
+  const cycleMedia = useCallback(() => {
+    setMediaIndex(prev => (prev + 1) % HERO_MEDIA.length);
   }, []);
 
-  // Show a specific media item
-  const showMedia = useCallback((index: number) => {
-    const url = HERO_MEDIA[index];
-    const isVid = isVideo(url);
-    const stillContainer = stillContainerRef.current;
-    const vidContainer = videoContainerRef.current;
-    if (!stillContainer || !vidContainer) return;
-
-    if (isVid) {
-      // Clear all videos first
-      clearContainer(vidContainer);
-
-      // Create video element — hidden until first frame is ready
-      const video = document.createElement("video");
-      video.muted = true;
-      video.playsInline = true;
-      video.autoplay = true;
-      video.preload = "auto";
-      video.style.cssText = MEDIA_STYLE + "opacity:0;";
-      video.addEventListener("loadeddata", () => {
-        video.style.opacity = "1";
-      }, { once: true });
-      video.src = url;
-      vidContainer.appendChild(video);
-      video.play().catch(() => {});
-    } else {
-      // Clear all videos — stills render underneath
-      clearContainer(vidContainer);
-
-      // Fully synchronous: create img, append on top, remove old.
-      // All stills are preloaded into memory cache, so src swap is instant.
-      // No async decode() — eliminates out-of-order promise race conditions.
-      const img = document.createElement("img");
-      img.style.cssText = MEDIA_STYLE;
-      img.alt = "";
-      img.src = url;
-      stillContainer.appendChild(img);
-      // Remove all children except the newest (last)
-      while (stillContainer.children.length > 1) {
-        stillContainer.removeChild(stillContainer.firstChild!);
-      }
-    }
-  }, [clearContainer]);
-
-  // Advance to next media
-  const advance = useCallback(() => {
-    if (isWhiteCardRef.current) return;
-    const nextIdx = (mediaIndexRef.current + 1) % HERO_MEDIA.length;
-    mediaIndexRef.current = nextIdx;
-    showMedia(nextIdx);
-    scheduleNext(nextIdx);
-  }, [showMedia]);
-
-  // Schedule the next advance
-  const scheduleNext = useCallback((index: number) => {
-    if (mediaTimerRef.current) clearTimeout(mediaTimerRef.current);
-    const url = HERO_MEDIA[index];
-    const duration = isVideo(url) ? VIDEO_DURATION : IMAGE_DURATION;
-    mediaTimerRef.current = setTimeout(advance, duration);
-  }, [advance]);
-
-  // Start media cycling when images are loaded
   useEffect(() => {
-    if (!imagesLoaded) return;
-    scheduleNext(0);
-    return () => {
-      if (mediaTimerRef.current) clearTimeout(mediaTimerRef.current);
-      const vidContainer = videoContainerRef.current;
-      if (vidContainer) clearContainer(vidContainer);
-    };
-  }, [imagesLoaded, scheduleNext, clearContainer]);
+    if (!imagesLoaded || isWhiteCard) return;
+    const duration = isVideo(HERO_MEDIA[mediaIndex]) ? VIDEO_DURATION : IMAGE_DURATION;
+    const timer = setTimeout(cycleMedia, duration);
+    return () => clearTimeout(timer);
+  }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard]);
 
-  // Handle white card enter/exit
-  const wasWhiteCardRef = useRef(false);
-  useEffect(() => {
-    if (!imagesLoaded) return;
-
-    if (isWhiteCard && !wasWhiteCardRef.current) {
-      if (mediaTimerRef.current) {
-        clearTimeout(mediaTimerRef.current);
-        mediaTimerRef.current = null;
-      }
-    } else if (!isWhiteCard && wasWhiteCardRef.current) {
-      const nextIdx = (mediaIndexRef.current + 1) % HERO_MEDIA.length;
-      mediaIndexRef.current = nextIdx;
-      showMedia(nextIdx);
-      scheduleNext(nextIdx);
-    }
-
-    wasWhiteCardRef.current = isWhiteCard;
-  }, [isWhiteCard, imagesLoaded, showMedia, scheduleNext]);
-
-  // Text timer
+  // Text sequence cycling
   const cycleText = useCallback(() => {
-    setTextIndex(p => (p + 1) % TEXT_SEQUENCE.length);
+    setTextIndex(prev => (prev + 1) % TEXT_SEQUENCE.length);
   }, []);
+
   useEffect(() => {
     if (!imagesLoaded) return;
-    const timer = setTimeout(cycleText, getTextDuration(TEXT_SEQUENCE[textIndex]));
+    const duration = getTextDuration(TEXT_SEQUENCE[textIndex]);
+    const timer = setTimeout(cycleText, duration);
     return () => clearTimeout(timer);
   }, [textIndex, imagesLoaded, cycleText]);
 
@@ -382,49 +277,62 @@ export function HeroAnimation() {
 
   return (
     <section
-      ref={containerRef}
       style={{
         position: "relative",
         width: "100%",
         height: "100vh",
         overflow: "hidden",
-        backgroundColor: "#0a0a0a",
+        backgroundColor: isWhiteCard ? "#F7F5F1" : "#0a0a0a",
       }}
     >
-      {/* Layer 0: Permanent base still — React-owned, never touched imperatively */}
-      <img
-        src={HERO_MEDIA[0]}
-        alt=""
+      {/* Permanent fallback still — prevents black frames during transitions */}
+      <div
         style={{
-          position: "absolute", inset: 0, width: "100%", height: "100%",
-          objectFit: "cover" as const,
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `url('${lastStillRef.current}')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       />
 
-      {/* Layer 1: Still container — starts EMPTY, only imperatively modified */}
-      <div ref={stillContainerRef} style={{ position: "absolute", inset: 0 }} />
-
-      {/* Layer 2: Video container — starts EMPTY, only imperatively modified */}
-      <div
-        ref={videoContainerRef}
-        style={{ position: "absolute", inset: 0 }}
-      />
-
-      {/* Layer 2: White card overlay */}
-      <div style={{
-        position: "absolute", inset: 0, backgroundColor: "#F7F5F1",
-        zIndex: 5, opacity: isWhiteCard ? 1 : 0,
-        transition: "opacity 0.1s",
-        pointerEvents: isWhiteCard ? "auto" : "none",
-      }} />
-
-      {/* Layer 3: Dark overlay for text */}
-      {showOverlay && (
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.15)", zIndex: 6 }} />
+      {/* Media layer — image or video, hidden during white card */}
+      {!isWhiteCard && (
+        currentIsVideo ? (
+          <video
+            key={currentMedia}
+            autoPlay
+            muted
+            playsInline
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+            src={currentMedia}
+          />
+        ) : (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: `url('${currentMedia}')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+        )
       )}
 
-      {/* Layer 4: Text */}
-      <div key={textIndex} style={{ position: "absolute", inset: 0, zIndex: 7 }}>
+      {/* Overlay for text legibility */}
+      {showOverlay && (
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0, 0, 0, 0.15)", zIndex: 2 }} />
+      )}
+
+      {/* Text layer */}
+      <div key={textIndex} style={{ position: "absolute", inset: 0, zIndex: 3 }}>
         {currentMoment.type === "text" && currentMoment.word && (
           <>
             <TypewriterText word={currentMoment.word} style={currentMoment.position || {}} color="#ffffff" fontSize={currentMoment.fontSize} />
