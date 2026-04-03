@@ -5,7 +5,7 @@ const GUIDE_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/imag
 const VIDEO_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com";
 const V2 = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/4.3";
 
-// Media pool — 36 stills + 21 video clips = 57 items
+// Media pool — 36 stills + 22 video clips = 58 items
 // Rule: stills always appear in groups of 2+, never a lone still between videos
 const HERO_MEDIA = [
   // — Morocco stills —
@@ -55,6 +55,7 @@ const HERO_MEDIA = [
   // — Italy / Med videos —
   `${VIDEO_BASE}/italy%20coast.MP4`,
   `${V2}/portofion_cliffside.mp4`,
+  `${V2}/med_stroll.mp4`,
   `${V2}/med_interior_drapes.mp4`,
   `${V2}/interior%20of%20villa.mp4`,
   `${V2}/resort%20with%20curtains.mp4`,
