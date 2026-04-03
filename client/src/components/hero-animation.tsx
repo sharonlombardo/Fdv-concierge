@@ -335,23 +335,44 @@ function ScatteredSyllable({ text, position, delay, color }: {
   );
 }
 
+// Double-buffered video component — fades in only when ready to play
+function BufferedVideo({ src, visible }: { src: string; visible: boolean }) {
+  const [ready, setReady] = useState(false);
+
+  return (
+    <video
+      key={src}
+      autoPlay
+      muted
+      playsInline
+      onLoadedData={() => setReady(true)}
+      style={{
+        position: "absolute",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        opacity: visible && ready ? 1 : 0,
+        transition: "opacity 0.15s ease-in",
+      }}
+      src={src}
+    />
+  );
+}
+
 export function HeroAnimation() {
   const [mediaIndex, setMediaIndex] = useState(0);
+  const [prevMediaIndex, setPrevMediaIndex] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  // Track the last still shown — always available as fallback to prevent black frames
-  const lastStillRef = useRef(HERO_MEDIA.find(src => !isVideo(src)) || HERO_MEDIA[0]);
   const wasWhiteCardRef = useRef(false);
 
   const currentMoment = TEXT_SEQUENCE[textIndex];
   const isWhiteCard = currentMoment.type === "whitecard";
   const currentMedia = HERO_MEDIA[mediaIndex];
   const currentIsVideo = isVideo(currentMedia);
-
-  // Track last still for fallback
-  if (!currentIsVideo && !isWhiteCard) {
-    lastStillRef.current = currentMedia;
-  }
+  const prevMedia = HERO_MEDIA[prevMediaIndex];
+  const prevIsVideo = isVideo(prevMedia);
 
   // Preload ALL still images on mount
   useEffect(() => {
@@ -368,23 +389,12 @@ export function HeroAnimation() {
     return () => clearTimeout(fallback);
   }, []);
 
-  // Preload upcoming video so it's buffered
-  useEffect(() => {
-    const nextIdx = (mediaIndex + 1) % HERO_MEDIA.length;
-    const nextUrl = HERO_MEDIA[nextIdx];
-    if (isVideo(nextUrl)) {
-      const link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "video";
-      link.href = nextUrl;
-      document.head.appendChild(link);
-      return () => { document.head.removeChild(link); };
-    }
-  }, [mediaIndex]);
-
   // Media cycling — pauses during white cards
   const cycleMedia = useCallback(() => {
-    setMediaIndex((prev) => (prev + 1) % HERO_MEDIA.length);
+    setMediaIndex((prev) => {
+      setPrevMediaIndex(prev);
+      return (prev + 1) % HERO_MEDIA.length;
+    });
   }, []);
 
   // When exiting a white card, advance media so you don't see the same shot before and after
@@ -416,6 +426,7 @@ export function HeroAnimation() {
   }, [textIndex, imagesLoaded, cycleText]);
 
   const showOverlay = currentMoment.type === "text" || currentMoment.type === "scattered";
+  const showMedia = !isWhiteCard;
 
   return (
     <section
@@ -424,55 +435,74 @@ export function HeroAnimation() {
         width: "100%",
         height: "100vh",
         overflow: "hidden",
-        backgroundColor: isWhiteCard ? "#F7F5F1" : "#0a0a0a",
+        backgroundColor: "#0a0a0a",
       }}
     >
-      {/* Fallback layer — last still image always visible behind everything to prevent black flash */}
-      {!isWhiteCard && (
+      {/* White card background — rendered as overlay, not by swapping backgroundColor */}
+      {isWhiteCard && (
+        <div style={{ position: "absolute", inset: 0, backgroundColor: "#F7F5F1", zIndex: 1 }} />
+      )}
+
+      {/*
+        MEDIA LAYERS — always rendered, use opacity to show/hide.
+        Three layers stacked:
+        1. Previous still (bottom) — always visible as safety net
+        2. Previous media (middle) — stays visible until current is ready
+        3. Current media (top) — fades in; videos wait for onLoadedData
+      */}
+
+      {/* Layer 1: Previous still fallback — prevents any black frame */}
+      {!prevIsVideo && (
         <div
           style={{
             position: "absolute",
             inset: 0,
-            backgroundImage: `url('${lastStillRef.current}')`,
+            backgroundImage: `url('${prevMedia}')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
+            opacity: showMedia ? 1 : 0,
           }}
         />
       )}
 
-      {/* Current media layer — video or image on top of fallback */}
-      {!isWhiteCard && (
-        currentIsVideo ? (
-          <video
-            key={currentMedia}
-            autoPlay
-            muted
-            playsInline
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-            src={currentMedia}
-          />
-        ) : (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              backgroundImage: `url('${currentMedia}')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-        )
+      {/* Layer 2: Previous video — stays visible behind current until current video loads */}
+      {prevIsVideo && prevMedia !== currentMedia && (
+        <video
+          key={`prev-${prevMedia}`}
+          autoPlay
+          muted
+          playsInline
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            opacity: showMedia ? 1 : 0,
+          }}
+          src={prevMedia}
+        />
+      )}
+
+      {/* Layer 3: Current media — stills show immediately, videos fade in when buffered */}
+      {currentIsVideo ? (
+        <BufferedVideo src={currentMedia} visible={showMedia} />
+      ) : (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `url('${currentMedia}')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            opacity: showMedia ? 1 : 0,
+          }}
+        />
       )}
 
       {/* Overlay for text legibility */}
       {showOverlay && (
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0, 0, 0, 0.15)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0, 0, 0, 0.15)", zIndex: 1 }} />
       )}
 
       {/* TEXT LAYER */}
