@@ -380,22 +380,6 @@ export function HeroAnimation() {
     return () => clearTimeout(timer);
   }, [textIndex, imagesLoaded, cycleText]);
 
-  // Preload the next upcoming video
-  useEffect(() => {
-    if (!imagesLoaded) return;
-    const idx = mediaIndexRef.current;
-    for (let offset = 1; offset <= 5; offset++) {
-      const nextUrl = HERO_MEDIA[(idx + offset) % HERO_MEDIA.length];
-      if (isVideo(nextUrl)) {
-        const v = document.createElement("video");
-        v.preload = "auto";
-        v.src = nextUrl;
-        v.load();
-        break;
-      }
-    }
-  }, [imagesLoaded, textIndex]);
-
   const showOverlay = currentMoment.type === "text" || currentMoment.type === "scattered";
 
   return (
@@ -409,20 +393,20 @@ export function HeroAnimation() {
         backgroundColor: "#0a0a0a",
       }}
     >
-      {/* Layer 0: Still container — img elements created/destroyed here */}
-      <div ref={stillContainerRef} style={{ position: "absolute", inset: 0 }}>
-        {/* First image rendered by React as permanent base — never removed */}
-        <img
-          src={HERO_MEDIA[0]}
-          alt=""
-          style={{
-            position: "absolute", inset: 0, width: "100%", height: "100%",
-            objectFit: "cover" as const,
-          }}
-        />
-      </div>
+      {/* Layer 0: Permanent base still — React-owned, never touched imperatively */}
+      <img
+        src={HERO_MEDIA[0]}
+        alt=""
+        style={{
+          position: "absolute", inset: 0, width: "100%", height: "100%",
+          objectFit: "cover" as const,
+        }}
+      />
 
-      {/* Layer 1: Video container — video elements created/destroyed here */}
+      {/* Layer 1: Still container — starts EMPTY, only imperatively modified */}
+      <div ref={stillContainerRef} style={{ position: "absolute", inset: 0 }} />
+
+      {/* Layer 2: Video container — starts EMPTY, only imperatively modified */}
       <div
         ref={videoContainerRef}
         style={{ position: "absolute", inset: 0 }}
