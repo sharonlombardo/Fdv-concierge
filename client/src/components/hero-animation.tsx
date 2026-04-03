@@ -335,44 +335,99 @@ function ScatteredSyllable({ text, position, delay, color }: {
   );
 }
 
-// Double-buffered video component — fades in only when ready to play
-function BufferedVideo({ src, visible }: { src: string; visible: boolean }) {
-  const [ready, setReady] = useState(false);
+/*
+ * TRUE DOUBLE-BUFFER MEDIA SYSTEM
+ *
+ * Two permanent DOM layers (A and B) that NEVER unmount. They alternate:
+ * - Active buffer is visible (opacity 1), showing current media
+ * - Inactive buffer is hidden (opacity 0), preloading the NEXT media
+ * - On transition: swap which buffer is active — instant, no flicker
+ *
+ * For videos: the inactive buffer's video element loads via src change,
+ * and we wait for onLoadedData before allowing the swap.
+ * For stills: already preloaded on mount, swap is instant.
+ *
+ * This eliminates ALL React unmount/remount flicker because no media
+ * elements are ever removed from the DOM.
+ */
+
+function MediaBuffer({ src, active, onReady }: {
+  src: string;
+  active: boolean;
+  onReady: () => void;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const isVid = isVideo(src);
+
+  // When src changes on this buffer, signal ready for stills immediately
+  useEffect(() => {
+    if (!isVid) {
+      // Still image — already preloaded, ready immediately
+      onReady();
+    }
+  }, [src, isVid, onReady]);
+
+  // For videos, play when active, pause when not
+  useEffect(() => {
+    if (!isVid || !videoRef.current) return;
+    if (active) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, [active, isVid]);
 
   return (
-    <video
-      key={src}
-      autoPlay
-      muted
-      playsInline
-      onLoadedData={() => setReady(true)}
-      style={{
-        position: "absolute",
-        inset: 0,
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        opacity: visible && ready ? 1 : 0,
-        transition: "opacity 0.15s ease-in",
-      }}
-      src={src}
-    />
+    <div style={{
+      position: "absolute",
+      inset: 0,
+      opacity: active ? 1 : 0,
+      // No transition — we want instant swap since content is pre-loaded
+    }}>
+      {isVid ? (
+        <video
+          ref={videoRef}
+          muted
+          playsInline
+          onLoadedData={onReady}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+          src={src}
+        />
+      ) : (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `url('${src}')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+      )}
+    </div>
   );
 }
 
 export function HeroAnimation() {
-  const [mediaIndex, setMediaIndex] = useState(0);
-  const [prevMediaIndex, setPrevMediaIndex] = useState(0);
+  // Which buffer (A=0, B=1) is currently visible
+  const [activeBuffer, setActiveBuffer] = useState<0 | 1>(0);
+  // What media index each buffer is showing
+  const [bufferSrc, setBufferSrc] = useState<[string, string]>([
+    HERO_MEDIA[0],
+    HERO_MEDIA[1],
+  ]);
+  const mediaIndexRef = useRef(0);
+  const nextReadyRef = useRef(false);
   const [textIndex, setTextIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const wasWhiteCardRef = useRef(false);
 
   const currentMoment = TEXT_SEQUENCE[textIndex];
   const isWhiteCard = currentMoment.type === "whitecard";
-  const currentMedia = HERO_MEDIA[mediaIndex];
-  const currentIsVideo = isVideo(currentMedia);
-  const prevMedia = HERO_MEDIA[prevMediaIndex];
-  const prevIsVideo = isVideo(prevMedia);
 
   // Preload ALL still images on mount
   useEffect(() => {
@@ -389,15 +444,32 @@ export function HeroAnimation() {
     return () => clearTimeout(fallback);
   }, []);
 
-  // Media cycling — pauses during white cards
-  const cycleMedia = useCallback(() => {
-    setMediaIndex((prev) => {
-      setPrevMediaIndex(prev);
-      return (prev + 1) % HERO_MEDIA.length;
-    });
+  // Called by the INACTIVE buffer when its content is ready to display
+  const onNextReady = useCallback(() => {
+    nextReadyRef.current = true;
   }, []);
 
-  // When exiting a white card, advance media so you don't see the same shot before and after
+  // Advance to next media: swap active buffer, then load next-next into the now-inactive buffer
+  const cycleMedia = useCallback(() => {
+    const newActive = activeBuffer === 0 ? 1 : 0;
+    const nextIdx = (mediaIndexRef.current + 1) % HERO_MEDIA.length;
+    mediaIndexRef.current = nextIdx;
+
+    // Swap: the buffer that was loading is now visible
+    setActiveBuffer(newActive as 0 | 1);
+
+    // Load the NEXT media into the buffer that just became inactive
+    const preloadIdx = (nextIdx + 1) % HERO_MEDIA.length;
+    nextReadyRef.current = false;
+    setBufferSrc(prev => {
+      const next: [string, string] = [...prev] as [string, string];
+      // The now-inactive buffer (old active) gets the next-next media
+      next[activeBuffer] = HERO_MEDIA[preloadIdx];
+      return next;
+    });
+  }, [activeBuffer]);
+
+  // When exiting a white card, advance media
   useEffect(() => {
     if (wasWhiteCardRef.current && !isWhiteCard) {
       cycleMedia();
@@ -405,13 +477,14 @@ export function HeroAnimation() {
     wasWhiteCardRef.current = isWhiteCard;
   }, [isWhiteCard, cycleMedia]);
 
+  // Timer to cycle media
   useEffect(() => {
     if (!imagesLoaded || isWhiteCard) return;
-    const url = HERO_MEDIA[mediaIndex];
-    const duration = isVideo(url) ? VIDEO_DURATION : IMAGE_DURATION;
+    const currentSrc = bufferSrc[activeBuffer];
+    const duration = isVideo(currentSrc) ? VIDEO_DURATION : IMAGE_DURATION;
     const timer = setTimeout(cycleMedia, duration);
     return () => clearTimeout(timer);
-  }, [mediaIndex, imagesLoaded, cycleMedia, isWhiteCard]);
+  }, [activeBuffer, imagesLoaded, cycleMedia, isWhiteCard, bufferSrc]);
 
   // Text sequence cycling
   const cycleText = useCallback(() => {
@@ -426,7 +499,6 @@ export function HeroAnimation() {
   }, [textIndex, imagesLoaded, cycleText]);
 
   const showOverlay = currentMoment.type === "text" || currentMoment.type === "scattered";
-  const showMedia = !isWhiteCard;
 
   return (
     <section
@@ -438,67 +510,29 @@ export function HeroAnimation() {
         backgroundColor: "#0a0a0a",
       }}
     >
-      {/* White card background — rendered as overlay, not by swapping backgroundColor */}
-      {isWhiteCard && (
-        <div style={{ position: "absolute", inset: 0, backgroundColor: "#F7F5F1", zIndex: 1 }} />
-      )}
+      {/* White card overlay */}
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        backgroundColor: "#F7F5F1",
+        zIndex: 1,
+        opacity: isWhiteCard ? 1 : 0,
+        pointerEvents: isWhiteCard ? "auto" : "none",
+      }} />
 
-      {/*
-        MEDIA LAYERS — always rendered, use opacity to show/hide.
-        Three layers stacked:
-        1. Previous still (bottom) — always visible as safety net
-        2. Previous media (middle) — stays visible until current is ready
-        3. Current media (top) — fades in; videos wait for onLoadedData
-      */}
+      {/* BUFFER A — permanent, never unmounts */}
+      <MediaBuffer
+        src={bufferSrc[0]}
+        active={activeBuffer === 0 && !isWhiteCard}
+        onReady={activeBuffer === 0 ? () => {} : onNextReady}
+      />
 
-      {/* Layer 1: Previous still fallback — prevents any black frame */}
-      {!prevIsVideo && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: `url('${prevMedia}')`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: showMedia ? 1 : 0,
-          }}
-        />
-      )}
-
-      {/* Layer 2: Previous video — stays visible behind current until current video loads */}
-      {prevIsVideo && prevMedia !== currentMedia && (
-        <video
-          key={`prev-${prevMedia}`}
-          autoPlay
-          muted
-          playsInline
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: showMedia ? 1 : 0,
-          }}
-          src={prevMedia}
-        />
-      )}
-
-      {/* Layer 3: Current media — stills show immediately, videos fade in when buffered */}
-      {currentIsVideo ? (
-        <BufferedVideo src={currentMedia} visible={showMedia} />
-      ) : (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: `url('${currentMedia}')`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: showMedia ? 1 : 0,
-          }}
-        />
-      )}
+      {/* BUFFER B — permanent, never unmounts */}
+      <MediaBuffer
+        src={bufferSrc[1]}
+        active={activeBuffer === 1 && !isWhiteCard}
+        onReady={activeBuffer === 1 ? () => {} : onNextReady}
+      />
 
       {/* Overlay for text legibility */}
       {showOverlay && (
@@ -508,7 +542,6 @@ export function HeroAnimation() {
       {/* TEXT LAYER */}
       <div key={textIndex} style={{ position: "absolute", inset: 0, zIndex: 2 }}>
 
-        {/* Typewriter text over images */}
         {currentMoment.type === "text" && currentMoment.word && (
           <>
             <TypewriterText
@@ -523,7 +556,6 @@ export function HeroAnimation() {
           </>
         )}
 
-        {/* Scattered syllables — large, staggered, at different positions */}
         {currentMoment.type === "scattered" && currentMoment.syllables && (
           <>
             {currentMoment.syllables.map((syl, i) => (
@@ -541,7 +573,6 @@ export function HeroAnimation() {
           </>
         )}
 
-        {/* White card — typewriter in black, positioned lower-left like Zara */}
         {isWhiteCard && currentMoment.word && (
           <TypewriterText
             word={currentMoment.word}
