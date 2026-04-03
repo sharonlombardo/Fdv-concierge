@@ -4,8 +4,8 @@ const BLOB_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/image
 const GUIDE_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco";
 const VIDEO_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com";
 
-// Media pool — 28 stills + 12 video clips
-// General videos spread early/middle, guide clips in order mid-to-late, postcard last
+// Media pool — 28 stills + 11 video clips
+// Fashion videos spread throughout, guide clips clumped together, postcard last
 const HERO_MEDIA = [
   `${BLOB_BASE}/morocco-hero`,
   `${BLOB_BASE}/morocco-motion-1`,
@@ -26,18 +26,19 @@ const HERO_MEDIA = [
   `${BLOB_BASE}/hydra-light-1`,
   `${BLOB_BASE}/hydra-light-2`,
   `${BLOB_BASE}/hydra-ritual-1`,
-  `${VIDEO_BASE}/guide%201.mp4`,
   `${BLOB_BASE}/destination-hydra`,
-  `${VIDEO_BASE}/guide%202.mp4`,
   `${BLOB_BASE}/slow-travel-hero`,
   `${VIDEO_BASE}/hero-video-3.MP4`,
   `${BLOB_BASE}/slow-culture-1`,
   `${BLOB_BASE}/slow-museum`,
+  // Guide scroll clips — clumped together like Zara's quick scroll sequence
+  `${VIDEO_BASE}/guide%201.mp4`,
+  `${VIDEO_BASE}/guide%202.mp4`,
   `${VIDEO_BASE}/guide%203.mp4`,
+  `${VIDEO_BASE}/guide%20clip%204.MP4`,
   `${BLOB_BASE}/slow-lunch`,
   `${BLOB_BASE}/destination-slow-travel`,
   `${BLOB_BASE}/retreat-motion-1`,
-  `${VIDEO_BASE}/guide%20clip%204.MP4`,
   `${BLOB_BASE}/retreat-ritual-1`,
   `${BLOB_BASE}/destination-retreat`,
   `${BLOB_BASE}/newyork-hero`,
