@@ -303,15 +303,16 @@ export function HeroAnimation() {
         }}
       />
 
-      {/* Video layer — persistent element when videos are playing.
-          No key prop: stays mounted across consecutive videos so the
-          fallback still doesn't flash between video-to-video transitions. */}
+      {/* Video layer — persistent element across consecutive videos.
+          src set in JSX for immediate content on mount (no blank frame).
+          useEffect handles load()/play() for video-to-video src changes. */}
       {currentIsVideo && (
         <video
           ref={videoRef}
           autoPlay
           muted
           playsInline
+          src={currentMedia}
           style={{
             position: "absolute",
             inset: 0,
