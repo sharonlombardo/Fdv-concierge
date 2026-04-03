@@ -66,8 +66,16 @@ function isVideo(url: string): boolean {
   return /\.(mp4|webm|mov)(\?.*)?$/i.test(url);
 }
 
-const IMAGE_DURATION = 750;
-const VIDEO_DURATION = 2000;
+// DEBUG MODE — slow timing + index overlay. Remove after debugging.
+const DEBUG = true;
+const IMAGE_DURATION = DEBUG ? 3000 : 750;
+const VIDEO_DURATION = DEBUG ? 5000 : 2000;
+
+// Short labels for debug overlay
+const MEDIA_LABELS = HERO_MEDIA.map((url, i) => {
+  const name = decodeURIComponent(url.split("/").pop() || "").slice(0, 40);
+  return `#${i} ${isVideo(url) ? "🎬" : "🖼"} ${name}`;
+});
 
 // Precompute: for each index, find the nearest preceding still (for fallback behind videos)
 const NEAREST_STILL: string[] = [];
@@ -348,6 +356,21 @@ export function HeroAnimation() {
           <TypewriterText word={currentMoment.word} style={{ bottom: "35%", left: "8%" }} color="#1A1A18" fontSize={SIZE_LARGE} />
         )}
       </div>
+
+      {/* DEBUG OVERLAY — shows current index, type, and filename */}
+      {DEBUG && (
+        <div style={{
+          position: "absolute", bottom: 12, left: 12, zIndex: 99,
+          background: "rgba(0,0,0,0.75)", color: "#0f0", padding: "6px 10px",
+          fontFamily: "monospace", fontSize: 11, borderRadius: 4,
+          maxWidth: "90%", lineHeight: 1.4,
+        }}>
+          <div>{MEDIA_LABELS[mediaIndex]}</div>
+          <div style={{ color: "#aaa", fontSize: 10 }}>
+            next: {MEDIA_LABELS[(mediaIndex + 1) % HERO_MEDIA.length]}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
