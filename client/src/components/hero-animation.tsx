@@ -5,7 +5,7 @@ const GUIDE_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/imag
 const VIDEO_BASE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com";
 const V2 = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/4.3";
 
-// Media pool — 35 stills + 22 video clips = 57 items
+// Media pool — 36 stills + 21 video clips = 57 items
 // Rule: stills always appear in groups of 2+, never a lone still between videos
 const HERO_MEDIA = [
   // — Morocco stills —
@@ -50,11 +50,11 @@ const HERO_MEDIA = [
   `${V2}/striped%20shirt%20on%20boat.mp4`,
   // — Med stills —
   `${V2}/SIU%20_%20Perfume%20for%20spring%20_%20Spring%20_%20Parfum%20in%20Spring%20_%20Aesthetic%20_%20Parfum.jpeg`,
+  `${V2}/amalfi_lunch.jpeg`,
   `${V2}/suitcase_open.jpg`,
   // — Italy / Med videos —
   `${VIDEO_BASE}/italy%20coast.MP4`,
   `${V2}/portofion_cliffside.mp4`,
-  `${V2}/med_black_oneshoulder_dress.mp4`,
   `${V2}/med_interior_drapes.mp4`,
   `${V2}/interior%20of%20villa.mp4`,
   `${V2}/resort%20with%20curtains.mp4`,
