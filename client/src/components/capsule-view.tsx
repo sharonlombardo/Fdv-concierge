@@ -341,7 +341,7 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
               key={item.id}
               style={{
                 flex: "none",
-                width: "38%",
+                width: item.id === "dn-acc-1" ? "49%" : "38%",
               }}
               className="sm-acc-card"
             >

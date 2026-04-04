@@ -28,6 +28,7 @@ export default function TopBar() {
     return () => window.removeEventListener('open-hamburger', handler);
   }, []);
   const isLanding = location === "/";
+  const isGuide = location.startsWith("/guides/");
 
   useEffect(() => {
     if (!isLanding) {
@@ -62,9 +63,9 @@ export default function TopBar() {
           right: 0,
           zIndex: 90,
           height: 56,
-          background: scrolled ? "rgba(255, 255, 255, 0.95)" : "transparent",
+          background: isLanding && !scrolled ? "transparent" : isGuide ? "rgba(245, 241, 232, 0.97)" : "rgba(255, 255, 255, 0.95)",
           backdropFilter: scrolled ? "blur(12px)" : "none",
-          borderBottom: scrolled ? "1px solid rgba(0, 0, 0, 0.06)" : "1px solid transparent",
+          borderBottom: isLanding && !scrolled ? "1px solid transparent" : isGuide ? "1px solid rgba(44, 36, 22, 0.08)" : "1px solid rgba(0, 0, 0, 0.06)",
           display: "flex",
           alignItems: "center",
           padding: "0 12px",
