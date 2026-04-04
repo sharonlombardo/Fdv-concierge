@@ -260,6 +260,8 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
               src={img.imageUrl}
               alt={img.alt}
               style={{
+                position: "absolute",
+                inset: 0,
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
@@ -360,6 +362,8 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
                   src={getItemImage(item)}
                   alt={`${item.brand} ${item.name}`}
                   style={{
+                    position: "absolute",
+                    inset: 0,
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
