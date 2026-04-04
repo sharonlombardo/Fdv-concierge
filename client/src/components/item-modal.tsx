@@ -292,6 +292,17 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
             {description || `Details for ${item.title}`}
           </DialogPrimitive.Description>
 
+          {/* Close button — top right */}
+          <DialogPrimitive.Close
+            className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-[#1a1a1a]/8 hover:bg-[#1a1a1a]/15 transition-colors"
+            aria-label="Close"
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round">
+              <line x1="1" y1="1" x2="13" y2="13" />
+              <line x1="13" y1="1" x2="1" y2="13" />
+            </svg>
+          </DialogPrimitive.Close>
+
           {/* Drag handle */}
           <div className="flex justify-center pt-3 pb-1">
             <div className="w-10 h-1 rounded-full bg-[#1a1a1a]/20" />
@@ -315,8 +326,8 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
               )}
             </div>
 
-            {/* Content area — standardized format */}
-            <div className="px-6 pb-8 pt-5 space-y-4">
+            {/* Content area — pb-28 ensures CTA clears fixed bottom nav (~64px) */}
+            <div className="px-6 pb-28 pt-5 space-y-4">
               {/* Row 1: Brand (bold italic) + Price (right-aligned) on same line */}
               {(brand || price) && (
                 <div className="flex items-baseline justify-between gap-4">
