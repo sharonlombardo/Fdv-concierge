@@ -1381,6 +1381,8 @@ export default function DailyFlowPage() {
               </p>
               <textarea
                 placeholder="How was your day? What surprised you?"
+                value={journalEntries[`diary-day-${dayPage.day}`]?.note || ""}
+                onChange={(e) => handleJournalChange(`diary-day-${dayPage.day}`, e.target.value)}
                 style={{
                   width: "100%",
                   minHeight: 80,
@@ -1395,7 +1397,20 @@ export default function DailyFlowPage() {
                   outline: "none",
                 }}
               />
-              <div
+              {(journalEntries[`diary-day-${dayPage.day}`]?.logImages || []).length > 0 && (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 12 }}>
+                  {(journalEntries[`diary-day-${dayPage.day}`]?.logImages || []).map((img, idx) => (
+                    <div key={idx} style={{ aspectRatio: "1/1", borderRadius: 6, overflow: "hidden" }}>
+                      <img
+                        src={typeof img === "string" ? img : img.src}
+                        alt=""
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+              <label
                 style={{
                   marginTop: 12,
                   border: "2px dashed #d4cdbf",
@@ -1408,6 +1423,16 @@ export default function DailyFlowPage() {
                   cursor: "pointer",
                 }}
               >
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) processImage(`diary-day-${dayPage.day}`, f, "logImage");
+                    e.target.value = "";
+                  }}
+                />
                 <Camera size={20} color="rgba(44, 36, 22, 0.3)" />
                 <span
                   style={{
@@ -1418,7 +1443,7 @@ export default function DailyFlowPage() {
                 >
                   Add photos
                 </span>
-              </div>
+              </label>
             </div>
           </div>
         ))}
