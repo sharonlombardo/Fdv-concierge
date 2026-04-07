@@ -256,6 +256,14 @@ async function runMigrations() {
     `);
     await pool.query('CREATE INDEX IF NOT EXISTS idx_convo_user ON concierge_conversations (user_email)');
     await pool.query('CREATE INDEX IF NOT EXISTS idx_convo_session ON concierge_conversations (session_id)');
+    // Session-based anonymous save association
+    await pool.query('ALTER TABLE saves ADD COLUMN IF NOT EXISTS anon_session_id TEXT');
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_saves_anon_session ON saves(anon_session_id)');
+    // Journal user scoping
+    await pool.query('ALTER TABLE journal_entries ADD COLUMN IF NOT EXISTS user_email TEXT');
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_journal_user_email ON journal_entries(user_email)');
+    // Remove old unique constraint on entry_id so different users can have same entry
+    await pool.query('ALTER TABLE journal_entries DROP CONSTRAINT IF EXISTS journal_entries_entry_id_key');
   } catch (e) {
     console.warn('Migration warning:', e);
   }
@@ -571,9 +579,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
       const user = result.rows[0];
 
-      // Note: anonymous saves are not associated on signup since we can't distinguish
-      // which anonymous saves belong to which browser session. Saves made after signup
-      // are automatically associated via the auth cookie.
+      // Associate anonymous saves from the same browser session
+      const sessionId = req.body?.sessionId;
+      if (sessionId) {
+        await pool.query(
+          'UPDATE saves SET user_email = $1 WHERE anon_session_id = $2 AND user_email IS NULL',
+          [email, sessionId]
+        );
+      }
 
       // Send welcome email (non-blocking)
       sendWelcomeEmail(email, name).catch(() => {});
@@ -811,14 +824,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json(merged);
     }
 
-    // POST /api/saves/associate-email — backfill anonymous saves with user email
+    // POST /api/saves/associate-email — associate anonymous saves by session ID
     if (path === '/api/saves/associate-email' && method === 'POST') {
-      const { email } = req.body || {};
-      if (!email) return res.status(400).json({ error: 'email is required' });
-      // Associate all saves that have no email with this user
+      // Must be authenticated — use cookie email, not body email (security fix)
+      const authenticatedEmail = getUserEmailFromRequest(req);
+      if (!authenticatedEmail) return res.status(401).json({ error: 'Authentication required' });
+      const { sessionId } = req.body || {};
+      if (!sessionId) return res.status(400).json({ error: 'sessionId is required' });
+      // Only associate saves from this specific browser session, not all anonymous saves
       const result = await pool.query(
-        'UPDATE saves SET user_email = $1 WHERE user_email IS NULL',
-        [email]
+        'UPDATE saves SET user_email = $1 WHERE anon_session_id = $2 AND user_email IS NULL',
+        [authenticatedEmail, sessionId]
       );
       return res.status(200).json({ success: true, updated: result.rowCount });
     }
@@ -869,9 +885,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // GET /api/journal
     if (path === '/api/journal' && method === 'GET') {
-      const rows = await pool.query('SELECT * FROM journal_entries');
+      const currentUserEmail = getUserEmailFromRequest(req);
+      // Scope to current user; fall back to unscoped legacy rows (user_email IS NULL)
+      const rows = currentUserEmail
+        ? await pool.query(
+            'SELECT * FROM journal_entries WHERE user_email = $1 OR user_email IS NULL ORDER BY updated_at DESC',
+            [currentUserEmail]
+          )
+        : await pool.query('SELECT * FROM journal_entries WHERE user_email IS NULL ORDER BY updated_at DESC');
       const entries: Record<string, any> = {};
       for (const row of rows.rows) {
+        // Skip if we already have a user-scoped entry for this entry_id (user rows win over legacy NULL rows)
+        if (entries[row.entry_id]) continue;
         entries[row.entry_id] = {
           note: row.note || undefined,
           image: row.image || undefined,
@@ -889,7 +914,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const entryId = path.replace('/api/journal/', '');
       if (!entryId) return res.status(400).json({ error: 'Missing entry id' });
       const data = req.body || {};
-      const existing = await pool.query('SELECT * FROM journal_entries WHERE entry_id = $1', [entryId]);
+      const currentUserEmail = getUserEmailFromRequest(req);
+      // Scope lookup by user_email so each user has their own journal
+      const existing = currentUserEmail
+        ? await pool.query(
+            'SELECT * FROM journal_entries WHERE entry_id = $1 AND (user_email = $2 OR user_email IS NULL) ORDER BY user_email DESC NULLS LAST LIMIT 1',
+            [entryId, currentUserEmail]
+          )
+        : await pool.query(
+            'SELECT * FROM journal_entries WHERE entry_id = $1 AND user_email IS NULL LIMIT 1',
+            [entryId]
+          );
       if (existing.rows.length > 0) {
         const cur = existing.rows[0];
         const result = await pool.query(
@@ -899,16 +934,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             my_look = COALESCE($3, my_look),
             log_image = COALESCE($4, log_image),
             log_images = COALESCE($5, log_images),
-            updated_at = $6
-          WHERE entry_id = $7 RETURNING *`,
+            user_email = COALESCE(user_email, $6),
+            updated_at = $7
+          WHERE id = $8 RETURNING *`,
           [
             data.note !== undefined ? data.note : cur.note,
             data.image !== undefined ? data.image : cur.image,
             data.myLook !== undefined ? data.myLook : cur.my_look,
             data.logImage !== undefined ? data.logImage : cur.log_image,
             data.logImages !== undefined ? JSON.stringify(data.logImages) : cur.log_images,
+            currentUserEmail,
             Date.now(),
-            entryId,
+            cur.id,
           ]
         );
         const r = result.rows[0];
@@ -922,8 +959,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         });
       } else {
         const result = await pool.query(
-          `INSERT INTO journal_entries (entry_id, note, image, my_look, log_image, log_images, updated_at)
-           VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+          `INSERT INTO journal_entries (entry_id, note, image, my_look, log_image, log_images, user_email, updated_at)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
           [
             entryId,
             data.note || null,
@@ -931,6 +968,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             data.myLook || null,
             data.logImage || null,
             data.logImages !== undefined ? JSON.stringify(data.logImages) : null,
+            currentUserEmail,
             Date.now(),
           ]
         );
@@ -1081,9 +1119,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
       }
 
+      // Store session ID for anonymous saves so they can be associated on signup
+      const anonSessionId = !userEmail ? (body.sessionId || null) : null;
+
       const result = await pool.query(
-        `INSERT INTO saves (item_type, item_id, source_context, aesthetic_tags, saved_at, metadata, edition_tag, story_tag, edit_tag, purchase_status, title, asset_url, brand, price, shop_url, book_url, detail_description, category, is_curated, user_email)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+        `INSERT INTO saves (item_type, item_id, source_context, aesthetic_tags, saved_at, metadata, edition_tag, story_tag, edit_tag, purchase_status, title, asset_url, brand, price, shop_url, book_url, detail_description, category, is_curated, user_email, anon_session_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
          RETURNING *`,
         [
           itemType,
@@ -1106,6 +1147,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           category || null,
           isCurated || false,
           userEmail,
+          anonSessionId,
         ]
       );
       const row = result.rows[0];

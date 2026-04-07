@@ -65,37 +65,36 @@ export function useJournal() {
 
   const saveEntry = useCallback((id: string, data: Partial<JournalEntry>) => {
     setStatus('saving');
-    
+
     setLocalEntries(prev => {
       const currentEntry = entriesRef.current[id] || prev[id] || {};
       const updatedEntry = { ...currentEntry, ...data, updatedAt: Date.now() };
       const updatedEntries = { ...prev, [id]: updatedEntry };
-      
+
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedEntries));
-      } catch (e) { 
-        console.warn("Quota exceeded"); 
+      } catch (e) {
+        console.warn("Quota exceeded");
       }
-      
+
       return updatedEntries;
     });
 
-    const hasImageData = 'myLook' in data || 'logImage' in data || 'image' in data;
-    
-    if (!hasImageData) {
-      saveMutation.mutate(
-        { id, data },
-        {
-          onSettled: () => {
-            setStatus('saved');
-            setTimeout(() => setStatus('idle'), 2000);
-          },
-        }
-      );
-    } else {
-      setStatus('saved');
-      setTimeout(() => setStatus('idle'), 2000);
-    }
+    // Send all data types to the server (including logImages for travel diary photos)
+    // myLook/image/logImage are large but we still persist them — server handles the size
+    saveMutation.mutate(
+      { id, data },
+      {
+        onSuccess: () => {
+          setStatus('saved');
+          setTimeout(() => setStatus('idle'), 2000);
+        },
+        onError: () => {
+          // Reset to idle without showing "saved" — local state still has the data
+          setStatus('idle');
+        },
+      }
+    );
   }, [saveMutation]);
 
   return { 

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { getSessionId } from "@/lib/session";
 
 interface AuthUser {
   id: string;
@@ -83,6 +84,18 @@ export function UserProvider({ children }: { children: ReactNode }) {
     return newCount;
   }, [saveCount]);
 
+  // Associate anonymous saves from this browser session with the authenticated user
+  const associateSessionSaves = useCallback(async () => {
+    try {
+      await fetch("/api/saves/associate-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ sessionId: getSessionId() }),
+      });
+    } catch {}
+  }, []);
+
   // Signup — Create Digital Passport
   const signup = useCallback(async (name: string, email: string, password: string) => {
     try {
@@ -90,7 +103,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, sessionId: getSessionId() }),
       });
       const data = await res.json();
       if (!res.ok) return { success: false, error: data.error || "Signup failed" };
@@ -98,6 +111,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setUser(data.user);
       setEmailState(data.user.email);
       try { localStorage.setItem(LS_EMAIL_KEY, data.user.email); } catch {}
+
+      // Associate any anonymous saves from this session
+      associateSessionSaves();
 
       // Also add to waitlist for tracking
       try {
@@ -113,7 +129,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     } catch {
       return { success: false, error: "Network error. Please try again." };
     }
-  }, [queryClient]);
+  }, [queryClient, associateSessionSaves]);
 
   // Login
   const login = useCallback(async (email: string, password: string) => {
@@ -131,12 +147,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setEmailState(data.user.email);
       try { localStorage.setItem(LS_EMAIL_KEY, data.user.email); } catch {}
 
+      // Associate any anonymous saves from this session
+      associateSessionSaves();
+
       queryClient.invalidateQueries({ queryKey: ["/api/saves"] });
       return { success: true };
     } catch {
       return { success: false, error: "Network error. Please try again." };
     }
-  }, [queryClient]);
+  }, [queryClient, associateSessionSaves]);
 
   // Logout
   const logout = useCallback(async () => {
@@ -152,7 +171,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     queryClient.invalidateQueries({ queryKey: ["/api/saves"] });
   }, [queryClient]);
 
-  // Legacy setEmail — still works for soft capture, but now also tries to associate
+  // Legacy setEmail — soft capture (email-only, not full auth)
   const setEmail = useCallback(async (newEmail: string) => {
     setEmailState(newEmail);
     try { localStorage.setItem(LS_EMAIL_KEY, newEmail); } catch {}
@@ -165,13 +184,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
       });
     } catch {}
 
-    try {
-      await fetch("/api/saves/associate-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: newEmail }),
-      });
-    } catch {}
+    // Note: no longer associates saves here — soft capture doesn't create a full auth session.
+    // Saves are associated on full signup/login via associate-email with session scoping.
 
     queryClient.invalidateQueries({ queryKey: ["/api/saves"] });
   }, [queryClient]);

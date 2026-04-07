@@ -27,6 +27,7 @@ import {
   Save,
   ChevronDown,
   ChevronUp,
+  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PinButton } from "@/components/pin-button";
@@ -602,6 +603,9 @@ export default function DailyFlowPage() {
   const { entries: journalEntries, saveEntry, status: saveStatus } = useJournal();
   const { getImageUrl, hasCustomImage } = useCustomImages();
   const queryClient = useQueryClient();
+  // Track which diary day just had photos uploaded (for checkmark confirmation)
+  const [photoSavedDay, setPhotoSavedDay] = useState<number | null>(null);
+  const photoSavedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const dayRefs = useRef<(HTMLDivElement | null)[]>([]);
   const selectorRef = useRef<HTMLDivElement>(null);
@@ -1458,41 +1462,71 @@ export default function DailyFlowPage() {
                   ))}
                 </div>
               )}
-              <label
-                style={{
-                  marginTop: 12,
-                  border: "2px dashed #d4cdbf",
-                  borderRadius: 6,
-                  padding: "20px 16px",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 6,
-                  cursor: "pointer",
-                }}
-              >
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  style={{ display: "none" }}
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files || []);
-                    if (files.length > 0) processImages(`diary-day-${dayPage.day}`, files, "logImage");
-                    e.target.value = "";
-                  }}
-                />
-                <Camera size={20} color="rgba(44, 36, 22, 0.3)" />
-                <span
+              {photoSavedDay === dayPage.day ? (
+                <div
                   style={{
-                    fontSize: 12,
-                    color: "rgba(44, 36, 22, 0.35)",
-                    fontWeight: 500,
+                    marginTop: 12,
+                    border: "2px solid #4caf50",
+                    borderRadius: 6,
+                    padding: "20px 16px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 6,
+                    background: "rgba(76, 175, 80, 0.06)",
                   }}
                 >
-                  Add photos
-                </span>
-              </label>
+                  <Check size={20} color="#4caf50" />
+                  <span style={{ fontSize: 12, color: "#4caf50", fontWeight: 600 }}>
+                    Photos saved
+                  </span>
+                </div>
+              ) : (
+                <label
+                  style={{
+                    marginTop: 12,
+                    border: "2px dashed #d4cdbf",
+                    borderRadius: 6,
+                    padding: "20px 16px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 6,
+                    cursor: "pointer",
+                  }}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || []);
+                      if (files.length > 0) {
+                        processImages(`diary-day-${dayPage.day}`, files, "logImage");
+                        // Show confirmation after processing starts
+                        if (photoSavedTimerRef.current) clearTimeout(photoSavedTimerRef.current);
+                        // Wait for compress + save (~1.5s) then show confirmation
+                        photoSavedTimerRef.current = setTimeout(() => {
+                          setPhotoSavedDay(dayPage.day);
+                          photoSavedTimerRef.current = setTimeout(() => setPhotoSavedDay(null), 2500);
+                        }, 1500);
+                      }
+                      e.target.value = "";
+                    }}
+                  />
+                  <Camera size={20} color="rgba(44, 36, 22, 0.3)" />
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: "rgba(44, 36, 22, 0.35)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Add photos
+                  </span>
+                </label>
+              )}
             </div>
           </div>
         ))}

@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/contexts/user-context";
 import { triggerSaveEvent } from "./email-capture-manager";
 import { getProductByKey } from "@/lib/brand-genome";
+import { getSessionId } from "@/lib/session";
 
 function PinIcon({ size = 18, fill = "none", className }: { size?: number; fill?: string; className?: string }) {
   return (
@@ -79,6 +80,7 @@ export function PinButton({
         const res = await fetch('/api/saves', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({
             itemType: itemType || 'style',
             itemId,
@@ -96,6 +98,7 @@ export function PinButton({
             shopUrl: itemData.shopUrl || undefined,
             bookUrl: itemData.bookUrl || undefined,
             userEmail: email || undefined,
+            sessionId: getSessionId(),
             category: (() => {
               const key = itemData.assetKey || itemData.genomeKey || itemId;
               const product = getProductByKey(key);
