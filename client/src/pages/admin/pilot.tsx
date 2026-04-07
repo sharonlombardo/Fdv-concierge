@@ -403,18 +403,131 @@ export default function AdminPilot() {
               <div style={{ marginTop: 24 }}>
                 {/* User Saves */}
                 <div style={CARD}>
-                  <h3 style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 12 }}>
-                    Saves — {selectedUser}
+                  <h3 style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 16 }}>
+                    Save History — {selectedUser} {userSaves ? `(${userSaves.length})` : ""}
                   </h3>
                   {userSaves && userSaves.length > 0 ? (
-                    userSaves.map((save: any, i: number) => (
-                      <div key={i} style={{ fontSize: 13, marginBottom: 8, color: "#333", display: "flex", gap: 12 }}>
-                        <span style={{ color: "#999", minWidth: 80 }}>{save.item_type}</span>
-                        <span>{save.title || save.item_id}</span>
-                        {save.brand && <span style={{ color: "#999" }}>{save.brand}</span>}
-                        {save.story_tag && <span style={{ color: "#c9a84c" }}>{save.story_tag}</span>}
-                      </div>
-                    ))
+                    userSaves.map((save: any, i: number) => {
+                      const thumb = save.asset_url || (save.metadata as any)?.imageUrl;
+                      const ts = save.saved_at ? new Date(Number(save.saved_at)) : null;
+                      const timeStr = ts ? ts.toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "—";
+                      const ctxLabel: Record<string, string> = {
+                        "morocco-guide": "Morocco Guide",
+                        "morocco_guide": "Morocco Guide",
+                        "morocco_itinerary": "Morocco Itinerary",
+                        "morocco_editorial": "Morocco Editorial",
+                        "morocco_daily_flow": "Daily Flow",
+                        "morocco-guide-carousel": "Morocco Guide Carousel",
+                        "the_current_issue_1": "The Current",
+                        "the_current": "The Current",
+                        "shop": "Shop",
+                        "capsule": "My Edits / Capsule",
+                        "my-edits": "My Edits",
+                        "item_modal": "Item Modal",
+                        "todays_edit": "Today's Edit",
+                        "curating_animation": "Curate For Me",
+                      };
+                      const fromLabel = save.source_context
+                        ? (ctxLabel[save.source_context] || save.source_context.replace(/_/g, " ").replace(/-/g, " "))
+                        : null;
+                      const typeColor: Record<string, string> = {
+                        product: "#6b9bd2",
+                        look: "#9c6fb5",
+                        place: "#4caf50",
+                        experience: "#e6a23c",
+                        image: "#aaa",
+                        article: "#c9a84c",
+                        quote: "#bbb",
+                        ritual: "#e48b8b",
+                        object: "#5bb5b5",
+                      };
+                      return (
+                        <div key={i} style={{
+                          display: "flex",
+                          gap: 12,
+                          padding: "12px 0",
+                          borderBottom: i < userSaves.length - 1 ? "1px solid #f0ede8" : "none",
+                          alignItems: "flex-start",
+                        }}>
+                          {/* Thumbnail */}
+                          <div style={{
+                            width: 56,
+                            height: 56,
+                            flexShrink: 0,
+                            background: "#f0ede8",
+                            borderRadius: 4,
+                            overflow: "hidden",
+                          }}>
+                            {thumb ? (
+                              <img
+                                src={thumb}
+                                alt=""
+                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                              />
+                            ) : (
+                              <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#ccc" }}>
+                                {save.item_type === "place" ? "📍" : save.item_type === "product" ? "🛍" : save.item_type === "look" ? "👗" : "📌"}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Details */}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap", marginBottom: 3 }}>
+                              <span style={{ fontSize: 13, fontWeight: 600, color: "#2c2416" }}>
+                                {save.title || save.item_id}
+                              </span>
+                              {save.brand && (
+                                <span style={{ fontSize: 12, color: "#888" }}>{save.brand}</span>
+                              )}
+                              {save.price && (
+                                <span style={{ fontSize: 12, color: "#c9a84c" }}>{save.price}</span>
+                              )}
+                            </div>
+                            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                              {/* Item type badge */}
+                              <span style={{
+                                fontSize: 10,
+                                padding: "1px 7px",
+                                borderRadius: 10,
+                                background: typeColor[save.item_type] || "#aaa",
+                                color: "#fff",
+                                letterSpacing: "0.04em",
+                                textTransform: "uppercase",
+                              }}>
+                                {save.item_type}
+                              </span>
+                              {/* Category */}
+                              {save.category && (
+                                <span style={{ fontSize: 11, color: "#999", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                                  {save.category}
+                                </span>
+                              )}
+                              {/* Source context */}
+                              {fromLabel && (
+                                <span style={{ fontSize: 11, color: "#666" }}>
+                                  · from <strong style={{ color: "#333" }}>{fromLabel}</strong>
+                                </span>
+                              )}
+                            </div>
+                            {/* Aesthetic tags */}
+                            {save.aesthetic_tags && save.aesthetic_tags.length > 0 && (
+                              <div style={{ marginTop: 4, display: "flex", gap: 4, flexWrap: "wrap" }}>
+                                {(save.aesthetic_tags as string[]).map((tag, ti) => (
+                                  <span key={ti} style={{ fontSize: 10, color: "#c9a84c", background: "#fdf6e3", padding: "1px 6px", borderRadius: 8 }}>{tag}</span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Timestamp */}
+                          <div style={{ fontSize: 11, color: "#bbb", flexShrink: 0, textAlign: "right", whiteSpace: "nowrap" }}>
+                            {timeStr}
+                          </div>
+                        </div>
+                      );
+                    })
                   ) : (
                     <p style={{ color: "#999", fontSize: 13 }}>No saves yet.</p>
                   )}
