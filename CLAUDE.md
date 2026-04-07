@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** April 2, 2026
-**Updated by:** Claude Code session (Hero animation video integration + media pool expansion)
+**Last updated:** April 7, 2026
+**Updated by:** Claude Code session (Dispatch Week 1 summary appended)
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -548,6 +548,86 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 1-8, 2026 | Dispatch (Cowork) — Week 1 Summary
+**Topic:** Cowork capabilities established, email triage, task audit, FDV Daily picks, investor research, pilot bug fixes
+
+**Dispatch Capabilities Established:**
+- Gmail triage (search, read, draft replies for fildevie.com account)
+- Notion task management (create, update, audit, prioritize tasks in TASK DASHBOARD)
+- Apple Notes → Notion pipeline (extract tasks + strategic notes from brain dumps)
+- FDV Daily evergreen picks management (Cowork memory + Notion)
+- Investor/competitive research (web search → structured briefs → outreach database)
+- Bug reporting to Claude Code (product modal, photo persistence, image sizing, nav bar)
+- Content drafting (email replies, Substack posts, FDV Daily about section)
+- Human-writing anti-pattern skill created at ~/.claude/skills/human-writing/
+
+**Email Triage (April 1):**
+- Cleaned 200+ emails across fildevie.com and sharonplombardo2@gmail.com
+- Drafted and sent 6 email replies: Gregoire, Madeline Weinrib, Obsolete/Melissa, ShopMy/Lucy, The RealReal/Katie, Samantha Smith
+- Created 21 tasks from email triage
+
+**Apple Notes Capture (April 1):**
+- Extracted 29 tasks from multi-week Apple Notes brain dump
+- Organized strategic content into Notion:
+  - KEY LANGUAGE page: mission lines, brand philosophy, vocabulary shifts, investor reframing
+  - Funding thesis page: 4 funding paths, investor psychology, bridge sentences
+  - TASTE GRAPH page: 3-layer stack, PSYKHE comparison, static vs dynamic slide concept
+  - VOICE page: Belmond UX inspiration, voice principles
+
+**Task Audit (April 1-2):**
+- Audited 100+ tasks, marked ~45 Done, rescheduled ~30
+- Consolidated duplicates, pushed WS Studio to 4/22
+- Established weekly rhythm: Mon-Thu focused on FDV Concierge, daily outreach at 3pm
+
+**FDV Daily Picks Bank (30+ new picks):**
+- Furniture/design: Otras Formas, Future Perfect, BDDW, Love House, Roman & Williams Guild, Egg Collective
+- Vintage: Cloak & Dagger, Café Forgot
+- Food: Le Crocodile, Chez Ma Tante, Birds of a Feather, Panzón, Red Hook Tavern, Acre, Caviar Kaspia, Kabawa, Fox Face
+- Culture: BAM, Zinc Bar, Nitehawk, Stylus NYC
+- Shopping: Maison Kitsuné, plus Sézane guide batch (30 places)
+
+**Investor Research (April 4):**
+- Thayer Investment Partners: ★★★★★ fit, $345M+ AUM, travel/hospitality focus
+- General Catalyst (Quentin Clark): led Moda $7.5M, fluent in taste-AI conversation
+- Pear VC (Warren Shaeffer): co-invested in Moda
+- Davidson Group: family office, led SpreeAI $1.5B valuation
+- YC: eligible, deadline May 4 — Sharon applied
+- AWS Activate: $1,350 free credits, 1 hour to apply
+- Editorialist: CPC affiliate model preserves editorial independence
+- Lala Land AI: synthetic fashion models, high relevance for product pages
+
+**Pilot Observations:**
+- Bella most active tester — continuous feedback loop
+- Photo persistence broken since launch (no user scoping in journal table) — fixed
+- Save association broken for all pilot users (anonymous saves not linked) — fixed
+- Security bug found and patched (global save theft vulnerability)
+- Bella validated My Wardrobe feature unprompted — wants to upload own clothing
+- Admin dashboard enhanced with detailed save history
+
+**Bugs Fixed via Claude Code (from Dispatch reports):**
+- Product modal cropped + no close mechanism
+- Travel diary photo button not functional
+- Phoebe Philo image missing from Vercel Blob
+- Image sizing in capsule grid
+- MARRAKECH title cropped on mobile
+- Nav bar color mismatch on guides
+- Photo persistence (no user scoping)
+- Batch photo upload
+- Save association for pilot users
+- Admin save details (metadata, thumbnails, timestamps)
+
+**Strategic Insights:**
+1. FDV Daily + Concierge splitting focus — Concierge should be A-priority
+2. Need 10-min pilot calls, not just texts
+3. Daily outreach hasn't started despite being planned since April 2
+4. Revenue model question unresolved — needs focused session
+5. Four things that matter now: landing page, pilot calls, investor outreach, revenue clarity
+6. /fdv/curate endpoint: returns coherent decisions, not ranked options
+7. Defensibility = longitudinal identity graph
+8. Danger: becoming "elegant wrapper around affiliate products and LLM summaries"
 
 ---
 
