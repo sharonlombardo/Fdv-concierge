@@ -868,8 +868,82 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // GET /api/journal
-    if (path === '/api/journal') {
-      return res.status(200).json({});
+    if (path === '/api/journal' && method === 'GET') {
+      const rows = await pool.query('SELECT * FROM journal_entries');
+      const entries: Record<string, any> = {};
+      for (const row of rows.rows) {
+        entries[row.entry_id] = {
+          note: row.note || undefined,
+          image: row.image || undefined,
+          myLook: row.my_look || undefined,
+          logImage: row.log_image || undefined,
+          logImages: row.log_images || undefined,
+          updatedAt: row.updated_at ? Number(row.updated_at) : undefined,
+        };
+      }
+      return res.status(200).json(entries);
+    }
+
+    // POST /api/journal/:id
+    if (path.startsWith('/api/journal/') && method === 'POST') {
+      const entryId = path.replace('/api/journal/', '');
+      if (!entryId) return res.status(400).json({ error: 'Missing entry id' });
+      const data = req.body || {};
+      const existing = await pool.query('SELECT * FROM journal_entries WHERE entry_id = $1', [entryId]);
+      if (existing.rows.length > 0) {
+        const cur = existing.rows[0];
+        const result = await pool.query(
+          `UPDATE journal_entries SET
+            note = COALESCE($1, note),
+            image = COALESCE($2, image),
+            my_look = COALESCE($3, my_look),
+            log_image = COALESCE($4, log_image),
+            log_images = COALESCE($5, log_images),
+            updated_at = $6
+          WHERE entry_id = $7 RETURNING *`,
+          [
+            data.note !== undefined ? data.note : cur.note,
+            data.image !== undefined ? data.image : cur.image,
+            data.myLook !== undefined ? data.myLook : cur.my_look,
+            data.logImage !== undefined ? data.logImage : cur.log_image,
+            data.logImages !== undefined ? JSON.stringify(data.logImages) : cur.log_images,
+            Date.now(),
+            entryId,
+          ]
+        );
+        const r = result.rows[0];
+        return res.status(200).json({
+          note: r.note || undefined,
+          image: r.image || undefined,
+          myLook: r.my_look || undefined,
+          logImage: r.log_image || undefined,
+          logImages: r.log_images || undefined,
+          updatedAt: r.updated_at ? Number(r.updated_at) : undefined,
+        });
+      } else {
+        const result = await pool.query(
+          `INSERT INTO journal_entries (entry_id, note, image, my_look, log_image, log_images, updated_at)
+           VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+          [
+            entryId,
+            data.note || null,
+            data.image || null,
+            data.myLook || null,
+            data.logImage || null,
+            data.logImages !== undefined ? JSON.stringify(data.logImages) : null,
+            Date.now(),
+          ]
+        );
+        const r = result.rows[0];
+        return res.status(200).json({
+          note: r.note || undefined,
+          image: r.image || undefined,
+          myLook: r.my_look || undefined,
+          logImage: r.log_image || undefined,
+          logImages: r.log_images || undefined,
+          updatedAt: r.updated_at ? Number(r.updated_at) : undefined,
+        });
+      }
     }
 
     // GET /api/saves

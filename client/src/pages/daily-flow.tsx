@@ -143,7 +143,7 @@ interface InlineFlowDetailProps {
   ) => string;
   hasCustomImage: (key: string) => boolean;
   onJournalChange: (id: string, note: string) => void;
-  onImageUpload: (id: string, file: File, field: string) => void;
+  onImageUpload: (id: string, files: File[], field: string) => void;
   onImagesUpdate: (id: string, images: LocalLogImage[]) => void;
   onShare: () => void;
   dayNumber?: number;
@@ -224,16 +224,20 @@ function InlineFlowDetail({
   );
 
   const handleImageUpload = useCallback(
-    (file: File, field: string) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        if (field === "logImage") {
-          setLocalLogImages((prev) => [...prev, { src: result, caption: "" }]);
-        }
-      };
-      reader.readAsDataURL(file);
-      onImageUpload(item.id, file, field);
+    (files: File[], field: string) => {
+      // Update local preview state immediately
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const result = e.target?.result as string;
+          if (field === "logImage") {
+            setLocalLogImages((prev) => [...prev, { src: result, caption: "" }]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+      // Persist all files in one batch call to avoid race conditions
+      onImageUpload(item.id, files, field);
     },
     [item.id, onImageUpload]
   );
@@ -553,7 +557,7 @@ function InlineFlowDetail({
             </div>
           ))}
           <label style={{ aspectRatio: "1/1", borderRadius: 8, border: "2px dashed #d4cdbf", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
-            <input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, "logImage"); }} />
+            <input type="file" accept="image/*" multiple style={{ display: "none" }} onChange={(e) => { const files = Array.from(e.target.files || []); if (files.length > 0) handleImageUpload(files, "logImage"); }} />
             <Camera size={20} color="rgba(44,36,22,0.2)" />
             <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", color: "rgba(44,36,22,0.3)" }}>Add Photo</span>
           </label>
@@ -680,6 +684,50 @@ export default function DailyFlowPage() {
 
   const handleImagesUpdate = (itemId: string, images: LocalLogImage[]) => {
     saveEntry(itemId, { logImages: images });
+  };
+
+  const fileToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 1200;
+          let width = img.width;
+          let height = img.height;
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", 0.6));
+        };
+      };
+    });
+
+  const processImages = async (itemId: string, files: File[], field: string = "image") => {
+    if (files.length === 0) return;
+    const base64Array = await Promise.all(files.map(fileToBase64));
+    if (field === "logImage") {
+      const existingImages = journalEntries[itemId]?.logImages || [];
+      const normalized = existingImages.map((img) =>
+        typeof img === "string" ? { src: img, caption: "" } : img
+      );
+      if (journalEntries[itemId]?.logImage && normalized.length === 0) {
+        normalized.push({ src: journalEntries[itemId].logImage!, caption: "" });
+      }
+      saveEntry(itemId, {
+        logImages: [...normalized, ...base64Array.map((src) => ({ src, caption: "" }))],
+      });
+    } else {
+      saveEntry(itemId, { [field]: base64Array[0] });
+    }
   };
 
   const processImage = (
@@ -1301,7 +1349,7 @@ export default function DailyFlowPage() {
                         getImageUrl={getImageUrl}
                         hasCustomImage={hasCustomImage}
                         onJournalChange={handleJournalChange}
-                        onImageUpload={processImage}
+                        onImageUpload={processImages}
                         onImagesUpdate={handleImagesUpdate}
                         onShare={() => {}}
                         dayNumber={dayPage.day}
@@ -1426,10 +1474,11 @@ export default function DailyFlowPage() {
                 <input
                   type="file"
                   accept="image/*"
+                  multiple
                   style={{ display: "none" }}
                   onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) processImage(`diary-day-${dayPage.day}`, f, "logImage");
+                    const files = Array.from(e.target.files || []);
+                    if (files.length > 0) processImages(`diary-day-${dayPage.day}`, files, "logImage");
                     e.target.value = "";
                   }}
                 />
