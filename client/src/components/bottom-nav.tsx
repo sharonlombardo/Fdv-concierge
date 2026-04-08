@@ -63,10 +63,12 @@ export default function BottomNav() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-[80] flex justify-around items-center"
       style={{
-        height: 60,
-        paddingBottom: "env(safe-area-inset-bottom)",
+        height: "calc(60px + env(safe-area-inset-bottom, 0px))",
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
         backgroundColor: "#1A1A18",
         borderTop: "1px solid rgba(255,255,255,0.08)",
+        WebkitTransform: "translateZ(0)",
+        transform: "translateZ(0)",
       }}
     >
       {tabs.map((tab) => (
