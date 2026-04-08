@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** April 2, 2026
-**Updated by:** Claude Code session (Hero animation video integration + media pool expansion)
+**Last updated:** April 8, 2026
+**Updated by:** Claude Code session (Dispatch bug fixes summary Apr 1-8)
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -548,6 +548,46 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 1-8, 2026 | Dispatch — Bug Fixes Summary
+**Topic:** 14 bugs fixed across dispatch sessions; 3 known remaining bugs
+
+**Bugs Fixed:**
+
+1. **Product modal cropped by bottom nav** — CTA button hidden behind fixed nav. Added bottom padding, close X button, tap-outside-to-dismiss. (item-modal.tsx)
+
+2. **Travel diary "Add photos" button not functional** — Was a styled div with no click handler. Now opens native camera/photos picker. (daily-flow.tsx)
+
+3. **Phoebe Philo Robe Slide image missing** — Never uploaded to Vercel Blob during Khaite→Philo product swap. Downloaded official image and uploaded to correct blob key.
+
+4. **Robe Slide image too small in capsule grid** — Mobile Safari aspect-ratio bug. Fixed with absolute positioning for consistent object-fit:cover. Increased width from 38% to 49%.
+
+5. **MARRAKECH title cropped on mobile** — Font too large for 375px viewport. Reduced clamp values + letter-spacing. Added 80px top padding for letter clearance.
+
+6. **Top nav bar color mismatch on guide pages** — Was bright white/warmstone against cream page. Changed to pure white rgba(255,255,255,0.97) matching guide background.
+
+7. **Photo persistence broken for ALL users** — journal_entries table had no user_email column. All users shared same entries. Last write won. Fixed: added user_email scoping to GET and POST.
+
+8. **Batch photo upload** — File input only accepted single files. Added multiple attribute + batch processImages() function.
+
+9. **Save association broken for ALL pilot users** — Anonymous saves went to DB with null email. Signup flow didn't link them. Fixed: saves now tagged with session_id, associated on signup/login via POST /api/saves/associate-email.
+
+10. **Security bug: global save theft** — Old associate-email endpoint ran UPDATE WHERE user_email IS NULL globally. Any email could steal all anonymous saves. Fixed: requires auth cookie + scopes by session_id.
+
+11. **Admin dashboard showed 0 saves for pilot users** — Because saves had null emails (see #9). Fixed by association fix.
+
+12. **Admin dashboard save details missing** — Only showed counts, not what users saved. Added expandable save history per user: thumbnails, item names, brands, prices, type badges, source context, aesthetic tags, timestamps.
+
+13. **Silent save failure showing "saved"** — onSettled always showed confirmation even on API error. Split into onSuccess/onError handlers.
+
+14. **Green checkmark after photo upload** — No visual confirmation existed. Added 2.5s green checkmark after successful upload.
+
+**Known Remaining Bugs (from Sharon's 4/7 notes, not yet fixed):**
+- Back button from daily flow doesn't work
+- Save to suitcase button doesn't work from open modal in itinerary overview
+- Daily Flow breakfast/lunch/dinner items only open to shopping, not event details/travel diary (should match other day events)
 
 ---
 
