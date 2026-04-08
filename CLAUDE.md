@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** April 2, 2026
-**Updated by:** Claude Code session (Hero animation video integration + media pool expansion)
+**Last updated:** April 8, 2026
+**Updated by:** Claude Code session (Hero animation replaced with pre-rendered CapCut video)
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -548,6 +548,100 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 3-8, 2026 | Claude Code (web) — Hero Animation Debugging + CapCut Video Replacement
+**Topic:** Multi-day debugging of hero animation flickering → replaced entire system with Sharon's pre-rendered CapCut video
+
+**The Problem (April 3):**
+Hero animation had persistent flickering and partial rectangle artifacts. Images from different parts of the 53-item media sequence were appearing as partial rectangles overlaid on the current image. The issue manifested as a "next picture breaking in on the picture before with only partial screen" — squares, rectangles of random images bleeding through during transitions.
+
+**Debugging Journey (April 3 — what was tried and what we learned):**
+The original hero animation used React state (`useState(mediaIndex)`) with conditional rendering to cycle through 53 media items (35 stills + 18 videos). Multiple approaches were attempted to fix flickering:
+
+1. **Imperative DOM manipulation** (bypass React for media layer) — Introduced the rectangle artifact bug. React reconciliation conflicted with imperatively-created DOM elements, causing ghost images.
+
+2. **Double-buffer with `img.decode()`** — Two `<img>` elements swapping opacity after decode. Failed because decode() promises resolved out of order — stale images appeared on top of current ones.
+
+3. **Create/destroy pattern** (like video elements) — Created/destroyed `<img>` elements per transition. Failed because a React-rendered `<img>` was inside the same container being imperatively modified. Every React re-render (on text changes) re-inserted the React-owned `<img>`, creating ghost images.
+
+4. **Safari compositor bugs** — Hidden `<video>` elements with `visibility: hidden` or `opacity: 0` leaked partial frames in Safari's compositor. Video elements needed to be fully removed from DOM, not just hidden.
+
+5. **Video `key` prop causing unmount/mount** — `key={currentMedia}` on `<video>` elements caused React to destroy and recreate the element on each video change. Between the unmount and mount, the fallback still layer flashed briefly, causing the "nearest still" to appear between every video-to-video transition.
+
+**Key Technical Insight:**
+The fundamental tension: React wants to own the DOM (virtual DOM reconciliation), but smooth media transitions require frame-precise control that React's rendering cycle can't guarantee. Every attempt to work around this (imperative DOM, double-buffering, create/destroy) introduced new bugs because React and imperative code fought over the same DOM nodes.
+
+**Critical Discovery — Branch vs Main:**
+Multiple fix attempts were pushed to the `claude/add-claude-md-XVdke` branch, but Vercel deploys from `main`. Sharon kept testing the same broken `main` code while fixes sat unseen on the feature branch. This was identified and corrected — all subsequent pushes went directly to `main`.
+
+**The Solution (April 8):**
+Sharon rebuilt the entire hero animation as a **single pre-rendered video in CapCut**. All transitions, timing, text overlays, and effects baked into one file. This eliminated:
+- All React state management for media cycling
+- All flickering/rectangle/compositor bugs
+- 362 lines of complex animation code
+- The fundamental React-vs-imperative-DOM tension
+
+**Final Implementation:**
+```tsx
+// hero-animation.tsx — from 362 lines to 30 lines
+export function HeroAnimation() {
+  return (
+    <section style={{ position: "relative", width: "100%", height: "100vh", overflow: "hidden" }}>
+      <video autoPlay muted loop playsInline
+        src="https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/landing%20page%20video.mp4"
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+      />
+      {/* Mute toggle button */}
+    </section>
+  );
+}
+```
+
+**CapCut Export Settings (for future reference):**
+- Resolution: 1080P (portrait, matching mobile-first design)
+- Codec: H.264, Format: MP4
+- Bitrate: ~2000-3000 kbps custom (keeps file under 30 MB)
+- Frame rate: 24fps
+- Duration: ~1m 40s (loops via `<video loop>`)
+- Original 4K export was 642 MB → compressed to ~25 MB
+
+**Video Features:**
+- All destination imagery (Morocco, Hydra, Mallorca, NYC, etc.)
+- Multilingual greetings with typewriter-style text (HO·LA, ΓΕΙΑ, こんにちは, SA·LU·TE, مرحبا, שלום, HELLO)
+- Feature words (TRAVEL, TIPS, MEMORIES, SHOP)
+- White card destination reveals (MOROCCO, HYDRA, MALLORCA)
+- Background music with mute/unmute toggle
+- Seamless loop
+
+**Mute/Unmute Toggle:**
+- Starts muted (required for browser autoplay policies)
+- Speaker icon button (🔇/🔊) positioned below SHOP nav link (top: 48px, right: 16px)
+- Toggle unmutes video for music playback
+
+**Also During This Session:**
+- Debug overlay system built (`?debug=1` URL parameter) for slow-mode + index display — useful tool for future video/animation debugging
+- Shot list document (`data/hero-animation-shot-list.md`) updated but now superseded by CapCut video
+- Multiple admin dashboard and mobile UI fixes merged to main by other sessions
+
+**Files Modified:**
+- client/src/components/hero-animation.tsx (rewritten from 362 → 30 lines)
+- data/hero-animation-shot-list.md (updated, now historical reference)
+- CLAUDE.md (this session recap)
+
+**Key Lesson:**
+When React's rendering model fundamentally conflicts with a feature's requirements (frame-precise media transitions), the best solution may be to move the complexity OUT of React entirely. Sharon's CapCut video is more reliable, looks better (she has full editorial control), and is trivially simple to implement. The "AI-native" instinct to solve everything in code missed the obvious creative solution.
+
+**Video URL:** `https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/landing%20page%20video.mp4`
+
+**PRs/Commits:** ~15 commits across April 3-8, all on main. PR #25 created on feature branch (now superseded).
+
+**Still Pending (carried forward):**
+- OpenWeatherMap API key → Vercel env vars
+- Resend domain verification for custom from-email
+- Navigation restructure from April 1 user journey redesign brief
+- Repository visibility: Sharon making repo public so Claude.ai can view code directly
 
 ---
 
