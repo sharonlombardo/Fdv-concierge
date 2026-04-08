@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
 **Last updated:** April 8, 2026
-**Updated by:** Claude Code session (Hero animation replaced with pre-rendered CapCut video)
+**Updated by:** Claude Code session (Nav restructure, Edits page redesign, Destinations carousel)
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -548,6 +548,126 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 8, 2026 | Claude.ai — Bug Fixes, Destinations Carousel, Nav Restructure, Edits + Concierge Pages
+
+**TODO LIST — PICK UP HERE**
+
+User Journey Priority Queue (from April 1 spec):
+1. Navigation restructure — **DONE** (today)
+2. Destinations carousel — **DONE** (today)
+3. Edits page + Concierge page rewrite — **DONE** (today, visual redesign shipped via Claude Code)
+4. Tappable image mechanic — Zara Home split screen: tap image in guide → editorial left, product right, close → back where you were. **NOT STARTED.**
+5. Early sign-up prompt — after first scroll, access-framed: "Start building your travel world" → Create Digital Passport. **NOT STARTED.**
+6. Save moment language update — change toast copy to: "Saved to your Edit. The more you save, the better I know you." After 3-4 saves: "I'm starting to see your world. Want me to pull this together?" **NOT STARTED.**
+7. Gate 1 redesign — end of guide → Digital Passport → itinerary overview. Gate exists but needs to match new architecture. **NOT STARTED.**
+8. Returning user detection — skip onboarding for auth'd users. **NOT STARTED.**
+9. Concierge woven into journey moments — floating widget says "New here? I can show you around." End of guide: "Have a question about Morocco? Ask me." After saves: "Want me to build this into a trip?" **NOT STARTED.**
+10. About page with tiers — update to reflect Digital Passport / Gold / Black. **NOT STARTED.**
+11. Gates 2 + 3 — Gold ($29/mo) and Black ($59/mo) implementation. **NOT STARTED.**
+
+Other Open Items:
+- Concierge system prompt — still Morocco-specific. Needs broadening to match the new general page copy. Separate Claude Code task.
+- FDV Concierge brand voice doc — doesn't exist yet. Voice is different from FDV Daily; current site copy is somewhere in between. Need canonical voice reference. Future session.
+- OpenWeatherMap API key → Vercel env vars (still pending)
+- Resend domain verification for custom from-email
+- Lisa Ruffle outreach (DOTSHOP) — still pending
+- Anvisha Pai (Moda.app) — DM sent, awaiting response
+- Warren Shaeffer + Quentin Clark — connection requests sent
+- Gillian intro via April
+- Melissa / Exclusive Resorts partnership conversation
+- Financial model gap — subscription revenue layer + Klaviyo email open rate
+- VC deck placeholders (historic AOV, email open rate)
+- "Static Preference to Taste in Motion" slide revision
+- Wellspring OS Phase 1 SQL migrations
+
+**WHAT SHIPPED TODAY (Claude.ai directing, Claude Code executing):**
+
+1. **Suitcase Save Feedback Bug — FIXED**
+   Product modal "SAVE TO SUITCASE" button had no visual feedback. Root cause: shape mismatch — optimistic update was writing a raw boolean to the query cache but the query expected `{ isPinned: boolean }`. Second bug: `invalidateQueries` without `exact: true` was nuking the optimistic update via a race condition. Both fixed. Button now goes gold with "IN YOUR SUITCASE" text on tap, persists on reopen.
+
+2. **Destinations Carousel — SHIPPED**
+   Replaced the vertical grid of destination cards at `/destinations` with a full-screen side-swipe carousel. Zara Travel Mode reference. Full-bleed photos, bold serif destination names, atmospheric one-liners, VIEW GUIDE button. Morocco is live with GUIDE badge, 4 others Coming Soon. Two rounds of refinement: added side-peek (~15-20% adjacent slide visibility) and persistent chevron arrows with infinite loop.
+
+3. **Bottom Nav Restructure — SHIPPED**
+   Changed from: CURRENT · SUITCASE · GUIDES · SHOP (4 tabs)
+   Changed to: GUIDES (compass icon) · SHOP · SUITCASE · PASSPORT (4 tabs)
+   CURRENT moved to hamburger only. Compass icon for GUIDES.
+
+4. **Top Nav Restructure — SHIPPED**
+   Changed from: ABOUT · THE GUIDES · SHOP
+   Changed to: ABOUT · EDITS · (concierge chat bubble icon, far right)
+   EDITS links to new `/edits` page. Chat bubble icon links to `/concierge-chat`.
+
+5. **Edits Page — NEW, SHIPPED**
+   New route `/edits`. The page where she requests curation — CREATE MY EDIT triggers the existing Curate for Me flow. Past curated capsules displayed below. Visual redesign: moodboard hero image, cream background `#fafaf9`, gold dividers, gold CTA button, Lora serif italic headline, 2-column capsule grid. Feels editorial, not dashboard.
+
+6. **Concierge Page Rewrite — SHIPPED**
+   Replaced Morocco-specific copy with general concierge intro. "Think of this less like a chatbot and more like a well-traveled friend..." New chips: "I'm new — show me around" · "Curate an Edit for me" · "Help me plan a trip" · "What should I pack?"
+   Note: Claude API system prompt is still Morocco-specific (backend). Frontend is general. System prompt update is separate task.
+
+**KEY DECISIONS MADE TODAY:**
+
+- **"Edits" = the nav label and the page.** Fashion-native language. Not an action, a place. "Curate for Me" = what happens when she taps CREATE MY EDIT. "Stylist" rejected — boxes FDV into fashion only.
+- **Suitcase = her raw saves (inputs). Edits = curated capsules (outputs).** Same data can live in both. Different intent: Suitcase is a closet, Edits is a stylist.
+- **FDV Concierge voice (still needs formal doc):** Not FDV Daily (too punchy/snarky). Not pure FDV site voice (too soft/esoteric). Sweet spot: direct, confident, warm, no hedging. More like a magazine editor than a poet.
+
+**IMAGES REVIEWED FOR EDITS PAGE:**
+Sharon provided 6 images + 3 moodboards. Selected: MOODBOARD (rust dress, Greek islands, sardines, abstract line drawing) — overlapping pinboard style that visually demonstrates curation. Rejected: packed suitcase (better for Suitcase page), B&W wind photo (too mood-only), Instagram grids (read as social feed). Suitcase flat-lay saved for future Suitcase page redesign. Hydra concierge mockup saved for future concierge visual direction.
+
+**Carry-forward bugs resolved:**
+- Daily flow back button: RESOLVED (collapse/expand + X to close shop modals)
+- Breakfast/lunch/dinner items: RESOLVED (open to shopping AND logistics/diary)
+- Suitcase save feedback: RESOLVED (today's fix)
+
+---
+
+### April 8, 2026 | Claude Code (web) — Bug Fix Marathon, Nav Restructure, Destinations Carousel, Edits Page
+
+**What was built/fixed (Claude Code execution):**
+
+**Bug Fixes:**
+- **Bottom nav missing on landing page** — removed `if (location === "/") return null` guard. Bottom nav now renders on all pages.
+- **Product modal close button invisible** — was 32x32px with 8% opacity bg. Fixed to 44x44px touch target, `bg-black/25`, white X, z-index 60.
+- **Bottom nav icons clipping on iOS scroll** — `border-box` sizing with safe area padding was compressing content. Fixed with `calc(60px + env(safe-area-inset-bottom))` and `translateZ(0)` GPU compositing layer.
+- **Product modal top cropped on mobile** — `max-h-[92vh]` failed because iOS `100vh` includes URL bar. Fixed with hard positional constraints: `top: 56px; bottom: 0` with `flex-col` layout (non-scrolling header + scrollable body).
+- **Save button not turning gold** — Two bugs: (1) optimistic update wrote raw boolean but query expected `{ isPinned: boolean }`, (2) `invalidateQueries` prefix-matched check queries, racing with optimistic update. Fixed data shape + added `exact: true`.
+
+**New Features:**
+- **Destinations carousel** (`client/src/pages/destinations.tsx`) — Full rewrite from grid to `scroll-snap` carousel. 68% slide width with side-peek padding. Infinite-loop chevron arrows. Dot indicators. `rounded-2xl` cards. Lora serif (non-italic) destination names. Plain-text "View Guide" (no capsule outline). Container accounts for bottom safe area.
+- **Bottom nav restructure** (`client/src/components/bottom-nav.tsx`) — 4 tabs: GUIDES (compass) · SHOP (bag) · SUITCASE (suitcase) · PASSPORT (user circle). Black `#1A1A18` background. Active/inactive states.
+- **Top nav restructure** (`client/src/components/top-bar.tsx`) — ABOUT · EDITS + concierge chat bubble icon far right. Bumped muted opacity to 0.85 and font weight to 500 for landing page visibility. Chat icon strokeWidth 2.
+- **Edits page** (`client/src/pages/edits.tsx`) — New route at `/edits`. Editorial visual redesign: moodboard hero image from Vercel Blob, `#fafaf9` background, Lora serif italic headline "Your Edit", gold `#c9a84c` CTA button, `GoldDivider` component (40px wide, 1px, centered), 2-column capsule grid, "Previous Edits" section, muted gold empty state. Max-width 560px, centered.
+- **Concierge chat page** (`client/src/pages/concierge-chat.tsx`) — Rewritten with general (non-Morocco-specific) editorial copy. Three editorial paragraphs. Four suggestion chips.
+- **Hamburger drawer** — Updated GUIDES link to `/destinations`.
+
+**Technical Details:**
+- `scroll-snap-type: x mandatory` + `scroll-snap-align: center` for carousel
+- Slide width percentage + side padding formula `${(100 - 68) / 2}vw` for peek
+- React Query optimistic updates must match query data shape exactly
+- `invalidateQueries` with prefix matching can race — use `exact: true` for targeted invalidation
+- CSS `env(safe-area-inset-bottom)` in `calc()` for iOS home indicator spacing
+- `translateZ(0)` forces GPU compositing layer, stabilizing `position: fixed` during iOS momentum scroll
+
+**Files Modified:**
+- `client/src/components/bottom-nav.tsx` (restructured, iOS scroll fix)
+- `client/src/components/top-bar.tsx` (nav links, visibility, concierge icon)
+- `client/src/components/item-modal.tsx` (close button, hard ceiling, save feedback)
+- `client/src/components/hamburger-drawer.tsx` (guides link update)
+- `client/src/pages/destinations.tsx` (full carousel rewrite)
+- `client/src/pages/edits.tsx` (new file, visual redesign)
+- `client/src/pages/concierge-chat.tsx` (copy rewrite)
+- `client/src/App.tsx` (added `/edits` route)
+
+**PRs/Commits:** ~12 commits on main, all auto-deployed via Vercel.
+
+**Still Pending (carried forward):**
+- Debug console.logs still in item-modal.tsx (should be stripped)
+- Claude API system prompt still Morocco-specific (frontend is general, backend needs update)
+- OpenWeatherMap API key → Vercel env vars
+- Resend domain verification for custom from-email
 
 ---
 
