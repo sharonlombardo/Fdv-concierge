@@ -161,10 +161,24 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
 
   const isSaved = saveStatus?.isPinned ?? false;
 
+  // Debug logging
+  useEffect(() => {
+    if (open && item) {
+      console.log('[ItemModal] Save state debug:', {
+        itemId: item.id,
+        saveStatusRaw: saveStatus,
+        isPinned: saveStatus?.isPinned,
+        isSaved,
+      });
+    }
+  }, [open, item?.id, saveStatus, isSaved]);
+
   const saveMutation = useMutation({
     mutationFn: async () => {
+      console.log('[ItemModal] Mutation fired — isSaved:', isSaved, 'itemId:', item?.id);
       if (isSaved) {
-        await fetch(`/api/saves/${encodeURIComponent(item!.id)}`, { method: "DELETE" });
+        const delRes = await fetch(`/api/saves/${encodeURIComponent(item!.id)}`, { method: "DELETE" });
+        console.log('[ItemModal] DELETE response:', delRes.status);
       } else {
         const res = await fetch("/api/saves", {
           method: "POST",
@@ -192,9 +206,11 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
             })(),
           }),
         });
+        console.log('[ItemModal] POST /api/saves response:', res.status);
         // 409 or 400 "Already pinned" — treat as success
         if (res.status === 409 || res.status === 400) {
           const body = await res.json().catch(() => ({}));
+          console.log('[ItemModal] 400/409 body:', body);
           if (body.error === "Already pinned") {
             return;
           }
@@ -221,15 +237,20 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
       console.error('[ItemModal] Save error:', err);
     },
     onSuccess: () => {
+      const newState = !isSaved;
+      console.log('[ItemModal] Save mutation success — setting isPinned to', newState);
       // Explicitly set pin state so it stays gold without waiting for refetch
-      queryClient.setQueryData(["/api/saves/check", item?.id], { isPinned: !isSaved });
+      queryClient.setQueryData(["/api/saves/check", item?.id], { isPinned: newState });
 
       if (!isSaved && item) {
         fireEvent("save_item", item.id, undefined, { source: "modal", title: item.title });
       }
 
-      // Refresh saves list in background
-      queryClient.invalidateQueries({ queryKey: ["/api/saves"] });
+      // Refresh saves list — but NOT the check query (would race with optimistic update)
+      queryClient.invalidateQueries({
+        queryKey: ["/api/saves"],
+        exact: true,
+      });
     },
   });
 
