@@ -143,7 +143,7 @@ export default function Destinations() {
                   className="text-center mb-3"
                   style={{
                     fontFamily: "Lora, serif",
-                    fontStyle: "italic",
+                    fontStyle: "normal",
                     fontSize: "clamp(2.5rem, 8vw, 4rem)",
                     fontWeight: 500,
                     color: "#ffffff",
