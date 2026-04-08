@@ -83,93 +83,67 @@ export default function EditsPage() {
             Your Edit
           </h1>
 
-          {hasSaves ? (
-            <>
-              <p
-                style={{
-                  fontFamily: "Lora, serif",
-                  fontSize: 16,
-                  color: "#1a1a1a",
-                  lineHeight: 1.7,
-                  marginBottom: 24,
-                }}
-              >
-                We don't do generic recommendations. We pay attention to what you save — the pieces, the places, the things that stopped your scroll — and we build something from it. A capsule that actually makes sense for where you're going and who you are when you get there.
-              </p>
+          <p
+            style={{
+              fontFamily: "Lora, serif",
+              fontSize: 16,
+              color: "#1a1a1a",
+              lineHeight: 1.7,
+              marginBottom: 24,
+            }}
+          >
+            We don't do generic recommendations. We pay attention to what you save — the pieces, the places, the things that stopped your scroll — and we build something from it. A capsule that actually makes sense for where you're going and who you are when you get there.
+          </p>
 
-              <Link href="/suitcase?curate=true">
-                <button
-                  style={{
-                    background: "#1a1a1a",
-                    color: "#fff",
-                    border: "none",
-                    padding: "14px 32px",
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: 12,
-                    fontWeight: 500,
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    cursor: "pointer",
-                    marginBottom: 20,
-                  }}
-                >
-                  Create my Edit
-                </button>
-              </Link>
+          <Link href="/suitcase?curate=true">
+            <button
+              style={{
+                background: "#1a1a1a",
+                color: "#fff",
+                border: "none",
+                padding: "14px 32px",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 12,
+                fontWeight: 500,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                marginBottom: 20,
+              }}
+            >
+              Create my Edit
+            </button>
+          </Link>
 
-              <p
+          <p
+            style={{
+              fontFamily: "Lora, serif",
+              fontSize: 14,
+              color: "#1a1a1a",
+              opacity: 0.5,
+              lineHeight: 1.7,
+              marginBottom: hasSaves ? 0 : 20,
+            }}
+          >
+            Your Edits get sharper over time. Every pin teaches us something. Save more, use the site, and watch what happens.
+          </p>
+
+          {!hasSaves && (
+            <Link href="/destinations">
+              <span
                 style={{
-                  fontFamily: "Lora, serif",
-                  fontSize: 14,
-                  color: "#1a1a1a",
-                  opacity: 0.5,
-                  lineHeight: 1.7,
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 12,
+                  fontWeight: 500,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: "#c9a84c",
+                  cursor: "pointer",
                 }}
               >
-                Your Edits get sharper over time. Every pin teaches us something. Save more, use the site, and watch what happens.
-              </p>
-            </>
-          ) : (
-            <>
-              <p
-                style={{
-                  fontFamily: "Lora, serif",
-                  fontSize: 16,
-                  color: "#1a1a1a",
-                  lineHeight: 1.7,
-                  marginBottom: 12,
-                }}
-              >
-                Your Edit starts with what catches your eye.
-              </p>
-              <p
-                style={{
-                  fontFamily: "Lora, serif",
-                  fontSize: 14,
-                  color: "#1a1a1a",
-                  opacity: 0.5,
-                  lineHeight: 1.7,
-                  marginBottom: 24,
-                }}
-              >
-                Save as you go — a dress, a restaurant, a hotel, a feeling. We'll take it from there.
-              </p>
-              <Link href="/destinations">
-                <span
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: 12,
-                    fontWeight: 500,
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    color: "#c9a84c",
-                    cursor: "pointer",
-                  }}
-                >
-                  Explore Guides →
-                </span>
-              </Link>
-            </>
+                Explore Guides →
+              </span>
+            </Link>
           )}
         </div>
 
