@@ -280,10 +280,10 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
           onClick={() => onOpenChange(false)}
         />
 
-        {/* Bottom sheet content */}
+        {/* Bottom sheet content — hard top constraint at 56px (nav height) */}
         <DialogPrimitive.Content
-          className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom data-[state=closed]:duration-300 data-[state=open]:duration-500 focus:outline-none"
-          style={{ maxHeight: "calc(100vh - env(safe-area-inset-top, 0px) - 56px)" }}
+          className="fixed inset-x-0 bottom-0 z-50 flex flex-col rounded-t-2xl bg-white shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom data-[state=closed]:duration-300 data-[state=open]:duration-500 focus:outline-none"
+          style={{ top: 56 }}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <DialogPrimitive.Title className="sr-only">
@@ -293,10 +293,16 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
             {description || `Details for ${item.title}`}
           </DialogPrimitive.Description>
 
-          {/* Close button — sticky top right, always visible above scroll */}
-          <div className="sticky top-0 z-[60] pointer-events-none" style={{ height: 0 }}>
+          {/* Fixed header: drag handle + close button — never scrolls */}
+          <div className="relative flex-shrink-0">
+            {/* Drag handle */}
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 rounded-full bg-[#1a1a1a]/20" />
+            </div>
+
+            {/* Close button — top right */}
             <DialogPrimitive.Close
-              className="absolute top-3 right-3 pointer-events-auto w-11 h-11 flex items-center justify-center rounded-full bg-black/25 hover:bg-black/40 active:bg-black/50 transition-colors"
+              className="absolute top-2 right-3 z-[60] w-11 h-11 flex items-center justify-center rounded-full bg-black/25 hover:bg-black/40 active:bg-black/50 transition-colors"
               aria-label="Close"
             >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round">
@@ -306,12 +312,8 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
             </DialogPrimitive.Close>
           </div>
 
-          {/* Drag handle */}
-          <div className="flex justify-center pt-3 pb-1">
-            <div className="w-10 h-1 rounded-full bg-[#1a1a1a]/20" />
-          </div>
-
-          <div className="overflow-y-auto" style={{ maxHeight: "calc(100vh - env(safe-area-inset-top, 0px) - 56px - 1.5rem)" }}>
+          {/* Scrollable content — takes remaining space */}
+          <div className="flex-1 overflow-y-auto min-h-0">
             {/* Image — 60%+ of modal */}
             <div className={`relative w-full aspect-[3/4] ${imageBg}`}>
               {item.imageUrl ? (
