@@ -7,7 +7,7 @@ const MENU_ITEMS: { label: string; href?: string; text?: string }[] = [
   { label: "✨ Curate for Me", href: "/suitcase?curate=true" },
   { label: "_section", text: "DISCOVER" },
   { label: "The Current", href: "/current" },
-  { label: "Guides", href: "/guides" },
+  { label: "Guides", href: "/destinations" },
   { label: "Shop", href: "/shop" },
   { label: "The Details", href: "/about" },
   { label: "_section", text: "YOUR TRIPS" },

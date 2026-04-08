@@ -34,7 +34,7 @@ export default function BottomNav() {
     },
     {
       label: "GUIDES",
-      href: "/guides",
+      href: "/destinations",
       active: isGuides,
       icon: (
         // Map/book icon

@@ -5,13 +5,13 @@ import HamburgerDrawer from "./hamburger-drawer";
 // Top nav links — Zara Travel Mode reference styling
 const NAV_LINKS = [
   { label: "ABOUT", href: "/about" },
-  { label: "THE GUIDES", href: "/guides" },
+  { label: "THE GUIDES", href: "/destinations" },
   { label: "SHOP", href: "/shop" },
 ];
 
 function isNavActive(href: string, location: string): boolean {
   if (href === "/about") return location === "/about";
-  if (href === "/guides") return location.startsWith("/guides") || location.startsWith("/destinations");
+  if (href === "/destinations") return location.startsWith("/guides") || location.startsWith("/destinations");
   if (href === "/shop") return location === "/shop";
   return false;
 }
