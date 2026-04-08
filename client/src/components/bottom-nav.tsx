@@ -3,9 +3,6 @@ import { Link, useLocation } from "wouter";
 export default function BottomNav() {
   const [location] = useLocation();
 
-  // Don't render on landing page
-  if (location === "/") return null;
-
   const isCurrent = location === "/current";
   const isSuitcase = location.startsWith("/suitcase");
   const isGuides = location.startsWith("/guides") || location === "/destinations";

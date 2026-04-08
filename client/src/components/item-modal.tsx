@@ -292,14 +292,14 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
             {description || `Details for ${item.title}`}
           </DialogPrimitive.Description>
 
-          {/* Close button — top right */}
+          {/* Close button — top right, 44x44 touch target */}
           <DialogPrimitive.Close
-            className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-[#1a1a1a]/8 hover:bg-[#1a1a1a]/15 transition-colors"
+            className="absolute top-3 right-3 z-[60] w-11 h-11 flex items-center justify-center rounded-full bg-black/25 hover:bg-black/40 active:bg-black/50 transition-colors"
             aria-label="Close"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round">
-              <line x1="1" y1="1" x2="13" y2="13" />
-              <line x1="13" y1="1" x2="1" y2="13" />
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round">
+              <line x1="2" y1="2" x2="16" y2="16" />
+              <line x1="16" y1="2" x2="2" y2="16" />
             </svg>
           </DialogPrimitive.Close>
 
