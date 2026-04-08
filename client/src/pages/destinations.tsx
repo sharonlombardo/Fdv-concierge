@@ -5,7 +5,7 @@ import { IMAGE_SLOTS } from "@shared/image-slots";
 import { Link } from "wouter";
 import { PinButton } from "@/components/pin-button";
 
-const SLIDE_WIDTH_PERCENT = 88; // % of viewport
+const SLIDE_WIDTH_PERCENT = 68; // % of viewport — ~16% peek each side
 const GAP = 12; // px between slides
 
 export default function Destinations() {
@@ -48,10 +48,10 @@ export default function Destinations() {
   }, [getSlideWidth]);
 
   const goNext = () => {
-    if (activeIndex < DESTINATIONS.length - 1) scrollTo(activeIndex + 1);
+    scrollTo(activeIndex < DESTINATIONS.length - 1 ? activeIndex + 1 : 0);
   };
   const goPrev = () => {
-    if (activeIndex > 0) scrollTo(activeIndex - 1);
+    scrollTo(activeIndex > 0 ? activeIndex - 1 : DESTINATIONS.length - 1);
   };
 
   // Side padding so first/last slides center with peek space
@@ -205,10 +205,9 @@ export default function Destinations() {
         })}
       </div>
 
-      {/* Left chevron arrow */}
-      {activeIndex > 0 && (
-        <button
-          onClick={goPrev}
+      {/* Left chevron arrow — always visible */}
+      <button
+        onClick={goPrev}
           className="fixed z-[70] flex items-center justify-center w-10 h-10 rounded-full transition-opacity hover:opacity-100"
           style={{
             left: 8,
@@ -219,18 +218,16 @@ export default function Destinations() {
             cursor: "pointer",
             opacity: 0.6,
           }}
-          aria-label="Previous destination"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </button>
-      )}
+        aria-label="Previous destination"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
 
-      {/* Right chevron arrow */}
-      {activeIndex < DESTINATIONS.length - 1 && (
-        <button
-          onClick={goNext}
+      {/* Right chevron arrow — always visible */}
+      <button
+        onClick={goNext}
           className="fixed z-[70] flex items-center justify-center w-10 h-10 rounded-full transition-opacity hover:opacity-100"
           style={{
             right: 8,
@@ -241,13 +238,12 @@ export default function Destinations() {
             cursor: "pointer",
             opacity: 0.6,
           }}
-          aria-label="Next destination"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="9 6 15 12 9 18" />
-          </svg>
-        </button>
-      )}
+        aria-label="Next destination"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="9 6 15 12 9 18" />
+        </svg>
+      </button>
 
       {/* Dot indicators — above bottom nav */}
       <div
