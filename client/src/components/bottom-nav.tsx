@@ -3,44 +3,23 @@ import { Link, useLocation } from "wouter";
 export default function BottomNav() {
   const [location] = useLocation();
 
-  const isCurrent = location === "/current";
-  const isSuitcase = location.startsWith("/suitcase");
-  const isGuides = location.startsWith("/guides") || location === "/destinations";
+  const isDestinations = location === "/destinations" || location.startsWith("/guides");
   const isShop = location === "/shop";
+  const isSuitcase = location.startsWith("/suitcase") || location.startsWith("/my-edits") || location.startsWith("/capsule") || location.startsWith("/my-trips");
+  const isConcierge = location === "/concierge-chat" || location === "/concierge-info";
+  const isPassport = location === "/profile";
 
   const tabs = [
     {
-      label: "CURRENT",
-      href: "/current",
-      active: isCurrent,
+      label: "DESTINATIONS",
+      href: "/destinations",
+      active: isDestinations,
       icon: (
-        // Compass icon
+        // Globe/compass icon
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <circle cx="12" cy="12" r="10" />
-          <path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36z" />
-        </svg>
-      ),
-    },
-    {
-      label: "SUITCASE",
-      href: "/suitcase",
-      active: isSuitcase,
-      icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <rect x="3" y="8" width="18" height="13" rx="2" />
-          <path d="M8 8V5a2 2 0 012-2h4a2 2 0 012 2v3" />
-        </svg>
-      ),
-    },
-    {
-      label: "GUIDES",
-      href: "/destinations",
-      active: isGuides,
-      icon: (
-        // Map/book icon
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
-          <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
+          <path d="M2 12h20" />
+          <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
         </svg>
       ),
     },
@@ -54,6 +33,41 @@ export default function BottomNav() {
           <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
           <line x1="3" y1="6" x2="21" y2="6" />
           <path d="M16 10a4 4 0 01-8 0" />
+        </svg>
+      ),
+    },
+    {
+      label: "SUITCASE",
+      href: "/suitcase",
+      active: isSuitcase,
+      icon: (
+        // Suitcase icon
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <rect x="3" y="8" width="18" height="13" rx="2" />
+          <path d="M8 8V5a2 2 0 012-2h4a2 2 0 012 2v3" />
+        </svg>
+      ),
+    },
+    {
+      label: "CONCIERGE",
+      href: "/concierge-chat",
+      active: isConcierge,
+      icon: (
+        // Chat bubble icon
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+        </svg>
+      ),
+    },
+    {
+      label: "PASSPORT",
+      href: "/profile",
+      active: isPassport,
+      icon: (
+        // User circle icon
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M20 21a8 8 0 00-16 0" />
         </svg>
       ),
     },
@@ -74,7 +88,7 @@ export default function BottomNav() {
       {tabs.map((tab) => (
         <Link key={tab.label} href={tab.href}>
           <button
-            className="flex flex-col items-center justify-center gap-1 w-full h-full bg-transparent border-none cursor-pointer px-2"
+            className="flex flex-col items-center justify-center gap-1 w-full h-full bg-transparent border-none cursor-pointer px-1"
             style={{
               color: tab.active ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.45)",
               fontFamily: "Inter, sans-serif",
@@ -83,7 +97,7 @@ export default function BottomNav() {
             {tab.icon}
             <span
               style={{
-                fontSize: 10,
+                fontSize: 8,
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
                 fontWeight: tab.active ? 600 : 400,
