@@ -172,19 +172,16 @@ export default function Destinations() {
                 {/* CTA */}
                 {dest.available ? (
                   <Link href={dest.route}>
-                    <button
-                      className="px-8 py-3 text-xs tracking-[0.2em] uppercase rounded-full transition-opacity hover:opacity-80"
+                    <span
+                      className="text-xs tracking-[0.2em] uppercase transition-opacity hover:opacity-80 cursor-pointer"
                       style={{
-                        border: "1px solid #F5F0EB",
                         color: "#F5F0EB",
-                        backgroundColor: "transparent",
                         fontFamily: "Inter, sans-serif",
                         fontWeight: 500,
-                        cursor: "pointer",
                       }}
                     >
                       View Guide
-                    </button>
+                    </span>
                   </Link>
                 ) : (
                   <span
