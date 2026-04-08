@@ -48,7 +48,7 @@ export default function TopBar() {
   // Always visible — but transparent over hero, white after scroll
   const iconColor = isLanding && !scrolled ? "#ffffff" : "#2c2416";
   const navTextColor = isLanding && !scrolled ? "#ffffff" : "#2c2416";
-  const navMutedColor = isLanding && !scrolled ? "rgba(255,255,255,0.55)" : "rgba(44,36,22,0.45)";
+  const navMutedColor = isLanding && !scrolled ? "rgba(255,255,255,0.85)" : "rgba(44,36,22,0.45)";
   const navBorderColor = isLanding && !scrolled ? "rgba(255,255,255,0.8)" : "#1A1A18";
   const isConciergeActive = location === "/concierge-chat" || location === "/concierge-info";
 
@@ -162,7 +162,7 @@ export default function TopBar() {
                     padding: "4px 7px",
                     fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
                     fontSize: 9,
-                    fontWeight: active ? 600 : 400,
+                    fontWeight: active ? 600 : 500,
                     letterSpacing: "0.14em",
                     textTransform: "uppercase" as const,
                     color: active ? navTextColor : navMutedColor,
@@ -193,7 +193,7 @@ export default function TopBar() {
               }}
               aria-label="Concierge chat"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
               </svg>
             </button>
