@@ -77,12 +77,26 @@ export default function ConciergeChat() {
   return (
     <div style={{ minHeight: "100vh", paddingTop: 70, background: "#faf9f6", display: "flex", flexDirection: "column" }}>
       {/* Header */}
-      <div style={{ padding: "24px 24px 16px", maxWidth: 600, margin: "0 auto", width: "100%" }}>
-        <p style={{ fontFamily: "Lora, serif", fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 8 }}>
-          YOUR FDV CONCIERGE
+      <div style={{ padding: "24px 24px 20px", maxWidth: 600, margin: "0 auto", width: "100%" }}>
+        <h1
+          style={{
+            fontFamily: "Lora, serif",
+            fontSize: 24,
+            fontWeight: 500,
+            color: "#1a1a1a",
+            marginBottom: 16,
+          }}
+        >
+          Your Concierge
+        </h1>
+        <p style={{ fontFamily: "Lora, serif", fontSize: 16, color: "#1a1a1a", lineHeight: 1.7, marginBottom: 12 }}>
+          Think of this less like a chatbot and more like a well-traveled friend who packed perfectly and knows exactly where you should have dinner tonight.
         </p>
-        <p style={{ fontFamily: "Lora, serif", fontSize: 15, color: "#999", lineHeight: 1.6 }}>
-          Ask me anything — travel, packing, where to eat, what to wear, or let me curate an Edit for you.
+        <p style={{ fontFamily: "Lora, serif", fontSize: 16, color: "#1a1a1a", lineHeight: 1.7, marginBottom: 12 }}>
+          I know which riad has the courtyard you'll never want to leave. I know the dress — not <em>a</em> dress, <em>the</em> dress — for that dinner you haven't booked yet. I know what to skip.
+        </p>
+        <p style={{ fontFamily: "Lora, serif", fontSize: 16, color: "#1a1a1a", lineHeight: 1.7 }}>
+          Ask me anything. Or if you're new here, just say hello and I'll walk you through it.
         </p>
       </div>
 
@@ -97,10 +111,10 @@ export default function ConciergeChat() {
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 320, margin: "0 auto" }}>
               {[
+                "I'm new — show me around",
                 "Curate an Edit for me",
                 "Help me plan a trip",
                 "What should I pack?",
-                "Show me what's new",
               ].map((suggestion) => (
                 <button
                   key={suggestion}

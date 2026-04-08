@@ -69,69 +69,107 @@ export default function EditsPage() {
     >
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "0 24px" }}>
         {/* Hero CTA area */}
-        <div style={{ textAlign: "center", padding: "32px 0 40px" }}>
+        <div style={{ padding: "32px 0 40px" }}>
           <h1
             style={{
               fontFamily: "Lora, serif",
               fontSize: 28,
               fontWeight: 500,
-              color: "#2c2416",
+              color: "#1a1a1a",
               lineHeight: 1.3,
-              marginBottom: 16,
+              marginBottom: 20,
             }}
           >
-            {savedCapsules.length > 0 ? "Ready for a new Edit?" : "Your next Edit"}
+            Your Edit
           </h1>
-          <p
-            style={{
-              fontFamily: "Lora, serif",
-              fontSize: 15,
-              color: "#999",
-              lineHeight: 1.7,
-              marginBottom: 28,
-              maxWidth: 320,
-              margin: "0 auto 28px",
-            }}
-          >
-            {hasSaves
-              ? "Based on what you've saved, we'll curate a capsule made for you."
-              : "Start saving what speaks to you. We'll pull it together."}
-          </p>
 
           {hasSaves ? (
-            <Link href="/suitcase?curate=true">
-              <button
+            <>
+              <p
                 style={{
-                  background: "#1a1a1a",
-                  color: "#fff",
-                  border: "none",
-                  padding: "14px 32px",
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: 12,
-                  fontWeight: 500,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  cursor: "pointer",
+                  fontFamily: "Lora, serif",
+                  fontSize: 16,
+                  color: "#1a1a1a",
+                  lineHeight: 1.7,
+                  marginBottom: 24,
                 }}
               >
-                Create my Edit
-              </button>
-            </Link>
+                We don't do generic recommendations. We pay attention to what you save — the pieces, the places, the things that stopped your scroll — and we build something from it. A capsule that actually makes sense for where you're going and who you are when you get there.
+              </p>
+
+              <Link href="/suitcase?curate=true">
+                <button
+                  style={{
+                    background: "#1a1a1a",
+                    color: "#fff",
+                    border: "none",
+                    padding: "14px 32px",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    cursor: "pointer",
+                    marginBottom: 20,
+                  }}
+                >
+                  Create my Edit
+                </button>
+              </Link>
+
+              <p
+                style={{
+                  fontFamily: "Lora, serif",
+                  fontSize: 14,
+                  color: "#1a1a1a",
+                  opacity: 0.5,
+                  lineHeight: 1.7,
+                }}
+              >
+                Your Edits get sharper over time. Every pin teaches us something. Save more, use the site, and watch what happens.
+              </p>
+            </>
           ) : (
-            <Link href="/destinations">
-              <span
+            <>
+              <p
                 style={{
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: 12,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: "#c9a84c",
-                  cursor: "pointer",
+                  fontFamily: "Lora, serif",
+                  fontSize: 16,
+                  color: "#1a1a1a",
+                  lineHeight: 1.7,
+                  marginBottom: 12,
                 }}
               >
-                Explore Guides →
-              </span>
-            </Link>
+                Your Edit starts with what catches your eye.
+              </p>
+              <p
+                style={{
+                  fontFamily: "Lora, serif",
+                  fontSize: 14,
+                  color: "#1a1a1a",
+                  opacity: 0.5,
+                  lineHeight: 1.7,
+                  marginBottom: 24,
+                }}
+              >
+                Save as you go — a dress, a restaurant, a hotel, a feeling. We'll take it from there.
+              </p>
+              <Link href="/destinations">
+                <span
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: "#c9a84c",
+                    cursor: "pointer",
+                  }}
+                >
+                  Explore Guides →
+                </span>
+              </Link>
+            </>
           )}
         </div>
 
@@ -149,12 +187,29 @@ export default function EditsPage() {
                 letterSpacing: "0.15em",
                 textTransform: "uppercase",
                 color: "#c9a84c",
-                marginBottom: 16,
-                textAlign: "center",
+                marginBottom: 8,
               }}
             >
-              Your Edits
+              Previous Edits
             </h2>
+            <p
+              style={{
+                fontFamily: "Lora, serif",
+                fontSize: 14,
+                color: "#1a1a1a",
+                opacity: 0.5,
+                lineHeight: 1.6,
+                marginBottom: 20,
+              }}
+            >
+              Your curated capsules live here — and in your{" "}
+              <Link href="/suitcase">
+                <span style={{ textDecoration: "underline", cursor: "pointer", color: "#1a1a1a", opacity: 1 }}>
+                  Suitcase
+                </span>
+              </Link>
+              .
+            </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {savedCapsules.map((capsule) => (
