@@ -37,12 +37,12 @@ export function HeroAnimation() {
         src="https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/landing%20page%20video.mp4"
       />
 
-      {/* Mute toggle — top right, above nav */}
+      {/* Mute toggle — bottom left, above bottom nav */}
       <button
         onClick={toggleMute}
         style={{
           position: "absolute",
-          top: 16,
+          top: 48,
           right: 16,
           zIndex: 20,
           background: "rgba(0, 0, 0, 0.4)",
