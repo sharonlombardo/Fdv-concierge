@@ -211,7 +211,7 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["/api/saves/check", item?.id] });
       const previous = queryClient.getQueryData(["/api/saves/check", item?.id]);
-      queryClient.setQueryData(["/api/saves/check", item?.id], !isSaved);
+      queryClient.setQueryData(["/api/saves/check", item?.id], { isPinned: !isSaved });
       return { previous };
     },
     onError: (err, _vars, context) => {
@@ -222,7 +222,7 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
     },
     onSuccess: () => {
       // Explicitly set pin state so it stays gold without waiting for refetch
-      queryClient.setQueryData(["/api/saves/check", item?.id], !isSaved);
+      queryClient.setQueryData(["/api/saves/check", item?.id], { isPinned: !isSaved });
 
       if (!isSaved && item) {
         fireEvent("save_item", item.id, undefined, { source: "modal", title: item.title });
@@ -587,7 +587,7 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
                     <circle cx="12" cy="10" r="9" />
                     <polygon points="9,18 12,32 15,18" />
                   </svg>
-                  <span>{isSaved ? "Saved to Suitcase" : "Save to Suitcase"}</span>
+                  <span>{isSaved ? "In Your Suitcase" : "Save to Suitcase"}</span>
                 </button>
               )}
 
