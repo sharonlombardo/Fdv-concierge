@@ -551,6 +551,55 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 8, 2026 | Claude.ai + Claude Code (web) — Bug Fix Marathon + UX Planning
+
+**What shipped today:**
+
+**Bug fixes via Dispatch/Claude Code:**
+- Product modal cropping + close button fixed globally
+- Travel diary photo uploads fixed
+- Phoebe Philo image fixed
+- Capsule grid sizing fixed
+- MARRAKECH title fixed
+- Nav bar color fixed
+- Photo persistence (user scoping) fixed
+- Batch upload fixed
+- Save association for pilot users fixed
+- Security bug fixed
+- Admin save details fixed
+- Save confirmation UX fixed
+
+**Additional fixes this session (Claude Code):**
+- Bottom nav now renders on landing page (was returning `null` on `/` route)
+- Bottom nav icons no longer clip during iOS scroll — fixed with `calc(60px + env(safe-area-inset-bottom))` and `translateZ(0)` GPU compositing layer
+- Product modal hard ceiling added — modal can no longer slide above top nav bar on mobile. `top: 56px` constraint + flex-col layout with non-scrolling header (drag handle + X button) + scrollable content area
+- Product modal X button visibility fixed — 44x44px touch target, 25% opacity dark circle with white X, z-index 60
+
+**Hero animation — CapCut video replacement:**
+The React animation was replaced entirely with a pre-rendered CapCut video. 362-line component → 30 lines. One looping MP4 (~25MB, 1080p, H.264, 24fps, ~1:40 loop) hosted on Vercel Blob. Starts muted, mute/unmute toggle top right. All scattered text, white title cards, multilingual greetings, section words baked into video. Sharon has full editorial control without touching code.
+
+**Key architectural lesson logged:**
+When React's rendering model fundamentally conflicts with a feature's requirements, move the complexity out of React entirely.
+
+**Still broken (carry forward):**
+- Back button in daily flow
+- Suitcase save from itinerary modal
+- Breakfast/lunch/dinner items opening to shopping instead of event details
+
+**Next sprint — Destinations page redesign:**
+Current state: vertical scroll of destination cards when tapping THE GUIDES. Replace with Zara Travel Mode style full-screen side-swipe carousel. One destination per screen, full bleed photo, bold destination name, atmospheric one-liner, VIEW GUIDE button, swipe left/right between all five destinations. Morocco = live (GUIDE badge). Others = Coming Soon. FDV aesthetic — cream, serif italic, consistent with rest of site.
+
+**Pilot feedback received:**
+- Maggie: oriented, going back in, product modal bug reported and fixed
+- All modal/close bugs now resolved
+
+**Pending outreach:**
+- Lisa Ruffle (DOTSHOP) still pending
+- Anvisha Pai (Moda.app) — DM sent, awaiting response
+- Warren Shaeffer + Quentin Clark — connection requests sent
+
+---
+
 ### April 3-8, 2026 | Claude Code (web) — Hero Animation Debugging + CapCut Video Replacement
 **Topic:** Multi-day debugging of hero animation flickering → replaced entire system with Sharon's pre-rendered CapCut video
 
