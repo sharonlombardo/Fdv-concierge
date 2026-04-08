@@ -6,7 +6,7 @@ import { Link } from "wouter";
 import { PinButton } from "@/components/pin-button";
 
 const SLIDE_WIDTH_PERCENT = 68; // % of viewport — ~16% peek each side
-const GAP = 12; // px between slides
+const GAP = 3; // px between slides — thin sliver like Zara
 
 export default function Destinations() {
   const { data: imageSlotsData } = useImageSlots();
@@ -208,16 +208,16 @@ export default function Destinations() {
       {/* Left chevron arrow — always visible */}
       <button
         onClick={goPrev}
-          className="fixed z-[70] flex items-center justify-center w-10 h-10 rounded-full transition-opacity hover:opacity-100"
-          style={{
-            left: 8,
-            top: "50%",
-            transform: "translateY(-50%)",
-            backgroundColor: "rgba(0,0,0,0.3)",
-            border: "none",
-            cursor: "pointer",
-            opacity: 0.6,
-          }}
+        className="absolute z-[70] flex items-center justify-center w-10 h-10 rounded-full transition-opacity hover:opacity-100"
+        style={{
+          left: 8,
+          top: "50%",
+          transform: "translateY(-50%)",
+          backgroundColor: "rgba(0,0,0,0.3)",
+          border: "none",
+          cursor: "pointer",
+          opacity: 0.7,
+        }}
         aria-label="Previous destination"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -228,16 +228,16 @@ export default function Destinations() {
       {/* Right chevron arrow — always visible */}
       <button
         onClick={goNext}
-          className="fixed z-[70] flex items-center justify-center w-10 h-10 rounded-full transition-opacity hover:opacity-100"
-          style={{
-            right: 8,
-            top: "50%",
-            transform: "translateY(-50%)",
-            backgroundColor: "rgba(0,0,0,0.3)",
-            border: "none",
-            cursor: "pointer",
-            opacity: 0.6,
-          }}
+        className="absolute z-[70] flex items-center justify-center w-10 h-10 rounded-full transition-opacity hover:opacity-100"
+        style={{
+          right: 8,
+          top: "50%",
+          transform: "translateY(-50%)",
+          backgroundColor: "rgba(0,0,0,0.3)",
+          border: "none",
+          cursor: "pointer",
+          opacity: 0.7,
+        }}
         aria-label="Next destination"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
