@@ -37,6 +37,7 @@ import GuidesListing from "@/pages/guides-listing";
 import ShopPage from "@/pages/shop";
 import DailyFlow from "@/pages/daily-flow";
 import MyEdits from "@/pages/my-edits";
+import EditsPage from "@/pages/edits";
 import MyTrips from "@/pages/my-trips";
 import ConciergeInfo from "@/pages/concierge-info";
 import Profile from "@/pages/profile";
@@ -85,6 +86,7 @@ function Router() {
       <Route path="/test-saves" component={TestSaves} />
       <Route path="/shop" component={ShopPage} />
       <Route path="/daily-flow" component={DailyFlow} />
+      <Route path="/edits" component={EditsPage} />
       <Route path="/my-edits" component={MyEdits} />
       <Route path="/capsule/:capsuleId" component={CapsuleDetail} />
       <Route path="/my-trips" component={MyTrips} />

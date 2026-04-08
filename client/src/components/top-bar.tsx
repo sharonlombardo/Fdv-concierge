@@ -2,17 +2,15 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import HamburgerDrawer from "./hamburger-drawer";
 
-// Top nav links — Zara Travel Mode reference styling
+// Top nav links — ABOUT + EDITS only, concierge icon far right
 const NAV_LINKS = [
   { label: "ABOUT", href: "/about" },
-  { label: "THE GUIDES", href: "/destinations" },
-  { label: "SHOP", href: "/shop" },
+  { label: "EDITS", href: "/edits" },
 ];
 
 function isNavActive(href: string, location: string): boolean {
   if (href === "/about") return location === "/about";
-  if (href === "/destinations") return location.startsWith("/guides") || location.startsWith("/destinations");
-  if (href === "/shop") return location === "/shop";
+  if (href === "/edits") return location === "/edits" || location.startsWith("/my-edits") || location.startsWith("/capsule");
   return false;
 }
 
@@ -52,6 +50,7 @@ export default function TopBar() {
   const navTextColor = isLanding && !scrolled ? "#ffffff" : "#2c2416";
   const navMutedColor = isLanding && !scrolled ? "rgba(255,255,255,0.55)" : "rgba(44,36,22,0.45)";
   const navBorderColor = isLanding && !scrolled ? "rgba(255,255,255,0.8)" : "#1A1A18";
+  const isConciergeActive = location === "/concierge-chat" || location === "/concierge-info";
 
   return (
     <>
@@ -72,7 +71,7 @@ export default function TopBar() {
           transition: "background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease",
         }}
       >
-        {/* Left — Hamburger */}
+        {/* Left — Back + Hamburger */}
         <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
           {!isLanding && (
             <button
@@ -148,7 +147,7 @@ export default function TopBar() {
           </Link>
         </div>
 
-        {/* Right — ABOUT · THE GUIDES · SHOP */}
+        {/* Right — ABOUT · EDITS + concierge icon */}
         <nav style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
           {NAV_LINKS.map((link) => {
             const active = isNavActive(link.href, location);
@@ -176,6 +175,29 @@ export default function TopBar() {
               </Link>
             );
           })}
+
+          {/* Concierge icon — far right */}
+          <Link href="/concierge-chat">
+            <button
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 6,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: isConciergeActive ? navTextColor : navMutedColor,
+                transition: "color 0.4s ease",
+                marginLeft: 2,
+              }}
+              aria-label="Concierge chat"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+              </svg>
+            </button>
+          </Link>
         </nav>
       </header>
 

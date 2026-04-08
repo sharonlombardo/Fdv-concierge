@@ -3,23 +3,21 @@ import { Link, useLocation } from "wouter";
 export default function BottomNav() {
   const [location] = useLocation();
 
-  const isDestinations = location === "/destinations" || location.startsWith("/guides");
+  const isGuides = location === "/destinations" || location.startsWith("/guides");
   const isShop = location === "/shop";
   const isSuitcase = location.startsWith("/suitcase") || location.startsWith("/my-edits") || location.startsWith("/capsule") || location.startsWith("/my-trips");
-  const isConcierge = location === "/concierge-chat" || location === "/concierge-info";
   const isPassport = location === "/profile";
 
   const tabs = [
     {
-      label: "DESTINATIONS",
+      label: "GUIDES",
       href: "/destinations",
-      active: isDestinations,
+      active: isGuides,
       icon: (
-        // Globe/compass icon
+        // Compass icon
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <circle cx="12" cy="12" r="10" />
-          <path d="M2 12h20" />
-          <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+          <path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36z" />
         </svg>
       ),
     },
@@ -45,17 +43,6 @@ export default function BottomNav() {
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <rect x="3" y="8" width="18" height="13" rx="2" />
           <path d="M8 8V5a2 2 0 012-2h4a2 2 0 012 2v3" />
-        </svg>
-      ),
-    },
-    {
-      label: "CONCIERGE",
-      href: "/concierge-chat",
-      active: isConcierge,
-      icon: (
-        // Chat bubble icon
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
         </svg>
       ),
     },
@@ -88,7 +75,7 @@ export default function BottomNav() {
       {tabs.map((tab) => (
         <Link key={tab.label} href={tab.href}>
           <button
-            className="flex flex-col items-center justify-center gap-1 w-full h-full bg-transparent border-none cursor-pointer px-1"
+            className="flex flex-col items-center justify-center gap-1 w-full h-full bg-transparent border-none cursor-pointer px-2"
             style={{
               color: tab.active ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.45)",
               fontFamily: "Inter, sans-serif",
@@ -97,7 +84,7 @@ export default function BottomNav() {
             {tab.icon}
             <span
               style={{
-                fontSize: 8,
+                fontSize: 9,
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
                 fontWeight: tab.active ? 600 : 400,

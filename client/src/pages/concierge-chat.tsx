@@ -82,7 +82,7 @@ export default function ConciergeChat() {
           YOUR FDV CONCIERGE
         </p>
         <p style={{ fontFamily: "Lora, serif", fontSize: 15, color: "#999", lineHeight: 1.6 }}>
-          Ask me anything about Morocco — restaurants, packing, logistics, or what to wear.
+          Ask me anything — travel, packing, where to eat, what to wear, or let me curate an Edit for you.
         </p>
       </div>
 
@@ -97,10 +97,10 @@ export default function ConciergeChat() {
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 320, margin: "0 auto" }}>
               {[
-                "What should I pack for Morocco?",
-                "Tell me about the best restaurants in Marrakech",
-                "What's the weather like in the Atlas Mountains?",
-                "Help me plan a day in the Medina",
+                "Curate an Edit for me",
+                "Help me plan a trip",
+                "What should I pack?",
+                "Show me what's new",
               ].map((suggestion) => (
                 <button
                   key={suggestion}
