@@ -1,9 +1,12 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { DESTINATIONS } from "@shared/destinations";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
 import { Link } from "wouter";
 import { PinButton } from "@/components/pin-button";
+
+const SLIDE_WIDTH_PERCENT = 88; // % of viewport
+const GAP = 12; // px between slides
 
 export default function Destinations() {
   const { data: imageSlotsData } = useImageSlots();
@@ -19,33 +22,68 @@ export default function Destinations() {
     return defaultSlot?.defaultUrl || "";
   };
 
+  // Compute slide width in px
+  const getSlideWidth = useCallback(() => {
+    return (window.innerWidth * SLIDE_WIDTH_PERCENT) / 100;
+  }, []);
+
   // Track which slide is active via scroll position
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     const onScroll = () => {
-      const index = Math.round(el.scrollLeft / el.clientWidth);
-      setActiveIndex(Math.min(index, DESTINATIONS.length - 1));
+      const slideWidth = getSlideWidth() + GAP;
+      const index = Math.round(el.scrollLeft / slideWidth);
+      setActiveIndex(Math.max(0, Math.min(index, DESTINATIONS.length - 1)));
     };
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [getSlideWidth]);
+
+  const scrollTo = useCallback((index: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const slideWidth = getSlideWidth() + GAP;
+    el.scrollTo({ left: index * slideWidth, behavior: "smooth" });
+  }, [getSlideWidth]);
+
+  const goNext = () => {
+    if (activeIndex < DESTINATIONS.length - 1) scrollTo(activeIndex + 1);
+  };
+  const goPrev = () => {
+    if (activeIndex > 0) scrollTo(activeIndex - 1);
+  };
+
+  // Side padding so first/last slides center with peek space
+  const sidePadding = `${(100 - SLIDE_WIDTH_PERCENT) / 2}vw`;
 
   return (
-    <div className="fixed inset-0 bg-black">
+    <div
+      className="fixed inset-0 bg-black"
+      style={{ bottom: "calc(60px + env(safe-area-inset-bottom, 0px))" }}
+    >
       {/* Horizontal scroll-snap container */}
       <div
         ref={scrollRef}
-        className="flex w-full h-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory"
-        style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
+        className="flex items-stretch w-full h-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory"
+        style={{
+          scrollbarWidth: "none",
+          WebkitOverflowScrolling: "touch",
+          gap: GAP,
+          paddingLeft: sidePadding,
+          paddingRight: sidePadding,
+        }}
       >
-        {DESTINATIONS.map((dest, i) => {
+        {DESTINATIONS.map((dest) => {
           const imageUrl = getImageUrl(dest.imageSlotKey) || dest.defaultImage;
           return (
             <div
               key={dest.slug}
-              className="relative flex-shrink-0 w-full snap-center"
-              style={{ height: "calc(100vh - 60px - env(safe-area-inset-bottom, 0px))" }}
+              className="relative flex-shrink-0 snap-center rounded-2xl overflow-hidden"
+              style={{
+                width: `${SLIDE_WIDTH_PERCENT}vw`,
+                height: "100%",
+              }}
             >
               {/* Full-bleed background image */}
               <div
@@ -85,7 +123,7 @@ export default function Destinations() {
               </div>
 
               {/* Content — bottom center */}
-              <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center px-8 pb-16">
+              <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center px-8 pb-14">
                 {/* LIVE badge for available destinations */}
                 {dest.available && (
                   <span
@@ -167,10 +205,54 @@ export default function Destinations() {
         })}
       </div>
 
+      {/* Left chevron arrow */}
+      {activeIndex > 0 && (
+        <button
+          onClick={goPrev}
+          className="fixed z-[70] flex items-center justify-center w-10 h-10 rounded-full transition-opacity hover:opacity-100"
+          style={{
+            left: 8,
+            top: "50%",
+            transform: "translateY(-50%)",
+            backgroundColor: "rgba(0,0,0,0.3)",
+            border: "none",
+            cursor: "pointer",
+            opacity: 0.6,
+          }}
+          aria-label="Previous destination"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+      )}
+
+      {/* Right chevron arrow */}
+      {activeIndex < DESTINATIONS.length - 1 && (
+        <button
+          onClick={goNext}
+          className="fixed z-[70] flex items-center justify-center w-10 h-10 rounded-full transition-opacity hover:opacity-100"
+          style={{
+            right: 8,
+            top: "50%",
+            transform: "translateY(-50%)",
+            backgroundColor: "rgba(0,0,0,0.3)",
+            border: "none",
+            cursor: "pointer",
+            opacity: 0.6,
+          }}
+          aria-label="Next destination"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 6 15 12 9 18" />
+          </svg>
+        </button>
+      )}
+
       {/* Dot indicators — above bottom nav */}
       <div
         className="fixed left-0 right-0 flex justify-center gap-2 z-[70]"
-        style={{ bottom: "calc(60px + env(safe-area-inset-bottom, 0px) + 12px)" }}
+        style={{ bottom: 12 }}
       >
         {DESTINATIONS.map((dest, i) => (
           <button
@@ -183,12 +265,7 @@ export default function Destinations() {
               padding: 0,
               cursor: "pointer",
             }}
-            onClick={() => {
-              scrollRef.current?.scrollTo({
-                left: i * (scrollRef.current?.clientWidth || 0),
-                behavior: "smooth",
-              });
-            }}
+            onClick={() => scrollTo(i)}
             aria-label={`Go to ${dest.title}`}
           />
         ))}
