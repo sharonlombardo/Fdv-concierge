@@ -723,9 +723,6 @@ export default function MoroccoGuide() {
         <p style={{ fontFamily: "'Lora', serif", fontSize: 13, fontStyle: 'italic', color: '#8a7d6b', margin: 0 }}>Crisp black cotton against terracotta.</p>
       </div>
 
-      {/* Full-width break — transition to wardrobe */}
-      <div className="full-image" style={{ position: "relative" }}><img src={`${IMG}/wardrobe-break.jpg`} alt="" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-wardrobe-break" itemData={{ title: "Morocco Wardrobe", description: "What to pack.", imageUrl: `${IMG}/wardrobe-break.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
-
       <hr className="divider" />
 
       {/* ═══ SECTION: THE WARDROBE ═══ */}

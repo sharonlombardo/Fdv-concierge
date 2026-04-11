@@ -38,99 +38,67 @@ export function EditorialProductOverlay({
   }, []);
 
   const getProductImage = (p: EditorialProduct): string => {
-    // Try studio shot from genome first
     if (p.genomeKey) {
       const studio = getShopImageUrl(p.genomeKey);
       if (studio) return studio;
     }
-    // Fallback to provided imageUrl
     return p.imageUrl;
   };
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Full-screen overlay container */}
       <div
-        onClick={onClose}
         style={{
           position: "fixed",
           inset: 0,
           zIndex: 200,
-          background: "rgba(0,0,0,0.5)",
-          backdropFilter: "blur(4px)",
-        }}
-      />
-
-      {/* Panel */}
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 201,
           background: "#faf9f6",
-          borderRadius: "16px 16px 0 0",
-          maxHeight: "92vh",
           display: "flex",
           flexDirection: "column",
-          animation: "editorialSlideUp 0.3s ease-out",
+          animation: "editorialFadeIn 0.25s ease-out",
         }}
       >
-        {/* Header bar with close */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "12px 16px 8px",
-            flexShrink: 0,
+        {/* Close button — overlays the editorial image */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
           }}
+          style={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            zIndex: 210,
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: "rgba(0,0,0,0.25)",
+            backdropFilter: "blur(8px)",
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            WebkitTapHighlightColor: "transparent",
+          }}
+          aria-label="Close"
         >
-          <span
-            style={{
-              fontFamily: "Inter, sans-serif",
-              fontSize: 10,
-              fontWeight: 500,
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              color: "#9B8D7C",
-            }}
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth="2.5"
+            strokeLinecap="round"
           >
-            Shop this look
-          </span>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 8,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              WebkitTapHighlightColor: "transparent",
-            }}
-            aria-label="Close"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#2c2416"
-              strokeWidth="2"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
 
-        {/* Scrollable content */}
+        {/* Scrollable content — editorial image + products */}
         <div
           style={{
             flex: 1,
@@ -139,12 +107,14 @@ export function EditorialProductOverlay({
             WebkitOverflowScrolling: "touch",
           }}
         >
-          {/* Editorial image */}
+          {/* Editorial image — large, immersive */}
           <div
             style={{
               width: "100%",
-              maxHeight: "40vh",
+              height: "55vh",
+              minHeight: 320,
               overflow: "hidden",
+              position: "relative",
             }}
           >
             <img
@@ -152,7 +122,7 @@ export function EditorialProductOverlay({
               alt={editorialImageAlt}
               style={{
                 width: "100%",
-                height: "40vh",
+                height: "100%",
                 objectFit: "cover",
                 display: "block",
               }}
@@ -160,10 +130,42 @@ export function EditorialProductOverlay({
                 (e.target as HTMLImageElement).style.display = "none";
               }}
             />
+            {/* Subtle gradient at bottom of editorial image */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: 60,
+                background: "linear-gradient(transparent, rgba(250,249,246,0.6))",
+                pointerEvents: "none",
+              }}
+            />
           </div>
 
-          {/* Product cards */}
-          <div style={{ padding: "16px 16px 100px" }}>
+          {/* Shop this look label */}
+          <div
+            style={{
+              padding: "20px 24px 8px",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "Inter, sans-serif",
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                color: "#9B8D7C",
+              }}
+            >
+              Shop this look
+            </span>
+          </div>
+
+          {/* Product cards — large, spacious */}
+          <div style={{ padding: "8px 24px 120px" }}>
             {products.map((p) => {
               const imgSrc = getProductImage(p);
               return (
@@ -172,18 +174,18 @@ export function EditorialProductOverlay({
                   onClick={() => onProductTap(p)}
                   style={{
                     display: "flex",
-                    gap: 14,
-                    padding: "14px 0",
+                    gap: 20,
+                    padding: "20px 0",
                     borderBottom: "1px solid rgba(0,0,0,0.06)",
                     cursor: "pointer",
                     alignItems: "center",
                   }}
                 >
-                  {/* Product image */}
+                  {/* Product image — large */}
                   <div
                     style={{
-                      width: 80,
-                      height: 100,
+                      width: 100,
+                      height: 130,
                       flexShrink: 0,
                       borderRadius: 4,
                       overflow: "hidden",
@@ -211,12 +213,12 @@ export function EditorialProductOverlay({
                     <div
                       style={{
                         fontFamily: "Inter, sans-serif",
-                        fontSize: 10,
+                        fontSize: 11,
                         fontWeight: 500,
-                        letterSpacing: "0.1em",
+                        letterSpacing: "0.12em",
                         textTransform: "uppercase",
                         color: "#9B8D7C",
-                        marginBottom: 3,
+                        marginBottom: 6,
                       }}
                     >
                       {p.brand}
@@ -224,10 +226,11 @@ export function EditorialProductOverlay({
                     <div
                       style={{
                         fontFamily: "Inter, sans-serif",
-                        fontSize: 14,
+                        fontSize: 15,
                         fontWeight: 500,
                         color: "#1a1a1a",
-                        marginBottom: 4,
+                        marginBottom: 6,
+                        lineHeight: 1.3,
                       }}
                     >
                       {p.name}
@@ -236,13 +239,27 @@ export function EditorialProductOverlay({
                       <div
                         style={{
                           fontFamily: "Inter, sans-serif",
-                          fontSize: 13,
+                          fontSize: 14,
                           color: "#2c2416",
+                          marginBottom: 10,
                         }}
                       >
                         {p.price}
                       </div>
                     )}
+                    {/* View details link */}
+                    <div
+                      style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        letterSpacing: "0.1em",
+                        textTransform: "uppercase",
+                        color: "#c9a84c",
+                      }}
+                    >
+                      View details &rarr;
+                    </div>
                   </div>
 
                   {/* Pin button */}
@@ -271,9 +288,9 @@ export function EditorialProductOverlay({
       </div>
 
       <style>{`
-        @keyframes editorialSlideUp {
-          from { transform: translateY(100%); }
-          to { transform: translateY(0); }
+        @keyframes editorialFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
       `}</style>
     </>
