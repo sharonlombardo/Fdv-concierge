@@ -47,19 +47,19 @@ export function EditorialProductOverlay({
 
   return (
     <>
-      {/* Full-screen overlay container */}
+      {/* Full-screen overlay */}
       <div
         style={{
           position: "fixed",
           inset: 0,
           zIndex: 200,
-          background: "#faf9f6",
+          background: "#ffffff",
           display: "flex",
           flexDirection: "column",
           animation: "editorialFadeIn 0.25s ease-out",
         }}
       >
-        {/* Close button — overlays the editorial image */}
+        {/* Close button */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -67,14 +67,13 @@ export function EditorialProductOverlay({
           }}
           style={{
             position: "absolute",
-            top: 16,
-            right: 16,
+            top: 14,
+            right: 14,
             zIndex: 210,
-            width: 40,
-            height: 40,
+            width: 36,
+            height: 36,
             borderRadius: "50%",
-            background: "rgba(0,0,0,0.25)",
-            backdropFilter: "blur(8px)",
+            background: "transparent",
             border: "none",
             cursor: "pointer",
             display: "flex",
@@ -85,12 +84,12 @@ export function EditorialProductOverlay({
           aria-label="Close"
         >
           <svg
-            width="18"
-            height="18"
+            width="22"
+            height="22"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#ffffff"
-            strokeWidth="2.5"
+            stroke="#1a1a1a"
+            strokeWidth="1.5"
             strokeLinecap="round"
           >
             <line x1="18" y1="6" x2="6" y2="18" />
@@ -98,7 +97,7 @@ export function EditorialProductOverlay({
           </svg>
         </button>
 
-        {/* Scrollable content — editorial image + products */}
+        {/* Scrollable product view */}
         <div
           style={{
             flex: 1,
@@ -107,165 +106,68 @@ export function EditorialProductOverlay({
             WebkitOverflowScrolling: "touch",
           }}
         >
-          {/* Editorial image — large, immersive */}
-          <div
-            style={{
-              width: "100%",
-              height: "40vh",
-              minHeight: 240,
-              overflow: "hidden",
-              position: "relative",
-            }}
-          >
-            <img
-              src={editorialImageUrl}
-              alt={editorialImageAlt}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
-            />
-            {/* Subtle gradient at bottom of editorial image */}
-            <div
-              style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: 60,
-                background: "linear-gradient(transparent, rgba(250,249,246,0.6))",
-                pointerEvents: "none",
-              }}
-            />
-          </div>
-
-          {/* Shop this look label */}
-          <div
-            style={{
-              padding: "20px 24px 8px",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "Inter, sans-serif",
-                fontSize: 10,
-                fontWeight: 600,
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "#9B8D7C",
-              }}
-            >
-              Shop this look
-            </span>
-          </div>
-
-          {/* Product cards — large, spacious */}
-          <div style={{ padding: "8px 24px 120px" }}>
-            {products.map((p) => {
-              const imgSrc = getProductImage(p);
-              return (
+          {/* Products — each with large image like Zara */}
+          {products.map((p, idx) => {
+            const imgSrc = getProductImage(p);
+            return (
+              <div
+                key={p.id}
+                onClick={() => onProductTap(p)}
+                style={{
+                  cursor: "pointer",
+                  borderBottom: idx < products.length - 1 ? "1px solid #f0ece4" : "none",
+                }}
+              >
+                {/* Large product image */}
                 <div
-                  key={p.id}
-                  onClick={() => onProductTap(p)}
                   style={{
-                    display: "flex",
-                    gap: 20,
-                    padding: "20px 0",
-                    borderBottom: "1px solid rgba(0,0,0,0.06)",
-                    cursor: "pointer",
-                    alignItems: "center",
+                    width: "100%",
+                    aspectRatio: "3 / 4",
+                    maxHeight: "65vh",
+                    overflow: "hidden",
+                    background: "#f5f3ef",
+                    position: "relative",
                   }}
                 >
-                  {/* Product image — large */}
-                  <div
-                    style={{
-                      width: 100,
-                      height: 130,
-                      flexShrink: 0,
-                      borderRadius: 4,
-                      overflow: "hidden",
-                      background: "#f0ece4",
-                    }}
-                  >
-                    {imgSrc && (
-                      <img
-                        src={imgSrc}
-                        alt={`${p.brand} ${p.name}`}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = "none";
-                        }}
-                      />
-                    )}
-                  </div>
-
-                  {/* Product info */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div
+                  {imgSrc ? (
+                    <img
+                      src={imgSrc}
+                      alt={`${p.brand} ${p.name}`}
                       style={{
-                        fontFamily: "Inter, sans-serif",
-                        fontSize: 11,
-                        fontWeight: 500,
-                        letterSpacing: "0.12em",
-                        textTransform: "uppercase",
-                        color: "#9B8D7C",
-                        marginBottom: 6,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        display: "block",
                       }}
-                    >
-                      {p.brand}
-                    </div>
-                    <div
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    /* Fallback: show editorial image if no product image */
+                    <img
+                      src={editorialImageUrl}
+                      alt={editorialImageAlt}
                       style={{
-                        fontFamily: "Inter, sans-serif",
-                        fontSize: 15,
-                        fontWeight: 500,
-                        color: "#1a1a1a",
-                        marginBottom: 6,
-                        lineHeight: 1.3,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
                       }}
-                    >
-                      {p.name}
-                    </div>
-                    {p.price && (
-                      <div
-                        style={{
-                          fontFamily: "Inter, sans-serif",
-                          fontSize: 14,
-                          color: "#2c2416",
-                          marginBottom: 10,
-                        }}
-                      >
-                        {p.price}
-                      </div>
-                    )}
-                    {/* View details link */}
-                    <div
-                      style={{
-                        fontFamily: "Inter, sans-serif",
-                        fontSize: 11,
-                        fontWeight: 600,
-                        letterSpacing: "0.1em",
-                        textTransform: "uppercase",
-                        color: "#c9a84c",
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
                       }}
-                    >
-                      View details &rarr;
-                    </div>
-                  </div>
-
-                  {/* Pin button */}
+                    />
+                  )}
+                  {/* Pin button on image */}
                   <div
                     onClick={(e) => e.stopPropagation()}
-                    style={{ flexShrink: 0 }}
+                    style={{
+                      position: "absolute",
+                      top: 12,
+                      right: 12,
+                      zIndex: 5,
+                    }}
                   >
                     <PinButton
                       itemType="style"
@@ -281,9 +183,52 @@ export function EditorialProductOverlay({
                     />
                   </div>
                 </div>
-              );
-            })}
-          </div>
+
+                {/* Product details below image */}
+                <div style={{ padding: "16px 24px 28px" }}>
+                  <div
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: 11,
+                      fontWeight: 500,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      color: "#9B8D7C",
+                      marginBottom: 6,
+                    }}
+                  >
+                    {p.brand}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: 16,
+                      fontWeight: 400,
+                      color: "#1a1a1a",
+                      marginBottom: 6,
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {p.name}
+                  </div>
+                  {p.price && (
+                    <div
+                      style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: 15,
+                        color: "#1a1a1a",
+                      }}
+                    >
+                      {p.price}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Bottom padding */}
+          <div style={{ height: 80 }} />
         </div>
       </div>
 
