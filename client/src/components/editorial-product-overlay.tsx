@@ -118,10 +118,10 @@ export function EditorialProductOverlay({
                   borderBottom: idx < products.length - 1 ? "1px solid #f0ece4" : "none",
                 }}
               >
-                {/* Large product image */}
+                {/* Large product image — framed with even padding */}
                 <div
                   style={{
-                    width: "100%",
+                    margin: "20px 20px 0",
                     aspectRatio: "3 / 4",
                     maxHeight: "65vh",
                     overflow: "hidden",
@@ -185,7 +185,7 @@ export function EditorialProductOverlay({
                 </div>
 
                 {/* Product details below image */}
-                <div style={{ padding: "16px 24px 28px" }}>
+                <div style={{ padding: "16px 24px 32px" }}>
                   <div
                     style={{
                       fontFamily: "Inter, sans-serif",
