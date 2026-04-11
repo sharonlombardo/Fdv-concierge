@@ -551,6 +551,150 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 11, 2026 | Claude.ai + Claude Code — Edits Page, Shoppable Editorial Guide, Nav Polish
+
+**Topic:** Edits page full redesign, tappable editorial image mechanic, Amanjena added to guide, nav cleanup, multiple bug fix rounds
+
+---
+
+**What shipped today:**
+
+**Edits Page Full Redesign (`/edits`):**
+- Complete rewrite from plain text page to editorial service page
+- Full-bleed moodboard hero image with text overlay: "A capsule for your trip. Built around you."
+- Moodboard URL: `https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/MOODBOARD%20copy.jpg.webp`
+- Three-step "How it works" section: 01 Tell us where you're going → 02 Save what stops you → 03 Your Edit arrives
+- CREATE MY EDIT button (gold fill, prominent CTA) — triggers Curate for Me flow
+- Concierge fallback for zero-save users: tap CREATE MY EDIT with no saves → destination picker modal ("I don't know you yet — but I will in about 30 seconds. Where are you headed?") → triggers curation with destination context
+- Past edits section below with link to Suitcase
+- Typography/color matched to About page (Lora serif, cream background `#fafaf9`, gold `#c9a84c` dividers)
+
+**Tappable Editorial Image Mechanic:**
+Three-level interaction pattern built and deployed:
+- **Level 1:** Guide scroll — editorial fashion images with subtle ShoppableIndicator (+ icon, 32px, frosted glass) in bottom-right corner
+- **Level 2:** Tap image → full-screen `EditorialProductOverlay` slides up. Product images as hero, framed layout. X button to close. Scroll position preserved.
+- **Level 3:** Tap product card → existing `ItemModal` opens on top with full product detail, SHOP button, SAVE TO SUITCASE
+
+**Shop the Look Carousels Removed:**
+Both carousel sections ("Day in the Medina — Every Piece" and "Riad Evenings — Every Piece") deleted from Morocco guide. All products now accessible through tappable editorial images. "Shop the Full Edit →" gold link added at bottom of wardrobe section as fallback.
+
+**Amanjena Added as 4th Stay:**
+- Added to THE STAY section alongside El Fenn, Riad Jardin Secret, La Mamounia
+- Hero image: bikini at arched doorway (tappable → YSL LouLou Bikini $795)
+- Detail shots: bathroom arch + red wall with palms (NOT tappable, atmosphere only)
+- Copy: "Aman's Marrakech. Pink marble, reflecting pools, absolute silence." + full editorial description
+- Book URL: aman.com/resorts/amanjena
+- Two editorial fashion moments after stay block with divider separation:
+  - Blush pink on stairs (tappable → Alaïa Souk Coat $1,200 + Desert Pant $760)
+  - Black cotton against terracotta (tappable → FDV Este Dress $675)
+- Images mapped from existing image slot system (morocco-tile-3, morocco-tile-5, morocco-texture-1, morocco-experience-1)
+
+**ItemModal Image Handling:**
+- Changed product image from `object-fit: cover` to `object-fit: contain` for products without studio shots
+- Cream background (`#fafaf9`) fills letterboxing
+- Fixes landscape editorial images being badly cropped in the modal
+
+**Landing Page Guide Link Fixed:**
+- Link below hero animation updated from `/guides` (old vertical grid) to `/destinations` (new horizontal carousel)
+- Old `/guides` route redirected to `/destinations`
+
+**Editorial Product Map Created:**
+New data structure `EDITORIAL_PRODUCT_MAP` connects image slot keys to their products:
+- `morocco-style-1` → YSL LouLou Bikini
+- `morocco-tile-1` → Phoebe Philo Gaia Dress
+- `morocco-tile-3` → Alaïa Souk Coat + Desert Pant
+- `morocco-tile-5` → FDV Este Dress
+- `morocco-object-1` → FDV Column Dress
+- `morocco-motion-1` → FDV Long Caftan Dress
+- Plus wardrobe images mapped to existing DAY_PRODUCTS and EVE_PRODUCTS arrays
+
+**Bug Fixes This Session:**
+- Suitcase save visual feedback: shape mismatch (`boolean` vs `{ isPinned: boolean }`) + invalidateQueries race condition with `exact: true` fix
+- Editorial overlay images not loading: Amanjena image URLs didn't exist in blob storage, remapped to existing morocco editorial image slot keys
+- Wrong genome keys in product map: `look:fdv:estedress` → `look:fildevie:estedress`, `look:alia:soukcoat` → `Look:alia:soukcoat:desertpants`
+- Level 3 modal opening behind Level 2 overlay: z-index stacking fixed
+- X button not working on overlay: onClick handler wiring fixed
+- Level 3 product images not loading: `onProductTap` was passing `product.imageUrl` (empty/editorial fallback) instead of resolving via `getShopImageUrl(product.genomeKey)`
+- Mobile CSS: changed `height: 35vh` to `aspect-ratio: 3/4` for editorial images so fashion shots aren't cropped
+- Extra editorial images after Amanjena: removed duplicates, added divider between stay block and editorial moments
+
+---
+
+**Key Architecture Decisions:**
+
+**Edits vs Suitcase (LOCKED):**
+- SUITCASE = her raw saves (inputs). Everything she's pinned. The closet.
+- EDITS = curated outputs. What the AI builds from her saves. The stylist.
+- Same data can live in both. Different intent, different door.
+- "Curate for Me" = the action. "Edits" = the place. Nav label is EDITS.
+- "Stylist" was considered and rejected — boxes FDV into fashion only, implies a human when it's AI.
+
+**FDV Concierge Voice (needs formal doc — future session):**
+- Not FDV Daily voice (too punchy/snarky)
+- Not pure FDV site voice (too soft/esoteric)
+- Sweet spot: direct, confident, warm, no hedging. Avoids words like "resonate," "instinct," "attention." More like a magazine editor than a poet.
+
+**Shoppable Editorial Guide = End-State Architecture:**
+- The guide IS the editorial. Travel and fashion in one scroll.
+- Editorial images serve double duty: atmosphere for the location AND tappable shopping.
+- No separate carousels needed — products come to her in context.
+- Example: Amanjena hero image is both the stay photo AND the shoppable bikini look.
+
+---
+
+**Still Needed / Not Yet Done:**
+
+**Weave remaining editorial images into guide:**
+- El Fenn editorial images (5 images) need to be placed after El Fenn stay section — same pattern as Amanjena
+- General Marrakech editorial images placed in experiences section
+- Currently only Amanjena has editorial images woven in
+
+**Landing page scroll cleanup:**
+- Review full landing page flow after all nav/guide changes — ensure everything links correctly and the scroll feels right
+
+**From April 1 Priority List (remaining):**
+- Item 5: Save moment language update — "Saved to your Edit. The more you save, the better I know you."
+- Item 6: Gate 1 redesign — end of guide → Digital Passport → itinerary overview
+- Item 7: Returning user detection
+- Item 8: Concierge woven into journey moments (Akinator onboarding)
+- Item 9: About page with tiers
+- Item 10: Gates 2 + 3 (Gold $29/mo, Black $59/mo)
+- Early sign-up prompt — "Start building your travel world"
+
+**Future — Option B: Full Guide Restructure:**
+Merge The Current editorial entirely into the guide as single location-by-location flow. Every guide image becomes editorial fashion photography shot at actual locations. Generic venue photos get replaced over time. The Current page moves to hamburger as "Editorial" for standalone fashion browsing. Guide IS the editorial.
+
+**Other Open Items (carried forward):**
+- Concierge system prompt still Morocco-specific — needs broadening
+- FDV Concierge brand voice doc — needs formal creation
+- OpenWeatherMap API key → Vercel env vars
+- Resend domain verification
+- Lisa Ruffle outreach (DOTSHOP)
+- Anvisha Pai (Moda.app) — DM sent, awaiting
+- Financial model gap — subscription revenue + Klaviyo email open rate
+- VC deck placeholders
+- Wellspring OS Phase 1 SQL migrations
+- Net-a-Porter EIP Preview feature — early access for Gold/Black members (added to future list)
+
+---
+
+**Files Modified/Created:**
+- client/src/pages/edits.tsx (rewritten — full redesign)
+- client/src/components/editorial-product-overlay.tsx (NEW — Level 2 tappable overlay)
+- client/src/pages/guides/morocco.tsx (Amanjena stay, editorial images, carousels removed, tappable wiring)
+- client/src/pages/guides/morocco-guide.css (mobile aspect-ratio fixes)
+- client/src/components/item-modal.tsx (object-fit: contain for landscape images)
+- Landing page component (guide link → /destinations)
+
+**Key Numbers:**
+- 4 stays in Morocco guide (was 3, added Amanjena)
+- 6 editorial image-to-product mappings in EDITORIAL_PRODUCT_MAP
+- 2 shop carousels removed
+- 3-level tappable interaction pattern (guide → overlay → modal)
+- ~12 bug fixes across the session
+
+---
+
 ### April 11, 2026 | Claude Code (web) — Shoppable Editorial Guide, Overlay Redesign, Bug Fixes
 
 **What shipped today (13 commits to main):**
