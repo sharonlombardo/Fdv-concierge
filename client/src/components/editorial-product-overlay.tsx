@@ -111,8 +111,8 @@ export function EditorialProductOverlay({
           <div
             style={{
               width: "100%",
-              height: "55vh",
-              minHeight: 320,
+              height: "40vh",
+              minHeight: 240,
               overflow: "hidden",
               position: "relative",
             }}

@@ -60,13 +60,6 @@ const EDITORIAL_PRODUCT_MAP: Record<string, EditorialProduct[]> = {
   "ward-2-large": EVE_PRODUCTS,
   "ward-2-small1": [EVE_PRODUCTS[2]], // Chloé Wristlette
   "ward-2-small2": [EVE_PRODUCTS[5]], // PoppyKing lipstick
-  // Amanjena editorial images
-  "amanjena-editorial-1": [
-    { id: "edit-alaia-coat-2", brand: "Alaïa", name: "Souk Coat & Desert Pant", price: "$1,200/$760", shopUrl: "https://www.alaia.com", imageUrl: `${BLOB_V2}/morocco-tile-3`, genomeKey: "Look:alia:soukcoat:desertpants:blush.jpg" },
-  ],
-  "amanjena-editorial-2": [
-    { id: "edit-fdv-este-2", brand: "Fil de Vie", name: "Este Dress", price: "$675", shopUrl: "http://www.fildevie.com", imageUrl: `${BLOB_V2}/morocco-tile-5`, genomeKey: "look:fildevie:estedress:black.jpg" },
-  ],
 };
 
 /* ── Itinerary Teaser — slim preview card that gates access to /concierge ── */
@@ -700,27 +693,6 @@ export default function MoroccoGuide() {
             <a href="https://www.aman.com/resorts/amanjena" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
           </div>
         </div>
-      </div>
-
-      <hr className="divider" />
-
-      {/* Amanjena editorial fashion moments — standalone shoppable images */}
-      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("amanjena-editorial-1", `${BLOB_V2}/morocco-tile-3`, "Blush pink on stairs at Amanjena")}>
-        <img src={`${BLOB_V2}/morocco-tile-3`} alt="Blush pink on stairs at Amanjena" />
-        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-amanjena-editorial-1" itemData={{ title: "Alaïa at Amanjena", description: "Blush pink against sun-warmed clay.", imageUrl: `${BLOB_V2}/morocco-tile-3`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
-        <ShoppableIndicator onClick={() => openEditorialOverlay("amanjena-editorial-1", `${BLOB_V2}/morocco-tile-3`, "Blush pink on stairs at Amanjena")} />
-      </div>
-      <div style={{ textAlign: 'center', padding: '10px 24px 0' }}>
-        <p style={{ fontFamily: "'Lora', serif", fontSize: 13, fontStyle: 'italic', color: '#8a7d6b', margin: 0 }}>Blush pink against sun-warmed clay.</p>
-      </div>
-
-      <div className="full-image" style={{ position: "relative", cursor: "pointer", marginTop: 24 }} onClick={() => openEditorialOverlay("amanjena-editorial-2", `${BLOB_V2}/morocco-tile-5`, "Crisp black cotton against terracotta")}>
-        <img src={`${BLOB_V2}/morocco-tile-5`} alt="Crisp black cotton against terracotta" />
-        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-amanjena-editorial-2" itemData={{ title: "FDV Este Dress at Amanjena", description: "Crisp black cotton against terracotta.", imageUrl: `${BLOB_V2}/morocco-tile-5`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
-        <ShoppableIndicator onClick={() => openEditorialOverlay("amanjena-editorial-2", `${BLOB_V2}/morocco-tile-5`, "Crisp black cotton against terracotta")} />
-      </div>
-      <div style={{ textAlign: 'center', padding: '10px 24px 0' }}>
-        <p style={{ fontFamily: "'Lora', serif", fontSize: 13, fontStyle: 'italic', color: '#8a7d6b', margin: 0 }}>Crisp black cotton against terracotta.</p>
       </div>
 
       <hr className="divider" />
