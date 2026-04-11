@@ -551,6 +551,93 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 11, 2026 | Claude Code (web) — Shoppable Editorial Guide, Overlay Redesign, Bug Fixes
+
+**What shipped today (13 commits to main):**
+
+**1. Shoppable Editorial Guide — Tappable Image Mechanic (Item #4 from April 1 priority queue)**
+- Tap any editorial image in Morocco guide → full-screen product overlay opens
+- `EDITORIAL_PRODUCT_MAP` maps image slot keys to `EditorialProduct[]` arrays
+- `ShoppableIndicator` (circle + icon) on images that have mapped products
+- `onProductTap` resolves studio shot via `getShopImageUrl(genomeKey)` → opens ItemModal with correct image, brand, price, shopUrl
+- Replaced old carousel-based product browsing (`CarouselProduct` type and `CAROUSEL` constant removed)
+- `DAY_PRODUCTS` and `EVE_PRODUCTS` converted from `CarouselProduct[]` to `EditorialProduct[]`
+
+**2. Amanjena Stay Section — Built + Fixed**
+- Added Amanjena stay section to Morocco guide with 3 editorial images
+- Fixed fabricated blob URLs: `amaneja_3` → `morocco-texture-1`, `amaneja_4` → `morocco-experience-1`
+- Removed duplicate editorial fashion images (blush pink + black cotton) that appeared after the Amanjena section — these were already shown earlier in The Current tiles
+- Removed `wardrobe-break.jpg` transition image
+
+**3. Editorial Product Overlay — Multiple Iterations to Final Design**
+- Started as bottom sheet (60% height) → too small
+- Went full-screen with editorial image header → still too small
+- Final design: full-screen, product-first — each product's studio shot is the hero
+- Product image: `aspect-ratio: 3/4`, `maxHeight: 65vh`, `objectFit: contain`
+- Falls back to editorial image with `objectFit: cover` if no studio shot available
+- Framed layout: 20px margin on all sides, `#f0ece4` background, product image at 85% max creating visible frame
+- Centered with flexbox (align + justify center)
+- Minimal close button (thin X stroke, no background)
+- PinButton on each product image
+- Scrollable product list separated by subtle `#f0ece4` dividers
+- Product details (brand/name/price) below each image
+
+**4. Broken Image Fix — Genome Key Audit**
+- Fixed all broken/empty images across Morocco guide, overlay, and ItemModal
+- Root cause: fabricated genome keys and non-existent blob URLs from AI-generated spec
+- Audited `fdv_brand_genome.json` for actual keys
+- Fixed genome keys in `EDITORIAL_PRODUCT_MAP`:
+  - `look:fdv:estedress:black.jpg` → `look:fildevie:estedress:black.jpg`
+  - `look:alaia:soukcoat:blush.jpg` + `look:alaia:desertpant:sand.jpg` → `Look:alia:soukcoat:desertpants:blush.jpg`
+
+**5. ItemModal Image Background**
+- Changed product image background from `bg-white` to `bg-[#fafaf9]` (subtle cream)
+- Fixes visual quality when landscape editorial fallbacks are shown with `object-contain`
+
+**6. Landing Page Guide Link Fix**
+- Landing page "Guides" link changed from `/guides` to `/destinations` (the carousel)
+- Both `CATEGORY_NAV` href and `onClick` handler updated in threshold.tsx
+- `/guides` route now redirects to `/destinations` via `<Redirect>` so old links still work
+- Removed unused `GuidesListing` import from App.tsx
+
+**7. Earlier Today (before this session):**
+- Edits page full redesign — immersive hero, how-it-works section, destination picker
+- Capsule accessory carousel fix — first item was wider than others
+- Capsule back link fix — navigate to `/edits` instead of `/my-edits`
+
+**User Journey Priority Queue — Updated Status:**
+1. Navigation restructure — **DONE** (April 8)
+2. Destinations carousel — **DONE** (April 8)
+3. Edits page + Concierge page rewrite — **DONE** (April 8 + April 11 redesign)
+4. Tappable image mechanic — **DONE** (today — full-screen overlay with product hero)
+5. Early sign-up prompt — **NOT STARTED**
+6. Save moment language update — **NOT STARTED**
+7. Gate 1 redesign — **NOT STARTED**
+8. Returning user detection — **NOT STARTED**
+9. Concierge woven into journey moments — **NOT STARTED**
+10. About page with tiers — **NOT STARTED**
+11. Gates 2 + 3 — **NOT STARTED**
+
+**Key Files Modified:**
+- `client/src/components/editorial-product-overlay.tsx` (new component, multiple iterations)
+- `client/src/pages/guides/morocco.tsx` (shoppable images, Amanjena, product maps)
+- `client/src/pages/guides/morocco-guide.css` (mobile responsive fixes)
+- `client/src/components/item-modal.tsx` (cream background)
+- `client/src/pages/threshold.tsx` (guide link → destinations)
+- `client/src/App.tsx` (/guides redirect, edits route, imports)
+- `client/src/pages/edits.tsx` (full redesign)
+
+**PRs:** #26 (squash-merged to main)
+**Commits:** 13 on main
+
+**Still Pending (carried forward):**
+- Debug console.logs still in item-modal.tsx
+- Claude API system prompt still Morocco-specific (frontend is general)
+- OpenWeatherMap API key → Vercel env vars
+- Resend domain verification for custom from-email
+
+---
+
 ### April 8, 2026 | Claude.ai — Bug Fixes, Destinations Carousel, Nav Restructure, Edits + Concierge Pages
 
 **TODO LIST — PICK UP HERE**
