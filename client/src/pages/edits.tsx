@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { PRESET_CAPSULES, type Capsule } from "@/data/capsule-data";
 import { useUser } from "@/contexts/user-context";
-import { useQueryClient } from "@tanstack/react-query";
+import { DESTINATIONS } from "@shared/destinations";
+import { useImageSlots } from "@/hooks/use-image-slot";
+import { IMAGE_SLOTS } from "@shared/image-slots";
+import { CuratingAnimation } from "@/components/curating-animation";
 
 const LS_SAVED_CAPSULES_KEY = "fdv_saved_capsules";
 const HERO_IMAGE = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/MOODBOARD%20copy.jpg.webp";
@@ -16,6 +19,19 @@ function getSavedCapsuleIds(): string[] {
   }
 }
 
+function getCurateCounter(): number {
+  try {
+    return parseInt(localStorage.getItem("fdv_curate_index") || "0", 10) || 0;
+  } catch { return 0; }
+}
+
+function consumeNextCapsule(): typeof PRESET_CAPSULES[0] | null {
+  const counter = getCurateCounter();
+  const capsule = PRESET_CAPSULES[counter % PRESET_CAPSULES.length];
+  try { localStorage.setItem("fdv_curate_index", String(counter + 1)); } catch {}
+  return capsule;
+}
+
 /* ── Gold divider ── */
 function GoldDivider() {
   return (
@@ -25,11 +41,232 @@ function GoldDivider() {
   );
 }
 
+/* ── Step component for How It Works ── */
+function Step({ number, headline, body }: { number: string; headline: string; body: string }) {
+  return (
+    <div style={{ textAlign: "center", marginBottom: 48 }}>
+      <div
+        style={{
+          fontFamily: "Lora, serif",
+          fontStyle: "italic",
+          fontSize: 42,
+          color: "#c9a84c",
+          lineHeight: 1,
+          marginBottom: 8,
+        }}
+      >
+        {number}
+      </div>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+        <div style={{ width: 40, height: 1, backgroundColor: "#c9a84c" }} />
+      </div>
+      <h3
+        style={{
+          fontFamily: "Lora, serif",
+          fontStyle: "italic",
+          fontSize: 20,
+          fontWeight: 500,
+          color: "#1a1a1a",
+          marginBottom: 8,
+        }}
+      >
+        {headline}
+      </h3>
+      <p
+        style={{
+          fontFamily: "Lora, serif",
+          fontSize: 16,
+          color: "#1a1a1a",
+          lineHeight: 1.7,
+          opacity: 0.7,
+          maxWidth: 360,
+          margin: "0 auto",
+        }}
+      >
+        {body}
+      </p>
+    </div>
+  );
+}
+
+/* ── Destination Picker Overlay ── */
+function DestinationPicker({
+  onPick,
+  onClose,
+}: {
+  onPick: (slug: string) => void;
+  onClose: () => void;
+}) {
+  const { data: imageSlotsData } = useImageSlots();
+
+  const getImageUrl = (assetKey: string, fallback: string): string => {
+    if (imageSlotsData?.slots) {
+      const slot = imageSlotsData.slots.find((s: any) => s.key === assetKey);
+      if (slot?.currentUrl) return slot.currentUrl;
+    }
+    const defaultSlot = IMAGE_SLOTS.find((s: any) => s.key === assetKey);
+    return defaultSlot?.defaultUrl || fallback;
+  };
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9998,
+        background: "rgba(0,0,0,0.6)",
+        backdropFilter: "blur(8px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 24,
+      }}
+      onClick={onClose}
+    >
+      <div
+        style={{
+          background: "#faf9f6",
+          borderRadius: 12,
+          maxWidth: 440,
+          width: "100%",
+          maxHeight: "85vh",
+          overflowY: "auto",
+          padding: "36px 24px 28px",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2
+          style={{
+            fontFamily: "Lora, serif",
+            fontStyle: "italic",
+            fontSize: 22,
+            fontWeight: 500,
+            color: "#1a1a1a",
+            textAlign: "center",
+            marginBottom: 8,
+          }}
+        >
+          I don't know you yet — but I will in about 30 seconds.
+        </h2>
+        <p
+          style={{
+            fontFamily: "Lora, serif",
+            fontSize: 16,
+            color: "#1a1a1a",
+            opacity: 0.6,
+            textAlign: "center",
+            marginBottom: 28,
+          }}
+        >
+          Where are you headed?
+        </p>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 12,
+          }}
+        >
+          {DESTINATIONS.map((dest) => {
+            const imageUrl = getImageUrl(dest.imageSlotKey, dest.defaultImage);
+            return (
+              <button
+                key={dest.slug}
+                onClick={() => onPick(dest.slug)}
+                style={{
+                  position: "relative",
+                  border: "none",
+                  borderRadius: 10,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                  aspectRatio: "3 / 4",
+                  background: "#f0ece4",
+                  padding: 0,
+                  textAlign: "left",
+                }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    backgroundImage: `url('${imageUrl}')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 50%, transparent 100%)",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 14,
+                    left: 14,
+                    right: 14,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "Lora, serif",
+                      fontSize: 17,
+                      fontWeight: 600,
+                      color: "#fff",
+                      lineHeight: 1.2,
+                      marginBottom: 2,
+                    }}
+                  >
+                    {dest.title}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: 10,
+                      color: "rgba(255,255,255,0.7)",
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {dest.subtitle}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <button
+          onClick={onClose}
+          style={{
+            display: "block",
+            margin: "20px auto 0",
+            background: "none",
+            border: "none",
+            fontFamily: "Lora, serif",
+            fontSize: 14,
+            color: "#1a1a1a",
+            opacity: 0.4,
+            cursor: "pointer",
+          }}
+        >
+          Maybe later
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function EditsPage() {
   const [, navigate] = useLocation();
-  const { saveCount, email } = useUser();
-  const queryClient = useQueryClient();
+  const { saveCount } = useUser();
   const [savedIds, setSavedIds] = useState<string[]>(getSavedCapsuleIds);
+  const [showDestPicker, setShowDestPicker] = useState(false);
+  const [showCurating, setShowCurating] = useState(false);
+  const [curatingCapsule, setCuratingCapsule] = useState<typeof PRESET_CAPSULES[0] | null>(null);
 
   useEffect(() => {
     if (savedIds.length === 0 && saveCount >= 3) {
@@ -63,80 +300,230 @@ export default function EditsPage() {
   const savedCapsules = PRESET_CAPSULES.filter((c) => savedIds.includes(c.id));
   const hasSaves = saveCount > 0;
 
+  const handleCreateEdit = () => {
+    if (hasSaves) {
+      const next = consumeNextCapsule();
+      if (next) {
+        setCuratingCapsule(next);
+        setShowCurating(true);
+      }
+    } else {
+      setShowDestPicker(true);
+    }
+  };
+
+  const handleDestPick = (_slug: string) => {
+    setShowDestPicker(false);
+    const next = consumeNextCapsule();
+    if (next) {
+      setCuratingCapsule(next);
+      setShowCurating(true);
+    }
+  };
+
+  const handleCuratingComplete = () => {
+    const ids = getSavedCapsuleIds();
+    if (curatingCapsule && !ids.includes(curatingCapsule.id)) {
+      const updated = [...ids, curatingCapsule.id];
+      localStorage.setItem(LS_SAVED_CAPSULES_KEY, JSON.stringify(updated));
+      setSavedIds(updated);
+    } else {
+      setSavedIds(ids);
+    }
+    setShowCurating(false);
+    if (curatingCapsule) {
+      navigate(`/capsule/${curatingCapsule.id}?from=curate`);
+    }
+  };
+
   return (
-    <div style={{ minHeight: "100vh", paddingTop: 56, paddingBottom: 100, background: "#fafaf9" }}>
-      {/* Hero image */}
-      <div style={{ maxWidth: 560, margin: "0 auto", padding: "0 24px" }}>
-        <img
-          src={HERO_IMAGE}
-          alt="Moodboard"
+    <div style={{ minHeight: "100vh", background: "#fafaf9" }}>
+
+      {/* ═══ SECTION 1 — HERO ═══ */}
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          minHeight: "calc(100vh - 56px)",
+          marginTop: 56,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-end",
+          overflow: "hidden",
+        }}
+      >
+        {/* Background image */}
+        <div
           style={{
-            width: "100%",
-            maxHeight: 500,
-            objectFit: "cover",
-            borderRadius: 8,
-            display: "block",
-            marginTop: 24,
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `url('${HERO_IMAGE}')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
           }}
+        />
+        {/* Gradient overlay */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.08) 100%)",
+          }}
+        />
+
+        {/* Hero text content */}
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            padding: "0 24px 60px",
+            maxWidth: 560,
+            margin: "0 auto",
+            width: "100%",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              fontFamily: "Inter, sans-serif",
+              fontSize: 11,
+              fontWeight: 500,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "#ffffff",
+              marginBottom: 16,
+            }}
+          >
+            Your Edit
+          </div>
+          <h1
+            style={{
+              fontFamily: "Lora, serif",
+              fontStyle: "italic",
+              fontSize: "clamp(28px, 6vw, 36px)",
+              fontWeight: 500,
+              color: "#ffffff",
+              lineHeight: 1.25,
+              marginBottom: 16,
+            }}
+          >
+            A capsule for your trip.
+            <br />
+            Built around you.
+          </h1>
+          <p
+            style={{
+              fontFamily: "Lora, serif",
+              fontSize: 16,
+              color: "rgba(255,255,255,0.85)",
+              lineHeight: 1.7,
+              marginBottom: 32,
+              maxWidth: 420,
+              margin: "0 auto 32px",
+            }}
+          >
+            Wardrobe, essentials, the right pieces for where you're going — curated by someone paying attention.
+          </p>
+          <button
+            onClick={handleCreateEdit}
+            style={{
+              background: "#c9a84c",
+              color: "#ffffff",
+              border: "none",
+              padding: "18px 48px",
+              fontFamily: "Inter, sans-serif",
+              fontSize: 13,
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              borderRadius: 7,
+              cursor: "pointer",
+              width: "100%",
+              maxWidth: 340,
+            }}
+          >
+            Create my Edit
+          </button>
+        </div>
+      </div>
+
+      {/* ═══ SECTION 2 — HOW IT WORKS ═══ */}
+      <div style={{ maxWidth: 560, margin: "0 auto", padding: "0 24px" }}>
+        <GoldDivider />
+
+        <h2
+          style={{
+            fontFamily: "Inter, sans-serif",
+            fontSize: 11,
+            fontWeight: 500,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: "#1a1a1a",
+            textAlign: "center",
+            marginBottom: 40,
+          }}
+        >
+          How It Works
+        </h2>
+
+        <Step
+          number="01"
+          headline="Tell us where you're going."
+          body="Or just start exploring. We'll take it from there."
+        />
+        <Step
+          number="02"
+          headline="Save what stops you."
+          body="Every pin sharpens what we know about your taste. But even without saves, we'll build something worth opening."
+        />
+        <Step
+          number="03"
+          headline="Your Edit arrives."
+          body="A capsule that makes sense for your trip and who you are when you get there. Shop it, pack it, go."
         />
       </div>
 
-      {/* Content */}
+      {/* ═══ SECTION 3 — SECOND CTA + PAST EDITS ═══ */}
       <div style={{ maxWidth: 560, margin: "0 auto", padding: "0 24px" }}>
-        {/* Headline */}
-        <h1
-          style={{
-            fontFamily: "Lora, serif",
-            fontStyle: "italic",
-            fontSize: "clamp(20px, 5vw, 24px)",
-            fontWeight: 500,
-            color: "#1a1a1a",
-            textAlign: "center",
-            marginTop: 40,
-            marginBottom: 24,
-          }}
-        >
-          Your Edit
-        </h1>
+        <GoldDivider />
 
-        {/* Body copy */}
         <p
           style={{
             fontFamily: "Lora, serif",
-            fontSize: 16,
+            fontStyle: "italic",
+            fontSize: 24,
+            fontWeight: 500,
             color: "#1a1a1a",
-            lineHeight: 1.7,
             textAlign: "center",
-            marginBottom: 32,
+            marginBottom: 24,
           }}
         >
-          We don't do generic recommendations. We pay attention to what you save — the pieces, the places, the things that stopped your scroll — and we build something from it. A capsule that actually makes sense for where you're going and who you are when you get there.
+          Ready?
         </p>
 
-        {/* CTA button — gold */}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
-          <Link href="/suitcase?curate=true">
-            <button
-              style={{
-                background: "#c9a84c",
-                color: "#ffffff",
-                border: "none",
-                padding: "16px 40px",
-                fontFamily: "Inter, sans-serif",
-                fontSize: 13,
-                fontWeight: 600,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                borderRadius: 7,
-                cursor: "pointer",
-              }}
-            >
-              Create my Edit
-            </button>
-          </Link>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
+          <button
+            onClick={handleCreateEdit}
+            style={{
+              background: "#c9a84c",
+              color: "#ffffff",
+              border: "none",
+              padding: "18px 48px",
+              fontFamily: "Inter, sans-serif",
+              fontSize: 13,
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              borderRadius: 7,
+              cursor: "pointer",
+              width: "100%",
+              maxWidth: 340,
+            }}
+          >
+            Create my Edit
+          </button>
         </div>
 
-        {/* Sub-CTA copy */}
         <p
           style={{
             fontFamily: "Lora, serif",
@@ -145,36 +532,15 @@ export default function EditsPage() {
             opacity: 0.45,
             lineHeight: 1.7,
             textAlign: "center",
+            marginBottom: 0,
           }}
         >
-          Your Edits get sharper over time. Every pin teaches us something. Save more, use the site, and watch what happens.
+          Your Edits get sharper over time. The more you use the site, the more precise they become.
         </p>
 
-        {/* Explore Guides link — only when no saves */}
-        {!hasSaves && (
-          <div style={{ display: "flex", justifyContent: "center", marginTop: 20 }}>
-            <Link href="/destinations">
-              <span
-                style={{
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: 12,
-                  fontWeight: 500,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: "#c9a84c",
-                  cursor: "pointer",
-                }}
-              >
-                Explore Guides →
-              </span>
-            </Link>
-          </div>
-        )}
-
-        {/* Gold divider */}
         <GoldDivider />
 
-        {/* Previous Edits section */}
+        {/* Previous Edits */}
         {savedCapsules.length > 0 ? (
           <>
             <h2
@@ -211,7 +577,6 @@ export default function EditsPage() {
               .
             </p>
 
-            {/* Capsule cards — 2-column grid */}
             <div
               style={{
                 display: "grid",
@@ -237,6 +602,7 @@ export default function EditsPage() {
                 color: "rgba(44, 36, 22, 0.45)",
                 lineHeight: 1.6,
                 textAlign: "center",
+                paddingBottom: 60,
               }}
             >
               As you save more, we'll learn more.
@@ -253,15 +619,33 @@ export default function EditsPage() {
               color: "rgba(201, 168, 76, 0.6)",
               lineHeight: 1.6,
               textAlign: "center",
-              padding: "20px 0",
+              padding: "20px 0 60px",
             }}
           >
-            Your first Edit appears here once we've
-            <br />
-            learned enough about your taste.
+            Your first Edit appears here.
           </p>
         )}
       </div>
+
+      {/* Bottom padding for nav */}
+      <div style={{ height: 80 }} />
+
+      {/* Destination picker overlay */}
+      {showDestPicker && (
+        <DestinationPicker
+          onPick={handleDestPick}
+          onClose={() => setShowDestPicker(false)}
+        />
+      )}
+
+      {/* Curating animation overlay */}
+      {showCurating && curatingCapsule && (
+        <CuratingAnimation
+          capsuleName={curatingCapsule.name}
+          capsuleTagline={curatingCapsule.tagline}
+          onComplete={handleCuratingComplete}
+        />
+      )}
     </div>
   );
 }
