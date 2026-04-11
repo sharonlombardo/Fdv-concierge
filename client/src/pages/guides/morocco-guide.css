@@ -539,11 +539,17 @@
     grid-row: auto;
     min-height: auto;
   }
+  .morocco-guide .place-images.layout-b .img-large img {
+    height: auto;
+    aspect-ratio: 3 / 4;
+  }
   .morocco-guide .place-images.layout-b .img-small {
     min-height: auto;
   }
+  .morocco-guide .place-images.layout-b .img-small img {
+    height: 200px;
+  }
   .morocco-guide .place-images.layout-b img {
-    height: 260px;
     width: 100%;
     object-fit: cover;
   }
@@ -575,7 +581,8 @@
   }
 
   /* Full-width break images */
-  .morocco-guide .full-image { height: 35vh; min-height: 200px; }
+  .morocco-guide .full-image { height: auto; min-height: 200px; aspect-ratio: 3 / 4; }
+  .morocco-guide .full-image img { object-fit: cover; width: 100%; height: 100%; }
   .morocco-guide .hero-image { height: 45vh; min-height: 260px; }
 
   /* Carousel */

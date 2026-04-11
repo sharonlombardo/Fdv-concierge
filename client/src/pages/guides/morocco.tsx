@@ -702,7 +702,9 @@ export default function MoroccoGuide() {
         </div>
       </div>
 
-      {/* Amanjena editorial fashion moments */}
+      <hr className="divider" />
+
+      {/* Amanjena editorial fashion moments — standalone shoppable images */}
       <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("amanjena-editorial-1", `${BLOB_V2}/morocco-tile-3`, "Blush pink on stairs at Amanjena")}>
         <img src={`${BLOB_V2}/morocco-tile-3`} alt="Blush pink on stairs at Amanjena" />
         <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-amanjena-editorial-1" itemData={{ title: "Alaïa at Amanjena", description: "Blush pink against sun-warmed clay.", imageUrl: `${BLOB_V2}/morocco-tile-3`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
@@ -829,6 +831,8 @@ export default function MoroccoGuide() {
           onProductTap={(product) => {
             setOverlayData(null);
             const genome = product.genomeKey ? getProductByKey(product.genomeKey) : undefined;
+            // Resolve studio shot from genome, fall back to editorial image
+            const studioUrl = product.genomeKey ? getShopImageUrl(product.genomeKey) : '';
             setSelectedItem({
               id: product.id,
               title: product.name,
@@ -836,7 +840,7 @@ export default function MoroccoGuide() {
               pinType: 'style',
               assetKey: product.id,
               storyTag: 'morocco',
-              imageUrl: product.imageUrl,
+              imageUrl: studioUrl || product.imageUrl,
               brand: genome?.brand || product.brand,
               price: genome?.price || product.price || undefined,
               shopUrl: genome && isShoppable(genome) ? genome.url : product.shopUrl || undefined,
