@@ -840,6 +840,28 @@ export default function MoroccoGuide() {
           editorialImageAlt={overlayData.imageAlt}
           products={overlayData.products}
           onClose={() => setOverlayData(null)}
+          onProductTap={(product) => {
+            setOverlayData(null);
+            const genome = product.genomeKey ? getProductByKey(product.genomeKey) : undefined;
+            setSelectedItem({
+              id: product.id,
+              title: product.name,
+              bucket: 'Your Style',
+              pinType: 'style',
+              assetKey: product.id,
+              storyTag: 'morocco',
+              imageUrl: product.imageUrl,
+              brand: genome?.brand || product.brand,
+              price: genome?.price || product.price || undefined,
+              shopUrl: genome && isShoppable(genome) ? genome.url : product.shopUrl || undefined,
+              description: genome?.description,
+              color: genome?.color,
+              sizes: genome?.sizes,
+              shopStatus: genome?.shop_status,
+              genomeKey: product.genomeKey,
+            });
+            setDrawerOpen(true);
+          }}
         />
       )}
     </div>

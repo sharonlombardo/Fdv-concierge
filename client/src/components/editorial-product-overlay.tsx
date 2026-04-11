@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { PinButton } from "@/components/pin-button";
-import { ItemModal, type ItemModalData } from "@/components/item-modal";
-import { getShopImageUrl, getProductByKey } from "@/lib/brand-genome";
+import { getShopImageUrl } from "@/lib/brand-genome";
 
 export interface EditorialProduct {
   id: string;
@@ -18,6 +17,7 @@ interface EditorialProductOverlayProps {
   editorialImageAlt: string;
   products: EditorialProduct[];
   onClose: () => void;
+  onProductTap: (product: EditorialProduct) => void;
 }
 
 export function EditorialProductOverlay({
@@ -25,9 +25,8 @@ export function EditorialProductOverlay({
   editorialImageAlt,
   products,
   onClose,
+  onProductTap,
 }: EditorialProductOverlayProps) {
-  const [modalItem, setModalItem] = useState<ItemModalData | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
 
   // Lock body scroll while overlay is open
   useEffect(() => {
@@ -38,55 +37,44 @@ export function EditorialProductOverlay({
     };
   }, []);
 
-  const handleProductTap = (p: EditorialProduct) => {
-    const genome = p.genomeKey ? getProductByKey(p.genomeKey) : undefined;
-    const studioUrl = p.genomeKey ? getShopImageUrl(p.genomeKey) : "";
-    setModalItem({
-      id: p.id,
-      title: p.name,
-      bucket: "wardrobe",
-      pinType: "style",
-      assetKey: p.id,
-      storyTag: "morocco",
-      imageUrl: studioUrl || p.imageUrl,
-      brand: genome?.brand || p.brand,
-      price: genome?.price || p.price || undefined,
-      shopUrl: genome?.url || p.shopUrl,
-      shopStatus: genome?.shop_status || "live",
-      genomeKey: p.genomeKey,
-      color: genome?.color,
-      sizes: genome?.sizes,
-      description: genome?.description,
-    });
-    setModalOpen(true);
+  const getProductImage = (p: EditorialProduct): string => {
+    // Try studio shot from genome first
+    if (p.genomeKey) {
+      const studio = getShopImageUrl(p.genomeKey);
+      if (studio) return studio;
+    }
+    // Fallback to provided imageUrl
+    return p.imageUrl;
   };
 
   return (
     <>
+      {/* Backdrop */}
       <div
+        onClick={onClose}
         style={{
           position: "fixed",
           inset: 0,
-          zIndex: 9990,
+          zIndex: 200,
           background: "rgba(0,0,0,0.5)",
           backdropFilter: "blur(4px)",
         }}
-        onClick={onClose}
       />
 
+      {/* Panel */}
       <div
         style={{
           position: "fixed",
           bottom: 0,
           left: 0,
           right: 0,
-          zIndex: 9991,
+          zIndex: 201,
           background: "#faf9f6",
           borderRadius: "16px 16px 0 0",
           maxHeight: "92vh",
           display: "flex",
           flexDirection: "column",
-          animation: "slideUp 0.3s ease-out",
+          animation: "editorialSlideUp 0.3s ease-out",
         }}
       >
         {/* Header bar with close */}
@@ -112,7 +100,10 @@ export function EditorialProductOverlay({
             Shop this look
           </span>
           <button
-            onClick={onClose}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
             style={{
               background: "none",
               border: "none",
@@ -121,6 +112,7 @@ export function EditorialProductOverlay({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              WebkitTapHighlightColor: "transparent",
             }}
             aria-label="Close"
           >
@@ -144,6 +136,7 @@ export function EditorialProductOverlay({
             flex: 1,
             overflowY: "auto",
             minHeight: 0,
+            WebkitOverflowScrolling: "touch",
           }}
         >
           {/* Editorial image */}
@@ -163,20 +156,20 @@ export function EditorialProductOverlay({
                 objectFit: "cover",
                 display: "block",
               }}
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = "none";
+              }}
             />
           </div>
 
           {/* Product cards */}
           <div style={{ padding: "16px 16px 100px" }}>
             {products.map((p) => {
-              const studioUrl = p.genomeKey
-                ? getShopImageUrl(p.genomeKey)
-                : "";
-              const imgSrc = studioUrl || p.imageUrl;
+              const imgSrc = getProductImage(p);
               return (
                 <div
                   key={p.id}
-                  onClick={() => handleProductTap(p)}
+                  onClick={() => onProductTap(p)}
                   style={{
                     display: "flex",
                     gap: 14,
@@ -197,15 +190,20 @@ export function EditorialProductOverlay({
                       background: "#f0ece4",
                     }}
                   >
-                    <img
-                      src={imgSrc}
-                      alt={`${p.brand} ${p.name}`}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
+                    {imgSrc && (
+                      <img
+                        src={imgSrc}
+                        alt={`${p.brand} ${p.name}`}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                    )}
                   </div>
 
                   {/* Product info */}
@@ -272,16 +270,8 @@ export function EditorialProductOverlay({
         </div>
       </div>
 
-      {/* Product detail modal (Level 3) */}
-      <ItemModal
-        item={modalItem}
-        open={modalOpen}
-        onOpenChange={setModalOpen}
-        source="current"
-      />
-
       <style>{`
-        @keyframes slideUp {
+        @keyframes editorialSlideUp {
           from { transform: translateY(100%); }
           to { transform: translateY(0); }
         }
