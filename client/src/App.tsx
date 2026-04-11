@@ -1,4 +1,4 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, Redirect, useLocation } from "wouter";
 import { useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -33,7 +33,6 @@ import Destinations from "@/pages/destinations";
 import ComingSoon from "@/pages/coming-soon";
 import TravelDiary from "@/pages/travel-diary";
 import MoroccoGuide from "@/pages/guides/morocco";
-import GuidesListing from "@/pages/guides-listing";
 import ShopPage from "@/pages/shop";
 import DailyFlow from "@/pages/daily-flow";
 import MyEdits from "@/pages/my-edits";
@@ -67,7 +66,7 @@ function Router() {
       <Route path="/destinations/slow-travel" component={ComingSoon} />
       <Route path="/destinations/retreat" component={ComingSoon} />
       <Route path="/destinations/new-york" component={ComingSoon} />
-      <Route path="/guides" component={GuidesListing} />
+      <Route path="/guides">{() => <Redirect to="/destinations" />}</Route>
       <Route path="/guides/morocco" component={MoroccoGuide} />
       <Route path="/coming-soon/:page" component={ComingSoon} />
       <Route path="/concierge" component={Concierge} />
