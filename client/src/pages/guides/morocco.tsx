@@ -12,34 +12,22 @@ import { IMAGE_SLOTS } from '@shared/image-slots';
 import './morocco-guide.css';
 
 const IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco';
-const CAROUSEL = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/carousel-morocco';
-
-type CarouselProduct = {
-  id: string;
-  brand: string;
-  name: string;
-  price: string | null;
-  shopUrl: string;
-  imageUrl: string;
-  genomeKey?: string;
-};
-
-const DAY_PRODUCTS: CarouselProduct[] = [
-  { id: 'guide-day-1', brand: 'Fil de Vie', name: 'Juno Blouse & Marrakech Pants', price: null, shopUrl: 'http://www.fildevie.com', imageUrl: `${CAROUSEL}/01_fdv_juno.jpg`, genomeKey: 'look:fdv:junoblouse:marrakechpant:stripe.jpg' },
-  { id: 'guide-day-2', brand: 'Bottega Veneta', name: 'Kalimero Bag', price: '$4,100', shopUrl: 'https://www.bottegaveneta.com/en-us/small-kalimero-citta-fondant-813744715.html', imageUrl: `${CAROUSEL}/02_bottega_kalimero.jpg`, genomeKey: 'accessory:bag:bottega:kalimero:black.jpg' },
-  { id: 'guide-day-3', brand: 'A Emery', name: 'Kir Sandal', price: '$185', shopUrl: 'https://aemery.com/products/the-kir-sandal-black', imageUrl: `${CAROUSEL}/03_aemery_kir_sandal.jpg`, genomeKey: 'footwear, amery kit sandal.jpg' },
-  { id: 'guide-day-4', brand: 'Bulgari via 1st Dibs', name: 'Lapis Cabachon Necklace', price: '$50,000', shopUrl: 'https://www.1stdibs.com/jewelry/necklaces/pendant-necklaces/bvlgari-1980s-unheated-sapphire-gold-necklace/id-j_28202612/', imageUrl: `${CAROUSEL}/04_bulgari_necklace.jpg`, genomeKey: 'accessory:jewelry:bulgari:cabachon necklace.jpg' },
-  { id: 'guide-day-5', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: `${CAROUSEL}/05_loewe_sunglasses.jpg`, genomeKey: 'access:sugnlasses:loewe:black.jpg' },
-  { id: 'guide-day-6', brand: 'Saint Jane', name: 'Sunscreen', price: '$38', shopUrl: 'https://saintjanebeauty.com/collections/sun-protection-spf/products/luxury-sun-ritual', imageUrl: `${CAROUSEL}/06_saintjane_sunscreen.jpg`, genomeKey: 'beauty:sainjane:sunritual.jpg' },
+const DAY_PRODUCTS: EditorialProduct[] = [
+  { id: 'guide-day-1', brand: 'Fil de Vie', name: 'Juno Blouse & Marrakech Pants', price: null, shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fdv:junoblouse:marrakechpant:stripe.jpg' },
+  { id: 'guide-day-2', brand: 'Bottega Veneta', name: 'Kalimero Bag', price: '$4,100', shopUrl: 'https://www.bottegaveneta.com/en-us/small-kalimero-citta-fondant-813744715.html', imageUrl: '', genomeKey: 'accessory:bag:bottega:kalimero:black.jpg' },
+  { id: 'guide-day-3', brand: 'A Emery', name: 'Kir Sandal', price: '$185', shopUrl: 'https://aemery.com/products/the-kir-sandal-black', imageUrl: '', genomeKey: 'footwear, amery kit sandal.jpg' },
+  { id: 'guide-day-4', brand: 'Bulgari via 1st Dibs', name: 'Lapis Cabachon Necklace', price: '$50,000', shopUrl: 'https://www.1stdibs.com/jewelry/necklaces/pendant-necklaces/bvlgari-1980s-unheated-sapphire-gold-necklace/id-j_28202612/', imageUrl: '', genomeKey: 'accessory:jewelry:bulgari:cabachon necklace.jpg' },
+  { id: 'guide-day-5', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: '', genomeKey: 'access:sugnlasses:loewe:black.jpg' },
+  { id: 'guide-day-6', brand: 'Saint Jane', name: 'Sunscreen', price: '$38', shopUrl: 'https://saintjanebeauty.com/collections/sun-protection-spf/products/luxury-sun-ritual', imageUrl: '', genomeKey: 'beauty:sainjane:sunritual.jpg' },
 ];
 
-const EVE_PRODUCTS: CarouselProduct[] = [
-  { id: 'guide-eve-1', brand: 'FDV', name: 'Isadora Dress', price: '$795', shopUrl: 'http://www.fildevie.com', imageUrl: `${CAROUSEL}/07_fdv_isadora.jpg`, genomeKey: 'look:fdv:isadoradress:blk.jpg' },
-  { id: 'guide-eve-2', brand: 'Ala\u00efa', name: 'Velvet Thongs', price: '$1,450', shopUrl: 'https://www.bergdorfgoodman.com/p/alaia-velvet-kitten-heel-thong-sandals-prodt196740019', imageUrl: `${CAROUSEL}/08_alaia_thongs.jpg`, genomeKey: 'footwear:alaia:black.jpg' },
-  { id: 'guide-eve-3', brand: 'Chlo\u00e9', name: 'Wristlette Bag', price: '$4,200', shopUrl: 'https://www.chloe.com/en-us/p/bags/shoulder-bag/CH5US623P57001.html', imageUrl: `${CAROUSEL}/09_chloe_bag.jpg`, genomeKey: 'access:bag:chloe:wristlette:black.jpg' },
-  { id: 'guide-eve-4', brand: 'Phoebe Philo', name: 'Gold Studded Mini Hoops', price: '$550', shopUrl: 'https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver', imageUrl: `${CAROUSEL}/10_phoebephilo_hoops.jpg`, genomeKey: 'feb 26 prod info pg 1.jpg - item 6' },
-  { id: 'guide-eve-5', brand: 'Hildegard', name: 'Immortelle Oil', price: '$375', shopUrl: 'https://hildegaard.com/products/immortelle', imageUrl: `${CAROUSEL}/11_hildegard_oil.jpg`, genomeKey: 'beauty:imortelle oil.jpg' },
-  { id: 'guide-eve-6', brand: 'PoppyKing', name: 'Original Sin Lipstick', price: '$34', shopUrl: 'https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622', imageUrl: `${CAROUSEL}/12_poppyking_lipstick.jpg`, genomeKey: 'beauty:poppyking:sinlipstick:red.jpg' },
+const EVE_PRODUCTS: EditorialProduct[] = [
+  { id: 'guide-eve-1', brand: 'FDV', name: 'Isadora Dress', price: '$795', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fdv:isadoradress:blk.jpg' },
+  { id: 'guide-eve-2', brand: 'Ala\u00efa', name: 'Velvet Thongs', price: '$1,450', shopUrl: 'https://www.bergdorfgoodman.com/p/alaia-velvet-kitten-heel-thong-sandals-prodt196740019', imageUrl: '', genomeKey: 'footwear:alaia:black.jpg' },
+  { id: 'guide-eve-3', brand: 'Chlo\u00e9', name: 'Wristlette Bag', price: '$4,200', shopUrl: 'https://www.chloe.com/en-us/p/bags/shoulder-bag/CH5US623P57001.html', imageUrl: '', genomeKey: 'access:bag:chloe:wristlette:black.jpg' },
+  { id: 'guide-eve-4', brand: 'Phoebe Philo', name: 'Gold Studded Mini Hoops', price: '$550', shopUrl: 'https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver', imageUrl: '', genomeKey: 'feb 26 prod info pg 1.jpg - item 6' },
+  { id: 'guide-eve-5', brand: 'Hildegard', name: 'Immortelle Oil', price: '$375', shopUrl: 'https://hildegaard.com/products/immortelle', imageUrl: '', genomeKey: 'beauty:imortelle oil.jpg' },
+  { id: 'guide-eve-6', brand: 'PoppyKing', name: 'Original Sin Lipstick', price: '$34', shopUrl: 'https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622', imageUrl: '', genomeKey: 'beauty:poppyking:sinlipstick:red.jpg' },
 ];
 
 const BLOB_V2 = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2';
@@ -47,23 +35,22 @@ const BLOB_V2 = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-
 /* ── Editorial product map: image slot key → products shown in that image ── */
 const EDITORIAL_PRODUCT_MAP: Record<string, EditorialProduct[]> = {
   "morocco-style-1": [
-    { id: "edit-ysl-bikini", brand: "Yves Saint Laurent", name: "LouLou Bikini", price: "$795", shopUrl: "https://www.ysl.com", imageUrl: `${CAROUSEL}/ysl-bikini.jpg`, genomeKey: "look:ysl:bikini:black.jpg" },
+    { id: "edit-ysl-bikini", brand: "Yves Saint Laurent", name: "LouLou Bikini", price: "$795", shopUrl: "https://www.ysl.com", imageUrl: `${BLOB_V2}/morocco-style-1`, genomeKey: "look:ysl:bikini:black.jpg" },
   ],
   "morocco-tile-1": [
-    { id: "edit-pp-gaia", brand: "Phoebe Philo", name: "Gaia Dress", price: "$2,360", shopUrl: "https://us.phoebephilo.com", imageUrl: `${CAROUSEL}/phoebephilo-gaia.jpg`, genomeKey: "look:phoebephilo:gaiadress:black.jpg" },
+    { id: "edit-pp-gaia", brand: "Phoebe Philo", name: "Gaia Dress", price: "$2,360", shopUrl: "https://us.phoebephilo.com", imageUrl: `${BLOB_V2}/morocco-tile-1`, genomeKey: "look:phoebephilo:gaiadress:black.jpg" },
   ],
   "morocco-tile-3": [
-    { id: "edit-alaia-coat", brand: "Alaïa", name: "Souk Coat", price: "$1,200", shopUrl: "https://www.alaia.com", imageUrl: `${CAROUSEL}/alaia-coat.jpg`, genomeKey: "look:alaia:soukcoat:blush.jpg" },
-    { id: "edit-alaia-pant", brand: "Alaïa", name: "Desert Pant", price: "$760", shopUrl: "https://www.alaia.com", imageUrl: `${CAROUSEL}/alaia-pant.jpg`, genomeKey: "look:alaia:desertpant:sand.jpg" },
+    { id: "edit-alaia-coat", brand: "Alaïa", name: "Souk Coat & Desert Pant", price: "$1,200/$760", shopUrl: "https://www.alaia.com", imageUrl: `${BLOB_V2}/morocco-tile-3`, genomeKey: "Look:alia:soukcoat:desertpants:blush.jpg" },
   ],
   "morocco-tile-5": [
-    { id: "edit-fdv-este", brand: "Fil de Vie", name: "Este Dress", price: "$675", shopUrl: "http://www.fildevie.com", imageUrl: `${CAROUSEL}/fdv-este.jpg`, genomeKey: "look:fdv:estedress:black.jpg" },
+    { id: "edit-fdv-este", brand: "Fil de Vie", name: "Este Dress", price: "$675", shopUrl: "http://www.fildevie.com", imageUrl: `${BLOB_V2}/morocco-tile-5`, genomeKey: "look:fildevie:estedress:black.jpg" },
   ],
   "morocco-object-1": [
-    { id: "edit-fdv-column", brand: "Fil de Vie", name: "Column Dress", price: "$765", shopUrl: "http://www.fildevie.com", imageUrl: `${CAROUSEL}/fdv-column.jpg`, genomeKey: "look:fildevie:columndress:black.jpg" },
+    { id: "edit-fdv-column", brand: "Fil de Vie", name: "Column Dress", price: "$765", shopUrl: "http://www.fildevie.com", imageUrl: `${BLOB_V2}/morocco-object-1`, genomeKey: "look:fildevie:columndress:black.jpg" },
   ],
   "morocco-motion-1": [
-    { id: "edit-fdv-caftan", brand: "Fil de Vie", name: "Long Caftan Dress", price: "$825", shopUrl: "http://www.fildevie.com", imageUrl: `${CAROUSEL}/fdv-caftan.jpg`, genomeKey: "look:fdv:philomenacaftan:sand.jpg" },
+    { id: "edit-fdv-caftan", brand: "Fil de Vie", name: "Long Caftan Dress", price: "$825", shopUrl: "http://www.fildevie.com", imageUrl: `${BLOB_V2}/morocco-motion-1`, genomeKey: "look:fdv:philomenacaftan:sand.jpg" },
   ],
   // Wardrobe day images → DAY_PRODUCTS
   "ward-1-large": DAY_PRODUCTS,
@@ -75,11 +62,10 @@ const EDITORIAL_PRODUCT_MAP: Record<string, EditorialProduct[]> = {
   "ward-2-small2": [EVE_PRODUCTS[5]], // PoppyKing lipstick
   // Amanjena editorial images
   "amanjena-editorial-1": [
-    { id: "edit-alaia-coat-2", brand: "Alaïa", name: "Souk Coat", price: "$1,200", shopUrl: "https://www.alaia.com", imageUrl: `${CAROUSEL}/alaia-coat.jpg`, genomeKey: "look:alaia:soukcoat:blush.jpg" },
-    { id: "edit-alaia-pant-2", brand: "Alaïa", name: "Desert Pant", price: "$760", shopUrl: "https://www.alaia.com", imageUrl: `${CAROUSEL}/alaia-pant.jpg`, genomeKey: "look:alaia:desertpant:sand.jpg" },
+    { id: "edit-alaia-coat-2", brand: "Alaïa", name: "Souk Coat & Desert Pant", price: "$1,200/$760", shopUrl: "https://www.alaia.com", imageUrl: `${BLOB_V2}/morocco-tile-3`, genomeKey: "Look:alia:soukcoat:desertpants:blush.jpg" },
   ],
   "amanjena-editorial-2": [
-    { id: "edit-fdv-este-2", brand: "Fil de Vie", name: "Este Dress", price: "$675", shopUrl: "http://www.fildevie.com", imageUrl: `${CAROUSEL}/fdv-este.jpg`, genomeKey: "look:fdv:estedress:black.jpg" },
+    { id: "edit-fdv-este-2", brand: "Fil de Vie", name: "Este Dress", price: "$675", shopUrl: "http://www.fildevie.com", imageUrl: `${BLOB_V2}/morocco-tile-5`, genomeKey: "look:fildevie:estedress:black.jpg" },
   ],
 };
 
@@ -702,8 +688,8 @@ export default function MoroccoGuide() {
             <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-amanjena-main" itemData={{ title: "Amanjena", description: "Aman's Marrakech. Pink marble, reflecting pools, absolute silence.", imageUrl: getSlotImageUrl("morocco-style-1"), storyTag: "morocco", bookUrl: "https://www.aman.com/resorts/amanjena" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div>
             <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-style-1"); openEditorialOverlay("morocco-style-1", url, "Amanjena poolside"); }} />
           </div>
-          <div className="img-small" style={{ position: "relative" }}><img src={`${BLOB_V2}/amaneja_3`} alt="Amanjena bathroom arch" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-amanjena-detail" itemData={{ title: "Amanjena", description: "Pink marble, reflecting pools, absolute silence.", imageUrl: `${BLOB_V2}/amaneja_3`, storyTag: "morocco", bookUrl: "https://www.aman.com/resorts/amanjena" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
-          <div className="img-small" style={{ position: "relative" }}><img src={`${BLOB_V2}/amaneja_4`} alt="Amanjena red wall with palms" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-amanjena-moment" itemData={{ title: "Amanjena", description: "Pink marble, reflecting pools, absolute silence.", imageUrl: `${BLOB_V2}/amaneja_4`, storyTag: "morocco", bookUrl: "https://www.aman.com/resorts/amanjena" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
+          <div className="img-small" style={{ position: "relative" }}><img src={`${BLOB_V2}/morocco-texture-1`} alt="Amanjena detail" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-amanjena-detail" itemData={{ title: "Amanjena", description: "Pink marble, reflecting pools, absolute silence.", imageUrl: `${BLOB_V2}/morocco-texture-1`, storyTag: "morocco", bookUrl: "https://www.aman.com/resorts/amanjena" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
+          <div className="img-small" style={{ position: "relative" }}><img src={`${BLOB_V2}/morocco-experience-1`} alt="Amanjena atmosphere" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-amanjena-moment" itemData={{ title: "Amanjena", description: "Pink marble, reflecting pools, absolute silence.", imageUrl: `${BLOB_V2}/morocco-experience-1`, storyTag: "morocco", bookUrl: "https://www.aman.com/resorts/amanjena" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
         </div>
         <div className="place-info">
           <h3>Amanjena</h3>
@@ -717,19 +703,19 @@ export default function MoroccoGuide() {
       </div>
 
       {/* Amanjena editorial fashion moments */}
-      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("amanjena-editorial-1", `${BLOB_V2}/amaneja_2`, "Blush pink on stairs at Amanjena")}>
-        <img src={`${BLOB_V2}/amaneja_2`} alt="Blush pink on stairs at Amanjena" />
-        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-amanjena-editorial-1" itemData={{ title: "Alaïa at Amanjena", description: "Blush pink against sun-warmed clay.", imageUrl: `${BLOB_V2}/amaneja_2`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
-        <ShoppableIndicator onClick={() => openEditorialOverlay("amanjena-editorial-1", `${BLOB_V2}/amaneja_2`, "Blush pink on stairs at Amanjena")} />
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("amanjena-editorial-1", `${BLOB_V2}/morocco-tile-3`, "Blush pink on stairs at Amanjena")}>
+        <img src={`${BLOB_V2}/morocco-tile-3`} alt="Blush pink on stairs at Amanjena" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-amanjena-editorial-1" itemData={{ title: "Alaïa at Amanjena", description: "Blush pink against sun-warmed clay.", imageUrl: `${BLOB_V2}/morocco-tile-3`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => openEditorialOverlay("amanjena-editorial-1", `${BLOB_V2}/morocco-tile-3`, "Blush pink on stairs at Amanjena")} />
       </div>
       <div style={{ textAlign: 'center', padding: '10px 24px 0' }}>
         <p style={{ fontFamily: "'Lora', serif", fontSize: 13, fontStyle: 'italic', color: '#8a7d6b', margin: 0 }}>Blush pink against sun-warmed clay.</p>
       </div>
 
-      <div className="full-image" style={{ position: "relative", cursor: "pointer", marginTop: 24 }} onClick={() => openEditorialOverlay("amanjena-editorial-2", `${BLOB_V2}/amaneja_6`, "Crisp black cotton against terracotta")}>
-        <img src={`${BLOB_V2}/amaneja_6`} alt="Crisp black cotton against terracotta" />
-        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-amanjena-editorial-2" itemData={{ title: "FDV Este Dress at Amanjena", description: "Crisp black cotton against terracotta.", imageUrl: `${BLOB_V2}/amaneja_6`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
-        <ShoppableIndicator onClick={() => openEditorialOverlay("amanjena-editorial-2", `${BLOB_V2}/amaneja_6`, "Crisp black cotton against terracotta")} />
+      <div className="full-image" style={{ position: "relative", cursor: "pointer", marginTop: 24 }} onClick={() => openEditorialOverlay("amanjena-editorial-2", `${BLOB_V2}/morocco-tile-5`, "Crisp black cotton against terracotta")}>
+        <img src={`${BLOB_V2}/morocco-tile-5`} alt="Crisp black cotton against terracotta" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-amanjena-editorial-2" itemData={{ title: "FDV Este Dress at Amanjena", description: "Crisp black cotton against terracotta.", imageUrl: `${BLOB_V2}/morocco-tile-5`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => openEditorialOverlay("amanjena-editorial-2", `${BLOB_V2}/morocco-tile-5`, "Crisp black cotton against terracotta")} />
       </div>
       <div style={{ textAlign: 'center', padding: '10px 24px 0' }}>
         <p style={{ fontFamily: "'Lora', serif", fontSize: 13, fontStyle: 'italic', color: '#8a7d6b', margin: 0 }}>Crisp black cotton against terracotta.</p>
