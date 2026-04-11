@@ -2,10 +2,13 @@ import { useState, FormEvent } from 'react';
 import { Link, useLocation } from 'wouter';
 import { ItemModal, type ItemModalData } from '@/components/item-modal';
 import { PinButton } from '@/components/pin-button';
+import { EditorialProductOverlay, ShoppableIndicator, type EditorialProduct } from '@/components/editorial-product-overlay';
 // editorial-sections only needed by /concierge — ItineraryTeaser is now a slim preview card
 import { useCustomImages } from '@/hooks/use-custom-images';
 import { getProductByKey, getProductDisplayName, isShoppable, getShopImageUrl, FLOW_LOOK_GENOME_KEY, SECTION_LOOK_GENOME_KEY } from '@/lib/brand-genome';
 import { useScrollDepth } from '@/hooks/use-scroll-depth';
+import { useImageSlots } from '@/hooks/use-image-slot';
+import { IMAGE_SLOTS } from '@shared/image-slots';
 import './morocco-guide.css';
 
 const IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco';
@@ -39,35 +42,46 @@ const EVE_PRODUCTS: CarouselProduct[] = [
   { id: 'guide-eve-6', brand: 'PoppyKing', name: 'Original Sin Lipstick', price: '$34', shopUrl: 'https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622', imageUrl: `${CAROUSEL}/12_poppyking_lipstick.jpg`, genomeKey: 'beauty:poppyking:sinlipstick:red.jpg' },
 ];
 
-function CarouselItem({ product, onOpenModal }: { product: CarouselProduct; onOpenModal: (p: CarouselProduct) => void }) {
-  const studioUrl = product.genomeKey ? getShopImageUrl(product.genomeKey) : '';
-  const imgSrc = studioUrl || product.imageUrl;
-  return (
-    <div className="carousel-item" onClick={() => onOpenModal(product)} style={{ cursor: 'pointer' }}>
-      <div className="item-image" style={{ position: 'relative' }}>
-        <img src={imgSrc} alt={`${product.brand} ${product.name}`} />
-        <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: 6, right: 6 }}>
-          <PinButton
-            itemType="style"
-            itemId={product.id}
-            itemData={{
-              title: `${product.brand} — ${product.name}`,
-              imageUrl: product.imageUrl,
-              storyTag: 'morocco',
-            }}
-            sourceContext="morocco-guide-carousel"
-            aestheticTags={['wardrobe', 'style', 'morocco']}
-            size="sm"
-          />
-        </div>
-      </div>
-      <div className="item-brand">{product.brand}</div>
-      <div className="item-name">{product.name}</div>
-      {product.price && <div className="item-price">{product.price}</div>}
-      <div className="shop-link">View</div>
-    </div>
-  );
-}
+const BLOB_V2 = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2';
+
+/* ── Editorial product map: image slot key → products shown in that image ── */
+const EDITORIAL_PRODUCT_MAP: Record<string, EditorialProduct[]> = {
+  "morocco-style-1": [
+    { id: "edit-ysl-bikini", brand: "Yves Saint Laurent", name: "LouLou Bikini", price: "$795", shopUrl: "https://www.ysl.com", imageUrl: `${CAROUSEL}/ysl-bikini.jpg`, genomeKey: "look:ysl:bikini:black.jpg" },
+  ],
+  "morocco-tile-1": [
+    { id: "edit-pp-gaia", brand: "Phoebe Philo", name: "Gaia Dress", price: "$2,360", shopUrl: "https://us.phoebephilo.com", imageUrl: `${CAROUSEL}/phoebephilo-gaia.jpg`, genomeKey: "look:phoebephilo:gaiadress:black.jpg" },
+  ],
+  "morocco-tile-3": [
+    { id: "edit-alaia-coat", brand: "Alaïa", name: "Souk Coat", price: "$1,200", shopUrl: "https://www.alaia.com", imageUrl: `${CAROUSEL}/alaia-coat.jpg`, genomeKey: "look:alaia:soukcoat:blush.jpg" },
+    { id: "edit-alaia-pant", brand: "Alaïa", name: "Desert Pant", price: "$760", shopUrl: "https://www.alaia.com", imageUrl: `${CAROUSEL}/alaia-pant.jpg`, genomeKey: "look:alaia:desertpant:sand.jpg" },
+  ],
+  "morocco-tile-5": [
+    { id: "edit-fdv-este", brand: "Fil de Vie", name: "Este Dress", price: "$675", shopUrl: "http://www.fildevie.com", imageUrl: `${CAROUSEL}/fdv-este.jpg`, genomeKey: "look:fdv:estedress:black.jpg" },
+  ],
+  "morocco-object-1": [
+    { id: "edit-fdv-column", brand: "Fil de Vie", name: "Column Dress", price: "$765", shopUrl: "http://www.fildevie.com", imageUrl: `${CAROUSEL}/fdv-column.jpg`, genomeKey: "look:fildevie:columndress:black.jpg" },
+  ],
+  "morocco-motion-1": [
+    { id: "edit-fdv-caftan", brand: "Fil de Vie", name: "Long Caftan Dress", price: "$825", shopUrl: "http://www.fildevie.com", imageUrl: `${CAROUSEL}/fdv-caftan.jpg`, genomeKey: "look:fdv:philomenacaftan:sand.jpg" },
+  ],
+  // Wardrobe day images → DAY_PRODUCTS
+  "ward-1-large": DAY_PRODUCTS,
+  "ward-1-small1": [DAY_PRODUCTS[1]], // Bottega Kalimero
+  "ward-1-small2": [DAY_PRODUCTS[3]], // Bulgari necklace
+  // Wardrobe evening images → EVE_PRODUCTS
+  "ward-2-large": EVE_PRODUCTS,
+  "ward-2-small1": [EVE_PRODUCTS[2]], // Chloé Wristlette
+  "ward-2-small2": [EVE_PRODUCTS[5]], // PoppyKing lipstick
+  // Amanjena editorial images
+  "amanjena-editorial-1": [
+    { id: "edit-alaia-coat-2", brand: "Alaïa", name: "Souk Coat", price: "$1,200", shopUrl: "https://www.alaia.com", imageUrl: `${CAROUSEL}/alaia-coat.jpg`, genomeKey: "look:alaia:soukcoat:blush.jpg" },
+    { id: "edit-alaia-pant-2", brand: "Alaïa", name: "Desert Pant", price: "$760", shopUrl: "https://www.alaia.com", imageUrl: `${CAROUSEL}/alaia-pant.jpg`, genomeKey: "look:alaia:desertpant:sand.jpg" },
+  ],
+  "amanjena-editorial-2": [
+    { id: "edit-fdv-este-2", brand: "Fil de Vie", name: "Este Dress", price: "$675", shopUrl: "http://www.fildevie.com", imageUrl: `${CAROUSEL}/fdv-este.jpg`, genomeKey: "look:fdv:estedress:black.jpg" },
+  ],
+};
 
 /* ── Itinerary Teaser — slim preview card that gates access to /concierge ── */
 
@@ -207,22 +221,25 @@ export default function MoroccoGuide() {
   const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { getImageUrl, hasCustomImage } = useCustomImages();
+  const { data: imageSlotsData } = useImageSlots();
 
-  const openModal = (p: CarouselProduct) => {
-    setSelectedItem({
-      id: p.id,
-      title: p.name,
-      bucket: 'wardrobe',
-      pinType: 'style',
-      assetKey: p.id,
-      storyTag: 'morocco',
-      imageUrl: p.imageUrl,
-      brand: p.brand,
-      price: p.price ?? undefined,
-      shopUrl: p.shopUrl,
-      shopStatus: 'live',
-    });
-    setDrawerOpen(true);
+  // Editorial product overlay state
+  const [overlayData, setOverlayData] = useState<{ imageUrl: string; imageAlt: string; products: EditorialProduct[] } | null>(null);
+
+  const getSlotImageUrl = (slotKey: string): string => {
+    if (imageSlotsData?.slots) {
+      const slot = imageSlotsData.slots.find((s: any) => s.key === slotKey);
+      if (slot?.currentUrl) return slot.currentUrl;
+    }
+    const defaultSlot = IMAGE_SLOTS.find((s: any) => s.key === slotKey);
+    return defaultSlot?.defaultUrl || `${BLOB_V2}/${slotKey}`;
+  };
+
+  const openEditorialOverlay = (slotKey: string, imageUrl: string, imageAlt: string) => {
+    const products = EDITORIAL_PRODUCT_MAP[slotKey];
+    if (products && products.length > 0) {
+      setOverlayData({ imageUrl, imageAlt, products });
+    }
   };
 
   /* Genome-resolving product modal — same pattern as /concierge */
@@ -677,6 +694,47 @@ export default function MoroccoGuide() {
         </div>
       </div>
 
+      {/* Stay 4: Amanjena */}
+      <div className="place-block reverse">
+        <div className="place-images layout-b">
+          <div className="img-large" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-style-1"); openEditorialOverlay("morocco-style-1", url, "Amanjena poolside"); }}>
+            <img src={getSlotImageUrl("morocco-style-1")} alt="Amanjena" />
+            <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-amanjena-main" itemData={{ title: "Amanjena", description: "Aman's Marrakech. Pink marble, reflecting pools, absolute silence.", imageUrl: getSlotImageUrl("morocco-style-1"), storyTag: "morocco", bookUrl: "https://www.aman.com/resorts/amanjena" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div>
+            <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-style-1"); openEditorialOverlay("morocco-style-1", url, "Amanjena poolside"); }} />
+          </div>
+          <div className="img-small" style={{ position: "relative" }}><img src={`${BLOB_V2}/amaneja_3`} alt="Amanjena bathroom arch" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-amanjena-detail" itemData={{ title: "Amanjena", description: "Pink marble, reflecting pools, absolute silence.", imageUrl: `${BLOB_V2}/amaneja_3`, storyTag: "morocco", bookUrl: "https://www.aman.com/resorts/amanjena" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
+          <div className="img-small" style={{ position: "relative" }}><img src={`${BLOB_V2}/amaneja_4`} alt="Amanjena red wall with palms" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-amanjena-moment" itemData={{ title: "Amanjena", description: "Pink marble, reflecting pools, absolute silence.", imageUrl: `${BLOB_V2}/amaneja_4`, storyTag: "morocco", bookUrl: "https://www.aman.com/resorts/amanjena" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
+        </div>
+        <div className="place-info">
+          <h3>Amanjena</h3>
+          <div className="tagline">Aman&rsquo;s Marrakech. Pink marble, reflecting pools, absolute silence.</div>
+          <div className="description">Ten minutes from the Medina but it feels like another country. Amanjena is where you go when you want to disappear &mdash; in the best way. The pavilions face reflecting pools that mirror the Atlas Mountains. The gardens are almost absurdly peaceful. Everything is rose-toned and unhurried. If you can, book a maison with a private pool. You won&rsquo;t leave the property for the first two days. You won&rsquo;t want to.</div>
+          <div className="address">Route de Ouarzazate, Km 12, Marrakech 40000</div>
+          <div className="icons">
+            <a href="https://www.aman.com/resorts/amanjena" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+          </div>
+        </div>
+      </div>
+
+      {/* Amanjena editorial fashion moments */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("amanjena-editorial-1", `${BLOB_V2}/amaneja_2`, "Blush pink on stairs at Amanjena")}>
+        <img src={`${BLOB_V2}/amaneja_2`} alt="Blush pink on stairs at Amanjena" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-amanjena-editorial-1" itemData={{ title: "Alaïa at Amanjena", description: "Blush pink against sun-warmed clay.", imageUrl: `${BLOB_V2}/amaneja_2`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => openEditorialOverlay("amanjena-editorial-1", `${BLOB_V2}/amaneja_2`, "Blush pink on stairs at Amanjena")} />
+      </div>
+      <div style={{ textAlign: 'center', padding: '10px 24px 0' }}>
+        <p style={{ fontFamily: "'Lora', serif", fontSize: 13, fontStyle: 'italic', color: '#8a7d6b', margin: 0 }}>Blush pink against sun-warmed clay.</p>
+      </div>
+
+      <div className="full-image" style={{ position: "relative", cursor: "pointer", marginTop: 24 }} onClick={() => openEditorialOverlay("amanjena-editorial-2", `${BLOB_V2}/amaneja_6`, "Crisp black cotton against terracotta")}>
+        <img src={`${BLOB_V2}/amaneja_6`} alt="Crisp black cotton against terracotta" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-amanjena-editorial-2" itemData={{ title: "FDV Este Dress at Amanjena", description: "Crisp black cotton against terracotta.", imageUrl: `${BLOB_V2}/amaneja_6`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => openEditorialOverlay("amanjena-editorial-2", `${BLOB_V2}/amaneja_6`, "Crisp black cotton against terracotta")} />
+      </div>
+      <div style={{ textAlign: 'center', padding: '10px 24px 0' }}>
+        <p style={{ fontFamily: "'Lora', serif", fontSize: 13, fontStyle: 'italic', color: '#8a7d6b', margin: 0 }}>Crisp black cotton against terracotta.</p>
+      </div>
+
       {/* Full-width break — transition to wardrobe */}
       <div className="full-image" style={{ position: "relative" }}><img src={`${IMG}/wardrobe-break.jpg`} alt="" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-wardrobe-break" itemData={{ title: "Morocco Wardrobe", description: "What to pack.", imageUrl: `${IMG}/wardrobe-break.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
 
@@ -693,9 +751,9 @@ export default function MoroccoGuide() {
       {/* Wardrobe 1: Day in the Medina */}
       <div className="place-block">
         <div className="place-images layout-b">
-          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/ward-1-large.jpg`} alt="Day in the Medina look" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-day-look-main" itemData={{ title: "Day in the Medina", description: "Medina uniform.", imageUrl: `${IMG}/ward-1-large.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
-          <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`} alt="Bottega Veneta Kalimero Bag" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-day-look-detail" itemData={{ title: "Day in the Medina", description: "Medina uniform.", imageUrl: `${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
-          <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/ward-1-small2_bulgari_necklace.jpg`} alt="Bulgari Necklace" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-day-look-moment" itemData={{ title: "Day in the Medina", description: "Medina uniform.", imageUrl: `${IMG}/ward-1-small2_bulgari_necklace.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
+          <div className="img-large" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("ward-1-large", `${IMG}/ward-1-large.jpg`, "Day in the Medina look")}><img src={`${IMG}/ward-1-large.jpg`} alt="Day in the Medina look" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-day-look-main" itemData={{ title: "Day in the Medina", description: "Medina uniform.", imageUrl: `${IMG}/ward-1-large.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div><ShoppableIndicator onClick={() => openEditorialOverlay("ward-1-large", `${IMG}/ward-1-large.jpg`, "Day in the Medina look")} /></div>
+          <div className="img-small" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("ward-1-small1", `${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`, "Bottega Veneta Kalimero Bag")}><img src={`${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`} alt="Bottega Veneta Kalimero Bag" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-day-look-detail" itemData={{ title: "Bottega Veneta Kalimero Bag", imageUrl: `${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div><ShoppableIndicator onClick={() => openEditorialOverlay("ward-1-small1", `${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`, "Bottega Veneta Kalimero Bag")} /></div>
+          <div className="img-small" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("ward-1-small2", `${IMG}/ward-1-small2_bulgari_necklace.jpg`, "Bulgari Necklace")}><img src={`${IMG}/ward-1-small2_bulgari_necklace.jpg`} alt="Bulgari Necklace" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-day-look-moment" itemData={{ title: "Bulgari Necklace", imageUrl: `${IMG}/ward-1-small2_bulgari_necklace.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div><ShoppableIndicator onClick={() => openEditorialOverlay("ward-1-small2", `${IMG}/ward-1-small2_bulgari_necklace.jpg`, "Bulgari Necklace")} /></div>
         </div>
         <div className="place-info">
           <h3>Day in the Medina</h3>
@@ -704,23 +762,12 @@ export default function MoroccoGuide() {
         </div>
       </div>
 
-      {/* CAROUSEL: Shop Day Look */}
-      <div className="carousel-section">
-        <div className="carousel-label">Shop the Look</div>
-        <div className="carousel-title">Day in the Medina &mdash; Every Piece</div>
-        <div className="carousel-track">
-          {DAY_PRODUCTS.map((p) => (
-            <CarouselItem key={p.id} product={p} onOpenModal={openModal} />
-          ))}
-        </div>
-      </div>
-
       {/* Wardrobe 2: Riad Evenings */}
       <div className="place-block reverse">
         <div className="place-images layout-b">
-          <div className="img-large" style={{ position: "relative" }}><img src={`${IMG}/ward-2-large_fdv_isadora_dress.jpg`} alt="Riad Evenings look" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-evening-look-main" itemData={{ title: "Riad Evenings", description: "Marrakech does drama.", imageUrl: `${IMG}/ward-2-large_fdv_isadora_dress.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
-          <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/ward-2-small1_chloe_wristless_bag.jpg`} alt="Chloé Wristlette Bag" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-evening-look-detail" itemData={{ title: "Riad Evenings", description: "Marrakech does drama.", imageUrl: `${IMG}/ward-2-small1_chloe_wristless_bag.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
-          <div className="img-small" style={{ position: "relative" }}><img src={`${IMG}/ward-2-small2_poppyking_red.jpg`} alt="PoppyKing Lipstick" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-evening-look-moment" itemData={{ title: "Riad Evenings", description: "Marrakech does drama.", imageUrl: `${IMG}/ward-2-small2_poppyking_red.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div></div>
+          <div className="img-large" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("ward-2-large", `${IMG}/ward-2-large_fdv_isadora_dress.jpg`, "Riad Evenings look")}><img src={`${IMG}/ward-2-large_fdv_isadora_dress.jpg`} alt="Riad Evenings look" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-evening-look-main" itemData={{ title: "Riad Evenings", description: "Marrakech does drama.", imageUrl: `${IMG}/ward-2-large_fdv_isadora_dress.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div><ShoppableIndicator onClick={() => openEditorialOverlay("ward-2-large", `${IMG}/ward-2-large_fdv_isadora_dress.jpg`, "Riad Evenings look")} /></div>
+          <div className="img-small" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("ward-2-small1", `${IMG}/ward-2-small1_chloe_wristless_bag.jpg`, "Chloé Wristlette Bag")}><img src={`${IMG}/ward-2-small1_chloe_wristless_bag.jpg`} alt="Chloé Wristlette Bag" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-evening-look-detail" itemData={{ title: "Chloé Wristlette Bag", imageUrl: `${IMG}/ward-2-small1_chloe_wristless_bag.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div><ShoppableIndicator onClick={() => openEditorialOverlay("ward-2-small1", `${IMG}/ward-2-small1_chloe_wristless_bag.jpg`, "Chloé Wristlette Bag")} /></div>
+          <div className="img-small" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("ward-2-small2", `${IMG}/ward-2-small2_poppyking_red.jpg`, "PoppyKing Lipstick")}><img src={`${IMG}/ward-2-small2_poppyking_red.jpg`} alt="PoppyKing Lipstick" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-evening-look-moment" itemData={{ title: "PoppyKing Lipstick", imageUrl: `${IMG}/ward-2-small2_poppyking_red.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div><ShoppableIndicator onClick={() => openEditorialOverlay("ward-2-small2", `${IMG}/ward-2-small2_poppyking_red.jpg`, "PoppyKing Lipstick")} /></div>
         </div>
         <div className="place-info">
           <h3>Riad Evenings</h3>
@@ -729,15 +776,23 @@ export default function MoroccoGuide() {
         </div>
       </div>
 
-      {/* CAROUSEL: Shop Evening Look */}
-      <div className="carousel-section">
-        <div className="carousel-label">Shop the Look</div>
-        <div className="carousel-title">Riad Evenings &mdash; Every Piece</div>
-        <div className="carousel-track">
-          {EVE_PRODUCTS.map((p) => (
-            <CarouselItem key={p.id} product={p} onOpenModal={openModal} />
-          ))}
-        </div>
+      {/* SHOP THE FULL EDIT link */}
+      <div style={{ textAlign: 'center', padding: '24px 0 8px' }}>
+        <Link href="/shop">
+          <span style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '11px',
+            fontWeight: 600,
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase' as const,
+            color: '#c9a84c',
+            borderBottom: '1px solid #c9a84c',
+            paddingBottom: '2px',
+            cursor: 'pointer',
+          }}>
+            Shop the Full Edit →
+          </span>
+        </Link>
       </div>
 
       <hr className="divider" />
@@ -777,6 +832,16 @@ export default function MoroccoGuide() {
         onOpenChange={setDrawerOpen}
         source="current"
       />
+
+      {/* Editorial Product Overlay — Level 2 */}
+      {overlayData && (
+        <EditorialProductOverlay
+          editorialImageUrl={overlayData.imageUrl}
+          editorialImageAlt={overlayData.imageAlt}
+          products={overlayData.products}
+          onClose={() => setOverlayData(null)}
+        />
+      )}
     </div>
   );
 }
