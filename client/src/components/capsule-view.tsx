@@ -158,7 +158,7 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
           }}
         >
           <button
-            onClick={() => navigate("/my-edits")}
+            onClick={() => navigate("/edits")}
             style={{
               background: "none",
               border: "none",
@@ -170,7 +170,7 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
               padding: 0,
             }}
           >
-            &larr; MY EDITS
+            &larr; EDITS
           </button>
           <button
             onClick={saved ? handleUnsaveEdit : handleSaveEdit}

@@ -24,14 +24,14 @@ export default function CapsuleDetail() {
   }, [fromCurate, params?.capsuleId]);
 
   if (!match || !params?.capsuleId) {
-    navigate("/my-edits");
+    navigate("/edits");
     return null;
   }
 
   const capsule = PRESET_CAPSULES.find((c) => c.id === params.capsuleId);
 
   if (!capsule) {
-    navigate("/my-edits");
+    navigate("/edits");
     return null;
   }
 
