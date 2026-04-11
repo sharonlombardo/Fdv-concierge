@@ -121,12 +121,15 @@ export function EditorialProductOverlay({
                 {/* Large product image — framed with even padding */}
                 <div
                   style={{
-                    margin: "20px 20px 0",
+                    margin: "20px",
                     aspectRatio: "3 / 4",
                     maxHeight: "65vh",
                     overflow: "hidden",
-                    background: "#f5f3ef",
+                    background: "#f0ece4",
                     position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
                   {imgSrc ? (
@@ -134,8 +137,8 @@ export function EditorialProductOverlay({
                       src={imgSrc}
                       alt={`${p.brand} ${p.name}`}
                       style={{
-                        width: "100%",
-                        height: "100%",
+                        maxWidth: "85%",
+                        maxHeight: "85%",
                         objectFit: "contain",
                         display: "block",
                       }}
