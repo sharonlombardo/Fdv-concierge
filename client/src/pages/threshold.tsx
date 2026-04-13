@@ -26,7 +26,7 @@ const LOOK_KEYS = [
 ];
 
 const CATEGORY_NAV = [
-  { id: "guides", label: "Guides", href: "/guides", active: true },
+  { id: "guides", label: "Guides", href: "/destinations", active: true },
   { id: "style", label: "Style", href: null, active: false },
   { id: "culture", label: "Culture", href: null, active: false },
   { id: "experiences", label: "Experiences", href: null, active: false },
@@ -310,7 +310,7 @@ export default function Threshold() {
             <span
               key={cat}
               onClick={cat === "GUIDES" ? () => {
-                window.location.href = "/guides";
+                window.location.href = "/destinations";
               } : undefined}
               className={`text-xs md:text-sm tracking-[0.15em] uppercase transition-colors cursor-pointer whitespace-nowrap ${
                 cat === "GUIDES"

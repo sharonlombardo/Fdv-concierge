@@ -289,7 +289,7 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
 
   // Products: object-contain (show full garment). Places: object-cover (atmospheric)
   const imageObjectFit = isProduct ? "object-contain" : "object-cover";
-  const imageBg = isProduct ? "bg-white" : "bg-[#f5f5f5]";
+  const imageBg = isProduct ? "bg-[#fafaf9]" : "bg-[#f5f5f5]";
   const destinationTag = getDestinationTag(item.storyTag);
 
   return (
