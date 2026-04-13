@@ -296,6 +296,27 @@
   color: var(--white);
 }
 
+/* ── BOOK LINK (replaces globe icon) ── */
+.morocco-guide .place-info .book-link {
+  display: inline-block;
+  margin-top: 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.4);
+  padding-bottom: 2px;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+
+.morocco-guide .place-info .book-link:hover {
+  opacity: 0.75;
+  border-bottom-color: #c9a84c;
+}
+
 /* ── FULL WIDTH IMAGE BREAK ── */
 .morocco-guide .full-image {
   width: calc(100% - 80px);
