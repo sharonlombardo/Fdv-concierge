@@ -535,37 +535,9 @@
   .morocco-guide .place-block.reverse {
     direction: ltr;
   }
-  .morocco-guide .place-images.layout-b {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-  }
-  .morocco-guide .place-images.layout-b .img-large {
-    grid-column: 1 / -1;
-    grid-row: auto;
-    min-height: 350px;
-  }
-  .morocco-guide .place-images.layout-b .img-small {
-    min-height: 200px;
-  }
-}
 
-/* ── MOBILE ── */
-@media (max-width: 640px) {
-  .morocco-guide .place-block {
-    grid-template-columns: 1fr;
-    padding: 16px 0;
-    gap: 12px;
-  }
-  .morocco-guide .place-block.reverse {
-    direction: ltr;
-  }
-  .morocco-guide .place-block .place-info {
-    padding: 12px 16px;
-  }
-
-  /* Horizontal scroll for place images on mobile — bleed/peek on both sides like destinations.
-     !important + explicit layout selectors needed because .place-images.layout-b /
-     .layout-c grid rules have higher specificity from the base + tablet breakpoint. */
+  /* CAROUSEL — engage on anything below full desktop.
+     Must override .place-images.layout-b/.layout-c grid rules (specificity 0,3,0). */
   .morocco-guide .place-images,
   .morocco-guide .place-images.layout-a,
   .morocco-guide .place-images.layout-b,
@@ -605,6 +577,17 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+}
+
+/* ── MOBILE (typography + spacing only; carousel already engaged at tablet) ── */
+@media (max-width: 640px) {
+  .morocco-guide .place-block {
+    padding: 16px 0;
+    gap: 12px;
+  }
+  .morocco-guide .place-block .place-info {
+    padding: 12px 16px;
   }
   .morocco-guide .hero-image,
   .morocco-guide .full-image {
