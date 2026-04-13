@@ -53,10 +53,7 @@ const EVE_PRODUCTS: EditorialProduct[] = [
   { id: 'guide-eve-medina', brand: 'FIL DE VIE', name: 'Medina Dress', price: '$650', shopUrl: 'https://fildevie.com/collections/dresses/products/copy-of-medina-dress', imageUrl: '', genomeKey: 'LOOK:FDV:MEDINADRESS:BLK.jpg' },
   { id: 'guide-eve-longcaftan', brand: 'FIL DE VIE', name: 'Long Caftan Dress', price: '$825', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fildevie:longcaftandress:red.jpg' },
   { id: 'guide-eve-este', brand: 'FIL DE VIE', name: 'Este Dress', price: '$675', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fildevie:estedress:black.jpg' },
-  { id: 'guide-eve-cecily', brand: 'FIL DE VIE', name: 'Cecily Dress', price: '$600', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'LOOK:FDV:CECILYDRESS:BLACK.jpg' },
-  { id: 'guide-eve-rhea', brand: 'FIL DE VIE', name: 'Rhea Dress', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fildevie:rheadress:black.jpg' },
   { id: 'guide-eve-column', brand: 'FIL DE VIE', name: 'Column Dress', price: '$745', shopUrl: 'https://www.fildevie.com', imageUrl: '', genomeKey: 'LOOK:FILDEVIE:COLUMNDRESS:BLACK.jpg' },
-  { id: 'guide-eve-driessilk', brand: 'Dries Van Noten', name: 'Layered Silk Dress', price: '$750', shopUrl: '', imageUrl: '', genomeKey: 'LOOK:DRIESVANNOTEN:LAYEREDSILKDRESS:BLACK.jpg' },
   { id: 'guide-eve-silkset', brand: 'FIL DE VIE', name: 'Crepe Silk Set', price: '$498', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'STYLE_FDV_SILK_SET_BLK.jpg' },
   // Evening bags
   { id: 'guide-eve-driesbag', brand: 'Dries Van Noten', name: 'Embellished Evening Bag', price: '$1,640', shopUrl: 'https://www.parlourx.com/products/envelope-embroidered-clutch-on-chain-black-gold-1', imageUrl: '', genomeKey: 'ACCESSORY:BAG:DRIESVANNOTEN:BLACK.jpg' },
