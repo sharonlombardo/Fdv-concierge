@@ -390,20 +390,77 @@
 
 /* ── EDITORIAL CAPTION (under full-image breaks) ── */
 .morocco-guide .editorial-caption {
-  max-width: 640px;
-  margin: 12px auto 28px;
+  max-width: 720px;
+  margin: 16px auto 32px;
   padding: 0 40px;
-  font-family: 'Lora', Georgia, serif;
-  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  font-size: 21px;
   font-style: italic;
-  line-height: 1.6;
-  color: rgba(44, 36, 22, 0.7);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.005em;
+  color: var(--ink);
   text-align: center;
 }
 @media (max-width: 640px) {
   .morocco-guide .editorial-caption {
     padding: 0 20px;
-    font-size: 14px;
+    font-size: 18px;
+  }
+}
+
+/* ── BLOCK DIVIDER (thin line between every item) ── */
+.morocco-guide .block-divider {
+  border: none;
+  border-top: 1px solid rgba(44, 36, 22, 0.14);
+  margin: 40px 40px;
+}
+@media (max-width: 640px) {
+  .morocco-guide .block-divider {
+    margin: 28px 20px;
+  }
+}
+
+/* Auto thin rule between adjacent content blocks
+   (place-block, full-image, editorial-caption). Section-level
+   separators (.divider, .divider-double, .section-header, .section-sub)
+   are intentionally excluded so they continue to act as stronger breaks. */
+.morocco-guide .place-block + .place-block,
+.morocco-guide .place-block + .full-image,
+.morocco-guide .full-image + .place-block,
+.morocco-guide .editorial-caption + .place-block,
+.morocco-guide .editorial-caption + .full-image {
+  position: relative;
+  margin-top: 40px;
+}
+.morocco-guide .place-block + .place-block::before,
+.morocco-guide .place-block + .full-image::before,
+.morocco-guide .full-image + .place-block::before,
+.morocco-guide .editorial-caption + .place-block::before,
+.morocco-guide .editorial-caption + .full-image::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 40px;
+  right: 40px;
+  border-top: 1px solid rgba(44, 36, 22, 0.14);
+}
+@media (max-width: 640px) {
+  .morocco-guide .place-block + .place-block,
+  .morocco-guide .place-block + .full-image,
+  .morocco-guide .full-image + .place-block,
+  .morocco-guide .editorial-caption + .place-block,
+  .morocco-guide .editorial-caption + .full-image {
+    margin-top: 28px;
+  }
+  .morocco-guide .place-block + .place-block::before,
+  .morocco-guide .place-block + .full-image::before,
+  .morocco-guide .full-image + .place-block::before,
+  .morocco-guide .editorial-caption + .place-block::before,
+  .morocco-guide .editorial-caption + .full-image::before {
+    top: -14px;
+    left: 20px;
+    right: 20px;
   }
 }
 
