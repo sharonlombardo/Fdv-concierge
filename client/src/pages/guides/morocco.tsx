@@ -13,21 +13,94 @@ import './morocco-guide.css';
 
 const IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco';
 const DAY_PRODUCTS: EditorialProduct[] = [
+  // Existing core trio (kept first so EDITORIAL_PRODUCT_MAP detail keys still resolve)
   { id: 'guide-day-1', brand: 'Fil de Vie', name: 'Juno Blouse & Marrakech Pants', price: null, shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fdv:junoblouse:marrakechpant:stripe.jpg' },
   { id: 'guide-day-2', brand: 'Bottega Veneta', name: 'Kalimero Bag', price: '$4,100', shopUrl: 'https://www.bottegaveneta.com/en-us/small-kalimero-citta-fondant-813744715.html', imageUrl: '', genomeKey: 'accessory:bag:bottega:kalimero:black.jpg' },
   { id: 'guide-day-3', brand: 'A Emery', name: 'Kir Sandal', price: '$185', shopUrl: 'https://aemery.com/products/the-kir-sandal-black', imageUrl: '', genomeKey: 'footwear, amery kit sandal.jpg' },
   { id: 'guide-day-4', brand: 'Bulgari via 1st Dibs', name: 'Lapis Cabachon Necklace', price: '$50,000', shopUrl: 'https://www.1stdibs.com/jewelry/necklaces/pendant-necklaces/bvlgari-1980s-unheated-sapphire-gold-necklace/id-j_28202612/', imageUrl: '', genomeKey: 'accessory:jewelry:bulgari:cabachon necklace.jpg' },
   { id: 'guide-day-5', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: '', genomeKey: 'access:sugnlasses:loewe:black.jpg' },
   { id: 'guide-day-6', brand: 'Saint Jane', name: 'Sunscreen', price: '$38', shopUrl: 'https://saintjanebeauty.com/collections/sun-protection-spf/products/luxury-sun-ritual', imageUrl: '', genomeKey: 'beauty:sainjane:sunritual.jpg' },
+  // Extended SHOP THE STORY pieces — Day clothing
+  { id: 'guide-day-cybel', brand: 'FIL DE VIE', name: 'Cybel Blouse & Marrakech Pants', price: '$395 & $350', shopUrl: 'https://fildevie.com/collections/tops-auto/products/cybele-blouse', imageUrl: '', genomeKey: 'LOOK:FDV:CYBELBLOUSE:STRIPE.jpg' },
+  { id: 'guide-day-diana', brand: 'FIL DE VIE', name: 'Diana Dress', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'LOOK:FDV:DIANADRES:STRIPE.jpg' },
+  { id: 'guide-day-bella-ivory', brand: 'FIL DE VIE', name: 'Bella Caftan Mini', price: '$475', shopUrl: 'https://fildevie.com/collections/caftans-auto/products/bella-caftan-mini', imageUrl: '', genomeKey: 'LOOK:FDV:BELLACAFTANMINI:IVORY.jpg' },
+  { id: 'guide-day-bella-blk', brand: 'FIL DE VIE', name: 'Bella Caftan Mini', price: '$475', shopUrl: 'https://fildevie.com/collections/caftans-auto/products/bella-caftan-mini', imageUrl: '', genomeKey: 'Style_FDV_bella_mini_caftan_blk.jpg' },
+  { id: 'guide-day-lucina-blk', brand: 'FIL DE VIE', name: 'Lucina Blouse & Marrakech Pants', price: '$575 & $350', shopUrl: 'https://fildevie.com/products/lucina-blouse', imageUrl: '', genomeKey: 'LOOK:FDV:LUCINABLOUSE:BLACK.jpg' },
+  { id: 'guide-day-lucina-crm', brand: 'FIL DE VIE', name: 'Lucina Blouse & Marrakech Pants', price: '$575 & $350', shopUrl: 'https://fildevie.com/products/lucina-blouse', imageUrl: '', genomeKey: 'STYLE_FDV_LUCINA_BLOUSE_CRM.JPEG' },
+  { id: 'guide-day-honora', brand: 'FIL DE VIE', name: 'Honora Dress', price: '$528', shopUrl: 'https://fildevie.com/collections/dresses/products/honora-dress', imageUrl: '', genomeKey: 'LOOK:FDV:HONORADRESS:FLORAL.jpg' },
+  { id: 'guide-day-lillith', brand: 'FIL DE VIE', name: 'Lillith Caftan', price: '$475', shopUrl: 'https://fildevie.com/collections/shop-all/products/lilith-caftan', imageUrl: '', genomeKey: 'LOOK:FDV:LILLITHCAFTAN:IVORY.jpg' },
+  { id: 'guide-day-astrid', brand: 'FIL DE VIE', name: 'Astrid Blouse', price: '$475', shopUrl: 'https://fildevie.com/collections/tops-auto/products/copy-of-astrid-blouse', imageUrl: '', genomeKey: 'LOOK:FDV:ASTRIDBLOUSE:BLK.jpg' },
+  { id: 'guide-day-poplin', brand: 'FIL DE VIE', name: 'Oversized Poplin Shirt', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fildevie:buttondownshiirt:white.jpg' },
+  { id: 'guide-day-jilsander', brand: 'Jil Sander', name: 'Relaxed Button Down Shirt', price: '$780', shopUrl: '', imageUrl: '', genomeKey: 'look:jilsander:buttondownshirt:bluestripe.jpg' },
+  { id: 'guide-day-philolinen', brand: 'Phoebe Philo', name: 'Linen Relaxed Button Down Shirt', price: '$1,200', shopUrl: '', imageUrl: '', genomeKey: 'look:phoebephilo:buttondownshirt.jpg' },
+  { id: 'guide-day-alaiacoat', brand: 'Alaïa', name: 'Souk Coat & Desert Pant', price: '$1,200/$760', shopUrl: '', imageUrl: '', genomeKey: 'Look:alia:soukcoat:desertpants:blush.jpg' },
+  { id: 'guide-day-juno-blk', brand: 'FIL DE VIE', name: 'Juno Blouse', price: '$268', shopUrl: 'https://fildevie.com/products/juno-blouse', imageUrl: '', genomeKey: 'LOOK:FDV:JUNOBLOUSE:BLK.jpg' },
+  // Day footwear
+  { id: 'guide-day-philorobe', brand: 'Phoebe Philo', name: 'Robe Slide', price: '$890', shopUrl: 'https://us.phoebephilo.com/products/tilt-ankle-boot-oxblood-leather', imageUrl: '', genomeKey: 'FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg' },
+  { id: 'guide-day-ferragamo', brand: 'Ferragamo', name: 'Loly Fur Leather Thong Sandals', price: '$490', shopUrl: 'https://www.saksfifthavenue.com/product/ferragamo-loly-faux-fur-trim-leather-sandals-0400022855901.html', imageUrl: '', genomeKey: 'FOOTWEAR:FERRAGAMO:LOLYSANDAL:BLACK.jpg' },
+  // Day bags
+  { id: 'guide-day-demellier', brand: 'Demellier London', name: 'Santorini Basket Bag', price: '$355', shopUrl: 'https://www.saksfifthavenue.com/product/demellier-santorini-raffia-tote-bag-0400016036683.html', imageUrl: '', genomeKey: 'ACCESSORY:BAG:DEMELIER:SANTORINI.jpg' },
 ];
 
 const EVE_PRODUCTS: EditorialProduct[] = [
+  // Existing core trio (preserved for EDITORIAL_PRODUCT_MAP detail-image references)
   { id: 'guide-eve-1', brand: 'FDV', name: 'Isadora Dress', price: '$795', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fdv:isadoradress:blk.jpg' },
-  { id: 'guide-eve-2', brand: 'Ala\u00efa', name: 'Velvet Thongs', price: '$1,450', shopUrl: 'https://www.bergdorfgoodman.com/p/alaia-velvet-kitten-heel-thong-sandals-prodt196740019', imageUrl: '', genomeKey: 'footwear:alaia:black.jpg' },
+  { id: 'guide-eve-2', brand: 'Ala\u00efa', name: 'Heel Thong Mules in Velvet', price: '$1,450', shopUrl: 'https://www.bergdorfgoodman.com/p/alaia-velvet-kitten-heel-thong-sandals-prodt196740019', imageUrl: '', genomeKey: 'footwear:alaia:black.jpg' },
   { id: 'guide-eve-3', brand: 'Chlo\u00e9', name: 'Wristlette Bag', price: '$4,200', shopUrl: 'https://www.chloe.com/en-us/p/bags/shoulder-bag/CH5US623P57001.html', imageUrl: '', genomeKey: 'access:bag:chloe:wristlette:black.jpg' },
   { id: 'guide-eve-4', brand: 'Phoebe Philo', name: 'Gold Studded Mini Hoops', price: '$550', shopUrl: 'https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver', imageUrl: '', genomeKey: 'feb 26 prod info pg 1.jpg - item 6' },
-  { id: 'guide-eve-5', brand: 'Hildegard', name: 'Immortelle Oil', price: '$375', shopUrl: 'https://hildegaard.com/products/immortelle', imageUrl: '', genomeKey: 'beauty:imortelle oil.jpg' },
-  { id: 'guide-eve-6', brand: 'PoppyKing', name: 'Original Sin Lipstick', price: '$34', shopUrl: 'https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622', imageUrl: '', genomeKey: 'beauty:poppyking:sinlipstick:red.jpg' },
+  { id: 'guide-eve-5', brand: 'Hildegard', name: 'Immortelle Oil', price: '$375', shopUrl: 'https://hildegaard.com/products/immortelle', imageUrl: '', genomeKey: 'beauty:imortelle oil.jpg', bucket: 'Objects of Desire', pinType: 'object' },
+  { id: 'guide-eve-6', brand: 'PoppyKing', name: 'Original Sin Lipstick', price: '$34', shopUrl: 'https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622', imageUrl: '', genomeKey: 'beauty:poppyking:sinlipstick:red.jpg', bucket: 'Objects of Desire', pinType: 'object' },
+  // Extended Evening clothing
+  { id: 'guide-eve-philomena', brand: 'FIL DE VIE', name: 'Philomena Caftan', price: '$1,250', shopUrl: 'https://fildevie.com/collections/caftans-auto/products/philomena-caftan-coat', imageUrl: '', genomeKey: 'LOOK:FDV:PHILOMENACAFTAN:SAND.jpg' },
+  { id: 'guide-eve-stevie', brand: 'FIL DE VIE', name: 'Stevie Caftan', price: '$825', shopUrl: 'https://fildevie.com/products/stevie-caftan', imageUrl: '', genomeKey: 'LOOK:FDV:STEVIECAFTAN:BLACK.jpg' },
+  { id: 'guide-eve-virginia', brand: 'FIL DE VIE', name: 'Virginia Dress', price: '$700', shopUrl: 'https://fildevie.com/products/virginia-dress-velvet', imageUrl: '', genomeKey: 'LOOK:FDV:VIRGINIADRESS:EMERALD.jpg' },
+  { id: 'guide-eve-calypso', brand: 'FIL DE VIE', name: 'Calypso Dress', price: '$600', shopUrl: 'https://fildevie.com/collections/dresses/products/calypso-dress', imageUrl: '', genomeKey: 'LOOK:FDV:CALYPSODRESS:BLACK.jpg' },
+  { id: 'guide-eve-medina', brand: 'FIL DE VIE', name: 'Medina Dress', price: '$650', shopUrl: 'https://fildevie.com/collections/dresses/products/copy-of-medina-dress', imageUrl: '', genomeKey: 'LOOK:FDV:MEDINADRESS:BLK.jpg' },
+  { id: 'guide-eve-longcaftan', brand: 'FIL DE VIE', name: 'Long Caftan Dress', price: '$825', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fildevie:longcaftandress:red.jpg' },
+  { id: 'guide-eve-este', brand: 'FIL DE VIE', name: 'Este Dress', price: '$675', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fildevie:estedress:black.jpg' },
+  { id: 'guide-eve-cecily', brand: 'FIL DE VIE', name: 'Cecily Dress', price: '$600', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'LOOK:FDV:CECILYDRESS:BLACK.jpg' },
+  { id: 'guide-eve-rhea', brand: 'FIL DE VIE', name: 'Rhea Dress', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fildevie:rheadress:black.jpg' },
+  { id: 'guide-eve-column', brand: 'FIL DE VIE', name: 'Column Dress', price: '$745', shopUrl: 'https://www.fildevie.com', imageUrl: '', genomeKey: 'LOOK:FILDEVIE:COLUMNDRESS:BLACK.jpg' },
+  { id: 'guide-eve-driessilk', brand: 'Dries Van Noten', name: 'Layered Silk Dress', price: '$750', shopUrl: '', imageUrl: '', genomeKey: 'LOOK:DRIESVANNOTEN:LAYEREDSILKDRESS:BLACK.jpg' },
+  { id: 'guide-eve-silkset', brand: 'FIL DE VIE', name: 'Crepe Silk Set', price: '$498', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'STYLE_FDV_SILK_SET_BLK.jpg' },
+  // Evening bags
+  { id: 'guide-eve-driesbag', brand: 'Dries Van Noten', name: 'Embellished Evening Bag', price: '$1,640', shopUrl: 'https://www.parlourx.com/products/envelope-embroidered-clutch-on-chain-black-gold-1', imageUrl: '', genomeKey: 'ACCESSORY:BAG:DRIESVANNOTEN:BLACK.jpg' },
+  { id: 'guide-eve-paco', brand: 'Paco Rabanne', name: 'Gold Pailette Handbag', price: '$1,490', shopUrl: 'https://fashion.rabanne.com/en-us/products/26pss0548emb025-p710/', imageUrl: '', genomeKey: 'feb 26 prod info pg 1.jpg - Item 1' },
+  { id: 'guide-eve-bottega', brand: 'Bottega Veneta', name: 'Solstice Bag', price: '$4,200', shopUrl: 'https://www.bergdorfgoodman.com/p/bottega-veneta-small-solstice-shoulder-bag-prod178960146', imageUrl: '', genomeKey: 'feb 26 prod info pg 1.jpg - Item 5' },
+  // Evening jewelry
+  { id: 'guide-eve-philohallmark', brand: 'Phoebe Philo', name: 'Hallmark Earrings', price: '$450', shopUrl: 'https://us.phoebephilo.com/products/hallmark-earrings-gold-plated-sterling-silver', imageUrl: '', genomeKey: 'feb 26 pro info pg 66.jpg - Item 1' },
+  { id: 'guide-eve-philodrop', brand: 'Phoebe Philo', name: 'Gold Drop Earrings', price: '$1,050', shopUrl: 'https://us.phoebephilo.com/products/double-ball-earrings-in-gold-plated-sterling-silver', imageUrl: '', genomeKey: 'feb 26 prod info pg 1.jpg - Item 2' },
+  { id: 'guide-eve-bulgariwatch', brand: 'Bulgari', name: 'Serpenti Watch', price: '$13,200', shopUrl: 'https://www.bulgari.com/en-us/watches/womens/serpenti-spiga-watch-rose-gold-ceramic-black-102532', imageUrl: '', genomeKey: 'ACCESSORY:BULGAR:SERPENTI:BLK.jpg' },
+  { id: 'guide-eve-bulgaricabochon', brand: '1st Dibs (Bulgari)', name: 'Lapis Cabochon Necklace', price: '$50,000', shopUrl: 'https://www.1stdibs.com/jewelry/necklaces/pendant-necklaces/bvlgari-1980s-unheated-sapphire-gold-necklace/id-j_28202612/', imageUrl: '', genomeKey: 'accessory:jewelry:bulgari:cabachon necklace.jpg' },
+];
+
+/* ── What Travels Well — accessories + beauty + objects ── */
+const TRAVEL_PRODUCTS: EditorialProduct[] = [
+  // Sunglasses
+  { id: 'guide-trv-philopeak', brand: 'Phoebe Philo', name: 'Peak Sunglasses', price: '$460', shopUrl: 'https://us.phoebephilo.com/products/peak-sunglasses-black-acetate', imageUrl: '', genomeKey: 'ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg' },
+  { id: 'guide-trv-loewe', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: '', genomeKey: 'ACCESS:SUGNLASSES:LOEWE:BLACK.jpg' },
+  { id: 'guide-trv-fdvshades', brand: 'FIL DE VIE', name: 'Mallorca Sunglasses', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'accessory:sunglasses:fildevie:sunglasses.jpg' },
+  { id: 'guide-trv-philocruise', brand: 'Phoebe Philo', name: 'Cruise Sunglasses', price: '$490', shopUrl: 'https://us.phoebephilo.com/products/cruise-sunglasses-tawny-tortoiseshell-acetate', imageUrl: '', genomeKey: 'ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg' },
+  // Wraps & scarves
+  { id: 'guide-trv-atlasscarf', brand: 'FIL DE VIE', name: 'Atlas Scarf', price: '$275', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'LOOK:FDV:ATLASSCARF:IVORY.jpg' },
+  { id: 'guide-trv-gabriellawrap', brand: 'Gabriella Hearst', name: 'Lauren Knit Wrap', price: '$3,170', shopUrl: 'https://gabrielahearst.com/products/lauren-knit-wrap-oatmeal', imageUrl: '', genomeKey: 'ACCESSORY:GABRIELLAHEARST:WELFATCHASHMERE:SAND.jpg' },
+  // Jewelry
+  { id: 'guide-trv-philocuff', brand: 'Phoebe Philo', name: 'Silver Cuff', price: '$750', shopUrl: '', imageUrl: '', genomeKey: 'access:jewelry:phoebephilo:silvercuff.jpg' },
+  { id: 'guide-trv-fdvlinkneck', brand: 'FIL DE VIE', name: 'Link Necklace', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'accessory:jewelry:fildevie:silverlinknecklace.jpg' },
+  // Stationery → Object of Desire
+  { id: 'guide-trv-smythson', brand: 'Smythson', name: 'Chelsea Notebook', price: '$165', shopUrl: 'https://www.smythson.com/us/scarlet-red-chelsea-notebook-in-panama-1204738.html', imageUrl: '', genomeKey: 'ACCESSORY:SMYTHSON:CHELSEANOTEBOOK:RED.jpg', bucket: 'Objects of Desire', pinType: 'object' },
+  // Pool → Object of Desire
+  { id: 'guide-trv-poolessentials', brand: 'FIL DE VIE', name: 'Pool Essentials', price: '$600', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'ACCESS:BAG:TOWEL:FDV:POOLESSENTIALS:OLIVE.jpg', bucket: 'Objects of Desire', pinType: 'object' },
+  // Beauty → Object of Desire
+  { id: 'guide-trv-fdvparfum', brand: 'FIL DE VIE', name: 'Parfum', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'BEAUTY:FDV:PARFUM.jpg', bucket: 'Objects of Desire', pinType: 'object' },
+  { id: 'guide-trv-fdvtravelmist', brand: 'FIL DE VIE', name: 'Travel Mist', price: '$75', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'BEAUTY:FDV:TRAVELMIST.jpg', bucket: 'Objects of Desire', pinType: 'object' },
+  { id: 'guide-trv-immortelle', brand: 'Hildegaard', name: 'Immortelle Botanical Facial Oil', price: '$375', shopUrl: 'https://hildegaard.com/products/immortelle', imageUrl: '', genomeKey: 'beauty:imortelle oil.jpg', bucket: 'Objects of Desire', pinType: 'object' },
+  { id: 'guide-trv-amanjade', brand: 'Aman Essentials', name: 'Ritual Gift Set', price: '$410', shopUrl: 'https://shop.aman.com/skincare/face-body-jade-ritual-set/', imageUrl: '', genomeKey: 'BEAUTY:AMANESSENTIALS:JADESET.jpg', bucket: 'Objects of Desire', pinType: 'object' },
+  { id: 'guide-trv-poppyking', brand: 'Poppy King', name: 'Original Sin Lipstick', price: '$34', shopUrl: 'https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622', imageUrl: '', genomeKey: 'BEAUTY:POPPYKING:SINLIPSTICK:RED.jpg', bucket: 'Objects of Desire', pinType: 'object' },
+  { id: 'guide-trv-violette', brand: 'Violette_FR', name: 'Nectar Lip Stain', price: '$29', shopUrl: 'https://www.violettefr.com/products/lip-nectar-souci-d-automne', imageUrl: '', genomeKey: 'BEAUTY:VIOLETTEFR:NECATRLIPSTAIN.jpg', bucket: 'Objects of Desire', pinType: 'object' },
+  { id: 'guide-trv-bienaime', brand: 'Bienaime', name: 'Rituel de Geisha Papers', price: '$23', shopUrl: 'https://www.beautyhabit.com/products/bienaime-the-', imageUrl: '', genomeKey: 'BEAUTY:RITUELGEINSHA.jpg', bucket: 'Objects of Desire', pinType: 'object' },
+  { id: 'guide-trv-saintjane', brand: 'Saint Jane', name: 'Sun Ritual Mineral SPF 30', price: '$38', shopUrl: 'https://saintjanebeauty.com/collections/sun-protection-spf/products/luxury-sun-ritual', imageUrl: '', genomeKey: 'BEAUTY:SAINJANE:SUNRITUAL.jpg', bucket: 'Objects of Desire', pinType: 'object' },
+  { id: 'guide-trv-leprunier', brand: 'Le Prunier', name: 'Plumscreen Sunscreen', price: '$80', shopUrl: 'https://www.leprunier.com', imageUrl: '', genomeKey: 'le prunier sunscreen.jpg', bucket: 'Objects of Desire', pinType: 'object' },
 ];
 
 const BLOB_V2 = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2';
@@ -60,6 +133,8 @@ const EDITORIAL_PRODUCT_MAP: Record<string, EditorialProduct[]> = {
   "ward-2-large": EVE_PRODUCTS,
   "ward-2-small1": [EVE_PRODUCTS[2]], // Chloé Wristlette
   "ward-2-small2": [EVE_PRODUCTS[5]], // PoppyKing lipstick
+  // What Travels Well — accessories + beauty (Column Dress image moved here as hero)
+  "ward-3-large": TRAVEL_PRODUCTS,
 };
 
 /* ── Place Contact — Zara-style address link + Instagram + phone icons ── */
@@ -919,14 +994,6 @@ export default function MoroccoGuide() {
         </div>
       </div>
 
-      {/* Editorial break — Column Dress against adobe (shoppable) */}
-      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-object-1"); openEditorialOverlay("morocco-object-1", url, "Black column dress against adobe"); }}>
-        <img src={getSlotImageUrl("morocco-object-1")} alt="Black column dress against adobe" />
-        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-column-dress" itemData={{ title: "Column Dress", imageUrl: getSlotImageUrl("morocco-object-1"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
-        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-object-1"); openEditorialOverlay("morocco-object-1", url, "Black column dress against adobe"); }} />
-      </div>
-      <div className="editorial-caption">What travels well here. Dress by Fil De Vie.</div>
-
       {/* Wardrobe 2: Riad Evenings */}
       <div className="place-block reverse">
         <PlaceImages layout="b">
@@ -938,6 +1005,35 @@ export default function MoroccoGuide() {
           <h3>Riad Evenings</h3>
           <div className="tagline">Marrakech does drama. You might as well participate.</div>
           <div className="description">Lantern light, warm stone, a drink resting on the table while you lean in. Black feels intentional here. Slightly dangerous in candlelight. In a good way. You&rsquo;ll stay longer than planned. You won&rsquo;t regret it.</div>
+        </div>
+      </div>
+
+      {/* Wardrobe 3: What Travels Well — accessories + beauty (Column Dress image as hero) */}
+      <div className="place-block">
+        <PlaceImages layout="a">
+          <div
+            className="img-large"
+            style={{ position: "relative", cursor: "pointer" }}
+            onClick={() => openEditorialOverlay("ward-3-large", getSlotImageUrl("morocco-object-1"), "What Travels Well")}
+          >
+            <img src={getSlotImageUrl("morocco-object-1")} alt="What Travels Well" />
+            <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}>
+              <PinButton
+                itemType="style"
+                itemId="guide-morocco-travel-well-main"
+                itemData={{ title: "What Travels Well", description: "The pieces between the outfits.", imageUrl: getSlotImageUrl("morocco-object-1"), storyTag: "morocco" }}
+                sourceContext="morocco-guide"
+                aestheticTags={["morocco", "travel", "accessories", "beauty"]}
+                size="sm"
+              />
+            </div>
+            <ShoppableIndicator onClick={() => openEditorialOverlay("ward-3-large", getSlotImageUrl("morocco-object-1"), "What Travels Well")} />
+          </div>
+        </PlaceImages>
+        <div className="place-info">
+          <h3>What Travels Well</h3>
+          <div className="tagline">The pieces between the outfits.</div>
+          <div className="description">Sunscreen you&rsquo;ll actually reapply. A scarf that works as a wrap, a cover-up, and a headscarf in the medina. Gold that catches candlelight. These are the things you&rsquo;ll reach for every day &mdash; the ones that make the rest of it work.</div>
         </div>
       </div>
 
@@ -1013,8 +1109,8 @@ export default function MoroccoGuide() {
             setSelectedItem({
               id: product.id,
               title: product.name,
-              bucket: 'Your Style',
-              pinType: 'style',
+              bucket: product.bucket || 'Your Style',
+              pinType: product.pinType || 'style',
               assetKey: product.id,
               storyTag: 'morocco',
               imageUrl: studioUrl || product.imageUrl,

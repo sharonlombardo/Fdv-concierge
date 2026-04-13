@@ -10,6 +10,10 @@ export interface EditorialProduct {
   shopUrl: string;
   imageUrl: string;
   genomeKey?: string;
+  /** Suitcase bucket for save routing. Defaults to "Your Style". */
+  bucket?: string;
+  /** Pin item type. Defaults to "style". */
+  pinType?: string;
 }
 
 interface EditorialProductOverlayProps {
@@ -184,7 +188,7 @@ export function EditorialProductOverlay({
                     }}
                   >
                     <PinButton
-                      itemType="style"
+                      itemType={p.pinType || "style"}
                       itemId={p.id}
                       itemData={{
                         title: `${p.brand} — ${p.name}`,
@@ -192,7 +196,7 @@ export function EditorialProductOverlay({
                         storyTag: "morocco",
                       }}
                       sourceContext="morocco-guide-editorial"
-                      aestheticTags={["wardrobe", "style", "morocco"]}
+                      aestheticTags={[(p.bucket || "Your Style").toLowerCase(), p.pinType || "style", "morocco"]}
                       size="sm"
                     />
                   </div>
