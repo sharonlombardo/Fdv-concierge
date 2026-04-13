@@ -292,7 +292,15 @@
   color: var(--ink);
 }
 
-/* ── ADDRESS LINK (Zara-style: the address itself is the link) ── */
+/* ── PLACE CONTACT (Zara-style: address link + inline icons) ── */
+.morocco-guide .place-contact {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+}
+.morocco-guide .place-contact .address-link,
 .morocco-guide .place-info .address-link {
   display: inline-block;
   font-family: 'Inter', sans-serif;
@@ -303,13 +311,36 @@
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
-  margin-top: 20px;
   transition: color 0.2s;
+  flex: 1 1 auto;
 }
+.morocco-guide .place-info .address-link {
+  margin-top: 20px;
+}
+.morocco-guide .place-contact .address-link {
+  margin-top: 0;
+}
+.morocco-guide .place-contact .address-link:hover,
 .morocco-guide .place-info .address-link:hover {
   color: var(--ink);
 }
-/* Address (non-link variant — for places without a URL) keeps its muted style */
+.morocco-guide .place-contact .contact-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+  padding-top: 2px;
+}
+.morocco-guide .place-contact .contact-icons a {
+  color: #888;
+  transition: color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.morocco-guide .place-contact .contact-icons a:hover {
+  color: var(--ink);
+}
 
 /* ── EDITORIAL CAPTION (under full-image breaks) ── */
 .morocco-guide .editorial-caption {
@@ -532,10 +563,17 @@
     padding: 12px 16px;
   }
 
-  /* Horizontal scroll for place images on mobile — bleed/peek on both sides like destinations */
-  .morocco-guide .place-images {
-    display: flex;
-    flex-direction: row;
+  /* Horizontal scroll for place images on mobile — bleed/peek on both sides like destinations.
+     !important + explicit layout selectors needed because .place-images.layout-b /
+     .layout-c grid rules have higher specificity from the base + tablet breakpoint. */
+  .morocco-guide .place-images,
+  .morocco-guide .place-images.layout-a,
+  .morocco-guide .place-images.layout-b,
+  .morocco-guide .place-images.layout-c {
+    display: flex !important;
+    flex-direction: row !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
@@ -549,12 +587,19 @@
   .morocco-guide .place-images::-webkit-scrollbar {
     display: none;
   }
-  .morocco-guide .place-images > * {
-    flex: 0 0 80%;
+  .morocco-guide .place-images > *,
+  .morocco-guide .place-images.layout-b .img-large,
+  .morocco-guide .place-images.layout-b .img-small,
+  .morocco-guide .place-images.layout-c .img-slot {
+    flex: 0 0 80% !important;
+    width: 80% !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
     scroll-snap-align: center;
     aspect-ratio: 3 / 4;
     height: auto !important;
     min-height: 0 !important;
+    max-height: none !important;
   }
   .morocco-guide .place-images > * img {
     width: 100%;
