@@ -426,17 +426,49 @@
    separators (.divider, .divider-double, .section-header, .section-sub)
    are intentionally excluded so they continue to act as stronger breaks.
 
-   Implementation note: we render the line as ::after on the PRECEDING
-   element (via :has()) rather than ::before on the following element,
-   because .full-image has `overflow: hidden` which would clip a
-   negatively-positioned ::before. */
+   Strategy for UNIFORM spacing around the line:
+   1. Zero out the vertical padding / margin contributors on the
+      preceding and following element (only where adjacent-sibling
+      rules apply), so the visible gap is controlled entirely by
+      a single margin-top value.
+   2. Place the line at the EXACT midpoint of that gap — so the
+      content-to-line distance above and below is identical.
+   3. Stroke matches .divider: 1px solid var(--ink). */
+
+/* Zero vertical spacing contributors in the divider flow */
+.morocco-guide .place-block:has(+ .place-block),
+.morocco-guide .place-block:has(+ .full-image),
+.morocco-guide .place-block:has(+ .editorial-caption) {
+  padding-bottom: 0;
+}
+.morocco-guide .place-block + .place-block,
+.morocco-guide .full-image + .place-block,
+.morocco-guide .editorial-caption + .place-block {
+  padding-top: 0;
+}
+.morocco-guide .editorial-caption:has(+ .place-block),
+.morocco-guide .editorial-caption:has(+ .full-image) {
+  margin-bottom: 0;
+}
+.morocco-guide .place-block + .full-image,
+.morocco-guide .editorial-caption + .full-image,
+.morocco-guide .full-image + .place-block {
+  margin-bottom: 0;
+}
+.morocco-guide .full-image:has(+ .place-block) {
+  margin-bottom: 0;
+}
+
+/* Uniform gap between blocks */
 .morocco-guide .place-block + .place-block,
 .morocco-guide .place-block + .full-image,
 .morocco-guide .full-image + .place-block,
 .morocco-guide .editorial-caption + .place-block,
 .morocco-guide .editorial-caption + .full-image {
-  margin-top: 40px;
+  margin-top: 72px;
 }
+
+/* Line on preceding element (::after on place-block or caption) */
 .morocco-guide .place-block:has(+ .place-block),
 .morocco-guide .place-block:has(+ .full-image),
 .morocco-guide .editorial-caption:has(+ .place-block),
@@ -449,41 +481,47 @@
 .morocco-guide .editorial-caption:has(+ .full-image)::after {
   content: '';
   position: absolute;
-  bottom: -20px;
+  bottom: -36px;
   left: 40px;
   right: 40px;
-  border-top: 1px solid rgba(44, 36, 22, 0.14);
+  border-top: 1px solid var(--ink);
   pointer-events: none;
 }
 
-/* .full-image + .place-block — line placed on following .place-block
-   because .full-image has overflow: hidden that would clip an ::after. */
+/* .full-image + .place-block — line placed on the following place-block
+   (via ::before) because .full-image has overflow: hidden that would
+   clip an ::after. */
 .morocco-guide .full-image + .place-block {
   position: relative;
 }
 .morocco-guide .full-image + .place-block::before {
   content: '';
   position: absolute;
-  top: -20px;
+  top: -36px;
   left: 40px;
   right: 40px;
-  border-top: 1px solid rgba(44, 36, 22, 0.14);
+  border-top: 1px solid var(--ink);
   pointer-events: none;
 }
+
 @media (max-width: 640px) {
   .morocco-guide .place-block + .place-block,
   .morocco-guide .place-block + .full-image,
   .morocco-guide .full-image + .place-block,
   .morocco-guide .editorial-caption + .place-block,
   .morocco-guide .editorial-caption + .full-image {
-    margin-top: 28px;
+    margin-top: 48px;
   }
   .morocco-guide .place-block:has(+ .place-block)::after,
   .morocco-guide .place-block:has(+ .full-image)::after,
-  .morocco-guide .full-image:has(+ .place-block)::after,
   .morocco-guide .editorial-caption:has(+ .place-block)::after,
   .morocco-guide .editorial-caption:has(+ .full-image)::after {
-    bottom: -14px;
+    bottom: -24px;
+    left: 20px;
+    right: 20px;
+  }
+  .morocco-guide .full-image + .place-block::before {
+    top: -24px;
     left: 20px;
     right: 20px;
   }
