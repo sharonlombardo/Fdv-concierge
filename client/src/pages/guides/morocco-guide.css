@@ -752,6 +752,77 @@
     height: 100% !important;
     object-fit: cover !important;
   }
+  /* Product tile slides — narrower than 80vw editorial slides so multiple peek */
+  .morocco-guide .place-images > .product-tile {
+    flex: 0 0 60vw !important;
+    width: 60vw !important;
+    max-width: 60vw !important;
+    aspect-ratio: auto !important;
+    height: auto !important;
+  }
+}
+
+/* ── PRODUCT TILE (carousel slide variant — Shop the Story card) ── */
+.morocco-guide .product-tile {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+}
+.morocco-guide .product-tile .product-tile-img {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+.morocco-guide .product-tile .product-tile-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.morocco-guide .product-tile-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9a9a9a;
+}
+.morocco-guide .product-tile .product-tile-info {
+  padding: 10px 4px 0;
+  text-align: left;
+}
+.morocco-guide .product-tile .product-brand {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9a9a9a;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.morocco-guide .product-tile .product-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: #1a1a1a;
+  margin: 4px 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.morocco-guide .product-tile .product-price {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: #9a9a9a;
+  margin: 4px 0 0;
 }
 
 /* ── MOBILE (typography + spacing only; carousel already engaged at tablet) ── */

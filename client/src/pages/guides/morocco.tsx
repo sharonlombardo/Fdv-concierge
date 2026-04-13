@@ -137,155 +137,6 @@ const EDITORIAL_PRODUCT_MAP: Record<string, EditorialProduct[]> = {
   "ward-3-large": TRAVEL_PRODUCTS,
 };
 
-/* ── Wardrobe Product Strip — matches Shop the Story pattern from current.tsx ── */
-
-function WardrobeProductStrip({
-  products,
-  onProductTap,
-  sourceContext,
-}: {
-  products: EditorialProduct[];
-  onProductTap: (product: EditorialProduct) => void;
-  sourceContext: string;
-}) {
-  if (!products || products.length === 0) return null;
-  return (
-    <div className="wardrobe-strip-wrap" style={{ padding: '8px 0 32px' }}>
-      <div
-        className="shop-scroll"
-        style={{
-          display: 'flex',
-          gap: 16,
-          padding: '0 24px 8px',
-          minWidth: 'max-content',
-          overflowX: 'auto',
-          scrollbarWidth: 'none',
-        }}
-      >
-        <style>{`.shop-scroll::-webkit-scrollbar { display: none; }`}</style>
-        {products.map((p) => {
-          const studioImg = p.genomeKey ? getShopImageUrl(p.genomeKey) : '';
-          const imageUrl = studioImg || p.imageUrl || '';
-          const bucket = p.bucket || 'Your Style';
-          const pinType = p.pinType || 'style';
-          return (
-            <div
-              key={p.id}
-              onClick={() => onProductTap(p)}
-              style={{
-                flexShrink: 0,
-                width: 160,
-                cursor: 'pointer',
-              }}
-            >
-              <div
-                style={{
-                  position: 'relative',
-                  aspectRatio: '3 / 4',
-                  background: '#f5f5f5',
-                  borderRadius: 4,
-                  overflow: 'hidden',
-                  marginBottom: 8,
-                }}
-              >
-                {imageUrl ? (
-                  <img
-                    src={imageUrl}
-                    alt={`${p.brand} ${p.name}`}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '0 8px',
-                      textAlign: 'center',
-                      fontSize: 10,
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      color: '#9a9a9a',
-                    }}
-                  >
-                    {p.name}
-                  </div>
-                )}
-                <div
-                  style={{ position: 'absolute', top: 6, right: 6, zIndex: 10 }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <PinButton
-                    itemType={pinType as any}
-                    itemId={p.id}
-                    sourceContext={sourceContext}
-                    itemData={{
-                      title: `${p.brand} — ${p.name}`,
-                      bucket,
-                      sourceStory: 'Morocco',
-                      saveType: pinType,
-                      imageUrl,
-                      brand: p.brand,
-                      price: p.price || undefined,
-                      genomeKey: p.genomeKey,
-                      assetKey: p.genomeKey,
-                      storyTag: 'morocco',
-                    }}
-                    aestheticTags={[bucket.toLowerCase(), pinType, 'morocco']}
-                    size="sm"
-                  />
-                </div>
-              </div>
-              <p
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: 10,
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  color: '#9a9a9a',
-                  margin: 0,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {p.brand}
-              </p>
-              <p
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: 11,
-                  color: '#1a1a1a',
-                  margin: '2px 0 0',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {p.name}
-              </p>
-              {p.price && (
-                <p
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: 10,
-                    color: '#9a9a9a',
-                    margin: '2px 0 0',
-                  }}
-                >
-                  {p.price}
-                </p>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 /* ── Place Contact — Zara-style address link + Instagram + phone icons ── */
 
 function PlaceContact({
@@ -633,7 +484,61 @@ export default function MoroccoGuide() {
     }
   };
 
-  // Shared tap handler for editorial products — used by overlay AND by wardrobe product strips
+  // Render a product as an additional carousel slide inside PlaceImages.
+  // Slides naturally inherit the carousel scroll mechanics on mobile/tablet.
+  const renderProductTile = (p: EditorialProduct) => {
+    const studioImg = p.genomeKey ? getShopImageUrl(p.genomeKey) : '';
+    const imageUrl = studioImg || p.imageUrl || '';
+    const bucket = p.bucket || 'Your Style';
+    const pinType = p.pinType || 'style';
+    return (
+      <div
+        key={p.id}
+        className="product-tile"
+        style={{ position: 'relative', cursor: 'pointer' }}
+        onClick={() => openEditorialProductModal(p)}
+      >
+        <div className="product-tile-img">
+          {imageUrl ? (
+            <img src={imageUrl} alt={`${p.brand} ${p.name}`} />
+          ) : (
+            <div className="product-tile-placeholder">{p.name}</div>
+          )}
+          <div
+            style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <PinButton
+              itemType={pinType as any}
+              itemId={p.id}
+              sourceContext="morocco-guide-wardrobe"
+              itemData={{
+                title: `${p.brand} — ${p.name}`,
+                bucket,
+                sourceStory: 'Morocco',
+                saveType: pinType,
+                imageUrl,
+                brand: p.brand,
+                price: p.price || undefined,
+                genomeKey: p.genomeKey,
+                assetKey: p.genomeKey,
+                storyTag: 'morocco',
+              }}
+              aestheticTags={[bucket.toLowerCase(), pinType, 'morocco']}
+              size="sm"
+            />
+          </div>
+        </div>
+        <div className="product-tile-info">
+          <p className="product-brand">{p.brand}</p>
+          <p className="product-name">{p.name}</p>
+          {p.price && <p className="product-price">{p.price}</p>}
+        </div>
+      </div>
+    );
+  };
+
+  // Shared tap handler for editorial products — used by overlay AND by tile taps
   const openEditorialProductModal = (product: EditorialProduct) => {
     const genome = product.genomeKey ? getProductByKey(product.genomeKey) : undefined;
     const studioUrl = product.genomeKey ? getShopImageUrl(product.genomeKey) : '';
@@ -1159,6 +1064,7 @@ export default function MoroccoGuide() {
           <div className="img-large" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("ward-1-large", `${IMG}/ward-1-large.jpg`, "Day in the Medina look")}><img src={`${IMG}/ward-1-large.jpg`} alt="Day in the Medina look" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-day-look-main" itemData={{ title: "Day in the Medina", description: "Medina uniform.", imageUrl: `${IMG}/ward-1-large.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div><ShoppableIndicator onClick={() => openEditorialOverlay("ward-1-large", `${IMG}/ward-1-large.jpg`, "Day in the Medina look")} /></div>
           <div className="img-small" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("ward-1-small1", `${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`, "Bottega Veneta Kalimero Bag")}><img src={`${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`} alt="Bottega Veneta Kalimero Bag" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-day-look-detail" itemData={{ title: "Bottega Veneta Kalimero Bag", imageUrl: `${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div><ShoppableIndicator onClick={() => openEditorialOverlay("ward-1-small1", `${IMG}/ward-1-small1_bottegaveneta_kalimero_bag.jpg`, "Bottega Veneta Kalimero Bag")} /></div>
           <div className="img-small" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("ward-1-small2", `${IMG}/ward-1-small2_bulgari_necklace.jpg`, "Bulgari Necklace")}><img src={`${IMG}/ward-1-small2_bulgari_necklace.jpg`} alt="Bulgari Necklace" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-day-look-moment" itemData={{ title: "Bulgari Necklace", imageUrl: `${IMG}/ward-1-small2_bulgari_necklace.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div><ShoppableIndicator onClick={() => openEditorialOverlay("ward-1-small2", `${IMG}/ward-1-small2_bulgari_necklace.jpg`, "Bulgari Necklace")} /></div>
+          {DAY_PRODUCTS.map(renderProductTile)}
         </PlaceImages>
         <div className="place-info">
           <h3>Day in the Medina</h3>
@@ -1166,11 +1072,6 @@ export default function MoroccoGuide() {
           <div className="description">Linen you can breathe in. Stripes that feel intentional but not precious. Flat sandals because you&rsquo;ll be walking more than you expect. Gold, but not too much. Hair slightly undone. It moves with you &mdash; which is the whole point.</div>
         </div>
       </div>
-      <WardrobeProductStrip
-        products={DAY_PRODUCTS}
-        onProductTap={openEditorialProductModal}
-        sourceContext="morocco-guide-wardrobe-day"
-      />
 
       {/* Wardrobe 2: Riad Evenings */}
       <div className="place-block reverse">
@@ -1178,6 +1079,7 @@ export default function MoroccoGuide() {
           <div className="img-large" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("ward-2-large", `${IMG}/ward-2-large_fdv_isadora_dress.jpg`, "Riad Evenings look")}><img src={`${IMG}/ward-2-large_fdv_isadora_dress.jpg`} alt="Riad Evenings look" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-evening-look-main" itemData={{ title: "Riad Evenings", description: "Marrakech does drama.", imageUrl: `${IMG}/ward-2-large_fdv_isadora_dress.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div><ShoppableIndicator onClick={() => openEditorialOverlay("ward-2-large", `${IMG}/ward-2-large_fdv_isadora_dress.jpg`, "Riad Evenings look")} /></div>
           <div className="img-small" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("ward-2-small1", `${IMG}/ward-2-small1_chloe_wristless_bag.jpg`, "Chloé Wristlette Bag")}><img src={`${IMG}/ward-2-small1_chloe_wristless_bag.jpg`} alt="Chloé Wristlette Bag" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-evening-look-detail" itemData={{ title: "Chloé Wristlette Bag", imageUrl: `${IMG}/ward-2-small1_chloe_wristless_bag.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div><ShoppableIndicator onClick={() => openEditorialOverlay("ward-2-small1", `${IMG}/ward-2-small1_chloe_wristless_bag.jpg`, "Chloé Wristlette Bag")} /></div>
           <div className="img-small" style={{ position: "relative", cursor: "pointer" }} onClick={() => openEditorialOverlay("ward-2-small2", `${IMG}/ward-2-small2_poppyking_red.jpg`, "PoppyKing Lipstick")}><img src={`${IMG}/ward-2-small2_poppyking_red.jpg`} alt="PoppyKing Lipstick" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-evening-look-moment" itemData={{ title: "PoppyKing Lipstick", imageUrl: `${IMG}/ward-2-small2_poppyking_red.jpg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div><ShoppableIndicator onClick={() => openEditorialOverlay("ward-2-small2", `${IMG}/ward-2-small2_poppyking_red.jpg`, "PoppyKing Lipstick")} /></div>
+          {EVE_PRODUCTS.map(renderProductTile)}
         </PlaceImages>
         <div className="place-info">
           <h3>Riad Evenings</h3>
@@ -1185,11 +1087,6 @@ export default function MoroccoGuide() {
           <div className="description">Lantern light, warm stone, a drink resting on the table while you lean in. Black feels intentional here. Slightly dangerous in candlelight. In a good way. You&rsquo;ll stay longer than planned. You won&rsquo;t regret it.</div>
         </div>
       </div>
-      <WardrobeProductStrip
-        products={EVE_PRODUCTS}
-        onProductTap={openEditorialProductModal}
-        sourceContext="morocco-guide-wardrobe-evening"
-      />
 
       {/* Wardrobe 3: What Travels Well — accessories + beauty (Column Dress image as hero) */}
       <div className="place-block">
@@ -1212,6 +1109,7 @@ export default function MoroccoGuide() {
             </div>
             <ShoppableIndicator onClick={() => openEditorialOverlay("ward-3-large", getSlotImageUrl("morocco-object-1"), "What Travels Well")} />
           </div>
+          {TRAVEL_PRODUCTS.map(renderProductTile)}
         </PlaceImages>
         <div className="place-info">
           <h3>What Travels Well</h3>
@@ -1219,11 +1117,6 @@ export default function MoroccoGuide() {
           <div className="description">Sunscreen you&rsquo;ll actually reapply. A scarf that works as a wrap, a cover-up, and a headscarf in the medina. Gold that catches candlelight. These are the things you&rsquo;ll reach for every day &mdash; the ones that make the rest of it work.</div>
         </div>
       </div>
-      <WardrobeProductStrip
-        products={TRAVEL_PRODUCTS}
-        onProductTap={openEditorialProductModal}
-        sourceContext="morocco-guide-wardrobe-travel"
-      />
 
       {/* SHOP THE FULL EDIT link */}
       <div style={{ textAlign: 'center', padding: '24px 0 8px' }}>
