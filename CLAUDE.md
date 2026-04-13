@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
 **Last updated:** April 13, 2026
-**Updated by:** Claude Code session (Morocco guide editorial polish — new hero, italic captions, block dividers)
+**Updated by:** Claude Code session (Morocco wardrobe carousels — products merged into carousels, sizing fix, curation pass)
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -1730,5 +1730,138 @@ Light day — Sharon in Saint Barths, no active Dispatch conversations.
 **Notion:** Weekly update @Apr 10 confirmed zero task completions for FDV Concierge during Apr 7-10. Focus was on FDV Daily pre-planning.
 
 **Attention items:** (1) April 13 edition needs 6 images to deploy, (2) start fresh FDV Daily Cowork session, (3) respond to Obsolete Collective.
+
+---
+---
+
+### April 13, 2026 (late evening) | Claude Code (web) — Morocco Wardrobe Carousels: Product Tiles Merged In, Sizing Fix, Curation Pass
+
+**Topic:** Make the wardrobe products visible inline in the existing carousels (no separate strips, no overlay-only access), then prune items that had no studio image or belonged to other editorial stories.
+
+---
+
+**Context going in:**
+Pre-compaction work this session had expanded the wardrobe product catalogs:
+- `DAY_PRODUCTS`: 6 → 23 items
+- `EVE_PRODUCTS`: 6 → 25 items
+- New `TRAVEL_PRODUCTS`: 19 items (sunglasses, scarves, jewelry, beauty, objects of desire)
+
+Sharon flagged that the new products were only reachable by tapping an editorial image to open the `EditorialProductOverlay` — they weren't visible while scrolling. She wanted the products **in** the wardrobe carousels themselves.
+
+---
+
+**What shipped (commits to main):**
+
+**1. `e07d0dc` — First attempt: SHOP THE STORY-style strip below each block**
+Built a separate `WardrobeProductStrip` component matching the SHOP THE STORY pattern from `current.tsx` (lines 1104–1233): horizontal scroll of small product tiles (160–180px), brand/name/price caption, PinButton overlay, aspect-3/4 image. Placed one strip below each of the three wardrobe blocks (Day in the Medina, Riad Evenings, What Travels Well).
+
+**Sharon's reaction:** "The product tiles should NOT be a separate strip below the carousel. They go INSIDE the existing carousel."
+
+**2. `0c4557b` — Reversal: merge product tiles INTO the existing PlaceImages carousel**
+- Removed `WardrobeProductStrip` component entirely (~145 lines deleted).
+- Created an inline `renderProductTile(p: EditorialProduct)` helper inside `morocco.tsx` that returns a `.product-tile` slide.
+- Added a shared `openEditorialProductModal(product)` handler that replicates the exact logic from `EditorialProductOverlay.onProductTap`: genome lookup via `getProductByKey`, studio shot resolution via `getShopImageUrl`, populate `ItemModal` with brand/price/shop URL/description.
+- Refactored `EditorialProductOverlay`'s `onProductTap` to call the same shared handler so behavior stays identical from both entry points.
+- Appended `{DAY_PRODUCTS.map(renderProductTile)}` after the existing editorial slides inside the wardrobe `<PlaceImages layout="b">` — same for `EVE_PRODUCTS` and `TRAVEL_PRODUCTS` — so each wardrobe carousel is now one long swipeable strip: editorial images first, product tiles continuing in the same scroll.
+- Added `.product-tile` CSS in `morocco-guide.css` (image wrapper aspect-3/4, brand/name/price caption, transparent background, Inter typography).
+
+**3. `183591c` — Sizing fix: tiles enlarged to 80vw to match editorial slides**
+Initial product tiles came in at 60vw — visibly smaller than the existing 80vw editorial slides. Sharon flagged it: "we have a sizing issue. they are in the carousel which is great - but they are going to need to be enlarge to match the initial three cards in the carousel."
+
+Fix: inside the `@media (max-width: 1024px)` block, added an override:
+```css
+.morocco-guide .place-images > .product-tile {
+  flex: 0 0 80vw !important;
+  width: 80vw !important;
+  max-width: 80vw !important;
+  aspect-ratio: auto !important;
+  height: auto !important;
+}
+```
+Tiles now match the editorial slide width exactly. The `aspect-ratio: auto` lets tile height collapse around image + caption instead of being forced into the 3/4 cell that the parent grid uses for editorial images.
+
+**4. Pin verification (no commit — Sharon asked, I confirmed via code read)**
+Verified `PinButton` save payload at `client/src/components/pin-button.tsx:75-107`. Each tile's PinButton sends to `POST /api/saves` with:
+- `itemType`: `'style'` (clothing/shoes/bags/jewelry/sunglasses/scarves) or `'object'` (beauty, Smythson, Pool Essentials, Parfum)
+- `metadata.bucket`: `'Your Style'` or `'Objects of Desire'`
+- `storyTag: 'morocco'`, `aestheticTags`, `category` resolved from genome
+- `genomeKey`, `assetKey`, `imageUrl`, `brand`, `price`, `shopUrl`
+
+Same payload shape as the SHOP THE STORY tiles in `current.tsx` — Suitcase routing is intact. Saves land in the right buckets.
+
+**5. `217c71e` — Curation pass round 1: remove 9 items from Day in the Medina + What Travels Well**
+After live testing, Sharon screenshot-flagged tiles across 3 batches. Two failure modes:
+1. **Missing studio shots** — `getShopImageUrl(genomeKey)` returned empty (genome key didn't resolve to a real Vercel Blob asset). Tile rendered with the uppercase placeholder text but no image.
+2. **Wrong story** — items semantically belonged to other editorial stories (Mallorca, Hydra) and shouldn't appear in Morocco.
+
+Removed from `DAY_PRODUCTS`:
+- FDV Oversized Poplin Shirt — missing image
+- Jil Sander Relaxed Button Down Shirt — missing image
+- Phoebe Philo Linen Relaxed Button Down Shirt — wrong story (Hydra editorial — image was clearly the Greek hilltop shot)
+- Alaïa Souk Coat & Desert Pant — missing image
+- Phoebe Philo Robe Slide — wrong story (generic black boot studio shot, not Morocco)
+
+Removed from `TRAVEL_PRODUCTS`:
+- FDV Mallorca Sunglasses — missing image + wrong story (Mallorca, not Morocco)
+- Phoebe Philo Silver Cuff — missing image
+- FDV Link Necklace — missing image
+- Smythson Chelsea Notebook — missing image
+
+All 9 removals were past index 5 in their arrays, so the `EDITORIAL_PRODUCT_MAP` index references (`DAY_PRODUCTS[1]`, `DAY_PRODUCTS[3]`, `EVE_PRODUCTS[2]`, `EVE_PRODUCTS[5]`) stayed valid — no broken detail-image references.
+
+**6. `37da039` — Curation pass round 2: 3 more from Riad Evenings**
+Sharon caught a section I'd missed when she scrolled to the evening carousel. Removed from `EVE_PRODUCTS`:
+- FDV Cecily Dress — missing image
+- FDV Rhea Dress — missing image
+- Dries Van Noten Layered Silk Dress — wrong story (the ocean cliff editorial, clearly not Marrakech)
+
+---
+
+**Final wardrobe carousel item counts:**
+- Day in the Medina: 23 → 18 product tiles (after removing 5)
+- Riad Evenings: 25 → 22 product tiles (after removing 3)
+- What Travels Well: 19 → 15 product tiles (after removing 4)
+- All three carousels still lead with their editorial hero/detail images, with product tiles continuing in the same swipeable strip.
+
+---
+
+**Key Architecture Decisions Locked This Session:**
+
+**One scroll, one strip.** Products are not a parallel surface — they're additional cards in the same carousel as the editorial images. Editorial first, product tiles continue. Sharon's instinct: "she sees them while browsing." No second tap required to discover what's shoppable.
+
+**Tile size matches editorial slide size.** When merging heterogeneous content into a snap-scroll carousel, all slides should share the same width so snap points feel consistent and there's no visual hiccup at the editorial-to-product boundary. Don't downsize products into "thumbnails" — make them peers of the editorial cards.
+
+**Two PinButton routing rules:**
+- Anything wearable → `itemType: 'style'`, `bucket: 'Your Style'`
+- Beauty / fragrance / stationery / "objects" → `itemType: 'object'`, `bucket: 'Objects of Desire'`
+- The optional `bucket` and `pinType` fields on `EditorialProduct` make this overridable per-item without forking the tile renderer.
+
+**Curate by ruthless removal, not URL chasing.** When a product has no studio shot in the genome, removing it from the carousel is faster and looks better than leaving a placeholder. Sharon can re-add later if/when the asset exists. Same for cross-story bleed — if it's not Morocco, cut it.
+
+---
+
+**Files Modified (across all commits this session):**
+- `client/src/pages/guides/morocco.tsx` — `renderProductTile` helper, `openEditorialProductModal` shared handler, product tiles appended to PlaceImages children, 12 items removed from product arrays, `WardrobeProductStrip` component removed
+- `client/src/pages/guides/morocco-guide.css` — `.product-tile` base rules + 80vw mobile override inside `@media (max-width: 1024px)` block
+
+**Working Tree:** Clean. Both `main` and `claude/add-claude-md-XVdke` synced to `37da039`.
+
+---
+
+**What Was NOT Done (consciously deferred):**
+- Did not chase missing studio shot URLs in the brand genome JSON. Faster to remove than to hunt for assets that may not exist.
+- Did not handle desktop (>1024px) layout for the new tiles — they auto-flow into additional grid rows in `layout="b"`, which is acceptable given Sharon is on mobile.
+- Did not fix the cloned-first-slide infinite-loop visual artifact when it's a product tile (acceptable for now — the clone is just for visual peek, scroll math still works).
+- Did not update SUMMARY/Sharable URLs — strictly an in-product change.
+
+---
+
+**User confirmation chain across the session:**
+- After merge into carousel: "we got it!"
+- After sizing fix: "we got it. do the pins work the same as they did before"
+- After pin verification: "its working. thank you so much"
+- After both curation passes: "great."
+
+---
 
 *[Future entries appended above this line by Claude Code after each session]*
