@@ -137,6 +137,155 @@ const EDITORIAL_PRODUCT_MAP: Record<string, EditorialProduct[]> = {
   "ward-3-large": TRAVEL_PRODUCTS,
 };
 
+/* ── Wardrobe Product Strip — matches Shop the Story pattern from current.tsx ── */
+
+function WardrobeProductStrip({
+  products,
+  onProductTap,
+  sourceContext,
+}: {
+  products: EditorialProduct[];
+  onProductTap: (product: EditorialProduct) => void;
+  sourceContext: string;
+}) {
+  if (!products || products.length === 0) return null;
+  return (
+    <div className="wardrobe-strip-wrap" style={{ padding: '8px 0 32px' }}>
+      <div
+        className="shop-scroll"
+        style={{
+          display: 'flex',
+          gap: 16,
+          padding: '0 24px 8px',
+          minWidth: 'max-content',
+          overflowX: 'auto',
+          scrollbarWidth: 'none',
+        }}
+      >
+        <style>{`.shop-scroll::-webkit-scrollbar { display: none; }`}</style>
+        {products.map((p) => {
+          const studioImg = p.genomeKey ? getShopImageUrl(p.genomeKey) : '';
+          const imageUrl = studioImg || p.imageUrl || '';
+          const bucket = p.bucket || 'Your Style';
+          const pinType = p.pinType || 'style';
+          return (
+            <div
+              key={p.id}
+              onClick={() => onProductTap(p)}
+              style={{
+                flexShrink: 0,
+                width: 160,
+                cursor: 'pointer',
+              }}
+            >
+              <div
+                style={{
+                  position: 'relative',
+                  aspectRatio: '3 / 4',
+                  background: '#f5f5f5',
+                  borderRadius: 4,
+                  overflow: 'hidden',
+                  marginBottom: 8,
+                }}
+              >
+                {imageUrl ? (
+                  <img
+                    src={imageUrl}
+                    alt={`${p.brand} ${p.name}`}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '0 8px',
+                      textAlign: 'center',
+                      fontSize: 10,
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                      color: '#9a9a9a',
+                    }}
+                  >
+                    {p.name}
+                  </div>
+                )}
+                <div
+                  style={{ position: 'absolute', top: 6, right: 6, zIndex: 10 }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <PinButton
+                    itemType={pinType as any}
+                    itemId={p.id}
+                    sourceContext={sourceContext}
+                    itemData={{
+                      title: `${p.brand} — ${p.name}`,
+                      bucket,
+                      sourceStory: 'Morocco',
+                      saveType: pinType,
+                      imageUrl,
+                      brand: p.brand,
+                      price: p.price || undefined,
+                      genomeKey: p.genomeKey,
+                      assetKey: p.genomeKey,
+                      storyTag: 'morocco',
+                    }}
+                    aestheticTags={[bucket.toLowerCase(), pinType, 'morocco']}
+                    size="sm"
+                  />
+                </div>
+              </div>
+              <p
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 10,
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: '#9a9a9a',
+                  margin: 0,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {p.brand}
+              </p>
+              <p
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 11,
+                  color: '#1a1a1a',
+                  margin: '2px 0 0',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {p.name}
+              </p>
+              {p.price && (
+                <p
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: 10,
+                    color: '#9a9a9a',
+                    margin: '2px 0 0',
+                  }}
+                >
+                  {p.price}
+                </p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ── Place Contact — Zara-style address link + Instagram + phone icons ── */
 
 function PlaceContact({
@@ -482,6 +631,30 @@ export default function MoroccoGuide() {
     if (products && products.length > 0) {
       setOverlayData({ imageUrl, imageAlt, products });
     }
+  };
+
+  // Shared tap handler for editorial products — used by overlay AND by wardrobe product strips
+  const openEditorialProductModal = (product: EditorialProduct) => {
+    const genome = product.genomeKey ? getProductByKey(product.genomeKey) : undefined;
+    const studioUrl = product.genomeKey ? getShopImageUrl(product.genomeKey) : '';
+    setSelectedItem({
+      id: product.id,
+      title: product.name,
+      bucket: product.bucket || 'Your Style',
+      pinType: product.pinType || 'style',
+      assetKey: product.id,
+      storyTag: 'morocco',
+      imageUrl: studioUrl || product.imageUrl,
+      brand: genome?.brand || product.brand,
+      price: genome?.price || product.price || undefined,
+      shopUrl: genome && isShoppable(genome) ? genome.url : product.shopUrl || undefined,
+      description: genome?.description,
+      color: genome?.color,
+      sizes: genome?.sizes,
+      shopStatus: genome?.shop_status,
+      genomeKey: product.genomeKey,
+    });
+    setDrawerOpen(true);
   };
 
   /* Genome-resolving product modal — same pattern as /concierge */
@@ -993,6 +1166,11 @@ export default function MoroccoGuide() {
           <div className="description">Linen you can breathe in. Stripes that feel intentional but not precious. Flat sandals because you&rsquo;ll be walking more than you expect. Gold, but not too much. Hair slightly undone. It moves with you &mdash; which is the whole point.</div>
         </div>
       </div>
+      <WardrobeProductStrip
+        products={DAY_PRODUCTS}
+        onProductTap={openEditorialProductModal}
+        sourceContext="morocco-guide-wardrobe-day"
+      />
 
       {/* Wardrobe 2: Riad Evenings */}
       <div className="place-block reverse">
@@ -1007,6 +1185,11 @@ export default function MoroccoGuide() {
           <div className="description">Lantern light, warm stone, a drink resting on the table while you lean in. Black feels intentional here. Slightly dangerous in candlelight. In a good way. You&rsquo;ll stay longer than planned. You won&rsquo;t regret it.</div>
         </div>
       </div>
+      <WardrobeProductStrip
+        products={EVE_PRODUCTS}
+        onProductTap={openEditorialProductModal}
+        sourceContext="morocco-guide-wardrobe-evening"
+      />
 
       {/* Wardrobe 3: What Travels Well — accessories + beauty (Column Dress image as hero) */}
       <div className="place-block">
@@ -1036,6 +1219,11 @@ export default function MoroccoGuide() {
           <div className="description">Sunscreen you&rsquo;ll actually reapply. A scarf that works as a wrap, a cover-up, and a headscarf in the medina. Gold that catches candlelight. These are the things you&rsquo;ll reach for every day &mdash; the ones that make the rest of it work.</div>
         </div>
       </div>
+      <WardrobeProductStrip
+        products={TRAVEL_PRODUCTS}
+        onProductTap={openEditorialProductModal}
+        sourceContext="morocco-guide-wardrobe-travel"
+      />
 
       {/* SHOP THE FULL EDIT link */}
       <div style={{ textAlign: 'center', padding: '24px 0 8px' }}>
@@ -1103,27 +1291,7 @@ export default function MoroccoGuide() {
           onClose={() => setOverlayData(null)}
           onProductTap={(product) => {
             setOverlayData(null);
-            const genome = product.genomeKey ? getProductByKey(product.genomeKey) : undefined;
-            // Resolve studio shot from genome, fall back to editorial image
-            const studioUrl = product.genomeKey ? getShopImageUrl(product.genomeKey) : '';
-            setSelectedItem({
-              id: product.id,
-              title: product.name,
-              bucket: product.bucket || 'Your Style',
-              pinType: product.pinType || 'style',
-              assetKey: product.id,
-              storyTag: 'morocco',
-              imageUrl: studioUrl || product.imageUrl,
-              brand: genome?.brand || product.brand,
-              price: genome?.price || product.price || undefined,
-              shopUrl: genome && isShoppable(genome) ? genome.url : product.shopUrl || undefined,
-              description: genome?.description,
-              color: genome?.color,
-              sizes: genome?.sizes,
-              shopStatus: genome?.shop_status,
-              genomeKey: product.genomeKey,
-            });
-            setDrawerOpen(true);
+            openEditorialProductModal(product);
           }}
         />
       )}
