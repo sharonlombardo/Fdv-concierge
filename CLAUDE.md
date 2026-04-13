@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** April 8, 2026
-**Updated by:** Claude Code session (Nav restructure, Edits page redesign, Destinations carousel)
+**Last updated:** April 13, 2026
+**Updated by:** Claude Code session (Morocco guide editorial polish — new hero, italic captions, block dividers)
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
@@ -1608,6 +1608,69 @@ Produced: This CLAUDE.md file
 
 Also discussed: CLAUDE.md as shared brain system across all three
 Claude environments. GitHub as the shared layer. Daily sync workflow.
+
+---
+---
+
+### April 13, 2026 (evening) | Claude Code (web) — Morocco Guide Editorial Polish: New Hero, Italic Captions, Block Dividers
+
+**Topic:** Final visual polish on Morocco guide — new Amanjena hero, italic editorial captions, thin dividers between every content block
+
+**What shipped (3 commits to main):**
+
+**1. `562515b` — Hero image swap, Inter italic captions, thin block dividers (first pass)**
+- Morocco guide hero image replaced with new Amanjena palm image: `https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/Marrakech%2C%20%40amanjena%20copy.jpeg`
+- Inter italic captions added under all 10 editorial image breaks throughout the scroll (Badi Palace, Agafay desert break, Nomad/El Fenn, Café Bacha, red caftan, Mamounia drinks break, Este Dress, El Fenn Gift Shop, stay-2 break, Column Dress)
+- Caption typography: Inter italic via Google Fonts axis (`1,14..32,100..900`), 21px desktop / 18px mobile (~35% larger than body), `color: var(--ink)`, `max-width: 720px`, centered
+- Thin horizontal dividers inserted between every `.place-block`, `.full-image`, and `.editorial-caption` using adjacent-sibling selectors (`+`)
+- `.editorial-caption` CSS rule created
+
+**2. `d9e1d0f` — Fix missing block dividers before `.full-image` elements**
+Root cause: `.full-image { overflow: hidden }` was clipping `::before` pseudo-elements positioned at `top: -20px` (outside the element's box). 11 divider locations were silently missing.
+
+Fix: rewrote the divider system with CSS `:has()` pseudo-class. Render the line as `::after` on the PRECEDING element (`.place-block` or `.editorial-caption` — neither has overflow clipping), and for the inverse case (`.full-image` preceding `.place-block`), render as `::before` on the following `.place-block`. Pseudo-elements now live on non-clipping elements.
+
+**3. `474a9ec` — Match divider stroke weight + uniform spacing**
+Sharon's feedback after `d9e1d0f`: "a bit too light what is the stroke point of the other thin lines in the guide. also, they are varying distances from the pictures/or text that they are above or below. can we always make sure there is the same amount of padding above and benearth the lines? and things are fairly tight so you can err on the side of more rather than less space"
+
+Three fixes:
+- **Stroke matched to `.divider`:** `1px solid var(--ink)` (was previously light `rgba(44, 36, 22, 0.14)` 14% opacity — now full ink)
+- **Symmetric padding** via `:has()`: zero out `.place-block`'s `padding-bottom` when followed by a divider-flow block, zero `padding-top` when preceded by one, zero `.editorial-caption`'s `margin-bottom`, and zero `.full-image`'s `margin-bottom`. All visible space then comes from a single `margin-top`, and the line at exact midpoint sits equidistant from elements above and below.
+- **More breathing room:** gap raised to 72px desktop / 48px mobile (up from 40px / 28px). Line positioned at `-36px` / `-24px` — exactly half.
+
+---
+
+**Key CSS Pattern Locked In:**
+When adding horizontal dividers between sibling blocks where some siblings have `overflow: hidden` (like `.full-image`), render the line as a pseudo-element on an adjacent sibling that doesn't have overflow clipping. Use `:has()` + `+` (adjacent sibling) to target both directions:
+
+```css
+/* Line on preceding element when followed by a divider-flow block */
+.parent .block-a:has(+ .block-b),
+.parent .block-a:has(+ .block-c) {
+  position: relative;
+}
+.parent .block-a:has(+ .block-b)::after,
+.parent .block-a:has(+ .block-c)::after {
+  content: '';
+  position: absolute;
+  bottom: -36px;  /* exact midpoint of margin-top gap */
+  left: 40px; right: 40px;
+  border-top: 1px solid var(--ink);
+}
+```
+
+For symmetric spacing around the line, zero all vertical padding contributors on elements in the divider flow so the entire visible gap comes from one `margin-top` value. Otherwise `P_b(preceding) + M + P_t(following)` creates asymmetric midpoint offsets.
+
+---
+
+**Files Modified:**
+- `client/src/pages/guides/morocco.tsx` — hero image URL, 10 editorial caption strings
+- `client/src/pages/guides/morocco-guide.css` — `.editorial-caption` rule, complete rewrite of the block-divider section using `:has()` + pseudo-elements
+- `client/index.html` — Inter italic Google Fonts axis confirmed loaded
+
+**User confirmation:** "great. so clean."
+
+**PRs/Commits:** 3 commits direct to main (auto-deployed via Vercel). No open PRs. Working tree clean.
 
 ---
 ---
