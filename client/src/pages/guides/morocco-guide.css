@@ -509,11 +509,42 @@
 @media (max-width: 640px) {
   .morocco-guide .place-block {
     grid-template-columns: 1fr;
-    padding: 16px;
+    padding: 16px 0;
     gap: 12px;
   }
   .morocco-guide .place-block.reverse {
     direction: ltr;
+  }
+  .morocco-guide .place-block .place-info {
+    padding: 12px 16px;
+  }
+
+  /* Horizontal scroll for place images on mobile */
+  .morocco-guide .place-images {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px;
+    padding: 0 16px;
+    scroll-padding: 0 16px;
+  }
+  .morocco-guide .place-images::-webkit-scrollbar {
+    display: none;
+  }
+  .morocco-guide .place-images > * {
+    flex: 0 0 85%;
+    scroll-snap-align: center;
+    aspect-ratio: 3 / 4;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  .morocco-guide .place-images > * img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .morocco-guide .hero-image,
   .morocco-guide .full-image {
@@ -549,45 +580,6 @@
     padding: 20px 16px;
   }
   .morocco-guide .guide-map { margin: 16px; }
-
-  /* Image grids → single column on mobile */
-  .morocco-guide .place-images.layout-b {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-  }
-  .morocco-guide .place-images.layout-b .img-large {
-    grid-column: auto;
-    grid-row: auto;
-    min-height: auto;
-  }
-  .morocco-guide .place-images.layout-b .img-large img {
-    height: auto;
-    aspect-ratio: 3 / 4;
-  }
-  .morocco-guide .place-images.layout-b .img-small {
-    min-height: auto;
-  }
-  .morocco-guide .place-images.layout-b .img-small img {
-    height: 200px;
-  }
-  .morocco-guide .place-images.layout-b img {
-    width: 100%;
-    object-fit: cover;
-  }
-
-  .morocco-guide .place-images.layout-c {
-    grid-template-columns: 1fr;
-  }
-  .morocco-guide .place-images.layout-c .img-slot {
-    height: 240px;
-  }
-  .morocco-guide .place-images.layout-c img {
-    height: 240px;
-  }
-
-  .morocco-guide .place-images.layout-a img {
-    height: 260px;
-  }
 
   /* Place info */
   .morocco-guide .place-info {
