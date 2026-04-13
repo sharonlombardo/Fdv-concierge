@@ -295,11 +295,22 @@
 /* ── PLACE IMAGES WRAP (carousel container with arrows) ── */
 .morocco-guide .place-images-wrap {
   position: relative;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 .morocco-guide .carousel-arrow {
   display: none; /* hidden on desktop where images are grid-laid */
 }
 @media (max-width: 1024px) {
+  .morocco-guide .place-images-wrap {
+    max-width: 100vw;
+    width: 100vw;
+    /* Pull carousel wrap out of any parent padding so it's full-bleed */
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    direction: ltr; /* override .place-block.reverse so scroll math behaves */
+  }
   .morocco-guide .carousel-arrow {
     position: absolute;
     top: 50%;
@@ -594,6 +605,9 @@
     padding: 0 10vw !important;
     scroll-padding: 0 10vw !important;
     box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
   }
   .morocco-guide .place-images::-webkit-scrollbar {
     display: none;
