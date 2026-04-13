@@ -30,13 +30,8 @@ const DAY_PRODUCTS: EditorialProduct[] = [
   { id: 'guide-day-honora', brand: 'FIL DE VIE', name: 'Honora Dress', price: '$528', shopUrl: 'https://fildevie.com/collections/dresses/products/honora-dress', imageUrl: '', genomeKey: 'LOOK:FDV:HONORADRESS:FLORAL.jpg' },
   { id: 'guide-day-lillith', brand: 'FIL DE VIE', name: 'Lillith Caftan', price: '$475', shopUrl: 'https://fildevie.com/collections/shop-all/products/lilith-caftan', imageUrl: '', genomeKey: 'LOOK:FDV:LILLITHCAFTAN:IVORY.jpg' },
   { id: 'guide-day-astrid', brand: 'FIL DE VIE', name: 'Astrid Blouse', price: '$475', shopUrl: 'https://fildevie.com/collections/tops-auto/products/copy-of-astrid-blouse', imageUrl: '', genomeKey: 'LOOK:FDV:ASTRIDBLOUSE:BLK.jpg' },
-  { id: 'guide-day-poplin', brand: 'FIL DE VIE', name: 'Oversized Poplin Shirt', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fildevie:buttondownshiirt:white.jpg' },
-  { id: 'guide-day-jilsander', brand: 'Jil Sander', name: 'Relaxed Button Down Shirt', price: '$780', shopUrl: '', imageUrl: '', genomeKey: 'look:jilsander:buttondownshirt:bluestripe.jpg' },
-  { id: 'guide-day-philolinen', brand: 'Phoebe Philo', name: 'Linen Relaxed Button Down Shirt', price: '$1,200', shopUrl: '', imageUrl: '', genomeKey: 'look:phoebephilo:buttondownshirt.jpg' },
-  { id: 'guide-day-alaiacoat', brand: 'Alaïa', name: 'Souk Coat & Desert Pant', price: '$1,200/$760', shopUrl: '', imageUrl: '', genomeKey: 'Look:alia:soukcoat:desertpants:blush.jpg' },
   { id: 'guide-day-juno-blk', brand: 'FIL DE VIE', name: 'Juno Blouse', price: '$268', shopUrl: 'https://fildevie.com/products/juno-blouse', imageUrl: '', genomeKey: 'LOOK:FDV:JUNOBLOUSE:BLK.jpg' },
   // Day footwear
-  { id: 'guide-day-philorobe', brand: 'Phoebe Philo', name: 'Robe Slide', price: '$890', shopUrl: 'https://us.phoebephilo.com/products/tilt-ankle-boot-oxblood-leather', imageUrl: '', genomeKey: 'FOOTWEAR:PHOEBEPHILO:ANKLEBOOT:BLACK.jpg' },
   { id: 'guide-day-ferragamo', brand: 'Ferragamo', name: 'Loly Fur Leather Thong Sandals', price: '$490', shopUrl: 'https://www.saksfifthavenue.com/product/ferragamo-loly-faux-fur-trim-leather-sandals-0400022855901.html', imageUrl: '', genomeKey: 'FOOTWEAR:FERRAGAMO:LOLYSANDAL:BLACK.jpg' },
   // Day bags
   { id: 'guide-day-demellier', brand: 'Demellier London', name: 'Santorini Basket Bag', price: '$355', shopUrl: 'https://www.saksfifthavenue.com/product/demellier-santorini-raffia-tote-bag-0400016036683.html', imageUrl: '', genomeKey: 'ACCESSORY:BAG:DEMELIER:SANTORINI.jpg' },
@@ -79,16 +74,10 @@ const TRAVEL_PRODUCTS: EditorialProduct[] = [
   // Sunglasses
   { id: 'guide-trv-philopeak', brand: 'Phoebe Philo', name: 'Peak Sunglasses', price: '$460', shopUrl: 'https://us.phoebephilo.com/products/peak-sunglasses-black-acetate', imageUrl: '', genomeKey: 'ACCESSORY:PHOEBEPHILO:PEAKSUNGLASSES:BLACK.jpg' },
   { id: 'guide-trv-loewe', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: '', genomeKey: 'ACCESS:SUGNLASSES:LOEWE:BLACK.jpg' },
-  { id: 'guide-trv-fdvshades', brand: 'FIL DE VIE', name: 'Mallorca Sunglasses', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'accessory:sunglasses:fildevie:sunglasses.jpg' },
   { id: 'guide-trv-philocruise', brand: 'Phoebe Philo', name: 'Cruise Sunglasses', price: '$490', shopUrl: 'https://us.phoebephilo.com/products/cruise-sunglasses-tawny-tortoiseshell-acetate', imageUrl: '', genomeKey: 'ACCESSORY:SUNGLASSES:PHOEBEPHILO:CRUISESUNGLASSES:TAWNY.jpg' },
   // Wraps & scarves
   { id: 'guide-trv-atlasscarf', brand: 'FIL DE VIE', name: 'Atlas Scarf', price: '$275', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'LOOK:FDV:ATLASSCARF:IVORY.jpg' },
   { id: 'guide-trv-gabriellawrap', brand: 'Gabriella Hearst', name: 'Lauren Knit Wrap', price: '$3,170', shopUrl: 'https://gabrielahearst.com/products/lauren-knit-wrap-oatmeal', imageUrl: '', genomeKey: 'ACCESSORY:GABRIELLAHEARST:WELFATCHASHMERE:SAND.jpg' },
-  // Jewelry
-  { id: 'guide-trv-philocuff', brand: 'Phoebe Philo', name: 'Silver Cuff', price: '$750', shopUrl: '', imageUrl: '', genomeKey: 'access:jewelry:phoebephilo:silvercuff.jpg' },
-  { id: 'guide-trv-fdvlinkneck', brand: 'FIL DE VIE', name: 'Link Necklace', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'accessory:jewelry:fildevie:silverlinknecklace.jpg' },
-  // Stationery → Object of Desire
-  { id: 'guide-trv-smythson', brand: 'Smythson', name: 'Chelsea Notebook', price: '$165', shopUrl: 'https://www.smythson.com/us/scarlet-red-chelsea-notebook-in-panama-1204738.html', imageUrl: '', genomeKey: 'ACCESSORY:SMYTHSON:CHELSEANOTEBOOK:RED.jpg', bucket: 'Objects of Desire', pinType: 'object' },
   // Pool → Object of Desire
   { id: 'guide-trv-poolessentials', brand: 'FIL DE VIE', name: 'Pool Essentials', price: '$600', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'ACCESS:BAG:TOWEL:FDV:POOLESSENTIALS:OLIVE.jpg', bucket: 'Objects of Desire', pinType: 'object' },
   // Beauty → Object of Desire
