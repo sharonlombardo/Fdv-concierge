@@ -424,26 +424,51 @@
 /* Auto thin rule between adjacent content blocks
    (place-block, full-image, editorial-caption). Section-level
    separators (.divider, .divider-double, .section-header, .section-sub)
-   are intentionally excluded so they continue to act as stronger breaks. */
+   are intentionally excluded so they continue to act as stronger breaks.
+
+   Implementation note: we render the line as ::after on the PRECEDING
+   element (via :has()) rather than ::before on the following element,
+   because .full-image has `overflow: hidden` which would clip a
+   negatively-positioned ::before. */
 .morocco-guide .place-block + .place-block,
 .morocco-guide .place-block + .full-image,
 .morocco-guide .full-image + .place-block,
 .morocco-guide .editorial-caption + .place-block,
 .morocco-guide .editorial-caption + .full-image {
-  position: relative;
   margin-top: 40px;
 }
-.morocco-guide .place-block + .place-block::before,
-.morocco-guide .place-block + .full-image::before,
-.morocco-guide .full-image + .place-block::before,
-.morocco-guide .editorial-caption + .place-block::before,
-.morocco-guide .editorial-caption + .full-image::before {
+.morocco-guide .place-block:has(+ .place-block),
+.morocco-guide .place-block:has(+ .full-image),
+.morocco-guide .editorial-caption:has(+ .place-block),
+.morocco-guide .editorial-caption:has(+ .full-image) {
+  position: relative;
+}
+.morocco-guide .place-block:has(+ .place-block)::after,
+.morocco-guide .place-block:has(+ .full-image)::after,
+.morocco-guide .editorial-caption:has(+ .place-block)::after,
+.morocco-guide .editorial-caption:has(+ .full-image)::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 40px;
+  right: 40px;
+  border-top: 1px solid rgba(44, 36, 22, 0.14);
+  pointer-events: none;
+}
+
+/* .full-image + .place-block — line placed on following .place-block
+   because .full-image has overflow: hidden that would clip an ::after. */
+.morocco-guide .full-image + .place-block {
+  position: relative;
+}
+.morocco-guide .full-image + .place-block::before {
   content: '';
   position: absolute;
   top: -20px;
   left: 40px;
   right: 40px;
   border-top: 1px solid rgba(44, 36, 22, 0.14);
+  pointer-events: none;
 }
 @media (max-width: 640px) {
   .morocco-guide .place-block + .place-block,
@@ -453,12 +478,12 @@
   .morocco-guide .editorial-caption + .full-image {
     margin-top: 28px;
   }
-  .morocco-guide .place-block + .place-block::before,
-  .morocco-guide .place-block + .full-image::before,
-  .morocco-guide .full-image + .place-block::before,
-  .morocco-guide .editorial-caption + .place-block::before,
-  .morocco-guide .editorial-caption + .full-image::before {
-    top: -14px;
+  .morocco-guide .place-block:has(+ .place-block)::after,
+  .morocco-guide .place-block:has(+ .full-image)::after,
+  .morocco-guide .full-image:has(+ .place-block)::after,
+  .morocco-guide .editorial-caption:has(+ .place-block)::after,
+  .morocco-guide .editorial-caption:has(+ .full-image)::after {
+    bottom: -14px;
     left: 20px;
     right: 20px;
   }
