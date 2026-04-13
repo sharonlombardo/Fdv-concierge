@@ -1612,6 +1612,47 @@ Claude environments. GitHub as the shared layer. Daily sync workflow.
 ---
 ---
 
+### April 13, 2026 | Claude Code (web) — Morocco Guide Place Carousel: Arrows, Infinite Loop, Overflow Fix
+
+**Topic:** Polish place-image carousels on Morocco guide to match destinations-page style
+
+**What shipped (3 commits to main):**
+
+**1. `4d19f15` — Chevron arrows + functional infinite loop**
+Built `PlaceImages` component wrapping every `.place-images.layout-X` div. Previous/next chevron buttons wrap from last → first and first → last on click. Used a `perl -i -0777` one-liner to convert all 20 existing carousel divs without touching layout markup.
+
+**2. `d6d6a7c` — Match destinations-page arrow style + true visual infinite loop**
+- Arrow style now matches `destinations.tsx` exactly: 40×40 circles, `background-color: rgba(0,0,0,0.3)`, `opacity: 0.7` (→ 1 on hover), `stroke="#F5F0EB"` at strokeWidth 2, 20px SVG.
+- Infinite loop is now VISUAL, not just functional: component clones the last child in front of the first and the first child after the last (via `cloneElement` with unique keys). On mount, carousel silently scrolls to DOM index 1 so the cloned-last image peeks on the left of the "first" slide — same bilateral-peek as destinations.
+- Scroll-end debounce (140ms): if user lands on a clone (DOM index 0 or count+1), instantly snap to the matching real slide with `behavior: 'auto'`. Seamless in both directions, whether swiping or tapping arrows.
+
+**3. `0826039` — Contain horizontal overflow so carousel stops dragging the whole page sideways**
+This was the critical fix. Sharon reported "when you scroll to the right the whole scroll above and below it is loose and moves too." Root cause: flex/grid children inherit `min-width: auto` (= min-content size), so a flex scroller with 80vw × N slides was forcing its own container wider than the viewport — body-level horizontal scroll was leaking.
+
+Fixes:
+- `.place-images-wrap`: `min-width: 0; max-width: 100%; overflow: hidden` → clips overflow at the wrap
+- On mobile/tablet: wrap forced to true `100vw` full-bleed via `margin-left/right: calc(50% - 50vw)` so the carousel escapes any parent padding cleanly
+- `.place-images` scroller: explicit `width: 100%; max-width: 100%; min-width: 0`
+- `direction: ltr` reset on wrap so `.place-block.reverse` (La Mamounia, Jardin Majorelle, etc.) doesn't break the cloned-slide scroll math
+
+**Earlier same-session (pre-compaction, commits `4d19f15` and earlier):**
+- Fixed editorial product overlay scroll reset (body scroll lock now preserves scrollY via `position: fixed` + `top: -${scrollY}px` + restore on unmount) — commit `e544115`
+- Replaced all 13 BOOK buttons with Zara-style address-as-link format + Instagram + concierge phone icons on every place block via reusable `PlaceContact` component
+- 4 special-case blocks (Agafay info, La Famille insta, Dar Yacout phone, Mustapha Blaoui plain) also converted to PlaceContact for uniformity
+- Known Instagram handles hardcoded (el_fenn_marrakech, mamouniamarrakech, jardinmajorelle, aman, lejardinsecret, lafamillemarrakech, nomadmarrakech, bachacoffee, maxandjan, riadjardinsecret, mustaphablaouimarrakech); unknowns fall back to Instagram keyword search URL
+
+**Files modified:**
+- `client/src/pages/guides/morocco.tsx` — PlaceImages component, PlaceContact component, 20 carousel wrappings, imports (added `useEffect, cloneElement, isValidElement`)
+- `client/src/pages/guides/morocco-guide.css` — arrow style, wrap containment, carousel breakpoint rules moved from 640px → 1024px earlier in session, `.place-block` horizontal padding removed earlier in session
+- `client/src/components/editorial-product-overlay.tsx` — scroll lock preservation
+
+**Key lesson:** When a scroll container seems "not to contain its overflow," the bug is usually 1-2 levels up: a flex/grid parent defaulting to `min-width: auto` sizes itself to the scroller's content instead of its own allocated width. Fix is always `min-width: 0` on the flex/grid child + `max-width: 100%` on the wrap. This has now bitten us twice on this project — worth remembering.
+
+**User confirmation:** "we got it!"
+
+---
+---
+
 ### April 13, 2026 | Dispatch (Cowork automated sync)
 **Topic:** End-of-day brain sync
 
