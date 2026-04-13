@@ -1,4 +1,4 @@
-import { useState, FormEvent, useRef, useCallback, Children, type ReactNode } from 'react';
+import { useState, FormEvent, useRef, useEffect, useCallback, Children, cloneElement, isValidElement, type ReactNode } from 'react';
 import { Link, useLocation } from 'wouter';
 import { ItemModal, type ItemModalData } from '@/components/item-modal';
 import { PinButton } from '@/components/pin-button';
@@ -130,22 +130,31 @@ function PlaceImages({
   children: ReactNode;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const initialized = useRef(false);
   const kids = Children.toArray(children);
   const count = kids.length;
+  const hasMultiple = count > 1;
 
-  const scrollToIndex = useCallback((i: number) => {
+  // Clone last->start and first->end for infinite-loop visual peek on edges
+  const cloneKid = (node: ReactNode, key: string): ReactNode =>
+    isValidElement(node) ? cloneElement(node, { key }) : node;
+
+  const rendered: ReactNode[] = hasMultiple
+    ? [cloneKid(kids[count - 1], 'clone-last'), ...kids, cloneKid(kids[0], 'clone-first')]
+    : kids;
+
+  const scrollToDomIndex = useCallback((i: number, smooth = true) => {
     const el = scrollRef.current;
     if (!el) return;
     const target = el.children[i] as HTMLElement | undefined;
     if (!target) return;
     const offset = target.offsetLeft - (el.clientWidth - target.clientWidth) / 2;
-    el.scrollTo({ left: offset, behavior: 'smooth' });
+    el.scrollTo({ left: offset, behavior: smooth ? 'smooth' : 'auto' });
   }, []);
 
-  const currentIndex = useCallback(() => {
+  const currentDomIndex = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return 0;
-    // Find child whose center is closest to the viewport center
     const viewCenter = el.scrollLeft + el.clientWidth / 2;
     let best = 0;
     let bestDist = Infinity;
@@ -161,23 +170,59 @@ function PlaceImages({
     return best;
   }, []);
 
+  // Land on the first real slide (DOM index 1) so the cloned last peeks on the left
+  useEffect(() => {
+    if (!hasMultiple || initialized.current) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    const r = requestAnimationFrame(() => {
+      scrollToDomIndex(1, false);
+      initialized.current = true;
+    });
+    return () => cancelAnimationFrame(r);
+  }, [hasMultiple, scrollToDomIndex]);
+
+  // When user lands on a clone, silently jump to its real counterpart
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || !hasMultiple) return;
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+    const onScroll = () => {
+      if (timeout) clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        if (!initialized.current) return;
+        const idx = currentDomIndex();
+        if (idx === 0) {
+          // landed on clone-of-last → jump to real last (DOM index = count)
+          scrollToDomIndex(count, false);
+        } else if (idx === count + 1) {
+          // landed on clone-of-first → jump to real first (DOM index = 1)
+          scrollToDomIndex(1, false);
+        }
+      }, 140);
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [count, hasMultiple, currentDomIndex, scrollToDomIndex]);
+
   const goPrev = () => {
-    const idx = currentIndex();
-    const next = idx > 0 ? idx - 1 : count - 1;
-    scrollToIndex(next);
+    const idx = currentDomIndex();
+    scrollToDomIndex(idx - 1, true);
   };
   const goNext = () => {
-    const idx = currentIndex();
-    const next = idx < count - 1 ? idx + 1 : 0;
-    scrollToIndex(next);
+    const idx = currentDomIndex();
+    scrollToDomIndex(idx + 1, true);
   };
 
   return (
     <div className="place-images-wrap">
       <div ref={scrollRef} className={`place-images layout-${layout}`}>
-        {children}
+        {rendered}
       </div>
-      {count > 1 && (
+      {hasMultiple && (
         <>
           <button
             type="button"
@@ -185,7 +230,7 @@ function PlaceImages({
             onClick={goPrev}
             aria-label="Previous image"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
@@ -195,7 +240,7 @@ function PlaceImages({
             onClick={goNext}
             aria-label="Next image"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="9 6 15 12 9 18" />
             </svg>
           </button>

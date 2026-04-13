@@ -308,19 +308,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.35);
-    color: #fff;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: #F5F0EB;
     border: none;
     cursor: pointer;
     padding: 0;
+    opacity: 0.7;
     -webkit-tap-highlight-color: transparent;
-    transition: background 0.2s;
+    transition: opacity 0.2s;
   }
   .morocco-guide .carousel-arrow:hover {
-    background: rgba(0, 0, 0, 0.55);
+    opacity: 1;
   }
   .morocco-guide .carousel-arrow-left { left: 8px; }
   .morocco-guide .carousel-arrow-right { right: 8px; }
