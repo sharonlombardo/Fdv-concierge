@@ -305,12 +305,20 @@ export default function MoroccoGuide() {
           <div className="description">The 16th-century El Badi Palace is mostly ruins now &mdash; which is exactly why it&rsquo;s powerful. Vast sun-warmed walls, stork nests perched high above, and open courtyards that feel almost surreal against the blue sky. Go late afternoon when the light softens and the crowds thin. It&rsquo;s less about what&rsquo;s left and more about the space it creates.</div>
           <div className="address">Ksibat Nhass, Marrakech 40000</div>
           <div className="icons">
-            <a href="http://www.badipalace.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="http://www.badipalace.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
 
       <div className="full-image" style={{ position: "relative" }}><img src={`${IMG}/exp-1-break.jpg`} alt="" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-badi-palace-break" itemData={{ title: "Badi Palace", description: "Ruins, scale, silence.", imageUrl: `${IMG}/exp-1-break.jpg`, storyTag: "morocco", bookUrl: "http://www.badipalace.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "culture"]} size="sm" /></div></div>
+
+      {/* Editorial break — Gaia Dress in terracotta doorway (shoppable) */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-tile-1"); openEditorialOverlay("morocco-tile-1", url, "Black dress against terracotta"); }}>
+        <img src={getSlotImageUrl("morocco-tile-1")} alt="Black dress against terracotta" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-gaia-doorway" itemData={{ title: "Gaia Dress", imageUrl: getSlotImageUrl("morocco-tile-1"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-tile-1"); openEditorialOverlay("morocco-tile-1", url, "Black dress against terracotta"); }} />
+      </div>
+      <div className="editorial-caption">Crisp black cotton against terracotta. The contrast is the point.</div>
 
       {/* Experience 2: Jardin Secret */}
       <div className="place-block reverse">
@@ -324,10 +332,18 @@ export default function MoroccoGuide() {
           <div className="description">Hidden within the medina walls, Le Jardin Secret feels like stepping into a private courtyard from another century. Islamic architecture, carved cedar ceilings, and restored gardens that feel calm compared to the surrounding chaos. Climb the tower for a panoramic view &mdash; it&rsquo;s one of the most beautiful in the city.</div>
           <div className="address">121 Rue Mouassine, Marrakech 40030</div>
           <div className="icons">
-            <a href="http://lejardinsecretmarrakech.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="http://lejardinsecretmarrakech.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
+
+      {/* Editorial break — Alaïa Souk Coat & Desert Pant on stairs (shoppable) */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-tile-3"); openEditorialOverlay("morocco-tile-3", url, "Blush pink on sun-warmed clay"); }}>
+        <img src={getSlotImageUrl("morocco-tile-3")} alt="Blush pink on sun-warmed clay" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-alaia-stairs" itemData={{ title: "Souk Coat & Desert Pant", imageUrl: getSlotImageUrl("morocco-tile-3"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-tile-3"); openEditorialOverlay("morocco-tile-3", url, "Blush pink on sun-warmed clay"); }} />
+      </div>
+      <div className="editorial-caption">Blush pink against sun-warmed clay. Soft, but never sweet. The color almost disappears into the earth &mdash; and that&rsquo;s the beauty of it.</div>
 
       {/* Experience 3: Agafay Desert Camp */}
       <div className="place-block">
@@ -348,6 +364,7 @@ export default function MoroccoGuide() {
       </div>
 
       <div className="full-image" style={{ position: "relative" }}><img src={`${IMG}/exp-3-break-v2.jpeg`} alt="" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-agafay-desert-break" itemData={{ title: "Agafay Desert Camp", description: "Desert drama without the five-hour drive.", imageUrl: `${IMG}/exp-3-break-v2.jpeg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "nature"]} size="sm" /></div></div>
+      <div className="editorial-caption">Orange blossom in bloom. That faint citrus-sweet scent in the air, drifting through the heat. Color everywhere, but the fragrance is what lingers.</div>
 
       {/* Experience 4: Jardin Majorelle */}
       <div className="place-block reverse">
@@ -362,7 +379,7 @@ export default function MoroccoGuide() {
           <div className="description">Yes, it&rsquo;s popular. Yes, it&rsquo;s worth it. The Yves Saint Laurent&ndash;owned garden is an immersion in electric Majorelle blue, lush cactus forms, and quiet pathways. Book the first entry time of the day &mdash; it gets crowded quickly. Pair it with the YSL Museum next door if you have even a passing interest in fashion or design.</div>
           <div className="address">Rue Yves St Laurent, Marrakech 40090</div>
           <div className="icons">
-            <a href="http://jardinmajorelle.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="http://jardinmajorelle.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
@@ -390,10 +407,17 @@ export default function MoroccoGuide() {
           <div className="description">Nomad balances local flavors with modern presentation. It&rsquo;s popular but reliable. Sit upstairs. Order small plates and watch the medina shift into evening.</div>
           <div className="address">1 Derb Aarjane, Rahba Lakdima, Marrakech 40000</div>
           <div className="icons">
-            <a href="http://nomadmarrakech.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="http://nomadmarrakech.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
+
+      {/* Editorial break — El Fenn rooftop dinner (atmosphere) */}
+      <div className="full-image" style={{ position: "relative" }}>
+        <img src={getSlotImageUrl("morocco-experience-1")} alt="El Fenn rooftop dinner" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-editorial-elfenn-rooftop" itemData={{ title: "El Fenn rooftop", description: "Gold light pooling over stone and olive branches.", imageUrl: getSlotImageUrl("morocco-experience-1"), storyTag: "morocco", bookUrl: "http://www.elfenn.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "destination", "restaurant"]} size="sm" /></div>
+      </div>
+      <div className="editorial-caption">El Fenn. Gold light pooling over stone and olive branches. At night the color softens, but it never disappears.</div>
 
       {/* Eat 2: Cafe Bacha */}
       <div className="place-block reverse">
@@ -407,7 +431,7 @@ export default function MoroccoGuide() {
           <div className="description">Located inside Dar el Bacha Palace, Caf&eacute; Bacha is all marble, gold accents, and endless coffee options. It&rsquo;s theatrical &mdash; but charming. Go early to avoid lines and sit inside if you can. Order the pastries and commit.</div>
           <div className="address">Dar El Bacha Palace, Rue Fatima Zahra, Medina, Marrakech 40570</div>
           <div className="icons">
-            <a href="http://bachacoffee.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="http://bachacoffee.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
@@ -432,6 +456,14 @@ export default function MoroccoGuide() {
         </div>
       </div>
 
+      {/* Editorial break — Red caftan on El Fenn tile (shoppable) */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-motion-1"); openEditorialOverlay("morocco-motion-1", url, "Red caftan on layered tile"); }}>
+        <img src={getSlotImageUrl("morocco-motion-1")} alt="Red caftan on layered tile" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-red-caftan" itemData={{ title: "Long Caftan Dress", imageUrl: getSlotImageUrl("morocco-motion-1"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-motion-1"); openEditorialOverlay("morocco-motion-1", url, "Red caftan on layered tile"); }} />
+      </div>
+      <div className="editorial-caption">El Fenn. A flash of red against layered tile. Pattern on pattern &mdash; and then that one bold interruption.</div>
+
       {/* Eat 4: Le Jardin de Lotus */}
       <div className="place-block reverse">
         <div className="place-images layout-b">
@@ -445,7 +477,7 @@ export default function MoroccoGuide() {
           <div className="description">A more contemporary rooftop option with cocktails and Moroccan-Asian fusion plates. Come at sunset. Stay if the mood is right.</div>
           <div className="address">Dar el Bacha District, 9 Derb Sidi Ali Ben Hamdouche, Medina, Marrakesh 40000</div>
           <div className="icons">
-            <a href="https://lejardindelotus.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="https://lejardindelotus.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
@@ -462,7 +494,7 @@ export default function MoroccoGuide() {
           <div className="description">You don&rsquo;t have to stay here to enjoy it. Come for a pre-dinner drink in the Churchill Bar or on the terrace. It&rsquo;s polished, yes &mdash; but the atmosphere is undeniable. Lean into it.</div>
           <div className="address">Avenue Bab Jdid, Marrakesh 40040</div>
           <div className="icons">
-            <a href="http://www.mamounia.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="http://www.mamounia.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
@@ -521,6 +553,14 @@ export default function MoroccoGuide() {
         </div>
       </div>
 
+      {/* Editorial break — Este Dress with fringe bag against terracotta (shoppable) */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-tile-5"); openEditorialOverlay("morocco-tile-5", url, "Black dress with fringe bag"); }}>
+        <img src={getSlotImageUrl("morocco-tile-5")} alt="Black dress with fringe bag" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-este-dress" itemData={{ title: "Este Dress", imageUrl: getSlotImageUrl("morocco-tile-5"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-tile-5"); openEditorialOverlay("morocco-tile-5", url, "Black dress with fringe bag"); }} />
+      </div>
+      <div className="editorial-caption">The dress absorbs the light instead of competing with it.</div>
+
       {/* Shop 2: El Fenn Gift Shop */}
       <div className="place-block reverse">
         <div className="place-images layout-c">
@@ -533,7 +573,7 @@ export default function MoroccoGuide() {
           <div className="description">Not the usual tourist trinkets. The El Fenn boutique curates ceramics, textiles, books, and home pieces that feel elevated. It&rsquo;s where you find something you&rsquo;ll genuinely keep &mdash; not just pack.</div>
           <div className="address">2 Derb Moulay Abdellah Ben Hezzian, Medina, Marrakesh 40000</div>
           <div className="icons">
-            <a href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
@@ -568,7 +608,7 @@ export default function MoroccoGuide() {
           <div className="description">A contemporary boutique blending Moroccan craftsmanship with European silhouettes. Graphic prints, sharp tailoring, and pieces that travel well. It&rsquo;s a smart edit if you want something local but wearable back home.</div>
           <div className="address">14 Rue Amsefah, Marrakech 40000</div>
           <div className="icons">
-            <a href="http://www.maxandjan.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="http://www.maxandjan.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
@@ -617,6 +657,17 @@ export default function MoroccoGuide() {
       <div className="section-sub">Hotels, riads, retreats</div>
       <div className="divider-double" />
 
+      {/* Editorial break — El Fenn ruby interior (atmosphere, BOOK link) */}
+      <div className="full-image" style={{ position: "relative" }}>
+        <img src={getSlotImageUrl("morocco-texture-1")} alt="El Fenn ruby interior" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-editorial-elfenn-ruby" itemData={{ title: "El Fenn", description: "Layered ruby red, saffron, emerald, tile, velvet.", imageUrl: getSlotImageUrl("morocco-texture-1"), storyTag: "morocco", bookUrl: "http://www.elfenn.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div>
+      </div>
+      <div className="editorial-caption">
+        El Fenn. Layered ruby red, saffron, emerald, tile, velvet. It&rsquo;s saturated and fearless, but somehow still composed.
+        <br />
+        <a href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK EL FENN &#x2197;</a>
+      </div>
+
       {/* Stay 1: El Fenn */}
       <div className="place-block">
         <div className="place-images layout-b">
@@ -630,7 +681,7 @@ export default function MoroccoGuide() {
           <div className="description">Owned by Vanessa Branson, El Fenn is Marrakech at its most curated &mdash; bold colors, modern art, layered textiles. The rooftop pool at sunset is reason enough to stay. It&rsquo;s lively but intimate, and the design feels intentional without being overly staged. <em>My favorite place to stay &mdash; close to everything you&rsquo;ll want to do.</em></div>
           <div className="address">2 Derb Moulay Abdellah Ben Hezzian, Marrakech 40000</div>
           <div className="icons">
-            <a href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
@@ -648,12 +699,13 @@ export default function MoroccoGuide() {
           <div className="description">Tucked inside the medina, this riad offers the opposite of hotel grandeur &mdash; quiet courtyards, carved wood, and a sense of privacy. It feels personal and atmospheric. Perfect if you want immersion over spectacle.</div>
           <div className="address">43-46 Arset Aouzal Road, Bab Doukkala, Medina, Marrakesh 40000</div>
           <div className="icons">
-            <a href="http://www.riad-jardinsecret.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="http://www.riad-jardinsecret.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
 
       <div className="full-image" style={{ position: "relative" }}><img src={`${IMG}/stay-2-break.jpg`} alt="" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-riad-jardin-secret-break" itemData={{ title: "Riad Jardin Secret", description: "Intimate, traditional, serene.", imageUrl: `${IMG}/stay-2-break.jpg`, storyTag: "morocco", bookUrl: "http://www.riad-jardinsecret.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
+      <div className="editorial-caption">El Fenn rooftop after dark. Lit greenery against night sky.</div>
 
       {/* Stay 3: La Mamounia */}
       <div className="place-block">
@@ -668,7 +720,7 @@ export default function MoroccoGuide() {
           <div className="description">La Mamounia is not understated &mdash; it&rsquo;s cinematic, historic, and slightly over the top in the best way. The gardens alone are worth walking through. Stay if you want full classic Moroccan luxury. Or just come for drinks at sunset and let the tiled corridors and candlelight do the rest.</div>
           <div className="address">Avenue Bab Jdid, Marrakech 40040</div>
           <div className="icons">
-            <a href="http://mamounia.com" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="http://mamounia.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
@@ -690,7 +742,7 @@ export default function MoroccoGuide() {
           <div className="description">Ten minutes from the Medina but it feels like another country. Amanjena is where you go when you want to disappear &mdash; in the best way. The pavilions face reflecting pools that mirror the Atlas Mountains. The gardens are almost absurdly peaceful. Everything is rose-toned and unhurried. If you can, book a maison with a private pool. You won&rsquo;t leave the property for the first two days. You won&rsquo;t want to.</div>
           <div className="address">Route de Ouarzazate, Km 12, Marrakech 40000</div>
           <div className="icons">
-            <a href="https://www.aman.com/resorts/amanjena" target="_blank" rel="noopener noreferrer">&#x1F310;</a>
+            <a href="https://www.aman.com/resorts/amanjena" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
           </div>
         </div>
       </div>
@@ -705,6 +757,14 @@ export default function MoroccoGuide() {
       <div className="section-sub">What to wear &mdash; curated looks + shoppable pieces</div>
       <div className="divider-double" />
 
+      {/* Editorial break — Wardrobe opener: YSL Bikini in Amanjena doorway (shoppable) */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-style-1"); openEditorialOverlay("morocco-style-1", url, "Black bikini in Amanjena doorway"); }}>
+        <img src={getSlotImageUrl("morocco-style-1")} alt="Black bikini in Amanjena doorway" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-ysl-bikini" itemData={{ title: "LouLou Bikini", imageUrl: getSlotImageUrl("morocco-style-1"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-style-1"); openEditorialOverlay("morocco-style-1", url, "Black bikini in Amanjena doorway"); }} />
+      </div>
+      <div className="editorial-caption">Amanjena, Marrakech. Desert-toned walls, long shadows, stillness. A black bathing suit against all that sand and clay feels moody and intentional.</div>
+
       {/* Wardrobe 1: Day in the Medina */}
       <div className="place-block">
         <div className="place-images layout-b">
@@ -718,6 +778,14 @@ export default function MoroccoGuide() {
           <div className="description">Linen you can breathe in. Stripes that feel intentional but not precious. Flat sandals because you&rsquo;ll be walking more than you expect. Gold, but not too much. Hair slightly undone. It moves with you &mdash; which is the whole point.</div>
         </div>
       </div>
+
+      {/* Editorial break — Column Dress against adobe (shoppable) */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-object-1"); openEditorialOverlay("morocco-object-1", url, "Black column dress against adobe"); }}>
+        <img src={getSlotImageUrl("morocco-object-1")} alt="Black column dress against adobe" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-column-dress" itemData={{ title: "Column Dress", imageUrl: getSlotImageUrl("morocco-object-1"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-object-1"); openEditorialOverlay("morocco-object-1", url, "Black column dress against adobe"); }} />
+      </div>
+      <div className="editorial-caption">Choose pieces that feel intentional, not precious. A black column dress against adobe. The simplicity is the point.</div>
 
       {/* Wardrobe 2: Riad Evenings */}
       <div className="place-block reverse">
