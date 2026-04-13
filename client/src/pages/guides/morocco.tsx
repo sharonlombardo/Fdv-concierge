@@ -303,10 +303,7 @@ export default function MoroccoGuide() {
           <h3>Badi Palace</h3>
           <div className="tagline">Ruins, scale, silence.</div>
           <div className="description">The 16th-century El Badi Palace is mostly ruins now &mdash; which is exactly why it&rsquo;s powerful. Vast sun-warmed walls, stork nests perched high above, and open courtyards that feel almost surreal against the blue sky. Go late afternoon when the light softens and the crowds thin. It&rsquo;s less about what&rsquo;s left and more about the space it creates.</div>
-          <div className="address">Ksibat Nhass, Marrakech 40000</div>
-          <div className="icons">
-            <a href="http://www.badipalace.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="http://www.badipalace.com" target="_blank" rel="noopener noreferrer">Ksibat Nhass, Marrakech 40000</a>
         </div>
       </div>
 
@@ -330,10 +327,7 @@ export default function MoroccoGuide() {
           <h3>Jardin Secret</h3>
           <div className="tagline">A quiet medina escape.</div>
           <div className="description">Hidden within the medina walls, Le Jardin Secret feels like stepping into a private courtyard from another century. Islamic architecture, carved cedar ceilings, and restored gardens that feel calm compared to the surrounding chaos. Climb the tower for a panoramic view &mdash; it&rsquo;s one of the most beautiful in the city.</div>
-          <div className="address">121 Rue Mouassine, Marrakech 40030</div>
-          <div className="icons">
-            <a href="http://lejardinsecretmarrakech.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="http://lejardinsecretmarrakech.com" target="_blank" rel="noopener noreferrer">121 Rue Mouassine, Marrakech 40030</a>
         </div>
       </div>
 
@@ -377,10 +371,7 @@ export default function MoroccoGuide() {
           <h3>Jardin Majorelle</h3>
           <div className="tagline">Cobalt blue and exquisite beauty with a side of Saint Laurent</div>
           <div className="description">Yes, it&rsquo;s popular. Yes, it&rsquo;s worth it. The Yves Saint Laurent&ndash;owned garden is an immersion in electric Majorelle blue, lush cactus forms, and quiet pathways. Book the first entry time of the day &mdash; it gets crowded quickly. Pair it with the YSL Museum next door if you have even a passing interest in fashion or design.</div>
-          <div className="address">Rue Yves St Laurent, Marrakech 40090</div>
-          <div className="icons">
-            <a href="http://jardinmajorelle.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="http://jardinmajorelle.com" target="_blank" rel="noopener noreferrer">Rue Yves St Laurent, Marrakech 40090</a>
         </div>
       </div>
 
@@ -405,10 +396,7 @@ export default function MoroccoGuide() {
           <h3>Nomad</h3>
           <div className="tagline">Rooftop views and modern Moroccan.</div>
           <div className="description">Nomad balances local flavors with modern presentation. It&rsquo;s popular but reliable. Sit upstairs. Order small plates and watch the medina shift into evening.</div>
-          <div className="address">1 Derb Aarjane, Rahba Lakdima, Marrakech 40000</div>
-          <div className="icons">
-            <a href="http://nomadmarrakech.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="http://nomadmarrakech.com" target="_blank" rel="noopener noreferrer">1 Derb Aarjane, Rahba Lakdima, Marrakech 40000</a>
         </div>
       </div>
 
@@ -429,10 +417,7 @@ export default function MoroccoGuide() {
           <h3>Caf&eacute; Bacha</h3>
           <div className="tagline">Decadent morning ritual.</div>
           <div className="description">Located inside Dar el Bacha Palace, Caf&eacute; Bacha is all marble, gold accents, and endless coffee options. It&rsquo;s theatrical &mdash; but charming. Go early to avoid lines and sit inside if you can. Order the pastries and commit.</div>
-          <div className="address">Dar El Bacha Palace, Rue Fatima Zahra, Medina, Marrakech 40570</div>
-          <div className="icons">
-            <a href="http://bachacoffee.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="http://bachacoffee.com" target="_blank" rel="noopener noreferrer">Dar El Bacha Palace, Rue Fatima Zahra, Medina, Marrakech 40570</a>
         </div>
       </div>
 
@@ -475,10 +460,7 @@ export default function MoroccoGuide() {
           <h3>Le Jardin de Lotus</h3>
           <div className="tagline">Relaxed glamour</div>
           <div className="description">A more contemporary rooftop option with cocktails and Moroccan-Asian fusion plates. Come at sunset. Stay if the mood is right.</div>
-          <div className="address">Dar el Bacha District, 9 Derb Sidi Ali Ben Hamdouche, Medina, Marrakesh 40000</div>
-          <div className="icons">
-            <a href="https://lejardindelotus.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="https://lejardindelotus.com" target="_blank" rel="noopener noreferrer">Dar el Bacha District, 9 Derb Sidi Ali Ben Hamdouche, Medina, Marrakesh 40000</a>
         </div>
       </div>
 
@@ -492,10 +474,7 @@ export default function MoroccoGuide() {
           <h3>La Mamounia &mdash; Evening Drinks</h3>
           <div className="tagline">Golden hour, perfected.</div>
           <div className="description">You don&rsquo;t have to stay here to enjoy it. Come for a pre-dinner drink in the Churchill Bar or on the terrace. It&rsquo;s polished, yes &mdash; but the atmosphere is undeniable. Lean into it.</div>
-          <div className="address">Avenue Bab Jdid, Marrakesh 40040</div>
-          <div className="icons">
-            <a href="http://www.mamounia.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="http://www.mamounia.com" target="_blank" rel="noopener noreferrer">Avenue Bab Jdid, Marrakesh 40040</a>
         </div>
       </div>
 
@@ -571,10 +550,7 @@ export default function MoroccoGuide() {
           <h3>El Fenn Gift Shop</h3>
           <div className="tagline">Actually chic souvenirs.</div>
           <div className="description">Not the usual tourist trinkets. The El Fenn boutique curates ceramics, textiles, books, and home pieces that feel elevated. It&rsquo;s where you find something you&rsquo;ll genuinely keep &mdash; not just pack.</div>
-          <div className="address">2 Derb Moulay Abdellah Ben Hezzian, Medina, Marrakesh 40000</div>
-          <div className="icons">
-            <a href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer">2 Derb Moulay Abdellah Ben Hezzian, Medina, Marrakesh 40000</a>
         </div>
       </div>
 
@@ -606,10 +582,7 @@ export default function MoroccoGuide() {
           <h3>Max &amp; Jan</h3>
           <div className="tagline">Modern Marrakech.</div>
           <div className="description">A contemporary boutique blending Moroccan craftsmanship with European silhouettes. Graphic prints, sharp tailoring, and pieces that travel well. It&rsquo;s a smart edit if you want something local but wearable back home.</div>
-          <div className="address">14 Rue Amsefah, Marrakech 40000</div>
-          <div className="icons">
-            <a href="http://www.maxandjan.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="http://www.maxandjan.com" target="_blank" rel="noopener noreferrer">14 Rue Amsefah, Marrakech 40000</a>
         </div>
       </div>
 
@@ -662,11 +635,7 @@ export default function MoroccoGuide() {
         <img src={getSlotImageUrl("morocco-texture-1")} alt="El Fenn ruby interior" />
         <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-editorial-elfenn-ruby" itemData={{ title: "El Fenn", description: "Layered ruby red, saffron, emerald, tile, velvet.", imageUrl: getSlotImageUrl("morocco-texture-1"), storyTag: "morocco", bookUrl: "http://www.elfenn.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div>
       </div>
-      <div className="editorial-caption">
-        El Fenn. Layered ruby red, saffron, emerald, tile, velvet. It&rsquo;s saturated and fearless, but somehow still composed.
-        <br />
-        <a href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK EL FENN &#x2197;</a>
-      </div>
+      <div className="editorial-caption">El Fenn. Layered ruby red, saffron, emerald, tile, velvet. It&rsquo;s saturated and fearless, but somehow still composed.</div>
 
       {/* Stay 1: El Fenn */}
       <div className="place-block">
@@ -679,10 +648,7 @@ export default function MoroccoGuide() {
           <h3>El Fenn</h3>
           <div className="tagline">Color, art, and rooftop sunsets.</div>
           <div className="description">Owned by Vanessa Branson, El Fenn is Marrakech at its most curated &mdash; bold colors, modern art, layered textiles. The rooftop pool at sunset is reason enough to stay. It&rsquo;s lively but intimate, and the design feels intentional without being overly staged. <em>My favorite place to stay &mdash; close to everything you&rsquo;ll want to do.</em></div>
-          <div className="address">2 Derb Moulay Abdellah Ben Hezzian, Marrakech 40000</div>
-          <div className="icons">
-            <a href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer">2 Derb Moulay Abdellah Ben Hezzian, Marrakech 40000</a>
         </div>
       </div>
 
@@ -697,10 +663,7 @@ export default function MoroccoGuide() {
           <h3>Riad Jardin Secret</h3>
           <div className="tagline">Intimate, traditional, serene.</div>
           <div className="description">Tucked inside the medina, this riad offers the opposite of hotel grandeur &mdash; quiet courtyards, carved wood, and a sense of privacy. It feels personal and atmospheric. Perfect if you want immersion over spectacle.</div>
-          <div className="address">43-46 Arset Aouzal Road, Bab Doukkala, Medina, Marrakesh 40000</div>
-          <div className="icons">
-            <a href="http://www.riad-jardinsecret.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="http://www.riad-jardinsecret.com" target="_blank" rel="noopener noreferrer">43-46 Arset Aouzal Road, Bab Doukkala, Medina, Marrakesh 40000</a>
         </div>
       </div>
 
@@ -718,10 +681,7 @@ export default function MoroccoGuide() {
           <h3>La Mamounia</h3>
           <div className="tagline">Iconic. Unapologetically grand.</div>
           <div className="description">La Mamounia is not understated &mdash; it&rsquo;s cinematic, historic, and slightly over the top in the best way. The gardens alone are worth walking through. Stay if you want full classic Moroccan luxury. Or just come for drinks at sunset and let the tiled corridors and candlelight do the rest.</div>
-          <div className="address">Avenue Bab Jdid, Marrakech 40040</div>
-          <div className="icons">
-            <a href="http://mamounia.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="http://mamounia.com" target="_blank" rel="noopener noreferrer">Avenue Bab Jdid, Marrakech 40040</a>
         </div>
       </div>
 
@@ -740,10 +700,7 @@ export default function MoroccoGuide() {
           <h3>Amanjena</h3>
           <div className="tagline">Aman&rsquo;s Marrakech. Pink marble, reflecting pools, absolute silence.</div>
           <div className="description">Ten minutes from the Medina but it feels like another country. Amanjena is where you go when you want to disappear &mdash; in the best way. The pavilions face reflecting pools that mirror the Atlas Mountains. The gardens are almost absurdly peaceful. Everything is rose-toned and unhurried. If you can, book a maison with a private pool. You won&rsquo;t leave the property for the first two days. You won&rsquo;t want to.</div>
-          <div className="address">Route de Ouarzazate, Km 12, Marrakech 40000</div>
-          <div className="icons">
-            <a href="https://www.aman.com/resorts/amanjena" target="_blank" rel="noopener noreferrer" className="book-link">BOOK &#x2197;</a>
-          </div>
+          <a className="address-link" href="https://www.aman.com/resorts/amanjena" target="_blank" rel="noopener noreferrer">Route de Ouarzazate, Km 12, Marrakech 40000</a>
         </div>
       </div>
 

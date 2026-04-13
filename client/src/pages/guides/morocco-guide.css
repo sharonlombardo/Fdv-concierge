@@ -271,51 +271,45 @@
 }
 
 .morocco-guide .place-info .icons {
-  display: flex;
-  gap: 12px;
-  margin-top: 12px;
+  display: inline-flex;
+  gap: 10px;
+  margin-left: 10px;
+  vertical-align: middle;
 }
 
 .morocco-guide .place-info .icons a {
-  width: 28px;
-  height: 28px;
-  border: 1px solid var(--ink);
-  border-radius: 50%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
   text-decoration: none;
-  color: var(--ink);
-  transition: background 0.2s, color 0.2s;
+  color: #888;
+  transition: color 0.2s;
 }
 
 .morocco-guide .place-info .icons a:hover {
-  background: var(--ink);
-  color: var(--white);
+  color: var(--ink);
 }
 
-/* ── BOOK LINK (replaces globe icon) ── */
-.morocco-guide .place-info .book-link {
+/* ── ADDRESS LINK (Zara-style: the address itself is the link) ── */
+.morocco-guide .place-info .address-link {
   display: inline-block;
-  margin-top: 16px;
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #c9a84c;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(201, 168, 76, 0.4);
-  padding-bottom: 2px;
-  transition: opacity 0.2s, border-color 0.2s;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #888;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  margin-top: 20px;
+  transition: color 0.2s;
 }
-
-.morocco-guide .place-info .book-link:hover {
-  opacity: 0.75;
-  border-bottom-color: #c9a84c;
+.morocco-guide .place-info .address-link:hover {
+  color: var(--ink);
 }
+/* Address (non-link variant — for places without a URL) keeps its muted style */
 
 /* ── EDITORIAL CAPTION (under full-image breaks) ── */
 .morocco-guide .editorial-caption {
@@ -328,20 +322,6 @@
   line-height: 1.6;
   color: rgba(44, 36, 22, 0.7);
   text-align: center;
-}
-.morocco-guide .editorial-caption .book-link {
-  display: inline-block;
-  margin-top: 10px;
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  font-style: normal;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #c9a84c;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(201, 168, 76, 0.4);
-  padding-bottom: 2px;
 }
 @media (max-width: 640px) {
   .morocco-guide .editorial-caption {
@@ -552,7 +532,7 @@
     padding: 12px 16px;
   }
 
-  /* Horizontal scroll for place images on mobile */
+  /* Horizontal scroll for place images on mobile — bleed/peek on both sides like destinations */
   .morocco-guide .place-images {
     display: flex;
     flex-direction: row;
@@ -561,14 +541,16 @@
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     gap: 8px;
-    padding: 0 16px;
-    scroll-padding: 0 16px;
+    padding-left: 10vw;
+    padding-right: 10vw;
+    scroll-padding-left: 10vw;
+    scroll-padding-right: 10vw;
   }
   .morocco-guide .place-images::-webkit-scrollbar {
     display: none;
   }
   .morocco-guide .place-images > * {
-    flex: 0 0 85%;
+    flex: 0 0 80%;
     scroll-snap-align: center;
     aspect-ratio: 3 / 4;
     height: auto !important;
