@@ -292,6 +292,40 @@
   color: var(--ink);
 }
 
+/* ── PLACE IMAGES WRAP (carousel container with arrows) ── */
+.morocco-guide .place-images-wrap {
+  position: relative;
+}
+.morocco-guide .carousel-arrow {
+  display: none; /* hidden on desktop where images are grid-laid */
+}
+@media (max-width: 1024px) {
+  .morocco-guide .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s;
+  }
+  .morocco-guide .carousel-arrow:hover {
+    background: rgba(0, 0, 0, 0.55);
+  }
+  .morocco-guide .carousel-arrow-left { left: 8px; }
+  .morocco-guide .carousel-arrow-right { right: 8px; }
+}
+
 /* ── PLACE CONTACT (Zara-style: address link + inline icons) ── */
 .morocco-guide .place-contact {
   display: flex;
