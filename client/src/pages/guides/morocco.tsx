@@ -312,6 +312,14 @@ export default function MoroccoGuide() {
 
       <div className="full-image" style={{ position: "relative" }}><img src={`${IMG}/exp-1-break.jpg`} alt="" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-badi-palace-break" itemData={{ title: "Badi Palace", description: "Ruins, scale, silence.", imageUrl: `${IMG}/exp-1-break.jpg`, storyTag: "morocco", bookUrl: "http://www.badipalace.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "culture"]} size="sm" /></div></div>
 
+      {/* Editorial break — Gaia Dress in terracotta doorway (shoppable) */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-tile-1"); openEditorialOverlay("morocco-tile-1", url, "Black dress against terracotta"); }}>
+        <img src={getSlotImageUrl("morocco-tile-1")} alt="Black dress against terracotta" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-gaia-doorway" itemData={{ title: "Gaia Dress", imageUrl: getSlotImageUrl("morocco-tile-1"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-tile-1"); openEditorialOverlay("morocco-tile-1", url, "Black dress against terracotta"); }} />
+      </div>
+      <div className="editorial-caption">Crisp black cotton against terracotta. The contrast is the point.</div>
+
       {/* Experience 2: Jardin Secret */}
       <div className="place-block reverse">
         <div className="place-images layout-c">
@@ -328,6 +336,14 @@ export default function MoroccoGuide() {
           </div>
         </div>
       </div>
+
+      {/* Editorial break — Alaïa Souk Coat & Desert Pant on stairs (shoppable) */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-tile-3"); openEditorialOverlay("morocco-tile-3", url, "Blush pink on sun-warmed clay"); }}>
+        <img src={getSlotImageUrl("morocco-tile-3")} alt="Blush pink on sun-warmed clay" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-alaia-stairs" itemData={{ title: "Souk Coat & Desert Pant", imageUrl: getSlotImageUrl("morocco-tile-3"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-tile-3"); openEditorialOverlay("morocco-tile-3", url, "Blush pink on sun-warmed clay"); }} />
+      </div>
+      <div className="editorial-caption">Blush pink against sun-warmed clay. Soft, but never sweet. The color almost disappears into the earth &mdash; and that&rsquo;s the beauty of it.</div>
 
       {/* Experience 3: Agafay Desert Camp */}
       <div className="place-block">
@@ -348,6 +364,7 @@ export default function MoroccoGuide() {
       </div>
 
       <div className="full-image" style={{ position: "relative" }}><img src={`${IMG}/exp-3-break-v2.jpeg`} alt="" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-agafay-desert-break" itemData={{ title: "Agafay Desert Camp", description: "Desert drama without the five-hour drive.", imageUrl: `${IMG}/exp-3-break-v2.jpeg`, storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "experience", "nature"]} size="sm" /></div></div>
+      <div className="editorial-caption">Orange blossom in bloom. That faint citrus-sweet scent in the air, drifting through the heat. Color everywhere, but the fragrance is what lingers.</div>
 
       {/* Experience 4: Jardin Majorelle */}
       <div className="place-block reverse">
@@ -395,6 +412,13 @@ export default function MoroccoGuide() {
         </div>
       </div>
 
+      {/* Editorial break — El Fenn rooftop dinner (atmosphere) */}
+      <div className="full-image" style={{ position: "relative" }}>
+        <img src={getSlotImageUrl("morocco-experience-1")} alt="El Fenn rooftop dinner" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-editorial-elfenn-rooftop" itemData={{ title: "El Fenn rooftop", description: "Gold light pooling over stone and olive branches.", imageUrl: getSlotImageUrl("morocco-experience-1"), storyTag: "morocco", bookUrl: "http://www.elfenn.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "destination", "restaurant"]} size="sm" /></div>
+      </div>
+      <div className="editorial-caption">El Fenn. Gold light pooling over stone and olive branches. At night the color softens, but it never disappears.</div>
+
       {/* Eat 2: Cafe Bacha */}
       <div className="place-block reverse">
         <div className="place-images layout-c">
@@ -431,6 +455,14 @@ export default function MoroccoGuide() {
           </div>
         </div>
       </div>
+
+      {/* Editorial break — Red caftan on El Fenn tile (shoppable) */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-motion-1"); openEditorialOverlay("morocco-motion-1", url, "Red caftan on layered tile"); }}>
+        <img src={getSlotImageUrl("morocco-motion-1")} alt="Red caftan on layered tile" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-red-caftan" itemData={{ title: "Long Caftan Dress", imageUrl: getSlotImageUrl("morocco-motion-1"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-motion-1"); openEditorialOverlay("morocco-motion-1", url, "Red caftan on layered tile"); }} />
+      </div>
+      <div className="editorial-caption">El Fenn. A flash of red against layered tile. Pattern on pattern &mdash; and then that one bold interruption.</div>
 
       {/* Eat 4: Le Jardin de Lotus */}
       <div className="place-block reverse">
@@ -520,6 +552,14 @@ export default function MoroccoGuide() {
           <div className="address">Medina of Marrakesh, near Jemaa el-Fnaa Square</div>
         </div>
       </div>
+
+      {/* Editorial break — Este Dress with fringe bag against terracotta (shoppable) */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-tile-5"); openEditorialOverlay("morocco-tile-5", url, "Black dress with fringe bag"); }}>
+        <img src={getSlotImageUrl("morocco-tile-5")} alt="Black dress with fringe bag" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-este-dress" itemData={{ title: "Este Dress", imageUrl: getSlotImageUrl("morocco-tile-5"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-tile-5"); openEditorialOverlay("morocco-tile-5", url, "Black dress with fringe bag"); }} />
+      </div>
+      <div className="editorial-caption">The dress absorbs the light instead of competing with it.</div>
 
       {/* Shop 2: El Fenn Gift Shop */}
       <div className="place-block reverse">
@@ -617,6 +657,17 @@ export default function MoroccoGuide() {
       <div className="section-sub">Hotels, riads, retreats</div>
       <div className="divider-double" />
 
+      {/* Editorial break — El Fenn ruby interior (atmosphere, BOOK link) */}
+      <div className="full-image" style={{ position: "relative" }}>
+        <img src={getSlotImageUrl("morocco-texture-1")} alt="El Fenn ruby interior" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-editorial-elfenn-ruby" itemData={{ title: "El Fenn", description: "Layered ruby red, saffron, emerald, tile, velvet.", imageUrl: getSlotImageUrl("morocco-texture-1"), storyTag: "morocco", bookUrl: "http://www.elfenn.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div>
+      </div>
+      <div className="editorial-caption">
+        El Fenn. Layered ruby red, saffron, emerald, tile, velvet. It&rsquo;s saturated and fearless, but somehow still composed.
+        <br />
+        <a href="http://www.elfenn.com" target="_blank" rel="noopener noreferrer" className="book-link">BOOK EL FENN &#x2197;</a>
+      </div>
+
       {/* Stay 1: El Fenn */}
       <div className="place-block">
         <div className="place-images layout-b">
@@ -654,6 +705,7 @@ export default function MoroccoGuide() {
       </div>
 
       <div className="full-image" style={{ position: "relative" }}><img src={`${IMG}/stay-2-break.jpg`} alt="" /><div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="place" itemId="guide-morocco-riad-jardin-secret-break" itemData={{ title: "Riad Jardin Secret", description: "Intimate, traditional, serene.", imageUrl: `${IMG}/stay-2-break.jpg`, storyTag: "morocco", bookUrl: "http://www.riad-jardinsecret.com" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "hotel", "stay"]} size="sm" /></div></div>
+      <div className="editorial-caption">El Fenn rooftop after dark. Lit greenery against night sky.</div>
 
       {/* Stay 3: La Mamounia */}
       <div className="place-block">
@@ -705,6 +757,14 @@ export default function MoroccoGuide() {
       <div className="section-sub">What to wear &mdash; curated looks + shoppable pieces</div>
       <div className="divider-double" />
 
+      {/* Editorial break — Wardrobe opener: YSL Bikini in Amanjena doorway (shoppable) */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-style-1"); openEditorialOverlay("morocco-style-1", url, "Black bikini in Amanjena doorway"); }}>
+        <img src={getSlotImageUrl("morocco-style-1")} alt="Black bikini in Amanjena doorway" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-ysl-bikini" itemData={{ title: "LouLou Bikini", imageUrl: getSlotImageUrl("morocco-style-1"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-style-1"); openEditorialOverlay("morocco-style-1", url, "Black bikini in Amanjena doorway"); }} />
+      </div>
+      <div className="editorial-caption">Amanjena, Marrakech. Desert-toned walls, long shadows, stillness. A black bathing suit against all that sand and clay feels moody and intentional.</div>
+
       {/* Wardrobe 1: Day in the Medina */}
       <div className="place-block">
         <div className="place-images layout-b">
@@ -718,6 +778,14 @@ export default function MoroccoGuide() {
           <div className="description">Linen you can breathe in. Stripes that feel intentional but not precious. Flat sandals because you&rsquo;ll be walking more than you expect. Gold, but not too much. Hair slightly undone. It moves with you &mdash; which is the whole point.</div>
         </div>
       </div>
+
+      {/* Editorial break — Column Dress against adobe (shoppable) */}
+      <div className="full-image" style={{ position: "relative", cursor: "pointer" }} onClick={() => { const url = getSlotImageUrl("morocco-object-1"); openEditorialOverlay("morocco-object-1", url, "Black column dress against adobe"); }}>
+        <img src={getSlotImageUrl("morocco-object-1")} alt="Black column dress against adobe" />
+        <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}><PinButton itemType="style" itemId="guide-morocco-editorial-column-dress" itemData={{ title: "Column Dress", imageUrl: getSlotImageUrl("morocco-object-1"), storyTag: "morocco" }} sourceContext="morocco-guide" aestheticTags={["morocco", "travel", "style"]} size="sm" /></div>
+        <ShoppableIndicator onClick={() => { const url = getSlotImageUrl("morocco-object-1"); openEditorialOverlay("morocco-object-1", url, "Black column dress against adobe"); }} />
+      </div>
+      <div className="editorial-caption">Choose pieces that feel intentional, not precious. A black column dress against adobe. The simplicity is the point.</div>
 
       {/* Wardrobe 2: Riad Evenings */}
       <div className="place-block reverse">
