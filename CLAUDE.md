@@ -1610,4 +1610,21 @@ Also discussed: CLAUDE.md as shared brain system across all three
 Claude environments. GitHub as the shared layer. Daily sync workflow.
 
 ---
+---
+
+### April 13, 2026 | Dispatch (Cowork automated sync)
+**Topic:** End-of-day brain sync
+
+Light day — Sharon in Saint Barths, no active Dispatch conversations.
+
+**FDV Daily — April 13 edition:** Copy approved in Notion (BBG cherry blossoms DO, Argosy Book Store SHOP, Dante EAT). Images not sourced, not deployed. All three are first-time picks.
+
+**FDV Daily session maxed out:** Primary Cowork session hit token limit — all messages return 'Prompt is too long'. Last productive work was Saint Barths week pre-planning (5 editions, image checklists, deploy prompts). Sharon tried to deploy Monday Printemps/Red Room edition with Bella Mancini credit but couldn't interact. Needs fresh session.
+
+**Email (not triaged):** Melissa @ Obsolete Collective replied re Deia Mallorca popup — limiting residencies to one (starred thread, needs response). The Board weekly events Apr 13-17. Vogue Business: D&G co-CEO, luxury Q1 earnings.
+
+**Notion:** Weekly update @Apr 10 confirmed zero task completions for FDV Concierge during Apr 7-10. Focus was on FDV Daily pre-planning.
+
+**Attention items:** (1) April 13 edition needs 6 images to deploy, (2) start fresh FDV Daily Cowork session, (3) respond to Obsolete Collective.
+
 *[Future entries appended above this line by Claude Code after each session]*
