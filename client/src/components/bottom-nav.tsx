@@ -81,8 +81,8 @@ export default function BottomNav() {
         <div
           className="concierge-circle"
           style={{
-            width: 32,
-            height: 32,
+            width: 28,
+            height: 28,
             borderRadius: "50%",
             background: "#c9a84c",
             display: "flex",
