@@ -282,17 +282,76 @@ Remove references to subscription tiers, The Current, Curate for Me as separate 
 
 ---
 
+## CONCIERGE INTELLIGENCE ARCHITECTURE — MAJOR WORKSTREAM
+
+The concierge prompt is not a one-time write. It's a living body of knowledge — comparable in importance to the brand genome and Wellspring OS. The brand genome encodes what products ARE. The concierge intelligence encodes how the brand TALKS, SELLS, READS PEOPLE, and ACTS.
+
+This workstream needs a dedicated brainstorm and ongoing knowledge infusion, just like the product genome and taste architecture.
+
+### The five layers:
+
+**1. Voice layer** — how she talks in real-time conversation
+- Word choices, sentence rhythm, what she never says
+- Different from editorial voice (faster, more responsive, less crafted)
+- How she handles uncertainty ("I'm not sure about that specific restaurant, but here's what I do know...")
+- How she handles pushback or disagreement
+- Cultural sensitivity per destination
+- Needs: dedicated voice testing across many conversation types. Current writing guide is editorial — needs a conversational counterpart.
+
+**2. Knowledge layer** — everything she knows, per destination
+- Hotels, restaurants, experiences, practical tips, seasonal nuances
+- Products mapped to destinations and moments
+- Grows with every new destination — each one is a knowledge sprint
+- Needs: a knowledge template per destination (like the voice doc format). Currently Morocco is deep, other four are shallow. Hydra, Mallorca, Amangiri, NYC all need the same depth.
+
+**3. Sales layer** — what to give away vs. hold back
+- The guardrails: single recommendations free, full itineraries/packing lists are the paid product
+- When and how to surface the curation offer
+- How to route to guides, shop, and the trip brief
+- How to sell without selling — the best sales feel like service
+- Needs: testing with real pilot conversations. Analyze what people ask for, where they drop off, what makes them want to pay. Refine guardrails based on data.
+
+**4. Taste reading layer** — how she interprets signals from conversation
+- "Somewhere quiet" → low social_density
+- "Something like the Alaïa but less" → price-sensitive, aesthetically anchored
+- "I don't do bold colors" → containment: high
+- "It's our anniversary" → occasion context, formality bias
+- This is where Wellspring and the concierge MERGE — conversation signals feed the self-model
+- Needs: a mapping document from conversational phrases to Wellspring axis values. Build this after enough conversations are logged to see patterns.
+
+**5. Agent layer** (future) — when the concierge can take action
+- Generate personalized itineraries programmatically
+- Book restaurants and hotels via API integrations
+- Process payments for curated trips
+- Send packing lists via email
+- Different "language" from customer-facing: structured, precise, transactional
+- Same knowledge base, different interface
+- This is the B2B play too — Wellspring OS as infrastructure that other agents call
+- Needs: API design, integration partnerships, payment flow. Not now, but the architecture should anticipate it.
+
+### The flywheel:
+More conversations → more taste data → better self-model → better curation → more trust → more conversations → more willingness to pay. The concierge is both the acquisition channel and the data engine.
+
+### Customer-facing vs. agent-callable:
+The same knowledge eventually serves two interfaces:
+- **Customer-facing:** warm, opinionated, conversational. "The Isadora Dress. Trust me."
+- **Agent-callable:** structured, precise. `{ product: "isadora_dress", context: "evening_riad", confidence: 0.92, reason: "user_saves_indicate_black_structured" }`
+
+Same brain. Different voice. Building the knowledge once, serving it both ways — that's the Wellspring OS licensing play showing up in the concierge.
+
+---
+
 ## ADMIN NEEDS
 
 ### Concierge chat visibility:
-Dashboard shows "5 chats" but can't read content. Need full conversation transcripts per user in admin journey timeline. Critical for understanding what pilot women want.
+Dashboard shows "5 chats" but can't read content. Need full conversation transcripts per user in admin journey timeline. Critical for understanding what pilot women want AND for training the concierge.
 
 ---
 
 ## BUILD PRIORITY
 
 ### Immediate (this week):
-1. **Concierge system prompt rewrite** — full site knowledge, product catalog, contextual awareness. Highest leverage, zero engineering.
+1. ~~**Concierge system prompt rewrite**~~ ✅ SHIPPED (commit 561a2d2) — V2 with full Morocco knowledge, product catalog, voice, guardrails
 2. **Landing page redesign** — video → atmospheric text → destination cards. Strip everything else.
 3. **Heart icons replacing pins** — global swap.
 4. **Nav restructure** — top (ABOUT · DESTINATIONS · SHOP), bottom (HOME · MENU · ✦CONCIERGE · SUITCASE · PASSPORT), numbered hamburger.
@@ -303,11 +362,16 @@ Dashboard shows "5 chats" but can't read content. Need full conversation transcr
 7. **Trip brief form** — "Want yours?" intake form at bottom of guide.
 8. **Admin chat logging** — conversation transcripts in dashboard.
 
+### Major workstreams (ongoing):
+9. **Concierge intelligence architecture** — voice testing, knowledge depth per destination, sales layer refinement, taste reading mapping. This is comparable to the brand genome in scope and importance. Dedicated brainstorm sessions needed.
+10. **Destination knowledge sprints** — Hydra, Mallorca, Amangiri, NYC each need Morocco-level depth in the concierge prompt.
+
 ### Later:
-9. **About page rewrite**
-10. **Concierge reads user saves** (personalization)
-11. **Trip payment flow** (Stripe one-time)
-12. **Concierge booking capabilities** (agent mode)
+11. **About page rewrite**
+12. **Concierge reads user saves** (personalization)
+13. **Trip payment flow** (Stripe one-time)
+14. **Concierge booking capabilities** (agent mode)
+15. **Taste signal extraction from conversations** → Wellspring self-model
 
 ---
 
