@@ -41,13 +41,13 @@ export default function BottomNav() {
         transform: "translateZ(0)",
         display: "grid",
         gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
-        alignItems: "end",
+        alignItems: "center",
       }}
     >
       {/* HOME */}
       <Link href="/">
         <button
-          className="flex flex-col items-center justify-end gap-0.5 bg-transparent border-none cursor-pointer w-full pb-2"
+          className="flex flex-col items-center justify-center gap-0.5 bg-transparent border-none cursor-pointer w-full"
           style={tabStyle(isHome)}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -61,7 +61,7 @@ export default function BottomNav() {
       {/* MENU */}
       <button
         onClick={openHamburger}
-        className="flex flex-col items-center justify-end gap-0.5 bg-transparent border-none cursor-pointer w-full pb-2"
+        className="flex flex-col items-center justify-center gap-0.5 bg-transparent border-none cursor-pointer w-full"
         style={tabStyle(false)}
       >
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -75,7 +75,7 @@ export default function BottomNav() {
       {/* CONCIERGE — pulsing gold circle, center */}
       <button
         onClick={openConcierge}
-        className="flex flex-col items-center justify-end gap-0.5 bg-transparent border-none cursor-pointer w-full pb-2"
+        className="flex flex-col items-center justify-center gap-0.5 bg-transparent border-none cursor-pointer w-full"
         style={{ fontFamily: "Inter, sans-serif" }}
       >
         <div
@@ -103,7 +103,7 @@ export default function BottomNav() {
       {/* SUITCASE */}
       <Link href="/suitcase">
         <button
-          className="flex flex-col items-center justify-end gap-0.5 bg-transparent border-none cursor-pointer w-full pb-2"
+          className="flex flex-col items-center justify-center gap-0.5 bg-transparent border-none cursor-pointer w-full"
           style={tabStyle(isSuitcase)}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -117,7 +117,7 @@ export default function BottomNav() {
       {/* PASSPORT */}
       <Link href="/profile">
         <button
-          className="flex flex-col items-center justify-end gap-0.5 bg-transparent border-none cursor-pointer w-full pb-2"
+          className="flex flex-col items-center justify-center gap-0.5 bg-transparent border-none cursor-pointer w-full"
           style={tabStyle(isPassport)}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
