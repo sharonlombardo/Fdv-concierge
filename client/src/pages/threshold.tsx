@@ -1,12 +1,11 @@
 
 import CurrentFeed from "./current";
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import { ChevronRight, Pin } from "lucide-react";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { queryClient } from "@/lib/queryClient";
-import { useUser } from "@/contexts/user-context";
 import { HeroAnimation } from "@/components/hero-animation";
 
 const MOOD_KEYS = [
@@ -181,16 +180,6 @@ function CategoryNav() {
 }
 
 export default function Threshold() {
-  const { isLoggedIn, authLoading } = useUser();
-  const [, setLocation] = useLocation();
-
-  // Returning authenticated users skip the hero — go straight to /current
-  useEffect(() => {
-    if (!authLoading && isLoggedIn) {
-      setLocation("/current");
-    }
-  }, [authLoading, isLoggedIn, setLocation]);
-
   const { data: imageSlotsData } = useImageSlots();
   const getImageUrl = (assetKey: string): string => {
     if (imageSlotsData?.slots) {
@@ -202,9 +191,6 @@ export default function Threshold() {
     const defaultSlot = IMAGE_SLOTS.find(s => s.key === assetKey);
     return defaultSlot?.defaultUrl || "";
   };
-
-  // While checking auth, show nothing to prevent flash
-  if (authLoading) return null;
 
   return (
     <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
