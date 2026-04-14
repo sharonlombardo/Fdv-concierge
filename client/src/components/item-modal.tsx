@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { getProductByKey, findProductByPartialKey, type BrandGenomeProduct } from "@/lib/brand-genome";
+import { useUser } from "@/contexts/user-context";
 
 function fireEvent(eventType: string, itemId?: string, destinationUrl?: string, metadata?: Record<string, any>) {
   fetch("/api/events", {
@@ -72,6 +73,7 @@ function getDestinationTag(storyTag: string): string {
 
 export function ItemModal({ item, open, onOpenChange, source = "current" }: ItemModalProps) {
   const fromSuitcase = source === "suitcase";
+  const { user, setShowPassportGate, setPendingSaveCallback } = useUser();
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifySubmitted, setNotifySubmitted] = useState(false);
 
@@ -139,7 +141,7 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
   const { data: saveDetail } = useQuery<SaveDetail>({
     queryKey: ["/api/saves/detail", item?.id],
     queryFn: async () => {
-      const res = await fetch(`/api/saves/detail/${encodeURIComponent(item!.id)}`);
+      const res = await fetch(`/api/saves/detail/${encodeURIComponent(item!.id)}`, { credentials: 'include' });
       if (!res.ok) return {};
       return res.json();
     },
@@ -152,7 +154,7 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
   const { data: saveStatus } = useQuery<{ isPinned: boolean }>({
     queryKey: ["/api/saves/check", item?.id],
     queryFn: async () => {
-      const res = await fetch(`/api/saves/check/${encodeURIComponent(item!.id)}`);
+      const res = await fetch(`/api/saves/check/${encodeURIComponent(item!.id)}`, { credentials: 'include' });
       if (!res.ok) return { isPinned: false };
       return res.json();
     },
@@ -177,12 +179,13 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
     mutationFn: async () => {
       console.log('[ItemModal] Mutation fired — isSaved:', isSaved, 'itemId:', item?.id);
       if (isSaved) {
-        const delRes = await fetch(`/api/saves/${encodeURIComponent(item!.id)}`, { method: "DELETE" });
+        const delRes = await fetch(`/api/saves/${encodeURIComponent(item!.id)}`, { method: "DELETE", credentials: 'include' });
         console.log('[ItemModal] DELETE response:', delRes.status);
       } else {
         const res = await fetch("/api/saves", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: 'include',
           body: JSON.stringify({
             itemType: item!.pinType || 'style',
             itemId: item!.id,
@@ -592,6 +595,11 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
+                    if (!user && !isSaved) {
+                      setPendingSaveCallback(() => () => saveMutation.mutate());
+                      setShowPassportGate(true);
+                      return;
+                    }
                     saveMutation.mutate();
                   }}
                   disabled={saveMutation.isPending}
