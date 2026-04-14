@@ -81,8 +81,8 @@ export default function BottomNav() {
         <div
           className="concierge-circle"
           style={{
-            width: 38,
-            height: 38,
+            width: 32,
+            height: 32,
             borderRadius: "50%",
             background: "#c9a84c",
             display: "flex",
@@ -91,7 +91,7 @@ export default function BottomNav() {
             boxShadow: "0 2px 12px rgba(201, 168, 76, 0.4)",
           }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
             <path d="M12 3l1.5 3.5L17 8l-3.5 1.5L12 13l-1.5-3.5L7 8l3.5-1.5z" />
           </svg>
         </div>
