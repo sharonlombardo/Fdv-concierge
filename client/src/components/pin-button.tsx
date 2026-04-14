@@ -6,19 +6,20 @@ import { triggerSaveEvent } from "./email-capture-manager";
 import { getProductByKey } from "@/lib/brand-genome";
 import { getSessionId } from "@/lib/session";
 
-function PinIcon({ size = 18, fill = "none", className }: { size?: number; fill?: string; className?: string }) {
+function HeartIcon({ size = 18, fill = "none", className }: { size?: number; fill?: string; className?: string }) {
   return (
-    <svg 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 32" 
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
       fill={fill}
       stroke="currentColor"
       strokeWidth={fill !== "none" ? 0 : 2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={className}
     >
-      <circle cx="12" cy="10" r="9" />
-      <polygon points="9,18 12,32 15,18" />
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
     </svg>
   );
 }
@@ -197,18 +198,20 @@ export function PinButton({
         className
       )}
       style={{
-        color: isPinned ? "#c9a84c" : "#ffffff",
+        color: isPinned ? "#E24B4A" : "#ffffff",
         filter: isPinned
-          ? "drop-shadow(0 0 6px rgba(201,168,76,0.5))"
+          ? "drop-shadow(0 0 6px rgba(226,75,74,0.4))"
           : "drop-shadow(0 1px 3px rgba(0,0,0,0.5))",
+        animation: pinMutation.isSuccess && pinMutation.data?.action === 'pinned'
+          ? "heart-pulse 200ms ease-out"
+          : undefined,
       }}
       disabled={pinMutation.isPending}
       data-testid={`pin-button-${itemId}`}
     >
-      <PinIcon
+      <HeartIcon
         size={iconSizes[size]}
         fill={isPinned ? "currentColor" : "none"}
-        className={isPinned ? "" : ""}
       />
     </button>
   );
