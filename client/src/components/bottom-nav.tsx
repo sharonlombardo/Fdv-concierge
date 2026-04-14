@@ -75,20 +75,19 @@ export default function BottomNav() {
       {/* CONCIERGE — pulsing gold circle, center */}
       <button
         onClick={openConcierge}
-        className="flex flex-col items-center bg-transparent border-none cursor-pointer w-full"
-        style={{ fontFamily: "Inter, sans-serif", paddingBottom: 4 }}
+        className="flex flex-col items-center justify-end gap-0.5 bg-transparent border-none cursor-pointer w-full pb-2"
+        style={{ fontFamily: "Inter, sans-serif" }}
       >
         <div
           className="concierge-circle"
           style={{
-            width: 42,
-            height: 42,
+            width: 38,
+            height: 38,
             borderRadius: "50%",
             background: "#c9a84c",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            marginTop: -10,
             boxShadow: "0 2px 12px rgba(201, 168, 76, 0.4)",
           }}
         >

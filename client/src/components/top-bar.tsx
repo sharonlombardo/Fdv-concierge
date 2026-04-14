@@ -98,41 +98,6 @@ export default function TopBar() {
           })}
         </nav>
 
-        {/* Row 2: Circular logo — centered, 35% bigger */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            padding: "2px 0 8px",
-          }}
-        >
-          <Link href="/">
-            <button
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                padding: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              aria-label="Home"
-            >
-              <img
-                src={isLanding && !scrolled ? "/logo-circle-white.png" : "/logo-circle.jpeg"}
-                alt="FDV Concierge"
-                style={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  transition: "opacity 0.4s ease",
-                }}
-              />
-            </button>
-          </Link>
-        </div>
       </header>
 
       <HamburgerDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
