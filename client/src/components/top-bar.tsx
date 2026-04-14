@@ -62,17 +62,18 @@ export default function TopBar() {
           transition: "background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease",
         }}
       >
-        {/* Row 1: Hamburger + Logo centered */}
+        {/* Row 1: Hamburger left, circular logo centered */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            height: 48,
+            justifyContent: "center",
+            height: 52,
             padding: "0 12px",
             position: "relative",
           }}
         >
-          {/* Hamburger — left */}
+          {/* Hamburger — absolutely positioned left so logo stays centered */}
           <button
             onClick={() => setDrawerOpen(true)}
             style={{
@@ -87,6 +88,8 @@ export default function TopBar() {
               transition: "color 0.4s ease",
               position: "absolute",
               left: 12,
+              top: "50%",
+              transform: "translateY(-50%)",
             }}
             aria-label="Open menu"
           >
@@ -97,7 +100,7 @@ export default function TopBar() {
             </svg>
           </button>
 
-          {/* Logo — centered */}
+          {/* Circular logo — centered */}
           <Link href="/">
             <button
               style={{
@@ -105,20 +108,23 @@ export default function TopBar() {
                 border: "none",
                 cursor: "pointer",
                 padding: 0,
-                margin: "0 auto",
-                display: "block",
-                fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
-                fontSize: 11,
-                fontWeight: 400,
-                letterSpacing: "0.22em",
-                textTransform: "uppercase" as const,
-                color: navTextColor,
-                transition: "color 0.4s ease",
-                whiteSpace: "nowrap" as const,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
               aria-label="Home"
             >
-              FIL DE VIE CONCIERGE
+              <img
+                src={isLanding && !scrolled ? "/logo-circle-white.png" : "/logo-circle.jpeg"}
+                alt="FDV Concierge"
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  transition: "opacity 0.4s ease",
+                }}
+              />
             </button>
           </Link>
         </div>

@@ -295,6 +295,10 @@
 
 @keyframes concierge-pulse {
   0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  50% { transform: scale(1.06); }
   100% { transform: scale(1); }
+}
+
+.concierge-circle {
+  animation: concierge-pulse 3s ease-in-out infinite;
 }
