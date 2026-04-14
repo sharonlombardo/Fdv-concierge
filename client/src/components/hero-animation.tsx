@@ -34,7 +34,7 @@ export function HeroAnimation() {
           height: "100%",
           objectFit: "cover",
         }}
-        src="https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/landing%20page%20video.mp4"
+        src="https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/LANDING%20FINAL.mp4"
       />
 
       {/* Mute toggle — bottom left, above bottom nav */}
