@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
 **Last updated:** April 14, 2026
-**Updated by:** Claude Code session (North Star V2 strategic doc added; landing page hero redirect removed)
+**Updated by:** Claude Code session (V2 system prompt, heart icons, nav restructure, North Star V2)
 
 > **📍 CURRENT STRATEGIC TRUTH:** See `FDV_USER_JOURNEY_NORTH_STAR_V2.md`
 > (April 14, 2026) at the repo root. That doc defines the current site
@@ -554,6 +554,158 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 14, 2026 | Claude Code (web) — Concierge V2 Prompt, Heart Icons, Full Nav Restructure, North Star V2
+
+**Topic:** Major strategic + visual overhaul day. Concierge prompt rewrite, pin→heart icon swap, complete navigation redesign, hero video update, North Star V2 committed.
+
+---
+
+**What shipped today (15 commits to main):**
+
+**1. Concierge System Prompt V2 (commits 561a2d2, dd8b5ec)**
+- Extracted system prompt from inline string in `api/index.ts` into dedicated `api/_concierge-prompt.ts`
+- Exported as `buildSystemPrompt(ctx)` taking `{ pageContext, tier, userSavesContext, voiceDocs, productCatalog, userName }`
+- V2 prompt includes: Sharon's full Morocco knowledge (restaurants, hotels, experiences, wardrobe advice), complete product catalog with prices organized by category (daytime, evening, footwear, bags, accessories, beauty), voice guidelines, user-type handling, and "what you don't do" guardrails
+- Added user first name lookup from `users` table for personalized greetings
+- Voice docs (Hydra, Mallorca, Amangiri, NYC) and full DB product inventory still appended at the end
+
+**2. Concierge Sales Guardrails (commit dd8b5ec)**
+Three prompt patches applied to `api/_concierge-prompt.ts`:
+- **"Someone who wants a trip planned"** section rewritten: DO NOT build full itineraries in chat. Show one opinionated detail, point to guide, offer paid curation.
+- **New "What to Give Away vs Hold Back" section** with explicit RIGHT/WRONG examples for itinerary requests, packing list requests, and restaurant planning requests. Single recommendations free; full plans are the paid product.
+- **"Selling the Trip" replaced with "Selling the Curation"** — surfaces the offer after demonstrating expertise, never as the opening move. Always mentions the guide as free proof of quality.
+
+**3. Heart Icons Replacing Pins (commits 29b1239, 732071d)**
+Global icon swap across the entire site:
+- `PinIcon` SVG (circle + teardrop) replaced with `HeartIcon` SVG (♡ outline / ♥ filled) in `pin-button.tsx`
+- Saved state color changed from gold `#c9a84c` to red `#E24B4A`
+- Drop shadow updated to red glow on saved state
+- Added `heart-pulse` keyframe animation (scale 1→1.2→1, 200ms) on save
+- Found and fixed 4 additional inline pin SVGs that weren't using PinButton:
+  - `item-modal.tsx` — "Save to Suitcase" button
+  - `home.tsx` — "Save This Trip" button
+  - `todays-edit.tsx` — "Save to My Edits" button
+  - `editorial-sections.tsx` — glowing suitcase link CTA
+- All saved-state background colors updated from gold to red across all 4 files
+- Confirmed zero pin SVGs remain in codebase (`viewBox="0 0 24 32"` search returns nothing)
+
+**4. Item Modal Save Bug Fix (commit cc3c122)**
+Root cause: all 4 fetch calls in ItemModal were missing `credentials: 'include'`. Without it, the auth cookie never gets sent — server can't identify the user, saves go to anonymous pool, check endpoint always returns `isPinned: false`.
+- Added `credentials: 'include'` to check, detail, POST save, and DELETE unsave fetches
+- Added passport gate check matching PinButton behavior: anonymous users now see Digital Passport signup modal before saving
+- Imported `useUser` context for auth state
+
+**5. North Star V2 Document (commit d2a41d7)**
+Updated `FDV_USER_JOURNEY_NORTH_STAR_V2.md` with major strategic shifts from Claude.ai session:
+- Revenue model: affiliate + paid curated trips ($250-$1000), NOT subscriptions
+- Gates: guide is free, gate is "Want yours?" trip brief form, not content unlock
+- Three-step framework: DISCOVER → CURATE → YOURS
+- Nav architecture: pulsing gold concierge circle center of bottom nav, numbered hamburger
+- Heart icons replacing pins globally
+- Concierge intelligence architecture: 5 layers (voice, knowledge, sales, taste reading, agent)
+- Build priority queue with prompt V2 marked shipped
+
+**6. Full Navigation Restructure (commits ad371e3 through 67795fc — 7 commits)**
+Complete redesign of top nav, bottom nav, and hamburger menu through multiple iteration rounds with Sharon reviewing live screenshots.
+
+**Top nav — final state:**
+- ABOUT · DESTINATIONS · SHOP — left-aligned, bold (Inter 11px, weight 700/800)
+- No hamburger (moved to bottom nav MENU)
+- No circular logo (removed after testing)
+- Transparent over hero, white after scroll (preserved)
+
+**Bottom nav — final state:**
+- 5 tabs: HOME · MENU · CONCIERGE · SUITCASE · PASSPORT
+- CSS grid layout (5 equal columns) for perfect centering
+- All items vertically centered in the 60px bar
+- CONCIERGE: 28px pulsing gold circle (#c9a84c), `concierge-pulse` animation (scale 1→1.08, 3s ease-in-out, with glowing box-shadow)
+- MENU dispatches `open-hamburger` custom event
+- CONCIERGE dispatches `open-concierge` custom event
+
+**Hamburger menu — final state:**
+- Full-screen slide-in overlay
+- Numbered list: |01| ABOUT through |06| YOUR PASSPORT
+- Monospace numbers with pipe delimiters, Inter uppercase labels
+- Muted subtitle descriptions below each item
+- |04| YOUR CONCIERGE opens chat overlay via `open-concierge` event (not page navigation)
+- X close button top-right
+
+**Floating concierge — updated:**
+- Floating gold bubble removed (replaced by bottom nav circle)
+- Now opens via `open-concierge` custom event listener
+- Uses ref pattern (`handleOpenRef`) so event listener always calls latest `handleOpen` with correct greeting context
+- No longer hidden on landing page (was hidden before since bubble blocked hero)
+
+**Iteration history (7 commits for nav):**
+1. `ad371e3` — Initial restructure: hamburger in top nav + bottom nav, text wordmark, numbered hamburger
+2. `107b629` — Fix: restored circular logo centered, hamburger overlap fixed, concierge pulse moved to CSS class
+3. `ce03fca` — Sharon feedback: removed top hamburger, text links bolder/top, logo below/bigger (60px)
+4. `8d8374f` — Sharon feedback: removed circular logo entirely, concierge circle clipping fix
+5. `da74836` — Sharon feedback: bolder nav text (700/800), concierge circle 32px
+6. `7bd30e6` — Sharon feedback: concierge circle 28px, pulse softened to 1.08x
+7. `67795fc` — Sharon feedback: vertically center all bottom nav items for breathing room
+
+**7. Hero Video Update (commit 3fb30c8)**
+- Video URL changed from `landing%20page%20video.mp4` to `LANDING%20FINAL.mp4`
+- Sharon re-exported video in CapCut with text repositioned to avoid edge cutoff on mobile portrait screens
+
+---
+
+**Key Architecture Decisions Locked Today:**
+
+**Business model pivot (from North Star V2):**
+- NOT a subscription styling service. Curation exists in service of travel and shopping.
+- Revenue: affiliate (always on) + curated trip packages ($250-$1000 per trip) + membership (future, yearly not monthly)
+- Gates: guide is free. The gate is "Want yours?" — a trip brief form leading to paid personalized curation.
+
+**Concierge as salesperson:**
+- Give away single recommendations freely (one restaurant, one product, one tip)
+- NEVER give away full itineraries, complete packing lists, or multi-day restaurant plans
+- Pattern: prove expertise with one detail → point to guide → offer paid curation
+
+**Hearts over pins:**
+- Universal. No learning curve. Red = love, not error.
+- Same save behavior, same suitcase routing, just visual change.
+
+**Nav architecture:**
+- Top: just text links, no icons, no logo. Clean.
+- Bottom: 5 items with concierge as prominent center element.
+- Hamburger: numbered site map, accessible from bottom MENU.
+
+---
+
+**Files Created:**
+- `api/_concierge-prompt.ts` (new — V2 system prompt as exported function)
+
+**Files Modified:**
+- `api/index.ts` (imports buildSystemPrompt, passes userName, removed inline prompt)
+- `client/src/components/pin-button.tsx` (PinIcon → HeartIcon, gold → red)
+- `client/src/components/item-modal.tsx` (heart icon, credentials:include, passport gate)
+- `client/src/pages/home.tsx` (inline pin → heart, gold → red)
+- `client/src/pages/todays-edit.tsx` (inline pin → heart, gold → red)
+- `client/src/components/editorial-sections.tsx` (inline pin → heart, gold → red)
+- `client/src/components/top-bar.tsx` (complete rewrite — text links only, no logo/hamburger)
+- `client/src/components/bottom-nav.tsx` (complete rewrite — 5-tab grid with pulsing concierge)
+- `client/src/components/hamburger-drawer.tsx` (complete rewrite — numbered 01-06 menu)
+- `client/src/components/floating-concierge.tsx` (removed bubble, added event listener)
+- `client/src/components/hero-animation.tsx` (video URL updated)
+- `client/src/index.css` (heart-pulse + concierge-pulse keyframes, .concierge-circle class)
+- `FDV_USER_JOURNEY_NORTH_STAR_V2.md` (major update with business model + architecture)
+
+**PRs/Commits:** 15 commits direct to main, all auto-deployed via `vercel --prod`. No open PRs. Working tree clean.
+
+**Build Priority Queue — Updated Status (from North Star V2):**
+1. ~~Concierge system prompt V2~~ — **DONE** (today)
+2. Landing page redesign — **PARTIAL** (hero video updated, nav done, still need to strip content below destination cards per North Star V2)
+3. ~~Heart icons replacing pins~~ — **DONE** (today)
+4. ~~Nav restructure~~ — **DONE** (today)
+5. Curate for Me timing fix — **NOT STARTED**
+6. Concierge context-aware greetings — **NOT STARTED** (floating concierge already has page greetings, but needs updating)
+7. Trip brief form — **NOT STARTED**
+8. Admin chat logging (full transcripts) — **NOT STARTED**
 
 ---
 
