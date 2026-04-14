@@ -54,7 +54,17 @@ export function FloatingConcierge() {
   const hasEmail = !!email;
   const tier = isAuthenticated ? "free" : hasEmail ? "free" : "anon";
   const messageLimit = tier === "anon" ? ANON_LIMIT : FREE_LIMIT;
-  const hidden = location === "/concierge-chat" || location === "/";
+  const hidden = location === "/concierge-chat";
+
+  // Stable ref so the event listener always calls the latest handleOpen
+  const handleOpenRef = useRef<() => void>(() => {});
+
+  // Listen for open-concierge event from bottom nav / hamburger
+  useEffect(() => {
+    const handler = () => handleOpenRef.current();
+    window.addEventListener("open-concierge", handler);
+    return () => window.removeEventListener("open-concierge", handler);
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -83,6 +93,9 @@ export function FloatingConcierge() {
       sessionStorage.setItem("fdv_concierge_greeted", "true");
     }
   }, [location]);
+
+  // Keep ref in sync with latest handleOpen
+  handleOpenRef.current = handleOpen;
 
   const sendMessage = useCallback(async () => {
     const text = input.trim();
@@ -170,36 +183,7 @@ export function FloatingConcierge() {
 
   return (
     <>
-      {/* Floating icon — bottom right, above bottom nav */}
-      {!isOpen && (
-        <button
-          onClick={handleOpen}
-          aria-label="Open concierge"
-          style={{
-            position: "fixed",
-            bottom: 76,
-            right: 16,
-            zIndex: 85,
-            width: 48,
-            height: 48,
-            borderRadius: "50%",
-            background: "#c9a84c",
-            border: "none",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 2px 12px rgba(0,0,0,0.15)",
-            transition: "transform 0.2s",
-          }}
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-          </svg>
-        </button>
-      )}
-
-      {/* Slide-up chat panel */}
+      {/* Slide-up chat panel — triggered by bottom nav concierge button */}
       {isOpen && (
         <div
           style={{
