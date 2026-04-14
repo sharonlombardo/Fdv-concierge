@@ -557,6 +557,60 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 14, 2026 | Claude.ai — Strategy Session: North Star V2, Concierge Prompt, Business Model Pivot
+
+**What shipped (Claude.ai directing, Claude Code executing):**
+
+**Concierge System Prompt V2 (commit 561a2d2):**
+Full rewrite of Claude API system prompt. Sharon's Morocco voice: every restaurant, hotel, experience with real opinions. Product catalog: 40+ products with prices, organized by moment (day/evening/accessories/beauty). Voice guidelines: warm, direct, opinionated — makes calls, doesn't hedge. Site navigation knowledge: can walk any user through the entire site. Context-aware: reads current page, user saves, auth state, user name.
+
+**Concierge Sales Guardrails (follow-up patch):**
+"What to give away vs what to hold back" rules. Single recommendations = free. Full itineraries/packing lists = paid product. Three explicit RIGHT vs WRONG examples. Concierge now routes to guide + offers curated trip service. "Selling the Curation" section: when and how to surface the paid offer.
+
+**Heart Icons Replacing Pins (commits 29b1239, 732071d):**
+Global swap: every pin icon → heart icon. Unsaved: outline heart (♡), muted. Saved: filled heart (♥) in red (#E24B4A). Subtle scale pulse on save. 5 files updated. Zero pin SVGs remain.
+
+**Item Modal Save Fix:**
+Root cause: all 4 fetch calls missing `credentials: 'include'` — auth cookie wasn't sent, saves went to anonymous pool. Added passport gate for anonymous users.
+
+**Nav Restructure (7 iteration rounds):**
+Top nav: ABOUT · DESTINATIONS · SHOP (left-aligned, bold). No logo, nothing on right. Bottom nav: HOME · MENU · CONCIERGE (pulsing gold circle) · SUITCASE · PASSPORT. CSS grid, vertically centered. Hamburger: full-screen numbered |01|-|06| menu. Floating concierge bubble removed.
+
+**Hero Video Update:** New LANDING FINAL.mp4 — text no longer cut off on narrow screens.
+
+**North Star V2 — Major Strategy Document:**
+Business model pivot: subscriptions → transactional (pay per curated trip). Revenue: affiliate (always on) + curated trips ($250-500 plan, $500-1000+ full service) + future membership (club, not subscription). Three-step framework: DISCOVER → CURATE → YOURS. Complete nav architecture locked. Concierge Intelligence Architecture added as major workstream (5 layers: voice, knowledge, sales, taste reading, agent). Gates reframed: no more "unlock the itinerary" → "Want yours?" → brief form → personalized trip → payment.
+
+**What's Next — Tomorrow:**
+1. **Landing page redesign** — hero video → atmospheric text → destination cards → end. Strip everything else (Current, category tabs, shop carousel, etc.)
+2. **Curate for Me timing fix** — remove on-signup trigger, surface after 3-4 saves via concierge chat bubble
+3. **Concierge context-aware greetings** — different message per page
+4. **Admin chat logging** — full conversation transcripts in dashboard
+
+**Remaining from yesterday (Morocco guide):**
+- Merchandise editorial break modals (multi-product per image)
+- Multi-image product modals (studio + editorial context shot)
+- Product sorting audit across Day/Evening/Travel carousels
+- "Shop the Full Edit" → Morocco filter
+- Desktop layout polish
+
+**Outstanding Business Items:**
+- Financial model: needs curated trip pricing, AOV from FIL DE VIE, Klaviyo email open rate
+- VC deck: "Taste in Motion" slide needs real product examples
+- Lisa Ruffle outreach (DOTSHOP)
+- Gillian intro via April
+- Melissa (Exclusive Resorts) partnership
+- Chad Nelson (OpenAI) enterprise team follow-up
+- Quentin Clark / Warren Shaeffer investor connections
+
+**Key Reference Files:**
+- `FDV_USER_JOURNEY_NORTH_STAR_V2.md` — single source of truth
+- `api/_concierge-prompt.ts` — live V2 prompt in codebase
+
+**Context for next session:** Load shared brain from GitHub. Continuing from April 14. Nav, hearts, concierge prompt, and business model pivot all shipped. Tomorrow's focus: landing page redesign (the last big piece of the front door). North Star V2 is the single source of truth — read it first.
+
+---
+
 ### April 14, 2026 | Claude Code (web) — Concierge V2 Prompt, Heart Icons, Full Nav Restructure, North Star V2
 
 **Topic:** Major strategic + visual overhaul day. Concierge prompt rewrite, pin→heart icon swap, complete navigation redesign, hero video update, North Star V2 committed.
