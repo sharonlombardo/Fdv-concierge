@@ -973,16 +973,15 @@ function SaveTripButton() {
       disabled={saveTripMutation.isPending || isSaved}
       className="inline-flex items-center gap-2 py-3 px-8 text-xs tracking-[0.2em] uppercase transition-all"
       style={{
-        backgroundColor: isSaved ? '#c9a84c' : 'transparent',
+        backgroundColor: isSaved ? '#E24B4A' : 'transparent',
         color: isSaved ? '#ffffff' : '#1a1a1a',
-        border: isSaved ? '1px solid #c9a84c' : '1px solid #1a1a1a',
+        border: isSaved ? '1px solid #E24B4A' : '1px solid #1a1a1a',
         fontFamily: "'Inter', sans-serif",
         opacity: saveTripMutation.isPending ? 0.5 : 1,
       }}
     >
-      <svg width="14" height="14" viewBox="0 0 24 32" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth={isSaved ? 0 : 2}>
-        <circle cx="12" cy="10" r="9" />
-        <polygon points="9,18 12,32 15,18" />
+      <svg width="14" height="14" viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth={isSaved ? 0 : 2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
       </svg>
       <span>{isSaved ? 'Trip Saved' : 'Save This Trip'}</span>
     </button>

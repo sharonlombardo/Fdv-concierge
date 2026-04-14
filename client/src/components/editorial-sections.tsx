@@ -422,21 +422,22 @@ export function EditorialDaySection({ day, getImageUrl, hasCustomImage, onOpenPr
           <p className="font-serif text-xl md:text-2xl lg:text-3xl italic font-light leading-relaxed text-muted-foreground">
             "{day.mantra}"
           </p>
-          {/* Glowing gold pin CTA */}
+          {/* Glowing red heart CTA */}
           <a href="/suitcase" className="shrink-0 group">
             <svg
               width="22"
-              height="28"
-              viewBox="0 0 24 32"
-              fill="#c9a84c"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="#E24B4A"
               stroke="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               className="transition-all group-hover:scale-110"
               style={{
-                filter: "drop-shadow(0 0 6px rgba(201,168,76,0.5))",
+                filter: "drop-shadow(0 0 6px rgba(226,75,74,0.4))",
               }}
             >
-              <circle cx="12" cy="10" r="9" />
-              <polygon points="9,18 12,32 15,18" />
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
           </a>
         </div>
