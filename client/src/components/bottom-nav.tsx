@@ -81,15 +81,15 @@ export default function BottomNav() {
         <div
           className="concierge-circle"
           style={{
-            width: 44,
-            height: 44,
+            width: 42,
+            height: 42,
             borderRadius: "50%",
             background: "#c9a84c",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            marginTop: -14,
-            boxShadow: "0 2px 10px rgba(201, 168, 76, 0.35)",
+            marginTop: -10,
+            boxShadow: "0 2px 12px rgba(201, 168, 76, 0.4)",
           }}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8">

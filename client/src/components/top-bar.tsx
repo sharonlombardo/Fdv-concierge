@@ -42,9 +42,8 @@ export default function TopBar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLanding]);
 
-  const iconColor = isLanding && !scrolled ? "#ffffff" : "#2c2416";
   const navTextColor = isLanding && !scrolled ? "#ffffff" : "#2c2416";
-  const navMutedColor = isLanding && !scrolled ? "rgba(255,255,255,0.85)" : "rgba(44,36,22,0.45)";
+  const navMutedColor = isLanding && !scrolled ? "rgba(255,255,255,0.9)" : "rgba(44,36,22,0.5)";
   const navBorderColor = isLanding && !scrolled ? "rgba(255,255,255,0.8)" : "#1A1A18";
 
   return (
@@ -62,45 +61,51 @@ export default function TopBar() {
           transition: "background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease",
         }}
       >
-        {/* Row 1: Hamburger left, circular logo centered */}
-        <div
+        {/* Row 1: ABOUT · DESTINATIONS · SHOP — left-aligned, bold */}
+        <nav
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            height: 52,
-            padding: "0 12px",
-            position: "relative",
+            gap: 6,
+            padding: "10px 16px 4px",
           }}
         >
-          {/* Hamburger — absolutely positioned left so logo stays centered */}
-          <button
-            onClick={() => setDrawerOpen(true)}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 8,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: iconColor,
-              transition: "color 0.4s ease",
-              position: "absolute",
-              left: 12,
-              top: "50%",
-              transform: "translateY(-50%)",
-            }}
-            aria-label="Open menu"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
+          {NAV_LINKS.map((link) => {
+            const active = isNavActive(link.href, location);
+            return (
+              <Link key={link.href} href={link.href}>
+                <button
+                  style={{
+                    background: "none",
+                    border: active ? `0.5px solid ${navBorderColor}` : "0.5px solid transparent",
+                    borderRadius: 0,
+                    cursor: "pointer",
+                    padding: "4px 8px",
+                    fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
+                    fontSize: 10,
+                    fontWeight: active ? 700 : 600,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase" as const,
+                    color: active ? navTextColor : navMutedColor,
+                    transition: "color 0.4s ease, border-color 0.4s ease",
+                    whiteSpace: "nowrap" as const,
+                  }}
+                >
+                  {link.label}
+                </button>
+              </Link>
+            );
+          })}
+        </nav>
 
-          {/* Circular logo — centered */}
+        {/* Row 2: Circular logo — centered, 35% bigger */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "2px 0 8px",
+          }}
+        >
           <Link href="/">
             <button
               style={{
@@ -118,8 +123,8 @@ export default function TopBar() {
                 src={isLanding && !scrolled ? "/logo-circle-white.png" : "/logo-circle.jpeg"}
                 alt="FDV Concierge"
                 style={{
-                  width: 44,
-                  height: 44,
+                  width: 60,
+                  height: 60,
                   borderRadius: "50%",
                   objectFit: "cover",
                   transition: "opacity 0.4s ease",
@@ -128,43 +133,6 @@ export default function TopBar() {
             </button>
           </Link>
         </div>
-
-        {/* Row 2: ABOUT · DESTINATIONS · SHOP — left-aligned */}
-        <nav
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 4,
-            padding: "0 16px 8px",
-          }}
-        >
-          {NAV_LINKS.map((link) => {
-            const active = isNavActive(link.href, location);
-            return (
-              <Link key={link.href} href={link.href}>
-                <button
-                  style={{
-                    background: "none",
-                    border: active ? `0.5px solid ${navBorderColor}` : "0.5px solid transparent",
-                    borderRadius: 0,
-                    cursor: "pointer",
-                    padding: "4px 7px",
-                    fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
-                    fontSize: 9,
-                    fontWeight: active ? 600 : 500,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase" as const,
-                    color: active ? navTextColor : navMutedColor,
-                    transition: "color 0.4s ease, border-color 0.4s ease",
-                    whiteSpace: "nowrap" as const,
-                  }}
-                >
-                  {link.label}
-                </button>
-              </Link>
-            );
-          })}
-        </nav>
       </header>
 
       <HamburgerDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
