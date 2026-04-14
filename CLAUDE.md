@@ -1,7 +1,13 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** April 13, 2026
-**Updated by:** Claude Code session (Morocco wardrobe carousels — products merged into carousels, sizing fix, curation pass)
+**Last updated:** April 14, 2026
+**Updated by:** Claude Code session (North Star V2 strategic doc added; landing page hero redirect removed)
+
+> **📍 CURRENT STRATEGIC TRUTH:** See `FDV_USER_JOURNEY_NORTH_STAR_V2.md`
+> (April 14, 2026) at the repo root. That doc defines the current site
+> architecture, nav, business model (affiliate + trip packages, not
+> subscription gates), and build priority. It supersedes all earlier user
+> journey briefs.
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
