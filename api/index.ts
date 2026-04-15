@@ -1889,11 +1889,11 @@ Use these to personalize your responses. Reference specific items they've saved 
                   const genomeKey = genomeProduct?.database_match_key || null;
                   const shopUrl = genomeProduct?.url || null;
                   const category = genomeProduct?.category || null;
-                  // Use genome key as item_id if found — suitcase resolves images from it
                   const saveItemId = genomeKey ? genomeKey.toLowerCase() : itemId;
+                  const metadata = genomeKey ? JSON.stringify({ genomeKey: genomeKey.toLowerCase(), title: item.title, brand: item.brand, price: item.price }) : null;
                   await pool.query(
-                    `INSERT INTO saves (item_type, item_id, source_context, title, brand, price, story_tag, edit_tag, user_email, saved_at, shop_url, category)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+                    `INSERT INTO saves (item_type, item_id, source_context, title, brand, price, story_tag, edit_tag, user_email, saved_at, shop_url, category, metadata)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
                     [
                       'style',
                       saveItemId,
@@ -1907,6 +1907,7 @@ Use these to personalize your responses. Reference specific items they've saved 
                       Date.now(),
                       shopUrl,
                       category,
+                      metadata,
                     ]
                   );
                   savedItems.push(`${item.brand} ${item.title}`);
