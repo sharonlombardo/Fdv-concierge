@@ -905,3 +905,51 @@
   }
 
 }
+
+/* ── DESKTOP POLISH (min-width 1025px) ── */
+@media (min-width: 1025px) {
+  /* Constrain guide content to readable width */
+  .morocco-guide {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Place blocks — limit width for readability */
+  .morocco-guide .place-block {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Editorial captions — slightly larger on desktop */
+  .morocco-guide .editorial-caption {
+    font-size: 21px;
+  }
+
+  /* Full-bleed images — constrain and center */
+  .morocco-guide .full-image {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 4px;
+  }
+
+  /* Product tiles in carousels — larger on desktop */
+  .morocco-guide .place-images > .product-tile {
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    max-width: 280px !important;
+  }
+
+  /* Guide hero — more breathing room */
+  .morocco-guide .guide-hero {
+    padding: 100px 60px 80px;
+  }
+
+  /* Footer — constrain */
+  .morocco-guide .guide-footer {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

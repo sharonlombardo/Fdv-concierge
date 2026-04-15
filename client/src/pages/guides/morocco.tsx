@@ -18,9 +18,7 @@ const DAY_PRODUCTS: EditorialProduct[] = [
   { id: 'guide-day-1', brand: 'Fil de Vie', name: 'Juno Blouse & Marrakech Pants', price: null, shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fdv:junoblouse:marrakechpant:stripe.jpg' },
   { id: 'guide-day-2', brand: 'Bottega Veneta', name: 'Kalimero Bag', price: '$4,100', shopUrl: 'https://www.bottegaveneta.com/en-us/small-kalimero-citta-fondant-813744715.html', imageUrl: '', genomeKey: 'accessory:bag:bottega:kalimero:black.jpg' },
   { id: 'guide-day-3', brand: 'A Emery', name: 'Kir Sandal', price: '$185', shopUrl: 'https://aemery.com/products/the-kir-sandal-black', imageUrl: '', genomeKey: 'footwear, amery kit sandal.jpg' },
-  { id: 'guide-day-4', brand: 'Bulgari via 1st Dibs', name: 'Lapis Cabachon Necklace', price: '$50,000', shopUrl: 'https://www.1stdibs.com/jewelry/necklaces/pendant-necklaces/bvlgari-1980s-unheated-sapphire-gold-necklace/id-j_28202612/', imageUrl: '', genomeKey: 'accessory:jewelry:bulgari:cabachon necklace.jpg' },
-  { id: 'guide-day-5', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: '', genomeKey: 'access:sugnlasses:loewe:black.jpg' },
-  { id: 'guide-day-6', brand: 'Saint Jane', name: 'Sunscreen', price: '$38', shopUrl: 'https://saintjanebeauty.com/collections/sun-protection-spf/products/luxury-sun-ritual', imageUrl: '', genomeKey: 'beauty:sainjane:sunritual.jpg' },
+  // Bulgari necklace, Loewe sunglasses, Saint Jane sunscreen moved to EVE/TRAVEL where they belong
   // Extended SHOP THE STORY pieces — Day clothing
   { id: 'guide-day-cybel', brand: 'FIL DE VIE', name: 'Cybel Blouse & Marrakech Pants', price: '$395 & $350', shopUrl: 'https://fildevie.com/collections/tops-auto/products/cybele-blouse', imageUrl: '', genomeKey: 'LOOK:FDV:CYBELBLOUSE:STRIPE.jpg' },
   { id: 'guide-day-diana', brand: 'FIL DE VIE', name: 'Diana Dress', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'LOOK:FDV:DIANADRES:STRIPE.jpg' },
@@ -652,7 +650,7 @@ export default function MoroccoGuide() {
   };
 
   // Shared tap handler for editorial products — used by overlay AND by tile taps
-  const openEditorialProductModal = (product: EditorialProduct) => {
+  const openEditorialProductModal = (product: EditorialProduct, editorialContextUrl?: string) => {
     const genome = product.genomeKey ? getProductByKey(product.genomeKey) : undefined;
     const studioUrl = product.genomeKey ? getShopImageUrl(product.genomeKey) : '';
     setSelectedItem({
@@ -671,6 +669,7 @@ export default function MoroccoGuide() {
       sizes: genome?.sizes,
       shopStatus: genome?.shop_status,
       genomeKey: product.genomeKey,
+      editorialImageUrl: editorialContextUrl || product.imageUrl || undefined,
     });
     setDrawerOpen(true);
   };
@@ -1314,8 +1313,9 @@ export default function MoroccoGuide() {
           products={overlayData.products}
           onClose={() => setOverlayData(null)}
           onProductTap={(product) => {
+            const editorialUrl = overlayData.imageUrl;
             setOverlayData(null);
-            openEditorialProductModal(product);
+            openEditorialProductModal(product, editorialUrl);
           }}
         />
       )}

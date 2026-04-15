@@ -35,6 +35,7 @@ export type ItemModalData = {
   sizes?: string[];
   shopStatus?: "live" | "coming_soon";
   genomeKey?: string; // database_match_key for genome lookup
+  editorialImageUrl?: string; // context shot from editorial break
 };
 
 type ItemModalProps = {
@@ -338,22 +339,62 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
 
           {/* Scrollable content — takes remaining space */}
           <div className="flex-1 overflow-y-auto min-h-0">
-            {/* Image — 60%+ of modal */}
-            <div className={`relative w-full aspect-[3/4] ${imageBg}`}>
-              {item.imageUrl ? (
-                <img
-                  src={item.imageUrl}
-                  alt={item.title}
-                  className={`w-full h-full ${imageObjectFit}`}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-[#1a1a1a]/40 text-sm uppercase tracking-widest">
-                    {item.title}
-                  </span>
+            {/* Image(s) — studio shot + optional editorial context shot */}
+            {(() => {
+              const images: { url: string; fit: string }[] = [];
+              if (item.imageUrl) images.push({ url: item.imageUrl, fit: imageObjectFit });
+              if (item.editorialImageUrl && item.editorialImageUrl !== item.imageUrl) {
+                images.push({ url: item.editorialImageUrl, fit: "object-cover" });
+              }
+
+              if (images.length <= 1) {
+                return (
+                  <div className={`relative w-full aspect-[3/4] ${imageBg}`}>
+                    {images[0] ? (
+                      <img src={images[0].url} alt={item.title} className={`w-full h-full ${images[0].fit}`} />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="text-[#1a1a1a]/40 text-sm uppercase tracking-widest">{item.title}</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              // Multi-image swipeable gallery
+              return (
+                <div className="relative">
+                  <div
+                    style={{
+                      display: "flex",
+                      overflowX: "scroll",
+                      scrollSnapType: "x mandatory",
+                      WebkitOverflowScrolling: "touch",
+                      msOverflowStyle: "none",
+                      scrollbarWidth: "none",
+                    }}
+                    className="hide-scrollbar"
+                  >
+                    {images.map((img, idx) => (
+                      <div
+                        key={idx}
+                        className={`w-full aspect-[3/4] flex-shrink-0 ${imageBg}`}
+                        style={{ scrollSnapAlign: "center" }}
+                      >
+                        <img src={img.url} alt={`${item.title} ${idx === 0 ? "studio" : "editorial"}`} className={`w-full h-full ${img.fit}`} />
+                      </div>
+                    ))}
+                  </div>
+                  {/* Dot indicators */}
+                  <div style={{ display: "flex", justifyContent: "center", gap: 6, padding: "8px 0" }}>
+                    {images.map((_, idx) => (
+                      <div key={idx} style={{ width: 6, height: 6, borderRadius: "50%", background: idx === 0 ? "#2c2416" : "rgba(44,36,22,0.2)" }} />
+                    ))}
+                  </div>
+                  <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; }`}</style>
                 </div>
-              )}
-            </div>
+              );
+            })()}
 
             {/* Content area — pb-28 ensures CTA clears fixed bottom nav (~64px) */}
             <div className="px-6 pb-28 pt-5 space-y-4">
