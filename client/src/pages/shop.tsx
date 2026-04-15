@@ -1,7 +1,18 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { getAllProducts, getShopImageUrl, type BrandGenomeProduct } from "@/lib/brand-genome";
 import { ItemModal } from "@/components/item-modal";
 import type { ItemModalData } from "@/components/item-modal";
+
+// Morocco collection — brands/products featured in the Morocco guide
+const MOROCCO_BRANDS = new Set([
+  "FIL DE VIE", "Fil de Vie", "Alaïa", "Alaia", "Phoebe Philo",
+  "A Emery", "Bottega Veneta", "DeMellier", "Chloé", "Chloe",
+  "Ferragamo", "Loewe", "Saint Jane", "Le Prunier", "Poppy King",
+  "Yves Saint Laurent", "YSL", "Bulgari", "1st Dibs", "Bienaime",
+  "Gabriella Hearst", "Paco Rabanne", "Violette_FR", "Hildegaard",
+  "Smythson", "Aman",
+]);
 
 // Per-product image adjustments for editorial photos with small subjects
 // position: where to anchor the crop, scale: zoom factor to fill frame
@@ -35,9 +46,13 @@ function matchesFilter(product: BrandGenomeProduct, filter: string): boolean {
 }
 
 export default function ShopPage() {
+  const [location, navigate] = useLocation();
   const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("ALL");
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const destinationFilter = urlParams.get("destination");
 
   const products = getAllProducts();
 
@@ -49,6 +64,12 @@ export default function ShopPage() {
 
   const filteredProducts = products
     .filter(p => matchesFilter(p, activeFilter))
+    .filter(p => {
+      if (destinationFilter === "morocco") {
+        return MOROCCO_BRANDS.has(p.brand);
+      }
+      return true;
+    })
     .filter(p => {
       const url = getImgUrl(p);
       return url !== "";
@@ -102,7 +123,7 @@ export default function ShopPage() {
               marginBottom: 8,
             }}
           >
-            Shop
+            {destinationFilter === "morocco" ? "The Morocco Edit" : "Shop"}
           </h1>
           <p
             style={{
@@ -112,8 +133,27 @@ export default function ShopPage() {
               color: "rgba(0,0,0,0.5)",
             }}
           >
-            Every object, chosen with intention.
+            {destinationFilter === "morocco"
+              ? "Every piece from the Morocco guide, in one place."
+              : "Every object, chosen with intention."}
           </p>
+          {destinationFilter && (
+            <button
+              onClick={() => navigate("/shop")}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 11,
+                color: "#c9a84c",
+                marginTop: 8,
+                padding: 0,
+              }}
+            >
+              ← View all products
+            </button>
+          )}
         </header>
 
         {/* Category filter pills */}

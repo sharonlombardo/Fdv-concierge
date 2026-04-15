@@ -94,23 +94,53 @@ const BLOB_V2 = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-
 
 /* ── Editorial product map: image slot key → products shown in that image ── */
 const EDITORIAL_PRODUCT_MAP: Record<string, EditorialProduct[]> = {
-  "morocco-style-1": [
-    { id: "edit-ysl-bikini", brand: "Yves Saint Laurent", name: "LouLou Bikini", price: "$795", shopUrl: "https://www.ysl.com", imageUrl: `${BLOB_V2}/morocco-style-1`, genomeKey: "look:ysl:bikini:black.jpg" },
-  ],
+  // Break 1 — Gaia Dress: hero garment + shoe + bag + accessory + beauty
   "morocco-tile-1": [
     { id: "edit-pp-gaia", brand: "Phoebe Philo", name: "Gaia Dress", price: "$2,360", shopUrl: "https://us.phoebephilo.com", imageUrl: `${BLOB_V2}/morocco-tile-1`, genomeKey: "look:phoebephilo:gaiadress:black.jpg" },
+    { id: "edit-bulgari-cab", brand: "1st Dibs", name: "Lapis Cabochon Necklace", price: "$50,000", genomeKey: "accessory:jewelry:bulgari:cabachon necklace.jpg" },
+    { id: "edit-emery-kir", brand: "A Emery", name: "Kir Sandal", price: "$185", genomeKey: "footwear, amery kit sandal.jpg" },
+    { id: "edit-demellier-sant", brand: "DeMellier", name: "Santorini Basket Bag", price: "$355", genomeKey: "accessory:bag:demellier:santorini:natural.jpg" },
+    { id: "edit-leprunier", brand: "Le Prunier", name: "Plumscreen Sunscreen", price: "$80", genomeKey: "beauty:leprunier:plumscreen.jpg" },
   ],
+  // Break 2 — Alaïa Souk Coat
   "morocco-tile-3": [
     { id: "edit-alaia-coat", brand: "Alaïa", name: "Souk Coat & Desert Pant", price: "$1,200/$760", shopUrl: "https://www.alaia.com", imageUrl: `${BLOB_V2}/morocco-tile-3`, genomeKey: "Look:alia:soukcoat:desertpants:blush.jpg" },
+    { id: "edit-loewe-cat", brand: "Loewe", name: "Inflated Cat Eye Sunglasses", price: "$440", genomeKey: "accessory:sunglasses:loewe:inflatedcateye:black.jpg" },
+    { id: "edit-bv-kalimero", brand: "Bottega Veneta", name: "Kalimero Bag", price: "$4,100", genomeKey: "accessory:bag:bottega:kalimero:black.jpg" },
+    { id: "edit-pp-robe", brand: "Phoebe Philo", name: "Robe Slide", price: "$890", genomeKey: "footwear:khaite:otto:wht.jpg" },
+    { id: "edit-bienaime", brand: "Bienaime", name: "Rituel De Geisha Papers", price: "$23", genomeKey: "beauty:rituelgeinsha.jpg" },
   ],
+  // Break 3 — FDV Long Caftan Red
+  "morocco-motion-1": [
+    { id: "edit-fdv-caftan", brand: "Fil de Vie", name: "Long Caftan Dress, Red", price: "$825", shopUrl: "http://www.fildevie.com", imageUrl: `${BLOB_V2}/morocco-motion-1`, genomeKey: "look:fdv:philomenacaftan:sand.jpg" },
+    { id: "edit-bulgari-serp", brand: "Bulgari", name: "Serpenti Watch", price: "$13,200", genomeKey: "accessory:jewelry:bulgari:serpenti:blackrose.jpg" },
+    { id: "edit-chloe-wrist", brand: "Chloé", name: "Wristlette", price: "$4,200", genomeKey: "access:bag:chloe:wristlette:black.jpg" },
+    { id: "edit-alaia-mules", brand: "Alaïa", name: "Heel Thong Mules in Velvet", price: "$1,450", genomeKey: "footwear:alaia:black.jpg" },
+    { id: "edit-poppy-lip", brand: "Poppy King", name: "Original Sin Lipstick", price: "$34", genomeKey: "beauty:poppyking:sinlipstick:red.jpg" },
+  ],
+  // Break 4 — FDV Este Dress
   "morocco-tile-5": [
     { id: "edit-fdv-este", brand: "Fil de Vie", name: "Este Dress", price: "$675", shopUrl: "http://www.fildevie.com", imageUrl: `${BLOB_V2}/morocco-tile-5`, genomeKey: "look:fildevie:estedress:black.jpg" },
+    { id: "edit-demellier-2", brand: "DeMellier", name: "Santorini Basket Bag", price: "$355", genomeKey: "accessory:bag:demellier:santorini:natural.jpg" },
+    { id: "edit-emery-kir-2", brand: "A Emery", name: "Kir Sandal", price: "$185", genomeKey: "footwear, amery kit sandal.jpg" },
+    { id: "edit-pp-peak", brand: "Phoebe Philo", name: "Peak Sunglasses", price: "$460", genomeKey: "accessory:phoebephilo:peaksunglasses:black.jpg" },
+    { id: "edit-fdv-mist", brand: "Fil de Vie", name: "Travel Mist", price: "$75", genomeKey: "beauty:fdv:travelmist.jpg" },
   ],
+  // Break 5 — YSL Bikini
+  "morocco-style-1": [
+    { id: "edit-ysl-bikini", brand: "Yves Saint Laurent", name: "LouLou Bikini", price: "$795", shopUrl: "https://www.ysl.com", imageUrl: `${BLOB_V2}/morocco-style-1`, genomeKey: "look:ysl:bikini:black.jpg" },
+    { id: "edit-fdv-pool", brand: "Fil de Vie", name: "Pool Essentials", price: "$600", genomeKey: "access:bag:towel:fdv:poolessentials:olive.jpg" },
+    { id: "edit-pp-hoops", brand: "Phoebe Philo", name: "Gold Studded Hoops", price: "$550", genomeKey: "feb 26 prod info pg 1.jpg - item 6" },
+    { id: "edit-pp-peak-2", brand: "Phoebe Philo", name: "Peak Sunglasses", price: "$460", genomeKey: "accessory:phoebephilo:peaksunglasses:black.jpg" },
+    { id: "edit-saintjane", brand: "Saint Jane", name: "Sun Ritual Mineral SPF 30", price: "$38", genomeKey: "beauty:sainjane:sunritual.jpg" },
+  ],
+  // Break 6 — FDV Column Dress
   "morocco-object-1": [
-    { id: "edit-fdv-column", brand: "Fil de Vie", name: "Column Dress", price: "$765", shopUrl: "http://www.fildevie.com", imageUrl: `${BLOB_V2}/morocco-object-1`, genomeKey: "look:fildevie:columndress:black.jpg" },
-  ],
-  "morocco-motion-1": [
-    { id: "edit-fdv-caftan", brand: "Fil de Vie", name: "Long Caftan Dress", price: "$825", shopUrl: "http://www.fildevie.com", imageUrl: `${BLOB_V2}/morocco-motion-1`, genomeKey: "look:fdv:philomenacaftan:sand.jpg" },
+    { id: "edit-fdv-column", brand: "Fil de Vie", name: "Column Dress", price: "$745", shopUrl: "http://www.fildevie.com", imageUrl: `${BLOB_V2}/morocco-object-1`, genomeKey: "look:fildevie:columndress:black.jpg" },
+    { id: "edit-ferragamo", brand: "Ferragamo", name: "Loly Leather Thong Sandals", price: "$490", genomeKey: "footwear:ferragamo:lolysandal:black.jpg" },
+    { id: "edit-demellier-3", brand: "DeMellier", name: "Santorini Basket Bag", price: "$355", genomeKey: "accessory:bag:demellier:santorini:natural.jpg" },
+    { id: "edit-pp-bombe", brand: "Phoebe Philo", name: "Bombe Sunglasses", price: "$750", genomeKey: "look:phoebephilo:bombesunglasses:brown.jpg" },
+    { id: "edit-violette", brand: "Violette_FR", name: "Nectar Lip Stain", price: "$29", genomeKey: "beauty:violettefr:necatrlipstain.jpg" },
   ],
   // Wardrobe day images → DAY_PRODUCTS
   "ward-1-large": DAY_PRODUCTS,
@@ -1236,6 +1266,24 @@ export default function MoroccoGuide() {
       </div>
 
       <hr className="divider" />
+
+      {/* Shop the Full Edit link */}
+      <div style={{ textAlign: 'center', padding: '32px 24px' }}>
+        <Link href="/shop?destination=morocco">
+          <span style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 12,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color: '#c9a84c',
+            borderBottom: '1px solid #c9a84c',
+            paddingBottom: 2,
+            cursor: 'pointer',
+          }}>
+            Shop the Full Edit →
+          </span>
+        </Link>
+      </div>
 
       {/* ═══ TRIP TEASER + BRIEF FORM — "Want yours?" conversion moment ═══ */}
       <TripTeaserAndBriefForm />
