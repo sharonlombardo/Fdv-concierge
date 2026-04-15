@@ -2,13 +2,14 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import { DESTINATIONS } from "@shared/destinations";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { PinButton } from "@/components/pin-button";
 
 const SLIDE_WIDTH_PERCENT = 68; // % of viewport — ~16% peek each side
 const GAP = 3; // px between slides — thin sliver like Zara
 
 export default function Destinations() {
+  const [, navigate] = useLocation();
   const { data: imageSlotsData } = useImageSlots();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -79,10 +80,12 @@ export default function Destinations() {
           return (
             <div
               key={dest.slug}
+              onClick={() => dest.available && navigate(dest.route)}
               className="relative flex-shrink-0 snap-center rounded-2xl overflow-hidden"
               style={{
                 width: `${SLIDE_WIDTH_PERCENT}vw`,
                 height: "100%",
+                cursor: dest.available ? "pointer" : "default",
               }}
             >
               {/* Full-bleed background image */}

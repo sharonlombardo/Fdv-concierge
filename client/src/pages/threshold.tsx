@@ -134,6 +134,7 @@ export default function Threshold() {
             return (
               <div
                 key={dest.slug}
+                onClick={() => dest.available && navigate(dest.route)}
                 style={{
                   flex: `0 0 ${SLIDE_WIDTH_PERCENT}vw`,
                   scrollSnapAlign: "center",
@@ -142,6 +143,7 @@ export default function Threshold() {
                   position: "relative",
                   height: "70vh",
                   minHeight: 480,
+                  cursor: dest.available ? "pointer" : "default",
                 }}
               >
                 {/* Image */}
