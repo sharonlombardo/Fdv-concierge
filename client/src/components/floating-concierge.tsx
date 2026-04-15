@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
 import { useUser } from "@/contexts/user-context";
 import { getSessionId } from "@/lib/session";
+import { ConciergeOrb, type OrbState } from "./concierge-orb";
 
 interface Message {
   role: "user" | "assistant" | "gate";
@@ -38,17 +39,14 @@ const RETURNING_DEFAULT = "Welcome back. Where to?";
 const CURATE_PROMPT_GREETING = "I'm starting to see what moves you. Want me to build your trip around it?";
 
 function getGreeting(path: string, isFirstChat: boolean, saveCount: number, curatePromptShown: boolean): string {
-  // Special trigger: 3+ saves and curate prompt not yet shown
   if (saveCount >= 3 && !curatePromptShown) {
     return CURATE_PROMPT_GREETING;
   }
 
   if (isFirstChat) {
-    // Check for suitcase with saves
     if (path.startsWith("/suitcase") && saveCount > 0) {
       return FIRST_TIME_SUITCASE_HAS_SAVES;
     }
-    // Check exact matches first, then prefix matches
     for (const [prefix, greeting] of Object.entries(FIRST_TIME_GREETINGS)) {
       if (prefix === "/" ? path === "/" : path.startsWith(prefix)) return greeting;
     }
@@ -68,6 +66,35 @@ const FREE_LIMIT = 15;
 const ANON_GATE_MSG = "I'd love to keep going — I can tell you have good taste. Create your Digital Passport and I'm all yours. It takes 10 seconds.";
 const FREE_GATE_MSG = "I've enjoyed this. If you want me to really learn what moves you — what you save, what catches your eye, what you'd never wear — that's your Gold Passport. I get a lot better when I know you.";
 
+// ─── Speech API feature detection ────────────────────────────────────────────
+const hasSpeechRecognition =
+  typeof window !== "undefined" &&
+  ("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
+
+const hasSpeechSynthesis =
+  typeof window !== "undefined" && "speechSynthesis" in window;
+
+function getSpeechRecognitionClass(): any {
+  return (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+}
+
+// Pick the best available TTS voice for a warm, natural read
+function pickVoice(): SpeechSynthesisVoice | null {
+  if (!hasSpeechSynthesis) return null;
+  const voices = window.speechSynthesis.getVoices();
+  // Prefer natural/neural US English voices
+  const preferred = [
+    "Samantha", "Karen", "Moira", "Tessa", "Victoria", "Natural",
+    "Google US English", "Microsoft Aria",
+  ];
+  for (const name of preferred) {
+    const v = voices.find((v) => v.name.includes(name) && v.lang.startsWith("en"));
+    if (v) return v;
+  }
+  return voices.find((v) => v.lang === "en-US") || voices[0] || null;
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
 export function FloatingConcierge() {
   const [location] = useLocation();
   const { user, email, setShowPassportGate, setPendingSaveCallback } = useUser();
@@ -75,6 +102,23 @@ export function FloatingConcierge() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGated, setIsGated] = useState(false);
+
+  // Orb animation state
+  const [orbState, setOrbState] = useState<OrbState>("idle");
+
+  // Entrance animation (gold circle expands from button position)
+  const [showEntrance, setShowEntrance] = useState(false);
+
+  // Voice input
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
+  const autoSendTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  // Voice output
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -92,16 +136,11 @@ export function FloatingConcierge() {
   });
   const hasGreeted = useRef(messages.length > 0);
 
-  // Save messages to sessionStorage whenever they change
   useEffect(() => {
-    try {
-      sessionStorage.setItem("fdv_concierge_messages", JSON.stringify(messages));
-    } catch {}
+    try { sessionStorage.setItem("fdv_concierge_messages", JSON.stringify(messages)); } catch {}
   }, [messages]);
   useEffect(() => {
-    try {
-      sessionStorage.setItem("fdv_concierge_msg_count", String(userMsgCount));
-    } catch {}
+    try { sessionStorage.setItem("fdv_concierge_msg_count", String(userMsgCount)); } catch {}
   }, [userMsgCount]);
 
   const isAuthenticated = !!user;
@@ -110,10 +149,22 @@ export function FloatingConcierge() {
   const messageLimit = tier === "anon" ? ANON_LIMIT : FREE_LIMIT;
   const hidden = location === "/concierge-chat";
 
+  // Orb state driven by loading / listening / speaking
+  useEffect(() => {
+    if (isListening) {
+      setOrbState("listening");
+    } else if (isLoading) {
+      setOrbState("thinking");
+    } else if (isSpeaking) {
+      setOrbState("responding");
+    } else {
+      setOrbState("idle");
+    }
+  }, [isListening, isLoading, isSpeaking]);
+
   // Stable ref so the event listener always calls the latest handleOpen
   const handleOpenRef = useRef<() => void>(() => {});
 
-  // Listen for open-concierge event from bottom nav / hamburger
   useEffect(() => {
     const handler = () => handleOpenRef.current();
     window.addEventListener("open-concierge", handler);
@@ -126,64 +177,149 @@ export function FloatingConcierge() {
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      inputRef.current.focus();
+      setTimeout(() => inputRef.current?.focus(), 400);
     }
   }, [isOpen]);
 
-  // When gate clears after auth, reset
   useEffect(() => {
-    if (isGated && isAuthenticated) {
-      setIsGated(false);
-    }
+    if (isGated && isAuthenticated) setIsGated(false);
   }, [isAuthenticated, isGated]);
 
+  // ─── Voice Input ──────────────────────────────────────────────────────────
+  const stopListening = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
+    }
+    clearTimeout(autoSendTimerRef.current);
+    setIsListening(false);
+  }, []);
+
+  const startListening = useCallback(() => {
+    if (!hasSpeechRecognition) return;
+    if (isListening) { stopListening(); return; }
+
+    const SR = getSpeechRecognitionClass();
+    const rec = new SR();
+    recognitionRef.current = rec;
+    rec.continuous = false;
+    rec.interimResults = true;
+    rec.lang = "en-US";
+
+    let capturedTranscript = "";
+
+    rec.onresult = (e: any) => {
+      const transcript = Array.from(e.results as any[])
+        .map((r: any) => r[0].transcript)
+        .join("");
+      setInput(transcript);
+      capturedTranscript = transcript;
+
+      // Auto-send 1.8s after final result
+      clearTimeout(autoSendTimerRef.current);
+      if ((e.results[e.results.length - 1] as any).isFinal) {
+        autoSendTimerRef.current = setTimeout(() => {
+          stopListening();
+          if (capturedTranscript.trim()) {
+            sendMessageRef.current(capturedTranscript);
+          }
+        }, 1800);
+      }
+    };
+
+    rec.onerror = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    rec.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    rec.start();
+    setIsListening(true);
+  }, [isListening, stopListening]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopListening();
+      window.speechSynthesis?.cancel();
+    };
+  }, [stopListening]);
+
+  // ─── Voice Output ─────────────────────────────────────────────────────────
+  const speakText = useCallback((text: string) => {
+    if (!voiceEnabled || !hasSpeechSynthesis) return;
+    window.speechSynthesis.cancel();
+    // Strip markdown-style formatting for speech
+    const clean = text.replace(/\*\*(.+?)\*\*/g, "$1").replace(/[_*`]/g, "").trim();
+    const utterance = new SpeechSynthesisUtterance(clean);
+    const voice = pickVoice();
+    if (voice) utterance.voice = voice;
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    currentUtteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+  }, [voiceEnabled]);
+
+  // Stop speaking when voice is toggled off
+  useEffect(() => {
+    if (!voiceEnabled) {
+      window.speechSynthesis?.cancel();
+      setIsSpeaking(false);
+    }
+  }, [voiceEnabled]);
+
+  // ─── Open / greeting ─────────────────────────────────────────────────────
   const handleOpen = useCallback(async () => {
+    // Entrance animation
+    setShowEntrance(true);
+    setTimeout(() => setShowEntrance(false), 650);
+
     setIsOpen(true);
+
     if (!hasGreeted.current) {
       hasGreeted.current = true;
 
-      // Fetch first-chat status + save count from server
       let isFirstChat = true;
       let saveCount = 0;
       let curatePromptShown = false;
 
       try {
-        const res = await fetch("/api/concierge/greeting-context", {
-          credentials: "include",
-        });
+        const res = await fetch("/api/concierge/greeting-context", { credentials: "include" });
         if (res.ok) {
           const data = await res.json();
           isFirstChat = data.isFirstChat ?? true;
           saveCount = data.saveCount ?? 0;
           curatePromptShown = data.curatePromptShown ?? false;
         }
-      } catch {
-        // Fall through with defaults
-      }
+      } catch {}
 
       const greeting = getGreeting(location, isFirstChat, saveCount, curatePromptShown);
       setMessages([{ role: "assistant", content: greeting }]);
 
-      // If we showed the curate prompt, mark it as shown
       if (saveCount >= 3 && !curatePromptShown) {
-        fetch("/api/concierge/mark-curate-shown", {
-          method: "POST",
-          credentials: "include",
-        }).catch(() => {});
+        fetch("/api/concierge/mark-curate-shown", { method: "POST", credentials: "include" }).catch(() => {});
       }
     }
   }, [location]);
 
-  // Keep ref in sync with latest handleOpen
   handleOpenRef.current = handleOpen;
 
-  const sendMessage = useCallback(async () => {
-    const text = input.trim();
+  // ─── Send message ─────────────────────────────────────────────────────────
+  const sendMessage = useCallback(async (overrideText?: string) => {
+    const text = (overrideText ?? input).trim();
     if (!text || isLoading || isGated) return;
 
     const newCount = userMsgCount + 1;
 
-    // Check gate
     if (newCount > messageLimit) {
       const gateMsg = tier === "anon" ? ANON_GATE_MSG : FREE_GATE_MSG;
       setMessages((prev) => [...prev, { role: "user", content: text }, { role: "gate", content: gateMsg }]);
@@ -212,35 +348,31 @@ export function FloatingConcierge() {
       });
 
       if (!res.ok) throw new Error("Chat request failed");
-
       const data = await res.json();
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      const reply = data.reply as string;
 
-      // Track event
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      speakText(reply);
+
       fetch("/api/events", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           eventType: "concierge_chat",
           sourcePage: location,
-          metadata: {
-            sessionId: getSessionId(),
-            userEmail: email || null,
-            messageCount: newCount,
-            userMessage: text.slice(0, 100),
-            source: "floating_widget",
-          },
+          metadata: { sessionId: getSessionId(), userEmail: email || null, messageCount: newCount, userMessage: text.slice(0, 100), source: "floating_widget" },
         }),
       }).catch(() => {});
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "I'm sorry, I wasn't able to respond just now. Please try again." },
-      ]);
+      setMessages((prev) => [...prev, { role: "assistant", content: "I'm sorry, I wasn't able to respond just now. Please try again." }]);
     } finally {
       setIsLoading(false);
     }
-  }, [input, isLoading, isGated, messages, userMsgCount, messageLimit, tier, location, email]);
+  }, [input, isLoading, isGated, messages, userMsgCount, messageLimit, tier, location, email, speakText]);
+
+  // Auto-send after voice input finalizes
+  const sendMessageRef = useRef(sendMessage);
+  sendMessageRef.current = sendMessage;
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -251,19 +383,43 @@ export function FloatingConcierge() {
 
   const handleGateAction = useCallback(() => {
     if (tier === "anon") {
-      setPendingSaveCallback(() => {
-        setIsGated(false);
-        setUserMsgCount(0);
-      });
+      setPendingSaveCallback(() => { setIsGated(false); setUserMsgCount(0); });
       setShowPassportGate(true);
     }
   }, [tier, setPendingSaveCallback, setShowPassportGate]);
+
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+    stopListening();
+    window.speechSynthesis?.cancel();
+    setIsSpeaking(false);
+  }, [stopListening]);
 
   if (hidden) return null;
 
   return (
     <>
-      {/* Slide-up chat panel — triggered by bottom nav concierge button */}
+      {/* ── Entrance: gold circle expands from button position ── */}
+      {showEntrance && (
+        <div
+          aria-hidden
+          style={{
+            position: "fixed",
+            bottom: 46,
+            left: "50%",
+            width: 28,
+            height: 28,
+            borderRadius: "50%",
+            background: "#c9a84c",
+            zIndex: 10002,
+            pointerEvents: "none",
+            transformOrigin: "center center",
+            animation: "conciergeEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+          }}
+        />
+      )}
+
+      {/* ── Slide-up chat panel ── */}
       {isOpen && (
         <div
           style={{
@@ -279,49 +435,92 @@ export function FloatingConcierge() {
             boxShadow: "0 -4px 24px rgba(0,0,0,0.12)",
             display: "flex",
             flexDirection: "column",
-            animation: "slideUpPanel 0.3s ease-out",
+            animation: "slideUpPanel 0.35s cubic-bezier(0.22, 1, 0.36, 1)",
           }}
         >
-          {/* Header */}
+          {/* ── Header ── */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
-              padding: "16px 20px 12px",
+              gap: 10,
+              padding: "12px 16px 10px",
               borderBottom: "1px solid #e8e0d4",
               flexShrink: 0,
             }}
           >
+            {/* Living orb */}
+            <div style={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
+              <ConciergeOrb state={orbState} circleSize={32} />
+            </div>
+
+            {/* Label */}
             <p
               style={{
                 fontFamily: "Lora, serif",
-                fontSize: 12,
+                fontSize: 11,
                 letterSpacing: "0.15em",
                 textTransform: "uppercase",
                 color: "#c9a84c",
                 margin: 0,
+                flex: 1,
               }}
             >
-              YOUR CONCIERGE
+              Your Concierge
             </p>
+
+            {/* Voice output toggle */}
+            {hasSpeechSynthesis && (
+              <button
+                onClick={() => setVoiceEnabled((v) => !v)}
+                title={voiceEnabled ? "Mute voice" : "Enable voice"}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 6,
+                  color: voiceEnabled ? "#c9a84c" : "#bbb",
+                  display: "flex",
+                  alignItems: "center",
+                  flexShrink: 0,
+                }}
+              >
+                {voiceEnabled ? (
+                  /* Speaker on */
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" />
+                  </svg>
+                ) : (
+                  /* Speaker off */
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <line x1="23" y1="9" x2="17" y2="15" />
+                    <line x1="17" y1="9" x2="23" y2="15" />
+                  </svg>
+                )}
+              </button>
+            )}
+
+            {/* Close */}
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={handleClose}
               style={{
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                padding: 4,
-                color: "#999",
-                fontSize: 20,
+                padding: 6,
+                color: "#bbb",
+                fontSize: 18,
                 lineHeight: 1,
+                flexShrink: 0,
               }}
             >
               ✕
             </button>
           </div>
 
-          {/* Messages */}
+          {/* ── Messages ── */}
           <div
             style={{
               flex: 1,
@@ -416,29 +615,82 @@ export function FloatingConcierge() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
+          {/* ── Input ── */}
           <div
             style={{
               borderTop: "1px solid #e8e0d4",
-              padding: "12px 20px",
+              padding: "12px 16px",
               paddingBottom: "calc(12px + env(safe-area-inset-bottom))",
               background: "#faf9f6",
               flexShrink: 0,
             }}
           >
-            <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
+            {/* Listening indicator */}
+            {isListening && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  marginBottom: 8,
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 11,
+                  color: "#c9a84c",
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                }}
+              >
+                <span style={{ animation: "listeningDot 1.2s ease-in-out infinite" }}>●</span>
+                Listening — speak now, I'll send automatically
+              </div>
+            )}
+
+            <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+              {/* Mic button (voice input) */}
+              {hasSpeechRecognition && (
+                <button
+                  onClick={startListening}
+                  title={isListening ? "Stop listening" : "Speak to your concierge"}
+                  style={{
+                    background: isListening ? "#c9a84c" : "none",
+                    border: isListening ? "none" : "1px solid #e8e0d4",
+                    borderRadius: 2,
+                    cursor: "pointer",
+                    padding: "10px 12px",
+                    color: isListening ? "#fff" : "#aaa",
+                    display: "flex",
+                    alignItems: "center",
+                    flexShrink: 0,
+                    transition: "all 0.2s",
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <rect x="9" y="2" width="6" height="11" rx="3" />
+                    <path d="M5 10a7 7 0 0014 0" />
+                    <line x1="12" y1="22" x2="12" y2="17" />
+                    <line x1="9" y1="22" x2="15" y2="22" />
+                  </svg>
+                </button>
+              )}
+
               <textarea
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={isGated ? "Create your passport to continue..." : "Ask your concierge..."}
-                disabled={isGated}
+                placeholder={
+                  isGated
+                    ? "Create your passport to continue..."
+                    : isListening
+                    ? "Listening..."
+                    : "Ask your concierge..."
+                }
+                disabled={isGated || isListening}
                 rows={1}
                 style={{
                   flex: 1,
                   border: "1px solid #e8e0d4",
-                  background: isGated ? "#f5f5f0" : "#fff",
+                  background: isGated || isListening ? "#f5f5f0" : "#fff",
                   padding: "10px 14px",
                   fontFamily: "Lora, serif",
                   fontSize: 14,
@@ -450,10 +702,10 @@ export function FloatingConcierge() {
                 }}
               />
               <button
-                onClick={sendMessage}
-                disabled={isLoading || !input.trim() || isGated}
+                onClick={() => sendMessage()}
+                disabled={isLoading || !input.trim() || isGated || isListening}
                 style={{
-                  background: isLoading || !input.trim() || isGated ? "#ccc" : "#1a1a1a",
+                  background: isLoading || !input.trim() || isGated || isListening ? "#ccc" : "#1a1a1a",
                   color: "#fff",
                   border: "none",
                   padding: "10px 16px",
@@ -461,8 +713,9 @@ export function FloatingConcierge() {
                   fontSize: 12,
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
-                  cursor: isLoading || !input.trim() || isGated ? "default" : "pointer",
+                  cursor: isLoading || !input.trim() || isGated || isListening ? "default" : "pointer",
                   whiteSpace: "nowrap",
+                  flexShrink: 0,
                 }}
               >
                 Send
@@ -472,10 +725,10 @@ export function FloatingConcierge() {
         </div>
       )}
 
-      {/* Backdrop when panel is open */}
+      {/* ── Backdrop ── */}
       {isOpen && (
         <div
-          onClick={() => setIsOpen(false)}
+          onClick={handleClose}
           style={{
             position: "fixed",
             inset: 0,
@@ -489,6 +742,23 @@ export function FloatingConcierge() {
         @keyframes slideUpPanel {
           from { transform: translateY(100%); }
           to { transform: translateY(0); }
+        }
+        @keyframes conciergeEntrance {
+          0% {
+            transform: translateX(-50%) scale(1);
+            opacity: 0.9;
+          }
+          55% {
+            opacity: 0.18;
+          }
+          100% {
+            transform: translateX(-50%) scale(55);
+            opacity: 0;
+          }
+        }
+        @keyframes listeningDot {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
         }
       `}</style>
     </>
