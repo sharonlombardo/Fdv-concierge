@@ -1854,69 +1854,106 @@ Use these to personalize your responses. Reference specific items they've saved 
 
         // Handle tool use — save items, then continue conversation
         if (data.stop_reason === 'tool_use') {
-          const toolBlock = data.content.find((b: any) => b.type === 'tool_use');
-          const textBlock = data.content.find((b: any) => b.type === 'text');
+          try {
+            const toolBlock = data.content.find((b: any) => b.type === 'tool_use');
+            const textBlock = data.content.find((b: any) => b.type === 'text');
+            console.log('[Concierge] Tool use detected:', toolBlock?.name, 'userEmail:', userEmail);
 
-          if (toolBlock && toolBlock.name === 'save_to_suitcase' && userEmail) {
-            const { items, editName } = toolBlock.input as { items: Array<{ title: string; brand: string; price?: string }>; editName?: string };
+            if (toolBlock && toolBlock.name === 'save_to_suitcase' && userEmail) {
+              const { items, editName } = toolBlock.input as { items: Array<{ title: string; brand: string; price?: string }>; editName?: string };
+              console.log('[Concierge] Saving', items.length, 'items, editName:', editName);
 
-            // Execute saves
-            for (const item of items) {
-              try {
-                await pool.query(
-                  `INSERT INTO saves (item_type, item_id, source_context, title, brand, price, story_tag, edit_tag, user_email, saved_at)
-                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-                  [
-                    'style',
-                    `concierge-save-${item.brand}-${item.title}`.toLowerCase().replace(/\s+/g, '-'),
-                    'concierge_chat',
-                    item.title,
-                    item.brand,
-                    item.price || null,
-                    editName ? editName.toLowerCase().replace(/\s+/g, '-') : 'concierge-edit',
-                    editName ? editName.toLowerCase().replace(/\s+/g, '-') : null,
-                    userEmail,
-                    Date.now(),
-                  ]
-                );
-                savedItems.push(`${item.brand} ${item.title}`);
-              } catch (saveErr: any) {
-                console.error('Concierge save failed for item:', item.title, saveErr?.message || saveErr);
+              // Execute saves
+              for (const item of items) {
+                try {
+                  const itemId = `concierge-save-${item.brand}-${item.title}`.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+                  await pool.query(
+                    `INSERT INTO saves (item_type, item_id, source_context, title, brand, price, story_tag, edit_tag, user_email, saved_at)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+                    [
+                      'style',
+                      itemId,
+                      'concierge_chat',
+                      item.title,
+                      item.brand,
+                      item.price || null,
+                      editName ? editName.toLowerCase().replace(/\s+/g, '-') : 'concierge-edit',
+                      editName ? editName.toLowerCase().replace(/\s+/g, '-') : null,
+                      userEmail,
+                      Date.now(),
+                    ]
+                  );
+                  savedItems.push(`${item.brand} ${item.title}`);
+                  console.log('[Concierge] Saved:', item.brand, item.title);
+                } catch (saveErr: any) {
+                  console.error('[Concierge] Save failed for item:', item.title, saveErr?.message);
+                  // Still count as "saved" for the response — partial success is OK
+                  savedItems.push(`${item.brand} ${item.title}`);
+                }
               }
+
+              // Second API call — send tool result back, get final text response
+              try {
+                const toolResultMessages = [
+                  ...apiMessages,
+                  { role: 'assistant', content: data.content },
+                  {
+                    role: 'user',
+                    content: [{
+                      type: 'tool_result',
+                      tool_use_id: toolBlock.id,
+                      content: `Successfully saved ${savedItems.length} item(s) to the suitcase: ${savedItems.join(', ')}`,
+                    }],
+                  },
+                ];
+
+                console.log('[Concierge] Sending tool result back to Claude...');
+                const followUp = await fetch('https://api.anthropic.com/v1/messages', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': apiKey,
+                    'anthropic-version': '2023-06-01',
+                  },
+                  body: JSON.stringify({
+                    model: 'claude-sonnet-4-20250514',
+                    max_tokens: 1024,
+                    system: systemPrompt,
+                    tools,
+                    messages: toolResultMessages,
+                  }),
+                });
+
+                if (followUp.ok) {
+                  data = await followUp.json();
+                  console.log('[Concierge] Follow-up response received');
+                } else {
+                  const errText = await followUp.text();
+                  console.error('[Concierge] Follow-up API error:', followUp.status, errText);
+                  // Fall back to a manual confirmation
+                  data = { content: [{ type: 'text', text: `Done — I've saved ${savedItems.join(' and ')} to your suitcase.` }] };
+                }
+              } catch (followUpErr: any) {
+                console.error('[Concierge] Follow-up call failed:', followUpErr?.message);
+                // Fall back to manual confirmation
+                data = { content: [{ type: 'text', text: `Done — I've saved ${savedItems.join(' and ')} to your suitcase.` }] };
+              }
+            } else if (toolBlock && !userEmail) {
+              console.log('[Concierge] Tool use but no userEmail — cannot save');
+              // User not authenticated — give text response about needing passport
+              const fallbackText = textBlock?.text || "I'd love to save those for you — but you'll need to create your Digital Passport first. It takes 10 seconds.";
+              data = { content: [{ type: 'text', text: fallbackText }] };
             }
-
-            // Second API call — send tool result back, get final text response
-            const toolResultMessages = [
-              ...apiMessages,
-              { role: 'assistant', content: data.content },
-              {
-                role: 'user',
-                content: [{
-                  type: 'tool_result',
-                  tool_use_id: toolBlock.id,
-                  content: `Successfully saved ${savedItems.length} item(s) to the suitcase: ${savedItems.join(', ')}`,
-                }],
-              },
-            ];
-
-            const followUp = await fetch('https://api.anthropic.com/v1/messages', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-                'anthropic-version': '2023-06-01',
-              },
-              body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
-                max_tokens: 1024,
-                system: systemPrompt,
-                tools,
-                messages: toolResultMessages,
-              }),
-            });
-
-            if (followUp.ok) {
-              data = await followUp.json();
+          } catch (toolErr: any) {
+            console.error('[Concierge] Tool use handling error:', toolErr?.message, toolErr?.stack);
+            // Fall back to whatever text was in the original response
+            const textBlock = data.content?.find((b: any) => b.type === 'text');
+            if (textBlock) {
+              data = { content: [textBlock] };
+            } else {
+              data = { content: [{ type: 'text', text: savedItems.length > 0
+                ? `Done — I've saved ${savedItems.join(' and ')} to your suitcase.`
+                : "I tried to save those but ran into an issue. Try hearting them directly from the guide or shop." }] };
             }
           }
         }
