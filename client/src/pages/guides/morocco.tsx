@@ -4,6 +4,7 @@ import { ItemModal, type ItemModalData } from '@/components/item-modal';
 import { PinButton } from '@/components/pin-button';
 import { EditorialProductOverlay, ShoppableIndicator, type EditorialProduct } from '@/components/editorial-product-overlay';
 // editorial-sections only needed by /concierge — ItineraryTeaser is now a slim preview card
+import { useUser } from '@/contexts/user-context';
 import { useCustomImages } from '@/hooks/use-custom-images';
 import { getProductByKey, getProductDisplayName, isShoppable, getShopImageUrl, FLOW_LOOK_GENOME_KEY, SECTION_LOOK_GENOME_KEY } from '@/lib/brand-genome';
 import { useScrollDepth } from '@/hooks/use-scroll-depth';
@@ -315,132 +316,228 @@ function PlaceImages({
 
 const TEASER_IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/stay-1-large.jpg';
 
-function ItineraryTeaser() {
-  const [email, setEmail] = useState('');
+function TripTeaserAndBriefForm() {
+  const { user, email, setShowPassportGate, setPendingSaveCallback } = useUser();
+  const [travelDates, setTravelDates] = useState('');
+  const [duration, setDuration] = useState('');
+  const [travelParty, setTravelParty] = useState('');
+  const [priorities, setPriorities] = useState('');
   const [submitted, setSubmitted] = useState(false);
-  const [, setLocation] = useLocation();
-
-  const navigateToItinerary = () => setLocation('/concierge');
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!user) {
+      setPendingSaveCallback(() => () => handleSubmit(e));
+      setShowPassportGate(true);
+      return;
+    }
+    setSubmitting(true);
     try {
-      await fetch('/api/waitlist', {
+      await fetch('/api/trip-briefs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'itinerary_gate' }),
+        credentials: 'include',
+        body: JSON.stringify({
+          destination: 'Morocco',
+          travelDates,
+          duration,
+          travelParty,
+          priorities,
+          userEmail: email,
+        }),
       });
       setSubmitted(true);
+      // Open concierge with context
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('open-concierge'));
+      }, 2000);
     } catch {
-      // still navigate on failure
+      // Still show confirmation
+      setSubmitted(true);
+    } finally {
+      setSubmitting(false);
     }
-    navigateToItinerary();
+  };
+
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '12px 16px',
+    border: '1px solid rgba(44, 36, 22, 0.15)',
+    background: '#fff',
+    fontFamily: "'Lora', Georgia, serif",
+    fontSize: 14,
+    color: '#2c2416',
+    outline: 'none',
+    borderRadius: 0,
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: 11,
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
+    color: 'rgba(44, 36, 22, 0.5)',
+    marginBottom: 6,
+    display: 'block',
   };
 
   return (
-    <section style={{ background: '#faf9f6', borderRadius: 12, overflow: 'hidden', margin: '40px 0' }}>
-      {/* Section header */}
-      <div style={{ textAlign: 'center', padding: '48px 16px 0' }}>
-        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: 12 }}>
-          The Full Journey
-        </p>
-        <h3 style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 400, fontStyle: 'italic', lineHeight: 1.4, color: '#2c2416', margin: 0 }}>
-          Your 8-Day Morocco Itinerary
-        </h3>
-      </div>
+    <>
+      {/* ═══ TRIP TEASER — A taste of Day 1 ═══ */}
+      <section style={{ background: '#faf9f6', padding: '64px 24px', margin: '40px 0 0' }}>
+        <div style={{ maxWidth: 520, margin: '0 auto' }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', textAlign: 'center', marginBottom: 32 }}>
+            A Taste of Your Trip
+          </p>
 
-      {/* Hero preview image — blurred teaser */}
-      <div style={{ position: 'relative', marginTop: 24, maxHeight: 520, overflow: 'hidden' }}>
-        <div style={{ filter: 'blur(4px)', opacity: 0.6, pointerEvents: 'none', userSelect: 'none' }}>
-          <img
-            src={TEASER_IMG}
-            alt="Morocco itinerary preview"
-            style={{ width: '100%', height: 520, objectFit: 'cover', display: 'block' }}
-          />
+          <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 16, lineHeight: 1.85, color: '#2c2416' }}>
+            <p style={{ fontWeight: 600, fontSize: 18, marginBottom: 20 }}>Your First Day in Marrakech</p>
+
+            <p style={{ marginBottom: 16 }}>
+              Arrive. A private transfer is waiting — no haggling, no confusion. Your driver knows the way.
+            </p>
+
+            <p style={{ marginBottom: 16 }}>
+              Check in at El Fenn. The riad is quiet, the courtyard pool is cool, and someone has already drawn the curtains against the afternoon sun. Take an hour.
+            </p>
+
+            <p style={{ marginBottom: 16 }}>
+              Evening: Dinner at Le Jardin. Ask for the table under the banana leaves. Order the lamb tagine and the roasted aubergine — trust me. Wear the Isadora Dress. The courtyard is candlelit and you'll want to feel like you belong there.
+            </p>
+
+            <p style={{ marginBottom: 0 }}>
+              After: Walk back through the medina. The lanterns are lit. The air smells like orange blossom. This is why you came.
+            </p>
+          </div>
+
+          <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(44, 36, 22, 0.45)', textAlign: 'center', marginTop: 32 }}>
+            This is what a FIL DE VIE trip looks like. Every detail considered — from the transfer to the dress.
+          </p>
         </div>
+      </section>
 
-        {/* Day glimpse overlay — floating itinerary preview */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          background: 'rgba(250, 249, 246, 0.82)', padding: '40px 20px', textAlign: 'center', zIndex: 10,
-        }}>
-          {/* Mini day list — a glimpse of what's inside */}
-          <div style={{ marginBottom: 28, maxWidth: 360 }}>
-            {[
-              { day: 1, title: 'Arrival & the Atlas Mountains' },
-              { day: 2, title: 'The Medina, Slowly' },
-              { day: 3, title: 'Jardin Majorelle & the Souks' },
-            ].map((d, i) => (
-              <div key={d.day} style={{
-                display: 'flex', alignItems: 'baseline', gap: 12, padding: '6px 0',
-                borderBottom: i < 2 ? '1px solid rgba(44, 36, 22, 0.08)' : 'none',
-              }}>
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#c9a84c', minWidth: 44 }}>
-                  Day {d.day}
-                </span>
-                <span style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 15, fontStyle: 'italic', color: '#2c2416' }}>
-                  {d.title}
-                </span>
-              </div>
-            ))}
-            <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 13, fontStyle: 'italic', color: 'rgba(44, 36, 22, 0.4)', marginTop: 8 }}>
-              + 5 more days of curated Morocco
-            </div>
-          </div>
-
-          <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 22, fontStyle: 'italic', color: '#2c2416', marginBottom: 12 }}>
-            Unlock your complete Morocco experience.
-          </div>
-          <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(44, 36, 22, 0.6)', marginBottom: 28, maxWidth: 440, lineHeight: 1.6 }}>
-            8 days of curated events, restaurants, and wardrobe — every detail planned so you don't have to.
-          </div>
-
+      {/* ═══ TRIP BRIEF FORM — "Want yours?" ═══ */}
+      <section style={{ background: '#faf9f6', padding: '48px 24px 80px' }}>
+        <div style={{ maxWidth: 440, margin: '0 auto' }}>
           {!submitted ? (
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                style={{
-                  background: 'transparent', border: '1px solid rgba(0,0,0,0.2)', color: '#2c2416',
-                  padding: '12px 16px', width: 300, maxWidth: '90vw', fontSize: 14,
-                  fontFamily: "'Inter', sans-serif", borderRadius: 0, outline: 'none',
-                }}
-              />
-              <button
-                type="submit"
-                style={{
-                  display: 'inline-block', fontFamily: "'Inter', sans-serif", fontSize: 12,
-                  fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase',
-                  background: '#c9a84c', color: '#1a1a1a', padding: '14px 40px',
-                  textDecoration: 'none', marginTop: 12, transition: 'opacity 0.3s',
-                  border: 'none', cursor: 'pointer',
-                }}
-              >
-                Go Gold to Unlock
-              </button>
-            </form>
-          ) : null}
+            <>
+              <h2 style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 28, fontWeight: 400, textAlign: 'center', color: '#2c2416', marginBottom: 8 }}>
+                Want yours?
+              </h2>
+              <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 15, textAlign: 'center', color: 'rgba(44, 36, 22, 0.6)', lineHeight: 1.7, marginBottom: 36 }}>
+                Tell us about your trip. We'll build the rest — your itinerary, your wardrobe, your packing list. Every detail, curated to you.
+              </p>
 
-          <button
-            onClick={navigateToItinerary}
-            style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              fontFamily: "'Inter', sans-serif", fontSize: 12, color: 'rgba(44, 36, 22, 0.4)',
-              textDecoration: 'none', marginTop: 20, padding: 0, transition: 'color 0.3s',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(44, 36, 22, 0.7)')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(44, 36, 22, 0.4)')}
-          >
-            For pilot testers: Continue without unlocking →
-          </button>
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                <div>
+                  <label style={labelStyle}>When are you going?</label>
+                  <input
+                    type="text"
+                    placeholder="October 2026, flexible, etc."
+                    value={travelDates}
+                    onChange={(e) => setTravelDates(e.target.value)}
+                    style={inputStyle}
+                  />
+                </div>
+
+                <div>
+                  <label style={labelStyle}>How long?</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {['A long weekend', 'A week', '10+ days', 'Not sure yet'].map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => setDuration(opt)}
+                        style={{
+                          padding: '8px 16px',
+                          border: duration === opt ? '1px solid #2c2416' : '1px solid rgba(44, 36, 22, 0.15)',
+                          background: duration === opt ? '#2c2416' : '#fff',
+                          color: duration === opt ? '#fff' : '#2c2416',
+                          fontFamily: "'Inter', sans-serif",
+                          fontSize: 12,
+                          cursor: 'pointer',
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Who with?</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {['Just me', 'With a partner', 'With friends', 'Family'].map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => setTravelParty(opt)}
+                        style={{
+                          padding: '8px 16px',
+                          border: travelParty === opt ? '1px solid #2c2416' : '1px solid rgba(44, 36, 22, 0.15)',
+                          background: travelParty === opt ? '#2c2416' : '#fff',
+                          color: travelParty === opt ? '#fff' : '#2c2416',
+                          fontFamily: "'Inter', sans-serif",
+                          fontSize: 12,
+                          cursor: 'pointer',
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label style={labelStyle}>What matters most?</label>
+                  <textarea
+                    placeholder="The food. The quiet. The shopping. An adventure. Tell us what you're looking for..."
+                    value={priorities}
+                    onChange={(e) => setPriorities(e.target.value)}
+                    rows={4}
+                    style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  style={{
+                    width: '100%',
+                    padding: '14px 0',
+                    background: '#1a1a1a',
+                    color: '#fff',
+                    border: 'none',
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    letterSpacing: '0.15em',
+                    textTransform: 'uppercase',
+                    cursor: submitting ? 'default' : 'pointer',
+                    opacity: submitting ? 0.5 : 1,
+                    marginTop: 8,
+                  }}
+                >
+                  {submitting ? 'Sending...' : 'Build My Trip'}
+                </button>
+              </form>
+            </>
+          ) : (
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 22, color: '#2c2416', marginBottom: 12 }}>
+                We're on it.
+              </p>
+              <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 15, color: 'rgba(44, 36, 22, 0.6)', lineHeight: 1.7 }}>
+                Your concierge will be in touch to refine the details. In the meantime, keep saving — every heart helps us build a better trip.
+              </p>
+            </div>
+          )}
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 
@@ -1140,8 +1237,8 @@ export default function MoroccoGuide() {
 
       <hr className="divider" />
 
-      {/* ═══ ITINERARY TEASER — Real editorial overview from /concierge ═══ */}
-      <ItineraryTeaser />
+      {/* ═══ TRIP TEASER + BRIEF FORM — "Want yours?" conversion moment ═══ */}
+      <TripTeaserAndBriefForm />
 
       {/* ═══ FOOTER ═══ */}
       <div className="guide-footer">

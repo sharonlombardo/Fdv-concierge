@@ -271,6 +271,22 @@ async function runMigrations() {
     `);
     await pool.query('CREATE INDEX IF NOT EXISTS idx_convo_user ON concierge_conversations (user_email)');
     await pool.query('CREATE INDEX IF NOT EXISTS idx_convo_session ON concierge_conversations (session_id)');
+    // Trip briefs table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS trip_briefs (
+        id SERIAL PRIMARY KEY,
+        user_email TEXT NOT NULL,
+        destination TEXT NOT NULL DEFAULT 'Morocco',
+        travel_dates TEXT,
+        duration TEXT,
+        travel_party TEXT,
+        priorities TEXT,
+        user_saves_count INTEGER,
+        status TEXT NOT NULL DEFAULT 'new',
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
     // Session-based anonymous save association
     await pool.query('ALTER TABLE saves ADD COLUMN IF NOT EXISTS anon_session_id TEXT');
     await pool.query('CREATE INDEX IF NOT EXISTS idx_saves_anon_session ON saves(anon_session_id)');
@@ -1657,6 +1673,40 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         };
       }
       return res.status(200).json(productMap);
+    }
+
+    // POST /api/trip-briefs — submit a trip brief
+    if (path === '/api/trip-briefs' && method === 'POST') {
+      const cookieEmail2 = getUserEmailFromRequest(req);
+      const briefEmail = cookieEmail2 || req.body?.userEmail || null;
+      if (!briefEmail) return res.status(401).json({ error: 'Authentication required' });
+      const { destination, travelDates, duration, travelParty, priorities } = req.body || {};
+      // Get save count for context
+      let saveCount = 0;
+      try {
+        const sc = await pool.query('SELECT COUNT(*) as cnt FROM saves WHERE user_email = $1', [briefEmail]);
+        saveCount = parseInt(sc.rows[0]?.cnt || '0');
+      } catch {}
+      try {
+        await pool.query(
+          `INSERT INTO trip_briefs (user_email, destination, travel_dates, duration, travel_party, priorities, user_saves_count)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [briefEmail, destination || 'Morocco', travelDates || null, duration || null, travelParty || null, priorities || null, saveCount]
+        );
+        return res.status(200).json({ success: true });
+      } catch (err: any) {
+        console.error('Trip brief save error:', err?.message);
+        return res.status(500).json({ error: 'Failed to save trip brief' });
+      }
+    }
+
+    // GET /api/admin/trip-briefs — admin view of all trip briefs
+    if (path === '/api/admin/trip-briefs' && method === 'GET') {
+      const tbUrl = new URL(url || '', `http://${req.headers.host}`);
+      const tbAdminKey = tbUrl.searchParams.get('admin_key');
+      if (tbAdminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+      const result = await pool.query('SELECT * FROM trip_briefs ORDER BY created_at DESC');
+      return res.status(200).json(result.rows);
     }
 
     // GET /api/link-health — client-side check for broken links (cached per-request)
