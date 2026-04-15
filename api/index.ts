@@ -26,9 +26,11 @@ function loadVoiceDocs(): string {
 
 // Build product catalog from genome JSON (fallback; DB preferred when available)
 let PRODUCT_CATALOG_FALLBACK = '';
+let GENOME_PRODUCTS: any[] = [];
 try {
   const genomePath = path.join(process.cwd(), 'client/src/data/fdv_brand_genome.json');
   const genome = JSON.parse(fs.readFileSync(genomePath, 'utf8'));
+  GENOME_PRODUCTS = genome;
   PRODUCT_CATALOG_FALLBACK = genome
     .filter((p: any) => p.shop_status === 'live' || p.shop_status === 'coming_soon')
     .map((p: any) => {
@@ -39,6 +41,17 @@ try {
     .join('\n');
 } catch (e) {
   console.warn('Could not load product genome for concierge:', e);
+}
+
+// Look up a product by name (case-insensitive) in the genome
+function findGenomeProduct(title: string, brand?: string): any | null {
+  const t = title.toLowerCase().trim();
+  return GENOME_PRODUCTS.find((p: any) => {
+    const nameMatch = p.name?.toLowerCase().trim() === t;
+    if (!nameMatch) return false;
+    if (brand) return p.brand?.toLowerCase().includes(brand.toLowerCase());
+    return true;
+  }) || GENOME_PRODUCTS.find((p: any) => p.name?.toLowerCase().trim() === t) || null;
 }
 
 // Load product catalog from DB (preferred, falls back to genome JSON)
@@ -1871,12 +1884,19 @@ Use these to personalize your responses. Reference specific items they've saved 
               for (const item of items) {
                 try {
                   const itemId = `concierge-save-${item.brand}-${item.title}`.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+                  // Look up product in genome for image key + shop URL
+                  const genomeProduct = findGenomeProduct(item.title, item.brand);
+                  const genomeKey = genomeProduct?.database_match_key || null;
+                  const shopUrl = genomeProduct?.url || null;
+                  const category = genomeProduct?.category || null;
+                  // Use genome key as item_id if found — suitcase resolves images from it
+                  const saveItemId = genomeKey ? genomeKey.toLowerCase() : itemId;
                   await pool.query(
-                    `INSERT INTO saves (item_type, item_id, source_context, title, brand, price, story_tag, edit_tag, user_email, saved_at)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+                    `INSERT INTO saves (item_type, item_id, source_context, title, brand, price, story_tag, edit_tag, user_email, saved_at, shop_url, category)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
                     [
                       'style',
-                      itemId,
+                      saveItemId,
                       'concierge_chat',
                       item.title,
                       item.brand,
@@ -1885,6 +1905,8 @@ Use these to personalize your responses. Reference specific items they've saved 
                       editName ? editName.toLowerCase().replace(/\s+/g, '-') : null,
                       userEmail,
                       Date.now(),
+                      shopUrl,
+                      category,
                     ]
                   );
                   savedItems.push(`${item.brand} ${item.title}`);
