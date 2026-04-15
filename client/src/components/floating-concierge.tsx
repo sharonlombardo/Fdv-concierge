@@ -72,14 +72,37 @@ export function FloatingConcierge() {
   const [location] = useLocation();
   const { user, email, setShowPassportGate, setPendingSaveCallback } = useUser();
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [userMsgCount, setUserMsgCount] = useState(0);
   const [isGated, setIsGated] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const hasGreeted = useRef(false);
+
+  // Persist conversation across page navigations via sessionStorage
+  const [messages, setMessages] = useState<Message[]>(() => {
+    try {
+      const stored = sessionStorage.getItem("fdv_concierge_messages");
+      return stored ? JSON.parse(stored) : [];
+    } catch { return []; }
+  });
+  const [userMsgCount, setUserMsgCount] = useState(() => {
+    try {
+      return parseInt(sessionStorage.getItem("fdv_concierge_msg_count") || "0");
+    } catch { return 0; }
+  });
+  const hasGreeted = useRef(messages.length > 0);
+
+  // Save messages to sessionStorage whenever they change
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("fdv_concierge_messages", JSON.stringify(messages));
+    } catch {}
+  }, [messages]);
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("fdv_concierge_msg_count", String(userMsgCount));
+    } catch {}
+  }, [userMsgCount]);
 
   const isAuthenticated = !!user;
   const hasEmail = !!email;
