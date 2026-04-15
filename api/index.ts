@@ -988,7 +988,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // GET /api/saves
     if (path === '/api/saves' && method === 'GET') {
-      const currentUserEmail = getUserEmailFromRequest(req);
+      const urlObj2 = new URL(url || '', `http://${req.headers.host}`);
+      const emailParam = urlObj2.searchParams.get('email');
+      const currentUserEmail = getUserEmailFromRequest(req) || emailParam || null;
       const result = currentUserEmail
         ? await pool.query('SELECT * FROM saves WHERE user_email = $1 ORDER BY saved_at DESC', [currentUserEmail])
         : await pool.query('SELECT * FROM saves WHERE user_email IS NULL ORDER BY saved_at DESC');

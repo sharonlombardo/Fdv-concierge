@@ -662,7 +662,7 @@ export default function SuitcasePage() {
   const { getImageUrl } = useCustomImages();
   const [showCurating, setShowCurating] = useState(false);
   const [curatingCapsule, setCuratingCapsule] = useState<typeof PRESET_CAPSULES[0] | null>(null);
-  const { saveCount } = useUser();
+  const { saveCount, email } = useUser();
   const [savedCapsuleIds, setSavedCapsuleIds] = useState<string[]>(getSavedCapsuleIds);
 
   // Auto-trigger curate flow when arriving with ?curate=true (from any link)
@@ -688,8 +688,9 @@ export default function SuitcasePage() {
   }, [saveCount, savedCapsuleIds.length]);
 
   // Fetch API saves early so we can merge capsule IDs from both sources
+  const savesUrl = email ? `/api/saves?email=${encodeURIComponent(email)}` : '/api/saves';
   const { data: saves = [], isLoading } = useQuery<SavedItem[]>({
-    queryKey: ["/api/saves"],
+    queryKey: [savesUrl],
   });
 
   // Multi-strategy genome lookup for backfill
