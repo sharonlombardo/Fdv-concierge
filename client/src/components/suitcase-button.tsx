@@ -54,6 +54,7 @@ export function SuitcaseButton({
       const res = await fetch('/api/saves', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           itemType: 'product',
           itemId,
@@ -77,6 +78,7 @@ export function SuitcaseButton({
         const updateRes = await fetch(`/api/saves/${encodeURIComponent(itemId)}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({
             purchaseStatus: 'in_cart',
             metadata: {

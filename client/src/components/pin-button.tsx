@@ -62,7 +62,7 @@ export function PinButton({
   const { data: isPinned } = useQuery({
     queryKey: ['/api/saves/check', itemId],
     queryFn: async () => {
-      const res = await fetch(`/api/saves/check/${encodeURIComponent(itemId)}`);
+      const res = await fetch(`/api/saves/check/${encodeURIComponent(itemId)}`, { credentials: 'include' });
       if (!res.ok) return false;
       const data = await res.json();
       return data.isPinned;
@@ -73,7 +73,8 @@ export function PinButton({
     mutationFn: async () => {
       if (isPinned) {
         const res = await fetch(`/api/saves/${encodeURIComponent(itemId)}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          credentials: 'include',
         });
         if (!res.ok) throw new Error('Failed to unpin');
         return { action: 'unpinned' };

@@ -93,6 +93,7 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
       const res = await fetch('/api/saves', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           itemType: 'edit',
           itemId: `capsule-${capsule.id}`,
@@ -126,7 +127,8 @@ export function CapsuleView({ capsule }: CapsuleViewProps) {
 
     try {
       await fetch(`/api/saves/${encodeURIComponent(`capsule-${capsule.id}`)}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include',
       });
       queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
     } catch (err) {

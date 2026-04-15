@@ -79,7 +79,7 @@ export function ConciergeNudge() {
     if (localStorage.getItem(STORAGE_KEY)) return;
 
     // Fetch saves to analyze tags
-    fetch("/api/saves")
+    fetch("/api/saves", { credentials: "include" })
       .then((r) => r.json())
       .then((saves: any[]) => {
         if (Array.isArray(saves) && saves.length > 0) {
