@@ -33,8 +33,9 @@ export default function BottomNav() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-[9999]"
       style={{
-        height: "calc(60px + env(safe-area-inset-bottom, 0px))",
+        height: "calc(76px + env(safe-area-inset-bottom, 0px))",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        paddingTop: 6,
         backgroundColor: "#1A1A18",
         borderTop: "1px solid rgba(255,255,255,0.08)",
         WebkitTransform: "translateZ(0)",
