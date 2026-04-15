@@ -18,8 +18,8 @@ const EDIT_PRODUCTS = [
   { genomeKey: "look:fdv:steviecaftan:black.jpg", fallbackTitle: "Stevie Caftan", fallbackBrand: "FIL DE VIE", fallbackPrice: "$825" },
 ];
 
-const SLIDE_WIDTH_PERCENT = 85;
-const GAP = 12;
+const SLIDE_WIDTH_PERCENT = 68; // Match destinations page — ~16% peek each side
+const GAP = 3; // Thin sliver between cards like Zara
 
 export default function Threshold() {
   const { data: imageSlotsData } = useImageSlots();
@@ -137,11 +137,11 @@ export default function Threshold() {
                 style={{
                   flex: `0 0 ${SLIDE_WIDTH_PERCENT}vw`,
                   scrollSnapAlign: "center",
-                  borderRadius: 12,
+                  borderRadius: 16,
                   overflow: "hidden",
                   position: "relative",
-                  height: "65vh",
-                  minHeight: 420,
+                  height: "70vh",
+                  minHeight: 480,
                 }}
               >
                 {/* Image */}
@@ -152,6 +152,7 @@ export default function Threshold() {
                     backgroundImage: `url(${imgUrl})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
+                    filter: dest.available ? "none" : "saturate(0.7)",
                   }}
                 />
                 {/* Gradient overlay */}

@@ -301,13 +301,13 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
       <DialogPrimitive.Portal>
         {/* Frosted glass overlay */}
         <DialogPrimitive.Overlay
-          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+          className="fixed inset-0 z-[300] bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
           onClick={() => onOpenChange(false)}
         />
 
         {/* Bottom sheet content — hard top constraint at 56px (nav height) */}
         <DialogPrimitive.Content
-          className="fixed inset-x-0 bottom-0 z-50 flex flex-col rounded-t-2xl bg-white shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom data-[state=closed]:duration-300 data-[state=open]:duration-500 focus:outline-none"
+          className="fixed inset-x-0 bottom-0 z-[300] flex flex-col rounded-t-2xl bg-white shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom data-[state=closed]:duration-300 data-[state=open]:duration-500 focus:outline-none"
           style={{ top: 56 }}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
