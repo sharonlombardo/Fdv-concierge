@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** April 14, 2026
-**Updated by:** Claude Code session (V2 system prompt, heart icons, nav restructure, North Star V2)
+**Last updated:** April 15, 2026
+**Updated by:** Claude Code session (landing page redesign, concierge saves, trip brief form, about page rewrite, taste intelligence Phase A, admin chat logging)
 
 > **📍 CURRENT STRATEGIC TRUTH:** See `FDV_USER_JOURNEY_NORTH_STAR_V2.md`
 > (April 14, 2026) at the repo root. That doc defines the current site
@@ -554,6 +554,150 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 15, 2026 | Claude Code (web) — Landing Page Redesign, Concierge Saves, Trip Brief Form, About Page, Taste Intelligence, Admin Chat Logging
+
+**Topic:** Massive build day. ~20 commits. Completed nearly every item on the North Star V2 build priority list. The front door, the conversion gate, the concierge's ability to act, and the admin's ability to read conversations — all shipped.
+
+---
+
+**What shipped today:**
+
+**1. Concierge Greeting Logic + First-Time Detection**
+- Context-aware greetings: different first-time greeting per page (landing, guide, shop, suitcase empty/full, passport)
+- Returning greetings: short one-liners ("Welcome back. Where to?")
+- Special 3+ saves trigger: "I'm starting to see what moves you. Want me to build your trip around it?" (fires once via `curate_prompt_shown` flag on user record)
+- New `/api/concierge/greeting-context` endpoint checks conversation history + save count + curate flag
+- New `/api/concierge/mark-curate-shown` endpoint sets flag after trigger fires
+
+**2. Z-Index Fix — Concierge Always Accessible**
+- Bottom nav bumped to z-[9999] — concierge circle tappable over product modals (z-50)
+- Chat overlay at z-index 10000, backdrop at 9999
+
+**3. Removed Curate for Me On-Signup**
+- `FirstSavePrompt` removed from App.tsx (was modal on first save)
+- `ConciergeNudge` removed from App.tsx (was overlay after 3-5 saves)
+- Both replaced by concierge greeting logic
+
+**4. Landing Page Redesign (complete rewrite of threshold.tsx)**
+- Section 1: Hero video (kept)
+- Section 2: Atmospheric text — "Pick your destination. We've thought of everything — the places, the wardrobe, the details." (Lora 26px)
+- Section 3: Destination cards carousel — 85vw snap-scroll, 65vh tall, gradient overlay, VIEW GUIDE / COMING SOON buttons, dot indicators
+- Section 4A: Editorial coda with inline gold links to /shop, concierge, /suitcase — three-step framework as prose
+- Section 4B: THE EDIT shoppable carousel — hero products with hearts
+- Section 4C: Quiet closer — "Or ask your concierge ✦"
+- Stripped: intro text block, Curate for Me links, category tabs, THE CURRENT, SHOP THE STORY carousels, TodaysEditCard
+- THE CURRENT moved to hamburger menu (accessible at /current)
+- Returning users redirect to last page or /guides/morocco
+- Destinations updated: Slow Travel → Mallorca, Retreat → Amangiri
+
+**5. Concierge Can Save to Suitcase (tool use)**
+- `save_to_suitcase` tool added to Claude API call
+- When user asks to save → Claude calls tool → backend inserts into saves table → Claude confirms
+- Products looked up in brand genome by name for correct genome key, images, shop URL, category
+- Metadata includes genomeKey so suitcase image resolution works
+- Multiple rounds of debugging: column name mismatches (snake_case vs camelCase), auth issues (cookie returning null), Claude not calling the tool (prompt strengthened), missing metadata for image resolution
+- Vercel function timeout bumped from 30s to 60s for two-API-call flow
+
+**6. Suitcase Auth Fix**
+- Cookie auth (`getUserEmailFromRequest`) returning null on GET requests even for logged-in users
+- Suitcase was showing 1 anonymous save instead of 204
+- Fixed by passing email as query param fallback from client context
+- Same fix applied to concierge chat (email in request body as fallback)
+
+**7. Concierge Conversation Persistence**
+- Messages + message count saved to sessionStorage on every change
+- On component mount, loads existing conversation
+- Navigate between pages — same thread, same history
+- Clears on tab close (fresh visit = fresh conversation)
+
+**8. Admin CHATS Tab**
+- New tab on admin dashboard for reading concierge transcripts
+- View A: Conversation list — all conversations grouped by user, preview of first message, message count, last active
+- View B: Full transcript — chat bubble format (user right, concierge left with gold border), timestamps, page context badges, session break dividers (30+ min gaps)
+- Admin API endpoint now auth-gated with admin_key
+
+**9. Phase A Taste Intelligence — Conversation Memory**
+- Loads user's last 20 messages from concierge_conversations into system prompt
+- Concierge remembers prior conversations across sessions
+- Injected as PRIOR CONVERSATION HISTORY with instruction to reference past discussions
+- Taste Intelligence Plan committed to docs/ (Phases B+C planned for later)
+
+**10. Trip Brief Form — "Want yours?" Conversion Gate**
+- Replaced old ItineraryTeaser (blurred "Go Gold to Unlock") at bottom of Morocco guide
+- Part 1: Trip Teaser — "Your First Day in Marrakech" editorial prose (El Fenn, Le Jardin, Isadora Dress, orange blossom)
+- Part 2: Trip Brief Form — "Want yours?" with 4 fields (when, how long, who with, what matters most)
+- Pill button selectors for duration and travel party
+- Saves to new `trip_briefs` table with save count snapshot
+- Auth-gated — passport modal for unauthenticated users
+- Confirmation + opens concierge after 2s
+- Admin endpoint at `/api/admin/trip-briefs`
+
+**11. About Page Rewrite**
+- Complete rewrite: 5 sections, all prose, no images
+- What This Is / How It Works / Your Concierge / What You Can Buy / Who This Is For
+- Stripped: subscription tiers, The Current, Curate for Me, Gold/Black, feature comparison, "unlock" language
+- Closing: "FIL DE VIE — the thread of life."
+- Design: cream bg, Lora 18px, centered 600px max-width, gold dividers
+
+**12. Concierge Prompt Patches**
+- Voice rules: never use "taste" (→ "what moves you"), never "I'm an AI", never "unlock/upgrade/subscribe"
+- CURATED EDITS section: capsule wardrobes, when/how to offer, presentation rules
+- SAVING TO SUITCASE: MUST call tool, not just talk about saving (with RIGHT/WRONG examples)
+- Conversation memory instruction: reference prior discussions, don't re-introduce
+
+---
+
+**Key Architecture Decisions:**
+
+**Cookie auth workaround:** `getUserEmailFromRequest` intermittently returns null. Email passed via query params (suitcase) and request body (concierge) as fallback. Root cause unknown — possibly SESSION_SECRET env var or Vercel cookie parsing. Working but should be investigated.
+
+**Tool use for saves:** Two sequential Claude API calls (first returns tool_use, second sends tool result). Every step wrapped in try-catch with fallback. If anything fails, user still gets a text response. 60s timeout on Vercel function.
+
+**Conversation memory is Phase A of taste intelligence.** Phase B (extracted taste profiles as JSONB) and Phase C (Wellspring self-model connection) planned for later.
+
+---
+
+**Files Created:**
+- `docs/FDV_TASTE_INTELLIGENCE_PLAN.md`
+- `docs/FDV_TRIP_BRIEF_FORM_BRIEF.md`
+
+**Files Modified:**
+- `client/src/pages/threshold.tsx` (complete landing page rewrite)
+- `client/src/pages/about.tsx` (complete rewrite)
+- `client/src/pages/guides/morocco.tsx` (trip teaser + brief form replacing ItineraryTeaser)
+- `client/src/pages/suitcase.tsx` (email query param fix)
+- `client/src/pages/admin/pilot.tsx` (CHATS tab)
+- `client/src/components/floating-concierge.tsx` (greetings, persistence, email passthrough)
+- `client/src/components/bottom-nav.tsx` (z-index 9999)
+- `client/src/components/hamburger-drawer.tsx` (THE CURRENT added)
+- `client/src/hooks/use-page-view.ts` (last page tracking)
+- `api/index.ts` (greeting-context, mark-curate-shown, trip-briefs, admin conversations auth, tool use, conversation memory, genome lookup, suitcase email fallback)
+- `api/_concierge-prompt.ts` (curated edits, saving instructions, voice rules, conversation memory)
+- `shared/destinations.ts` (Mallorca + Amangiri replacing Slow Travel + Retreat)
+- `vercel.json` (timeout 30s → 60s)
+- `client/src/App.tsx` (removed FirstSavePrompt + ConciergeNudge)
+
+**Build Priority Queue — Updated Status:**
+1. ~~Concierge system prompt V2~~ — **DONE** (April 14)
+2. ~~Landing page redesign~~ — **DONE** (today)
+3. ~~Heart icons replacing pins~~ — **DONE** (April 14)
+4. ~~Nav restructure~~ — **DONE** (April 14)
+5. ~~Curate for Me timing fix~~ — **DONE** (today — removed on-signup, now via concierge greeting)
+6. ~~Concierge context-aware greetings~~ — **DONE** (today)
+7. ~~Trip brief form~~ — **DONE** (today)
+8. ~~Admin chat logging~~ — **DONE** (today)
+9. ~~About page rewrite~~ — **DONE** (today)
+10. ~~Taste intelligence Phase A~~ — **DONE** (today — conversation memory)
+11. Taste intelligence Phase B — **PLANNED** (extracted taste profiles)
+12. Concierge reads user saves for personalization — **DONE** (was already working)
+13. Trip payment flow (Stripe) — **NOT STARTED**
+14. Concierge booking capabilities (agent mode) — **NOT STARTED**
+15. Taste signal extraction → Wellspring self-model — **PLANNED** (Phase C)
+
+**Context for next session:** The entire North Star V2 build priority list (items 1-9) is complete. The site architecture matches the strategic vision. Next priorities: destination knowledge sprints (Hydra, Mallorca, Amangiri, NYC need Morocco-level depth), trip payment flow (Stripe), and Taste Intelligence Phases B+C.
 
 ---
 
