@@ -2077,3 +2077,33 @@ Sharon caught a section I'd missed when she scrolled to the evening carousel. Re
 ---
 
 *[Future entries appended above this line by Claude Code after each session]*
+
+---
+
+## Session Log — April 14, 2026 (Dispatch Brain Sync)
+
+**No active Dispatch conversations today.** Sharon in Saint Barths. Automated sync only.
+
+### FDV Daily
+- Tuesday edition deployed and sent to 20+ subscribers at ~7:07 AM ET
+
+### Major: User Journey North Star V2 Published
+- New Notion doc supersedes ALL previous user journey briefs
+- **Business model clarified:** NOT a subscription styling service. Three revenue streams: affiliate commerce (always-on), curated trip packages ($250-1000+/trip), future membership (yearly club)
+- **Gate model changed:** Guide is free, gate is "Want yours?" → brief form → custom trip → payment. No more "unlock itinerary" gates
+- **Three-step framework:** DISCOVER → CURATE → YOURS
+- **Nav architecture locked:** Top nav (hamburger, logo, About, Destinations, Shop) + Bottom nav (Home, Menu, ✦ Concierge gold pulsing center, Suitcase, Passport)
+- **Landing page simplified:** Hero video → atmospheric text → destination cards → done
+- **Heart icons replacing pins** throughout
+- **Key line:** "One woman paying $500 for a curated trip is a stronger signal than 50 women on a $29 subscription"
+
+### Build Priority (from North Star V2)
+1. Concierge system prompt rewrite (highest leverage, zero engineering)
+2. Landing page redesign
+3. Heart icons replacing pins
+4. Nav restructure
+
+### Needs Attention
+- North Star V2 is the new single source of truth for site architecture — all previous user journey specs are superseded
+- Concierge system prompt rewrite is #1 priority
+- Obsolete Collective reply still pending (Deià residency — Melissa responded)
