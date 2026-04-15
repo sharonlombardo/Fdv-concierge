@@ -1783,6 +1783,37 @@ Use these to personalize your responses. Reference specific items they've saved 
         userName,
       });
 
+      // Tool definition for saving items to suitcase
+      const tools = [
+        {
+          name: 'save_to_suitcase',
+          description: 'Save one or more products to the user\'s suitcase. Use this when the user asks you to save items, or when you offer to save an edit/capsule and they agree. Each item needs a title, brand, and price at minimum.',
+          input_schema: {
+            type: 'object' as const,
+            properties: {
+              items: {
+                type: 'array' as const,
+                items: {
+                  type: 'object' as const,
+                  properties: {
+                    title: { type: 'string' as const, description: 'Product name, e.g. "Stevie Caftan"' },
+                    brand: { type: 'string' as const, description: 'Brand name, e.g. "FIL DE VIE"' },
+                    price: { type: 'string' as const, description: 'Price string, e.g. "$825"' },
+                  },
+                  required: ['title', 'brand'],
+                },
+                description: 'Array of products to save',
+              },
+              editName: {
+                type: 'string' as const,
+                description: 'Optional name for the capsule/edit, e.g. "Desert Neutrals" or "Riad Evenings"',
+              },
+            },
+            required: ['items'],
+          },
+        },
+      ];
+
       try {
         // Log user's latest message
         const latestUserMsg = messages[messages.length - 1];
@@ -1793,6 +1824,9 @@ Use these to personalize your responses. Reference specific items they've saved 
           ).catch(() => {});
         }
 
+        const apiMessages = messages.map((m: any) => ({ role: m.role, content: m.content }));
+
+        // First API call — may return tool_use or text
         const response = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: {
@@ -1804,7 +1838,8 @@ Use these to personalize your responses. Reference specific items they've saved 
             model: 'claude-sonnet-4-20250514',
             max_tokens: 1024,
             system: systemPrompt,
-            messages: messages.map((m: any) => ({ role: m.role, content: m.content })),
+            tools,
+            messages: apiMessages,
           }),
         });
 
@@ -1814,8 +1849,81 @@ Use these to personalize your responses. Reference specific items they've saved 
           return res.status(500).json({ error: 'Concierge unavailable' });
         }
 
-        const data = await response.json();
-        const reply = data.content?.[0]?.text || 'I wasn\'t able to respond. Please try again.';
+        let data = await response.json();
+        let savedItems: string[] = [];
+
+        // Handle tool use — save items, then continue conversation
+        if (data.stop_reason === 'tool_use') {
+          const toolBlock = data.content.find((b: any) => b.type === 'tool_use');
+          const textBlock = data.content.find((b: any) => b.type === 'text');
+
+          if (toolBlock && toolBlock.name === 'save_to_suitcase' && userEmail) {
+            const { items, editName } = toolBlock.input as { items: Array<{ title: string; brand: string; price?: string }>; editName?: string };
+
+            // Execute saves
+            for (const item of items) {
+              try {
+                await pool.query(
+                  `INSERT INTO saves ("itemType", "itemId", "sourceContext", title, brand, price, "storyTag", "editTag", user_email, "savedAt")
+                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())
+                   ON CONFLICT DO NOTHING`,
+                  [
+                    'style',
+                    `concierge-save-${item.brand}-${item.title}`.toLowerCase().replace(/\s+/g, '-'),
+                    'concierge_chat',
+                    item.title,
+                    item.brand,
+                    item.price || null,
+                    editName ? editName.toLowerCase().replace(/\s+/g, '-') : 'concierge-edit',
+                    editName ? editName.toLowerCase().replace(/\s+/g, '-') : null,
+                    userEmail,
+                  ]
+                );
+                savedItems.push(`${item.brand} ${item.title}`);
+              } catch (saveErr) {
+                console.error('Concierge save failed for item:', item.title, saveErr);
+              }
+            }
+
+            // Second API call — send tool result back, get final text response
+            const toolResultMessages = [
+              ...apiMessages,
+              { role: 'assistant', content: data.content },
+              {
+                role: 'user',
+                content: [{
+                  type: 'tool_result',
+                  tool_use_id: toolBlock.id,
+                  content: `Successfully saved ${savedItems.length} item(s) to the suitcase: ${savedItems.join(', ')}`,
+                }],
+              },
+            ];
+
+            const followUp = await fetch('https://api.anthropic.com/v1/messages', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+                'anthropic-version': '2023-06-01',
+              },
+              body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 1024,
+                system: systemPrompt,
+                tools,
+                messages: toolResultMessages,
+              }),
+            });
+
+            if (followUp.ok) {
+              data = await followUp.json();
+            }
+          }
+        }
+
+        // Extract text reply from final response
+        const textContent = data.content?.find((b: any) => b.type === 'text');
+        const reply = textContent?.text || data.content?.[0]?.text || 'I wasn\'t able to respond. Please try again.';
 
         // Log assistant response
         pool.query(
@@ -1823,7 +1931,7 @@ Use these to personalize your responses. Reference specific items they've saved 
           [userEmail, sessionId, 'assistant', reply, pageContext || null]
         ).catch(() => {});
 
-        return res.status(200).json({ reply });
+        return res.status(200).json({ reply, savedItems: savedItems.length > 0 ? savedItems : undefined });
       } catch (err) {
         console.error('Concierge chat error:', err);
         return res.status(500).json({ error: 'Concierge unavailable' });
