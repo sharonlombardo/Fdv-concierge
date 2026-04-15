@@ -1864,9 +1864,8 @@ Use these to personalize your responses. Reference specific items they've saved 
             for (const item of items) {
               try {
                 await pool.query(
-                  `INSERT INTO saves ("itemType", "itemId", "sourceContext", title, brand, price, "storyTag", "editTag", user_email, "savedAt")
-                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())
-                   ON CONFLICT DO NOTHING`,
+                  `INSERT INTO saves (item_type, item_id, source_context, title, brand, price, story_tag, edit_tag, user_email, saved_at)
+                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
                   [
                     'style',
                     `concierge-save-${item.brand}-${item.title}`.toLowerCase().replace(/\s+/g, '-'),
@@ -1877,11 +1876,12 @@ Use these to personalize your responses. Reference specific items they've saved 
                     editName ? editName.toLowerCase().replace(/\s+/g, '-') : 'concierge-edit',
                     editName ? editName.toLowerCase().replace(/\s+/g, '-') : null,
                     userEmail,
+                    Date.now(),
                   ]
                 );
                 savedItems.push(`${item.brand} ${item.title}`);
-              } catch (saveErr) {
-                console.error('Concierge save failed for item:', item.title, saveErr);
+              } catch (saveErr: any) {
+                console.error('Concierge save failed for item:', item.title, saveErr?.message || saveErr);
               }
             }
 
