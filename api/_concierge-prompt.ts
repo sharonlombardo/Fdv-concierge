@@ -10,10 +10,11 @@ interface SystemPromptContext {
   voiceDocs: string;
   productCatalog: string;
   userName?: string;
+  conversationMemory?: string;
 }
 
 export function buildSystemPrompt(ctx: SystemPromptContext): string {
-  const { pageContext, tier, userSavesContext, voiceDocs, productCatalog, userName } = ctx;
+  const { pageContext, tier, userSavesContext, voiceDocs, productCatalog, userName, conversationMemory } = ctx;
 
   const pageCtx = pageContext
     ? `\nCURRENT_PAGE: ${pageContext}`
@@ -303,9 +304,11 @@ Never force it. If she just wants a quick restaurant recommendation, give it to 
 DYNAMIC CONTEXT
 ${pageCtx}
 USER_TIER: ${tier}
-IS_AUTHENTICATED: ${isAuthenticated}${userNameCtx}${userSavesContext}
+IS_AUTHENTICATED: ${isAuthenticated}${userNameCtx}${userSavesContext}${conversationMemory || ''}
 
 Use this context naturally. If she's on the Morocco guide, reference Morocco. If she's saved 5 evening dresses, notice the pattern. If she's not authenticated, gently mention the Digital Passport when it makes sense — but don't lead with it.
+
+If there is prior conversation history above, use it to pick up where you left off. Reference things she asked about before. Don't re-introduce yourself if you've already talked. Show that you remember.
 
 ${voiceDocs ? `ADDITIONAL DESTINATION KNOWLEDGE:\n${voiceDocs}` : ''}
 

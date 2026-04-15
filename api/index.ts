@@ -1785,6 +1785,27 @@ Use these to personalize your responses. Reference specific items they've saved 
         }
       }
 
+      // Load prior conversation history for memory (Phase A — Taste Intelligence)
+      let conversationMemory = '';
+      if (userEmail) {
+        try {
+          const historyResult = await pool.query(
+            `SELECT role, content, page_context, created_at FROM concierge_conversations
+             WHERE user_email = $1 ORDER BY created_at DESC LIMIT 20`,
+            [userEmail]
+          );
+          if (historyResult.rows.length > 0) {
+            const historyLines = historyResult.rows
+              .reverse() // chronological order
+              .map((r: any) => `[${r.role}${r.page_context ? ' on ' + r.page_context : ''}]: ${r.content}`)
+              .join('\n');
+            conversationMemory = `\n\nPRIOR CONVERSATION HISTORY (this user's last ${historyResult.rows.length} messages — use to remember context, preferences, and what you've discussed before):\n${historyLines}\n\nUse this history naturally. If she asked about Morocco last time, reference it. If you recommended a product, remember that. Don't repeat the same greeting — pick up where you left off.`;
+          }
+        } catch (e) {
+          // Non-critical
+        }
+      }
+
       const tier = userEmail ? 'authenticated' : 'anonymous';
 
       // Load dynamic knowledge sources
@@ -1798,6 +1819,7 @@ Use these to personalize your responses. Reference specific items they've saved 
         voiceDocs,
         productCatalog,
         userName,
+        conversationMemory,
       });
 
       // Tool definition for saving items to suitcase
