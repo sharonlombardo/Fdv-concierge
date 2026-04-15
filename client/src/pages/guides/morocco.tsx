@@ -143,12 +143,18 @@ const EDITORIAL_PRODUCT_MAP: Record<string, EditorialProduct[]> = {
   // Wardrobe day images → DAY_PRODUCTS
   "ward-1-large": DAY_PRODUCTS,
   "ward-1-small1": [DAY_PRODUCTS[1]], // Bottega Kalimero
-  "ward-1-small2": [DAY_PRODUCTS[3]], // Bulgari necklace
-  // Wardrobe evening images → EVE_PRODUCTS
-  "ward-2-large": EVE_PRODUCTS,
+  "ward-1-small2": [DAY_PRODUCTS[2]], // Kir Sandal
+  // Wardrobe evening hero — curated 5 products (Isadora Dress image)
+  "ward-2-large": [
+    { id: "ward-eve-isadora", brand: "FIL DE VIE", name: "Isadora Dress", price: "$795", shopUrl: "http://www.fildevie.com", imageUrl: "", genomeKey: "look:fdv:isadoradress:blk.jpg" },
+    { id: "ward-eve-alaia", brand: "Alaïa", name: "Heel Thong Mules in Velvet", price: "$1,450", imageUrl: "", genomeKey: "footwear:alaia:black.jpg" },
+    { id: "ward-eve-chloe", brand: "Chloé", name: "Wristlette", price: "$4,200", imageUrl: "", genomeKey: "access:bag:chloe:wristlette:black.jpg" },
+    { id: "ward-eve-hoops", brand: "Phoebe Philo", name: "Gold Studded Hoops", price: "$550", imageUrl: "", genomeKey: "access:jewlery:phoebephilo:hoops.jpg" },
+    { id: "ward-eve-oil", brand: "Hildegaard", name: "Immortelle Oil", price: "$375", imageUrl: "", genomeKey: "beauty:imortelle oil.jpg", bucket: "Objects of Desire", pinType: "object" },
+  ],
   "ward-2-small1": [EVE_PRODUCTS[2]], // Chloé Wristlette
   "ward-2-small2": [EVE_PRODUCTS[5]], // PoppyKing lipstick
-  // What Travels Well — accessories + beauty (Column Dress image moved here as hero)
+  // What Travels Well — now routes to Column Dress break (morocco-object-1)
   "ward-3-large": TRAVEL_PRODUCTS,
 };
 

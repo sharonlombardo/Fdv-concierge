@@ -74,7 +74,7 @@ function getDestinationTag(storyTag: string): string {
 
 export function ItemModal({ item, open, onOpenChange, source = "current" }: ItemModalProps) {
   const fromSuitcase = source === "suitcase";
-  const { user, setShowPassportGate, setPendingSaveCallback } = useUser();
+  const { user, email, setShowPassportGate, setPendingSaveCallback } = useUser();
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifySubmitted, setNotifySubmitted] = useState(false);
 
@@ -208,6 +208,7 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
               const product = getProductByKey(key);
               return product?.category || item!.category || undefined;
             })(),
+            userEmail: email || undefined,
           }),
         });
         console.log('[ItemModal] POST /api/saves response:', res.status);
