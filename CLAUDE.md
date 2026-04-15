@@ -697,7 +697,35 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 14. Concierge booking capabilities (agent mode) — **NOT STARTED**
 15. Taste signal extraction → Wellspring self-model — **PLANNED** (Phase C)
 
-**Context for next session:** The entire North Star V2 build priority list (items 1-9) is complete. The site architecture matches the strategic vision. Next priorities: destination knowledge sprints (Hydra, Mallorca, Amangiri, NYC need Morocco-level depth), trip payment flow (Stripe), and Taste Intelligence Phases B+C.
+**Afternoon session (continued) — Morocco Guide Shopping Polish + Bug Fixes:**
+
+**13. Multi-product editorial breaks (Fix 1)**
+Each of the 6 shoppable editorial break images now maps to 5 products: hero garment + shoe + bag + accessory + beauty. 30 product-to-genome-key mappings. Fixed 8 mismatched genome keys (DeMellier, Bulgari Serpenti, Loewe, Le Prunier, Red Caftan, Hoops — key spellings didn't match GENOME_KEY_TO_EXTRA).
+
+**14. Shop the Full Edit → Morocco filter (Fix 4)**
+Gold "Shop the Full Edit →" link at bottom of Morocco guide. Links to `/shop?destination=morocco` — shop page filters to Morocco collection brands, shows "The Morocco Edit" header.
+
+**15. Multi-image product modals (Fix 2)**
+Product modal now supports studio + editorial context shots. Swipeable 2-image gallery with dot indicators when opened from editorial breaks.
+
+**16. Product sorting audit (Fix 3)**
+Bulgari Cabochon ($50K), Loewe sunglasses, Saint Jane sunscreen removed from Day carousel — moved to Evening/Travel where they belong.
+
+**17. Desktop layout polish (Fix 5)**
+Guide max-width 1200px centered, place blocks 900px, product tiles 280px on desktop, hero 100px padding, footer 700px. All via `@media (min-width: 1025px)`.
+
+**18. Editorial break bugs fixed**
+- Overlay modal stacking: closing product modal returns to overlay (z-[300] above z-200)
+- Column Dress hero: opens 5 curated Break 6 products, not full TRAVEL_PRODUCTS
+- Riad Evenings hero: curated 5 products (Isadora + Alaïa + Chloé + Hoops + Oil)
+- Destination cards: landing page matches destinations page (68vw, 3px gap, 70vh)
+
+**19. Item modal save fix**
+POST body was missing `userEmail` — saves from modals went to anonymous pool. Now passes email from useUser() context.
+
+**Known issue — Cookie auth:** `getUserEmailFromRequest` intermittently returns null. Workarounds applied in 5+ places (email via query params / request body). Root cause investigation queued.
+
+**Context for next session:** North Star V2 build priority list complete (items 1-9). Morocco guide shopping polish complete (5 fixes). Cookie auth root cause is the top technical debt item. Next: destination knowledge sprints, Stripe payment, Taste Intelligence Phases B+C.
 
 ---
 
