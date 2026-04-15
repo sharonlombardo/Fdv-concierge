@@ -81,7 +81,8 @@ export default function AdminPilot() {
   });
   const [keyInput, setKeyInput] = useState("");
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "users" | "content" | "alerts" | "links" | "products">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "users" | "content" | "alerts" | "links" | "products" | "chats">("overview");
+  const [chatViewEmail, setChatViewEmail] = useState<string | null>(null);
   const [manualUrlInput, setManualUrlInput] = useState<Record<number, string>>({});
   const [checkingLinks, setCheckingLinks] = useState(false);
   const [seedingProducts, setSeedingProducts] = useState(false);
@@ -190,6 +191,19 @@ export default function AdminPilot() {
     retry: false,
   });
 
+  // Conversations data for CHATS tab
+  const { data: conversations } = useQuery<any[]>({
+    queryKey: ["/api/admin/conversations", adminKey, chatViewEmail],
+    queryFn: async () => {
+      const emailParam = chatViewEmail ? `&email=${encodeURIComponent(chatViewEmail)}` : '';
+      const res = await fetch(`/api/admin/conversations?admin_key=${encodeURIComponent(adminKey)}&limit=500${emailParam}`);
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!adminKey && activeTab === "chats",
+    retry: false,
+  });
+
   const seedProducts = async () => {
     setSeedingProducts(true);
     try {
@@ -250,6 +264,7 @@ export default function AdminPilot() {
     { key: "links" as const, label: `Links${brokenCount ? ` (${brokenCount})` : ""}` },
     { key: "products" as const, label: `Products${products ? ` (${products.length})` : ""}` },
     { key: "alerts" as const, label: `Alerts${aggregate?.alerts?.zeroSaveUsers?.length ? ` (${aggregate.alerts.zeroSaveUsers.length})` : ""}` },
+    { key: "chats" as const, label: "Chats" },
   ];
 
   return (
@@ -849,6 +864,169 @@ export default function AdminPilot() {
                 </div>
               );
             })() : null}
+          </>
+        )}
+
+        {/* CHATS TAB */}
+        {activeTab === "chats" && (
+          <>
+            {chatViewEmail ? (
+              // VIEW B: Full conversation transcript for one user
+              <>
+                <button
+                  onClick={() => setChatViewEmail(null)}
+                  style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: "#c9a84c", marginBottom: 16, padding: 0 }}
+                >
+                  ← Back to all conversations
+                </button>
+                <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 16, color: "#2c2416" }}>
+                  {chatViewEmail}
+                </h2>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {conversations && conversations.length > 0 ? (
+                    (() => {
+                      // Sort chronologically (oldest first) for reading
+                      const sorted = [...conversations].sort((a, b) =>
+                        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+                      );
+                      let lastTime = 0;
+                      return sorted.map((msg, i) => {
+                        const time = new Date(msg.created_at).getTime();
+                        const showSessionBreak = lastTime > 0 && (time - lastTime) > 30 * 60 * 1000;
+                        lastTime = time;
+                        const isUser = msg.role === 'user';
+                        return (
+                          <div key={i}>
+                            {showSessionBreak && (
+                              <div style={{ textAlign: "center", margin: "16px 0", fontSize: 11, color: "#999" }}>
+                                <span style={{ background: "#faf9f6", padding: "0 12px" }}>
+                                  — {new Date(msg.created_at).toLocaleDateString()} {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} —
+                                </span>
+                              </div>
+                            )}
+                            <div style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start" }}>
+                              <div
+                                style={{
+                                  maxWidth: "80%",
+                                  padding: "10px 14px",
+                                  background: isUser ? "#1a1a1a" : "#fff",
+                                  color: isUser ? "#fff" : "#2c2416",
+                                  borderRadius: 8,
+                                  borderLeft: isUser ? "none" : "3px solid #c9a84c",
+                                  fontSize: 13,
+                                  lineHeight: 1.6,
+                                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                                }}
+                              >
+                                <div style={{ whiteSpace: "pre-wrap" }}>{msg.content}</div>
+                                <div style={{ display: "flex", gap: 8, marginTop: 6, alignItems: "center" }}>
+                                  <span style={{ fontSize: 10, color: isUser ? "rgba(255,255,255,0.5)" : "#999" }}>
+                                    {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                  </span>
+                                  {msg.page_context && (
+                                    <span style={{
+                                      fontSize: 9,
+                                      padding: "1px 6px",
+                                      borderRadius: 8,
+                                      background: isUser ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.05)",
+                                      color: isUser ? "rgba(255,255,255,0.6)" : "#999",
+                                    }}>
+                                      {msg.page_context}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      });
+                    })()
+                  ) : (
+                    <p style={{ color: "#999", fontSize: 13 }}>No messages found.</p>
+                  )}
+                </div>
+              </>
+            ) : (
+              // VIEW A: Conversation list — grouped by user
+              <>
+                <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 16, color: "#2c2416" }}>All Conversations</h2>
+                {conversations && conversations.length > 0 ? (
+                  (() => {
+                    // Group by user_email
+                    const byUser: Record<string, any[]> = {};
+                    for (const msg of conversations) {
+                      const key = msg.user_email || 'anonymous';
+                      if (!byUser[key]) byUser[key] = [];
+                      byUser[key].push(msg);
+                    }
+                    // Sort each user's messages and build summary
+                    const summaries = Object.entries(byUser).map(([email, msgs]) => {
+                      const sorted = msgs.sort((a: any, b: any) =>
+                        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+                      );
+                      const firstUserMsg = sorted.find((m: any) => m.role === 'user');
+                      const lastMsg = sorted[sorted.length - 1];
+                      return {
+                        email,
+                        messageCount: msgs.length,
+                        firstMessageAt: sorted[0].created_at,
+                        lastMessageAt: lastMsg.created_at,
+                        pageContext: sorted[0].page_context,
+                        preview: firstUserMsg?.content?.substring(0, 120) || '(no user messages)',
+                      };
+                    });
+                    // Sort by most recent
+                    summaries.sort((a, b) =>
+                      new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()
+                    );
+                    return (
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                        {summaries.map((s) => (
+                          <button
+                            key={s.email}
+                            onClick={() => setChatViewEmail(s.email)}
+                            style={{
+                              display: "block",
+                              width: "100%",
+                              textAlign: "left",
+                              padding: "14px 16px",
+                              background: "#fff",
+                              border: "1px solid #e8e0d4",
+                              borderRadius: 6,
+                              cursor: "pointer",
+                            }}
+                          >
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+                              <span style={{ fontSize: 13, fontWeight: 600, color: "#2c2416" }}>
+                                {s.email === 'anonymous' ? 'Anonymous' : s.email}
+                              </span>
+                              <span style={{ fontSize: 11, color: "#999" }}>
+                                {s.messageCount} msgs
+                              </span>
+                            </div>
+                            <p style={{ fontSize: 12, color: "#666", margin: "0 0 6px", lineHeight: 1.4 }}>
+                              {s.preview}{s.preview.length >= 120 ? '...' : ''}
+                            </p>
+                            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                              <span style={{ fontSize: 10, color: "#999" }}>
+                                Last: {new Date(s.lastMessageAt).toLocaleDateString()} {new Date(s.lastMessageAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                              {s.pageContext && (
+                                <span style={{ fontSize: 9, padding: "1px 6px", borderRadius: 8, background: "rgba(0,0,0,0.05)", color: "#999" }}>
+                                  {s.pageContext}
+                                </span>
+                              )}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    );
+                  })()
+                ) : (
+                  <p style={{ color: "#999", fontSize: 13 }}>No conversations yet.</p>
+                )}
+              </>
+            )}
           </>
         )}
       </div>

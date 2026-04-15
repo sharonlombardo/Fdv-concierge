@@ -2004,8 +2004,11 @@ Use these to personalize your responses. Reference specific items they've saved 
 
     // GET /api/admin/conversations — admin view of concierge conversations
     if (path === '/api/admin/conversations' && method === 'GET') {
-      const { email: filterEmail, limit: limitParam } = req.query || {};
-      const lim = Math.min(parseInt(limitParam as string) || 100, 500);
+      const convUrl = new URL(url || '', `http://${req.headers.host}`);
+      const convAdminKey = convUrl.searchParams.get('admin_key');
+      if (convAdminKey !== process.env.ADMIN_KEY) return res.status(403).json({ error: 'Forbidden' });
+      const filterEmail = convUrl.searchParams.get('email');
+      const lim = Math.min(parseInt(convUrl.searchParams.get('limit') || '500'), 500);
       let query = 'SELECT * FROM concierge_conversations';
       const params: any[] = [];
       if (filterEmail) {
