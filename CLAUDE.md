@@ -557,6 +557,32 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 15, 2026 | Claude.ai + Claude Code — FULL DAY: 22 Features + 8 Bug Fixes. North Star V2 Complete.
+
+**The day in one line:** The product that exists tonight is fundamentally different from the one that existed this morning.
+
+**Concierge Intelligence:** Context-aware greetings (first-time vs returning × 6 pages), first-time detection via conversation history, 3-save curate trigger, Curate for Me on-signup killed, save-to-suitcase via Claude tool-use API, conversation persistence (sessionStorage), curated edits prompt, conversation memory (Taste Intelligence Phase A — last 20 messages in system prompt), voice rules ("what moves you" not "taste").
+
+**Landing Page:** Full redesign (video → text → destination cards → editorial coda → THE EDIT carousel → closer). THE CURRENT moved to hamburger menu. Returning user redirect.
+
+**Morocco Guide Shopping Polish:** Multi-product editorial breaks (6×5=30 mappings), multi-image product modals (studio + editorial), product sorting audit, "Shop the Full Edit" Morocco filter, desktop layout (1200px max).
+
+**User Journey:** Trip teaser ("Your First Day in Marrakech"), trip brief form ("Want yours?" — 4 fields, saves to trip_briefs table, auth-gated), about page rewrite (5 sections, all prose).
+
+**Admin:** CHATS tab with full conversation transcripts. Z-index fix (concierge always tappable).
+
+**Bug Fixes (8):** Wrong product images (genome key mismatches), save buttons in modals (missing userEmail), modal navigation stack, Column Dress + Riad Evenings overlays, destination card layout, suitcase auth (204 saves), cookie auth root cause (7 fetch calls missing credentials:'include').
+
+**Documents Created:** Destination Scout Curation Filter V2 (8-criteria scoring + 4 gates + brand taste profile), Taste Intelligence Plan (Phases A/B/C), trip brief form spec, landing page brief, about page brief, Morocco shopping polish brief.
+
+**Pilot Stats:** 12 users, 545 sessions, 40+ chats, 0 curates (trip brief form just went live).
+
+**What's Next:** Destination guide sprints (Hydra first using Curation Filter V2), Stripe payment for trip briefs, Taste Intelligence Phase B (extracted taste profiles), financial model update, VC deck revision, outreach (Lisa Ruffle, Gillian, Melissa, Chad Nelson, Quentin Clark, Warren Shaeffer).
+
+**Context for next session:** North Star V2 build list is COMPLETE. Next focus: destination guide sprints (Hydra first), Stripe payment, Taste Intelligence Phase B. Destination Scout skill + Curation Filter V2 + voice docs ready to go.
+
+---
+
 ### April 15, 2026 | Claude Code (web) — Landing Page Redesign, Concierge Saves, Trip Brief Form, About Page, Taste Intelligence, Admin Chat Logging
 
 **Topic:** Massive build day. ~20 commits. Completed nearly every item on the North Star V2 build priority list. The front door, the conversion gate, the concierge's ability to act, and the admin's ability to read conversations — all shipped.
