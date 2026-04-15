@@ -109,8 +109,8 @@ function App() {
           <PageViewTracker />
           <EmailCaptureManager />
           <PassportGate />
-          <FirstSavePrompt />
-          <ConciergeNudge />
+          {/* FirstSavePrompt removed — curate prompt now surfaces via concierge greeting after 3+ saves */}
+          {/* ConciergeNudge removed — replaced by concierge greeting logic */}
           <FloatingConcierge />
           <TopBar />
           <Router />

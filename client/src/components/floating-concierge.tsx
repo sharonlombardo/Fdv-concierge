@@ -8,26 +8,57 @@ interface Message {
   content: string;
 }
 
-const PAGE_GREETINGS: Record<string, string> = {
-  "/guides/morocco": "Exploring Morocco? I've been. Ask me anything.",
-  "/capsule/": "Seeing something you like? I can help you put the look together.",
-  "/suitcase": "Nice saves. Want me to find the thread?",
-  "/shop": "Looking for something specific? I know this catalog well.",
-  "/packing": "Packing for a trip? I've packed for this one — happy to help.",
-  "/concierge": "Planning your days? Let me help fill in the details.",
-  "/current": "Exploring The Current? Ask me about anything that catches your eye.",
-  "/my-edits": "Your edits are looking good. Want me to build on what you've started?",
+// --- FIRST-TIME GREETINGS (isFirstChat = true) ---
+const FIRST_TIME_GREETINGS: Record<string, string> = {
+  "/": "Welcome. Start with Morocco — it's live now, everything from where to stay (El Fenn, always) to what to pack (the Marrakech Pants were literally designed for that city). Everything in the guides is shoppable — see something, tap it, it's yours. And when you're ready, I can build the whole trip for you — curated itinerary, wardrobe, packing list, bookings. All of it. I'm here whenever.",
+  "/guides/morocco": "You're in the right place. This is the full Morocco guide — every restaurant, hotel, and experience I'd send a friend to, plus the wardrobe to match. Everything's shoppable directly. And if you want the whole thing personalized — your itinerary, your packing list, your reservations — that's what I'm really here for. Where do you want to start?",
+  "/destinations": "You're in the right place. This is the full Morocco guide — every restaurant, hotel, and experience I'd send a friend to, plus the wardrobe to match. Everything's shoppable directly. And if you want the whole thing personalized — your itinerary, your packing list, your reservations — that's what I'm really here for. Where do you want to start?",
+  "/shop": "This is the full collection — wardrobe, accessories, beauty. Fewer things, better things. If you tell me what you're dressing for — a dinner in Marrakech, a week on an island, a Tuesday that needs saving — I can pull a wardrobe edit just for you.",
+  "/suitcase": "You haven't packed anything yet. Browse the guides, heart what stops you — it all lands here. Once I see what you're drawn to, the real work starts: I can build your trip, your wardrobe, the whole picture.",
+  "/profile": "This is your home base. The more you explore and save, the better I get at reading what you actually want — not what an algorithm guesses.",
 };
 
-const DEFAULT_GREETING = "Welcome to FDV. I'm your concierge — think of me as a well-traveled friend with good taste.";
-const RETURN_GREETING = "Welcome back.";
+const FIRST_TIME_SUITCASE_HAS_SAVES = "Your suitcase is filling up. I can work with this — want me to turn what's here into a trip? Or a wardrobe edit you can actually buy?";
 
-function getGreeting(path: string, isReturn: boolean): string {
-  if (isReturn) return RETURN_GREETING;
-  for (const [prefix, greeting] of Object.entries(PAGE_GREETINGS)) {
-    if (path.startsWith(prefix)) return greeting;
+const FIRST_TIME_DEFAULT = "Welcome. I'm here to help you find what you're looking for — whether that's a place, a wardrobe, or the whole trip. Start with Destinations if you want to explore, or just tell me where you're headed.";
+
+// --- RETURNING GREETINGS (isFirstChat = false) ---
+const RETURNING_GREETINGS: Record<string, string> = {
+  "/": "Welcome back. Where to?",
+  "/guides/morocco": "Back in Morocco. Anything catching your eye?",
+  "/destinations": "Back in Morocco. Anything catching your eye?",
+  "/shop": "Browsing the collection. Want me to pull something specific, or want picks based on what you've saved?",
+  "/suitcase": "Your suitcase is filling up. I can work with this — want me to turn what's here into a trip? Or a wardrobe edit you can actually buy?",
+  "/profile": "Hey. Anything you need to update, or are you here to explore?",
+};
+
+const RETURNING_DEFAULT = "Welcome back. Where to?";
+
+// --- SPECIAL: 3+ saves curate prompt ---
+const CURATE_PROMPT_GREETING = "I'm starting to see what moves you. Want me to build your trip around it?";
+
+function getGreeting(path: string, isFirstChat: boolean, saveCount: number, curatePromptShown: boolean): string {
+  // Special trigger: 3+ saves and curate prompt not yet shown
+  if (saveCount >= 3 && !curatePromptShown) {
+    return CURATE_PROMPT_GREETING;
   }
-  return DEFAULT_GREETING;
+
+  if (isFirstChat) {
+    // Check for suitcase with saves
+    if (path.startsWith("/suitcase") && saveCount > 0) {
+      return FIRST_TIME_SUITCASE_HAS_SAVES;
+    }
+    // Check exact matches first, then prefix matches
+    for (const [prefix, greeting] of Object.entries(FIRST_TIME_GREETINGS)) {
+      if (prefix === "/" ? path === "/" : path.startsWith(prefix)) return greeting;
+    }
+    return FIRST_TIME_DEFAULT;
+  } else {
+    for (const [prefix, greeting] of Object.entries(RETURNING_GREETINGS)) {
+      if (prefix === "/" ? path === "/" : path.startsWith(prefix)) return greeting;
+    }
+    return RETURNING_DEFAULT;
+  }
 }
 
 // Message limits by tier
@@ -35,7 +66,7 @@ const ANON_LIMIT = 3;
 const FREE_LIMIT = 15;
 
 const ANON_GATE_MSG = "I'd love to keep going — I can tell you have good taste. Create your Digital Passport and I'm all yours. It takes 10 seconds.";
-const FREE_GATE_MSG = "I've enjoyed this. If you want me to really learn your taste — what you save, what catches your eye, what you'd never wear — that's your Gold Passport. I get a lot better when I know you.";
+const FREE_GATE_MSG = "I've enjoyed this. If you want me to really learn what moves you — what you save, what catches your eye, what you'd never wear — that's your Gold Passport. I get a lot better when I know you.";
 
 export function FloatingConcierge() {
   const [location] = useLocation();
@@ -83,14 +114,40 @@ export function FloatingConcierge() {
     }
   }, [isAuthenticated, isGated]);
 
-  const handleOpen = useCallback(() => {
+  const handleOpen = useCallback(async () => {
     setIsOpen(true);
     if (!hasGreeted.current) {
       hasGreeted.current = true;
-      const isReturn = sessionStorage.getItem("fdv_concierge_greeted") === "true";
-      const greeting = getGreeting(location, isReturn);
+
+      // Fetch first-chat status + save count from server
+      let isFirstChat = true;
+      let saveCount = 0;
+      let curatePromptShown = false;
+
+      try {
+        const res = await fetch("/api/concierge/greeting-context", {
+          credentials: "include",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          isFirstChat = data.isFirstChat ?? true;
+          saveCount = data.saveCount ?? 0;
+          curatePromptShown = data.curatePromptShown ?? false;
+        }
+      } catch {
+        // Fall through with defaults
+      }
+
+      const greeting = getGreeting(location, isFirstChat, saveCount, curatePromptShown);
       setMessages([{ role: "assistant", content: greeting }]);
-      sessionStorage.setItem("fdv_concierge_greeted", "true");
+
+      // If we showed the curate prompt, mark it as shown
+      if (saveCount >= 3 && !curatePromptShown) {
+        fetch("/api/concierge/mark-curate-shown", {
+          method: "POST",
+          credentials: "include",
+        }).catch(() => {});
+      }
     }
   }, [location]);
 
@@ -178,7 +235,6 @@ export function FloatingConcierge() {
     }
   }, [tier, setPendingSaveCallback, setShowPassportGate]);
 
-  // Don't render on dedicated chat page or landing
   if (hidden) return null;
 
   return (
@@ -192,7 +248,7 @@ export function FloatingConcierge() {
             left: 0,
             right: 0,
             height: "75vh",
-            zIndex: 200,
+            zIndex: 10000,
             background: "#faf9f6",
             borderTopLeftRadius: 16,
             borderTopRightRadius: 16,
@@ -308,7 +364,7 @@ export function FloatingConcierge() {
                         lineHeight: 1.5,
                       }}
                     >
-                      Gold Passport — $29/mo · Unlimited concierge · Personalized taste
+                      Gold Passport — $29/mo · Unlimited concierge · Personalized
                     </div>
                   )}
                 </div>
@@ -399,7 +455,7 @@ export function FloatingConcierge() {
           style={{
             position: "fixed",
             inset: 0,
-            zIndex: 199,
+            zIndex: 9999,
             background: "rgba(0,0,0,0.3)",
           }}
         />

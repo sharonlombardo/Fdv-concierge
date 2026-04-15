@@ -196,6 +196,7 @@ async function runMigrations() {
     await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT');
     await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()');
     await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS last_active TIMESTAMP DEFAULT NOW()');
+    await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS curate_prompt_shown BOOLEAN DEFAULT FALSE');
     // Link health table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS link_health (
@@ -1673,6 +1674,54 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.warn('Events table insert failed (table may not exist):', dbError);
       }
       return res.status(200).json({ success: true, eventType, itemId });
+    }
+
+    // GET /api/concierge/greeting-context — returns isFirstChat, saveCount, curatePromptShown
+    if (path === '/api/concierge/greeting-context' && method === 'GET') {
+      const userEmail = getUserEmailFromRequest(req);
+      let isFirstChat = true;
+      let saveCount = 0;
+      let curatePromptShown = false;
+
+      if (userEmail) {
+        try {
+          const chatResult = await pool.query(
+            `SELECT COUNT(*) as cnt FROM concierge_conversations WHERE user_email = $1 AND role = 'user'`,
+            [userEmail]
+          );
+          isFirstChat = parseInt(chatResult.rows[0]?.cnt || '0') === 0;
+        } catch { /* table may not exist */ }
+
+        try {
+          const savesResult = await pool.query(
+            `SELECT COUNT(*) as cnt FROM saves WHERE user_email = $1`,
+            [userEmail]
+          );
+          saveCount = parseInt(savesResult.rows[0]?.cnt || '0');
+        } catch { /* */ }
+
+        try {
+          const curateResult = await pool.query(
+            `SELECT curate_prompt_shown FROM users WHERE email = $1`,
+            [userEmail]
+          );
+          curatePromptShown = curateResult.rows[0]?.curate_prompt_shown === true;
+        } catch { /* column may not exist yet */ }
+      }
+
+      return res.status(200).json({ isFirstChat, saveCount, curatePromptShown });
+    }
+
+    // POST /api/concierge/mark-curate-shown — set curate_prompt_shown flag
+    if (path === '/api/concierge/mark-curate-shown' && method === 'POST') {
+      const userEmail = getUserEmailFromRequest(req);
+      if (userEmail) {
+        try {
+          await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS curate_prompt_shown BOOLEAN DEFAULT FALSE`);
+          await pool.query(`UPDATE users SET curate_prompt_shown = TRUE WHERE email = $1`, [userEmail]);
+        } catch { /* non-critical */ }
+      }
+      return res.status(200).json({ success: true });
     }
 
     // POST /api/concierge/chat — AI concierge chat with logging, context, knowledge
