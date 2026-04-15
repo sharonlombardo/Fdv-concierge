@@ -184,6 +184,7 @@ export function FloatingConcierge() {
           messages: allMessages.filter((m) => m.role !== "gate").map((m) => ({ role: m.role, content: m.content })),
           pageContext: location,
           sessionId: getSessionId(),
+          userEmail: email || undefined,
         }),
       });
 

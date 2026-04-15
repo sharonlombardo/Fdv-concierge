@@ -1731,13 +1731,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(500).json({ error: 'Concierge not configured' });
       }
 
-      const { messages, pageContext, sessionId: clientSessionId } = req.body || {};
+      const { messages, pageContext, sessionId: clientSessionId, userEmail: bodyEmail } = req.body || {};
       if (!messages || !Array.isArray(messages) || messages.length === 0) {
         return res.status(400).json({ error: 'messages array is required' });
       }
 
-      const userEmail = getUserEmailFromRequest(req);
+      const cookieEmail = getUserEmailFromRequest(req);
+      const userEmail = cookieEmail || bodyEmail || null;
       const sessionId = clientSessionId || 'unknown';
+      console.log('[Concierge] userEmail:', userEmail, '(cookie:', cookieEmail, ', body:', bodyEmail, ')');
 
       // Load user's recent saves + name for personalization (authenticated users only)
       let userSavesContext = '';
