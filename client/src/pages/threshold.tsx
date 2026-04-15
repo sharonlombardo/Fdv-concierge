@@ -1,318 +1,484 @@
-
-import CurrentFeed from "./current";
-import { Link } from "wouter";
-import { ChevronRight, Pin } from "lucide-react";
+import { useRef, useState, useEffect, useCallback } from "react";
+import { Link, useLocation } from "wouter";
+import { HeroAnimation } from "@/components/hero-animation";
+import { DESTINATIONS } from "@shared/destinations";
 import { useImageSlots } from "@/hooks/use-image-slot";
 import { IMAGE_SLOTS } from "@shared/image-slots";
-import { useState } from "react";
-import { queryClient } from "@/lib/queryClient";
-import { HeroAnimation } from "@/components/hero-animation";
+import { PinButton } from "@/components/pin-button";
+import { getProductByKey, getShopImageUrl } from "@/lib/brand-genome";
+import { useUser } from "@/contexts/user-context";
 
-const MOOD_KEYS = [
-  "todays-edit-mood-1",
-  "todays-edit-mood-2",
-  "todays-edit-mood-3",
-  "todays-edit-mood-4",
+// Products for THE EDIT carousel — hand-curated hero pieces
+const EDIT_PRODUCTS = [
+  { genomeKey: "look:fildevie:steviecaftan:black.jpg", fallbackTitle: "Stevie Caftan", fallbackBrand: "FIL DE VIE", fallbackPrice: "$825" },
+  { genomeKey: "look:fildevie:columndress:black.jpg", fallbackTitle: "Column Dress", fallbackBrand: "FIL DE VIE", fallbackPrice: "$745" },
+  { genomeKey: "look:fildevie:estedress:black.jpg", fallbackTitle: "Este Dress", fallbackBrand: "FIL DE VIE", fallbackPrice: "$675" },
+  { genomeKey: "look:fildevie:medinadress:black.jpg", fallbackTitle: "Medina Dress", fallbackBrand: "FIL DE VIE", fallbackPrice: "$650" },
+  { genomeKey: "beauty:fdv:parfum.jpg", fallbackTitle: "Parfum", fallbackBrand: "FIL DE VIE", fallbackPrice: "$475" },
+  { genomeKey: "look:fdv:steviecaftan:black.jpg", fallbackTitle: "Stevie Caftan", fallbackBrand: "FIL DE VIE", fallbackPrice: "$825" },
 ];
 
-const LOOK_KEYS = [
-  "todays-edit-look-1",
-  "todays-edit-look-2",
-  "todays-edit-look-3",
-  "todays-edit-look-4",
-  "todays-edit-look-5",
-  "todays-edit-look-6",
-];
-
-const CATEGORY_NAV = [
-  { id: "guides", label: "Guides", href: "/destinations", active: true },
-  { id: "style", label: "Style", href: null, active: false },
-  { id: "culture", label: "Culture", href: null, active: false },
-  { id: "experiences", label: "Experiences", href: null, active: false },
-  { id: "rituals", label: "Rituals", href: null, active: false },
-  { id: "objects", label: "Objects of Desire", href: null, active: false },
-  { id: "stateofmind", label: "State of Mind", href: null, active: false },
-];
-
-function TodaysEditCard({ getImageUrl }: { getImageUrl: (key: string) => string }) {
-  const cardImage = getImageUrl("todays-edit-card");
-  const [isPinned, setIsPinned] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-
-  const saveAllItems = async () => {
-    if (isSaving) return;
-    setIsSaving(true);
-    
-    try {
-      const slotsResponse = await fetch('/api/image-slots');
-      const slotsData = await slotsResponse.json();
-      const slotMap = new Map<string, string>();
-      if (slotsData.slots) {
-        slotsData.slots.forEach((slot: { key: string; currentUrl: string }) => {
-          slotMap.set(slot.key, slot.currentUrl);
-        });
-      }
-      
-      const getSlotImage = (key: string): string => {
-        return slotMap.get(key) || getImageUrl(key);
-      };
-
-      const saveItem = async (itemType: string, itemId: string, title: string, imageUrl: string) => {
-        await fetch('/api/saves', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            itemType,
-            itemId,
-            sourceContext: 'todays_edit',
-            aestheticTags: ['todays-edit'],
-            savedAt: Date.now(),
-            storyTag: 'todays-edit',
-            editTag: 'opening-edit',
-            title,
-            assetUrl: imageUrl,
-            metadata: { title, imageUrl, storyTag: 'todays-edit', editTag: 'opening-edit' }
-          })
-        });
-      };
-
-      await saveItem('edit', 'todays-edit-desert-neutrals', "Today's Edit - Desert Neutrals", getSlotImage("todays-edit-card"));
-      
-      for (let i = 0; i < MOOD_KEYS.length; i++) {
-        const key = MOOD_KEYS[i];
-        await saveItem('mood', key, `Mood ${i + 1}`, getSlotImage(key));
-      }
-      
-      for (let i = 0; i < LOOK_KEYS.length; i++) {
-        const key = LOOK_KEYS[i];
-        await saveItem('product', key, `Look ${i + 1}`, getSlotImage(key));
-      }
-      
-      setIsPinned(true);
-      queryClient.invalidateQueries({ queryKey: ['/api/saves'] });
-    } catch (err) {
-      console.error('Failed to save items:', err);
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  return (
-    <div className="relative">
-      <Link href="/todays-edit">
-        <div 
-          className="group relative overflow-hidden rounded-lg aspect-[4/5] md:aspect-[16/9] cursor-pointer"
-          data-testid="card-todays-edit"
-        >
-          <div 
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-            style={{
-              backgroundImage: `url('${cardImage}')`
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
-            <p className="text-xs font-medium tracking-[0.2em] uppercase opacity-80 mb-2">Today's Edit</p>
-            <h3 className="font-serif text-2xl md:text-3xl font-medium mb-2">Desert Neutrals</h3>
-            <p className="text-sm opacity-80 mb-4">A curated selection of mood, looks, and pieces</p>
-            <div className="flex items-center gap-2 text-xs font-medium tracking-wide opacity-70 group-hover:opacity-100 transition-opacity">
-              <span>View Edit</span>
-              <ChevronRight className="w-4 h-4" />
-            </div>
-          </div>
-        </div>
-      </Link>
-      <div className="absolute top-4 right-4 z-10">
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            saveAllItems();
-          }}
-          disabled={isSaving || isPinned}
-          className={`w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-sm transition-all ${
-            isPinned 
-              ? 'bg-white text-foreground' 
-              : 'bg-black/40 hover:bg-black/60 text-white'
-          }`}
-          data-testid="button-pin-todays-edit-all"
-        >
-          <Pin className={`w-4 h-4 ${isPinned ? 'fill-current' : ''}`} />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function CategoryNav() {
-  return (
-    <div className="py-10 md:py-14 px-6 border-b border-border/30" data-testid="section-category-nav">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-wrap justify-center gap-4 md:gap-8">
-          {CATEGORY_NAV.map((cat, i) => (
-            <span key={cat.id} className="flex items-center gap-4 md:gap-8">
-              {cat.active && cat.href ? (
-                <Link href={cat.href}>
-                  <span
-                    className="text-xs md:text-sm tracking-[0.12em] uppercase text-foreground hover:opacity-70 transition-opacity cursor-pointer"
-                    data-testid={`link-cat-${cat.id}`}
-                  >
-                    {cat.label}
-                  </span>
-                </Link>
-              ) : (
-                <span
-                  className="text-xs md:text-sm tracking-[0.12em] uppercase text-muted-foreground/50 cursor-default"
-                  data-testid={`link-cat-${cat.id}`}
-                >
-                  {cat.label}
-                </span>
-              )}
-              {i < CATEGORY_NAV.length - 1 && (
-                <span className="text-muted-foreground/30 text-xs">·</span>
-              )}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+const SLIDE_WIDTH_PERCENT = 85;
+const GAP = 12;
 
 export default function Threshold() {
   const { data: imageSlotsData } = useImageSlots();
+  const { user } = useUser();
+  const [, navigate] = useLocation();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
   const getImageUrl = (assetKey: string): string => {
     if (imageSlotsData?.slots) {
-      const slot = imageSlotsData.slots.find(s => s.key === assetKey);
-      if (slot?.currentUrl) {
-        return slot.currentUrl;
-      }
+      const slot = imageSlotsData.slots.find((s: any) => s.key === assetKey);
+      if (slot?.currentUrl) return slot.currentUrl;
     }
-    const defaultSlot = IMAGE_SLOTS.find(s => s.key === assetKey);
+    const defaultSlot = IMAGE_SLOTS.find((s: any) => s.key === assetKey);
     return defaultSlot?.defaultUrl || "";
   };
 
-  return (
-    <div className="min-h-screen bg-[#fafaf9] dark:bg-background">
-      {/* TopBar handles navigation at app level */}
+  // Returning user redirect
+  useEffect(() => {
+    if (user) {
+      const lastPage = localStorage.getItem("fdv_last_page");
+      if (lastPage && lastPage !== "/") {
+        navigate(lastPage);
+      } else {
+        navigate("/guides/morocco");
+      }
+    }
+  }, [user, navigate]);
 
-      {/* ANIMATED HERO — destination photography + greeting words */}
+  // Destination carousel scroll tracking
+  const getSlideWidth = useCallback(() => {
+    return (window.innerWidth * SLIDE_WIDTH_PERCENT) / 100;
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const slideWidth = getSlideWidth() + GAP;
+      const index = Math.round(el.scrollLeft / slideWidth);
+      setActiveIndex(Math.max(0, Math.min(index, DESTINATIONS.length - 1)));
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [getSlideWidth]);
+
+  // Resolve products for THE EDIT carousel
+  const editItems = EDIT_PRODUCTS.map((ep) => {
+    const product = getProductByKey(ep.genomeKey);
+    const imageUrl = getShopImageUrl(ep.genomeKey);
+    return {
+      genomeKey: ep.genomeKey,
+      title: product?.name || ep.fallbackTitle,
+      brand: product?.brand || ep.fallbackBrand,
+      price: product?.price || ep.fallbackPrice,
+      imageUrl: imageUrl || "",
+      shopUrl: product?.shopUrl || "",
+    };
+  }).filter((item) => item.imageUrl); // Only show items with images
+
+  const sidePadding = `${(100 - SLIDE_WIDTH_PERCENT) / 2}vw`;
+
+  // If authenticated, the useEffect above will redirect — render nothing while redirecting
+  if (user) return null;
+
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: "#fafaf9" }}>
+      {/* === SECTION 1: HERO VIDEO === */}
       <HeroAnimation />
 
-      {/* Intro section — orients new users */}
+      {/* === SECTION 2: ATMOSPHERIC TEXT === */}
       <section
-        className="py-14 md:py-20 px-6"
-        style={{ backgroundColor: "#fafaf9" }}
+        style={{
+          backgroundColor: "#fafaf9",
+          padding: "80px 24px",
+          textAlign: "center",
+        }}
       >
-        <div className="max-w-[480px] mx-auto text-center">
-          <p
-            style={{
-              fontFamily: "'Lora', Georgia, serif",
-              fontSize: "16px",
-              color: "rgba(26, 26, 22, 0.75)",
-              lineHeight: 1.7,
-              marginBottom: "14px",
-            }}
-          >
-            FIL DE VIE Concierge brings together travel, style, and the objects that belong with both.
-          </p>
-          <p
-            style={{
-              fontFamily: "'Lora', Georgia, serif",
-              fontSize: "16px",
-              color: "rgba(26, 26, 22, 0.75)",
-              lineHeight: 1.7,
-              marginBottom: "14px",
-            }}
-          >
-            Browse, save what you like, and keep it in your Suitcase.
-          </p>
-          <p
-            style={{
-              fontFamily: "'Lora', Georgia, serif",
-              fontSize: "16px",
-              color: "rgba(26, 26, 22, 0.55)",
-              lineHeight: 1.7,
-              marginBottom: "24px",
-            }}
-          >
-            A place to keep the things you want to come back to — and a way to bring them together when you're ready.
-          </p>
-          <p
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: "11px",
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "rgba(26, 26, 22, 0.35)",
-              marginBottom: "8px",
-            }}
-          >
-            A curated edit, built from what you save.
-          </p>
-          <div className="flex items-center justify-center gap-6">
-            <Link href="/suitcase?curate=true">
-              <span
-                className="inline-block cursor-pointer transition-all hover:opacity-70"
+        <p
+          style={{
+            fontFamily: "'Lora', Georgia, serif",
+            fontSize: 26,
+            lineHeight: 1.65,
+            color: "#2c2416",
+            maxWidth: 560,
+            margin: "0 auto",
+          }}
+        >
+          Pick your destination. We've thought of everything — the places, the wardrobe, the details.
+        </p>
+      </section>
+
+      {/* === SECTION 3: DESTINATION CARDS CAROUSEL === */}
+      <section style={{ backgroundColor: "#fafaf9", paddingBottom: 40 }}>
+        <div
+          ref={scrollRef}
+          style={{
+            display: "flex",
+            gap: GAP,
+            overflowX: "scroll",
+            scrollSnapType: "x mandatory",
+            WebkitOverflowScrolling: "touch",
+            paddingLeft: sidePadding,
+            paddingRight: sidePadding,
+            msOverflowStyle: "none",
+            scrollbarWidth: "none",
+          }}
+          className="hide-scrollbar"
+        >
+          {DESTINATIONS.map((dest) => {
+            const imgUrl = getImageUrl(dest.imageSlotKey) || dest.defaultImage;
+            return (
+              <div
+                key={dest.slug}
                 style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "12px",
-                  letterSpacing: "0.08em",
-                  color: "rgba(26, 26, 22, 0.4)",
-                  borderBottom: "1px solid rgba(26, 26, 22, 0.2)",
-                  paddingBottom: "2px",
+                  flex: `0 0 ${SLIDE_WIDTH_PERCENT}vw`,
+                  scrollSnapAlign: "center",
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  position: "relative",
+                  height: "65vh",
+                  minHeight: 420,
                 }}
               >
-                Curate for Me →
-              </span>
-            </Link>
-            <span style={{ color: "rgba(26, 26, 22, 0.15)", fontSize: "10px" }}>·</span>
-            <Link href="/about">
-              <span
-                className="inline-block cursor-pointer transition-all hover:opacity-70"
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "12px",
-                  letterSpacing: "0.08em",
-                  color: "rgba(26, 26, 22, 0.4)",
-                  borderBottom: "1px solid rgba(26, 26, 22, 0.2)",
-                  paddingBottom: "2px",
-                }}
-              >
-                The details →
-              </span>
-            </Link>
-          </div>
+                {/* Image */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    backgroundImage: `url(${imgUrl})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+                {/* Gradient overlay */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: "linear-gradient(transparent 40%, rgba(0,0,0,0.55) 100%)",
+                  }}
+                />
+                {/* Text + button */}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    padding: "24px 24px 28px",
+                  }}
+                >
+                  <h2
+                    style={{
+                      fontFamily: "'Lora', Georgia, serif",
+                      fontSize: 34,
+                      fontWeight: 400,
+                      color: "#fff",
+                      margin: 0,
+                      lineHeight: 1.2,
+                      textShadow: "0 1px 8px rgba(0,0,0,0.3)",
+                    }}
+                  >
+                    {dest.title}
+                  </h2>
+                  <p
+                    style={{
+                      fontFamily: "'Lora', Georgia, serif",
+                      fontSize: 16,
+                      fontStyle: "italic",
+                      color: "rgba(255,255,255,0.85)",
+                      margin: "6px 0 20px",
+                    }}
+                  >
+                    {dest.subtitle}
+                  </p>
+                  {dest.available ? (
+                    <Link href={dest.route}>
+                      <button
+                        style={{
+                          background: "#fff",
+                          color: "#1a1a1a",
+                          border: "none",
+                          padding: "12px 28px",
+                          fontFamily: "'Inter', sans-serif",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          letterSpacing: "0.1em",
+                          textTransform: "uppercase",
+                          cursor: "pointer",
+                        }}
+                      >
+                        View Guide
+                      </button>
+                    </Link>
+                  ) : (
+                    <button
+                      style={{
+                        background: "transparent",
+                        color: "rgba(255,255,255,0.5)",
+                        border: "1px solid rgba(255,255,255,0.3)",
+                        padding: "12px 28px",
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: 12,
+                        fontWeight: 600,
+                        letterSpacing: "0.1em",
+                        textTransform: "uppercase",
+                        cursor: "default",
+                      }}
+                    >
+                      Coming Soon
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Dot indicators */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 20 }}>
+          {DESTINATIONS.map((_, i) => (
+            <div
+              key={i}
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: i === activeIndex ? "#2c2416" : "rgba(44,36,22,0.2)",
+                transition: "background 0.3s",
+              }}
+            />
+          ))}
         </div>
       </section>
 
-      {/* Category navigation — between hero and The Current */}
-      <nav
-        className="bg-[#fafaf9] border-b border-black/5"
-        style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+      {/* === SECTION 4A: EDITORIAL CODA === */}
+      <section
+        style={{
+          backgroundColor: "#fafaf9",
+          padding: "64px 24px",
+          textAlign: "center",
+        }}
       >
-        <div className="flex items-center justify-center gap-8 sm:gap-12 md:gap-16 px-6 py-12 md:py-16 overflow-x-auto">
-          {["GUIDES", "STYLE", "CULTURE", "OBJECTS", "RITUALS"].map((cat) => (
+        <div style={{ maxWidth: 520, margin: "0 auto" }}>
+          <p
+            style={{
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: 17,
+              lineHeight: 1.8,
+              color: "#2c2416",
+              marginBottom: 24,
+            }}
+          >
+            Everything in our guides is shoppable — see it, love it,{" "}
+            <Link href="/shop">
+              <span style={{ color: "#c9a84c", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" }}>
+                it's yours
+              </span>
+            </Link>
+            . We'll even{" "}
             <span
-              key={cat}
-              onClick={cat === "GUIDES" ? () => {
-                window.location.href = "/destinations";
-              } : undefined}
-              className={`text-xs md:text-sm tracking-[0.15em] uppercase transition-colors cursor-pointer whitespace-nowrap ${
-                cat === "GUIDES"
-                  ? "text-[#1a1a1a] font-semibold border-b border-[#1a1a1a] pb-1"
-                  : "text-[#1a1a1a]/40 hover:text-[#1a1a1a]/70 font-medium"
-              }`}
+              onClick={() => window.dispatchEvent(new CustomEvent("open-concierge"))}
+              style={{ color: "#c9a84c", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" }}
             >
-              {cat}
+              curate your own edit
             </span>
-          ))}
+            {" "}— a capsule built around where you're going and how you travel.
+          </p>
+          <p
+            style={{
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: 17,
+              lineHeight: 1.8,
+              color: "#2c2416",
+              marginBottom: 24,
+            }}
+          >
+            Save what stops you. Your{" "}
+            <Link href="/suitcase">
+              <span style={{ color: "#c9a84c", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" }}>
+                suitcase
+              </span>
+            </Link>
+            {" "}keeps it all.
+          </p>
+          <p
+            style={{
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: 17,
+              lineHeight: 1.8,
+              color: "#2c2416",
+            }}
+          >
+            When you're ready, we'll{" "}
+            <span
+              onClick={() => window.dispatchEvent(new CustomEvent("open-concierge"))}
+              style={{ color: "#c9a84c", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" }}
+            >
+              build the whole trip
+            </span>
+            {" "}— wardrobe, itinerary, reservations. All of it.
+          </p>
         </div>
-      </nav>
+      </section>
 
-      <div id="current-content">
-        <CurrentFeed embedded />
-      </div>
+      {/* === SECTION 4B: THE EDIT — SHOPPABLE CAROUSEL === */}
+      {editItems.length > 0 && (
+        <section style={{ backgroundColor: "#fafaf9", paddingBottom: 48 }}>
+          <div style={{ textAlign: "center", padding: "0 24px 24px" }}>
+            <p
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 11,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "rgba(44,36,22,0.35)",
+                marginBottom: 6,
+              }}
+            >
+              The Edit
+            </p>
+            <p
+              style={{
+                fontFamily: "'Lora', Georgia, serif",
+                fontSize: 16,
+                fontStyle: "italic",
+                color: "rgba(44,36,22,0.55)",
+              }}
+            >
+              A few things worth having.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              gap: 14,
+              overflowX: "scroll",
+              padding: "0 24px",
+              msOverflowStyle: "none",
+              scrollbarWidth: "none",
+              WebkitOverflowScrolling: "touch",
+            }}
+            className="hide-scrollbar"
+          >
+            {editItems.map((item) => (
+              <div
+                key={item.genomeKey}
+                style={{
+                  flex: "0 0 160px",
+                  position: "relative",
+                }}
+              >
+                <div
+                  style={{
+                    aspectRatio: "3/4",
+                    backgroundColor: "#f0ece4",
+                    overflow: "hidden",
+                    position: "relative",
+                  }}
+                >
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                  <div style={{ position: "absolute", top: 6, right: 6 }}>
+                    <PinButton
+                      itemType="style"
+                      itemId={`landing-edit-${item.genomeKey}`}
+                      itemData={{
+                        title: item.title,
+                        imageUrl: item.imageUrl,
+                        brand: item.brand,
+                        price: item.price,
+                        shopUrl: item.shopUrl,
+                        storyTag: "the-edit",
+                        genomeKey: item.genomeKey,
+                      }}
+                      sourceContext="landing-edit"
+                      size="sm"
+                    />
+                  </div>
+                </div>
+                <div style={{ padding: "8px 2px 0" }}>
+                  <p
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: 10,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color: "rgba(44,36,22,0.4)",
+                      margin: 0,
+                    }}
+                  >
+                    {item.brand}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: 12,
+                      color: "#2c2416",
+                      margin: "2px 0 0",
+                    }}
+                  >
+                    {item.title}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: 11,
+                      color: "rgba(44,36,22,0.5)",
+                      margin: "2px 0 0",
+                    }}
+                  >
+                    {item.price}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* === SECTION 4C: QUIET CLOSER === */}
+      <section
+        style={{
+          backgroundColor: "#fafaf9",
+          padding: "40px 24px 100px",
+          textAlign: "center",
+        }}
+      >
+        <p
+          onClick={() => window.dispatchEvent(new CustomEvent("open-concierge"))}
+          style={{
+            fontFamily: "'Lora', Georgia, serif",
+            fontSize: 15,
+            color: "rgba(44,36,22,0.35)",
+            cursor: "pointer",
+            transition: "color 0.2s",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(44,36,22,0.6)")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(44,36,22,0.35)")}
+        >
+          Or ask your concierge{" "}
+          <span style={{ color: "#c9a84c" }}>✦</span>
+        </p>
+      </section>
+
+      {/* Hide scrollbar utility */}
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 }

@@ -13,7 +13,7 @@ export const DESTINATIONS: Destination[] = [
   {
     slug: "morocco",
     title: "Morocco",
-    subtitle: "April 2026",
+    subtitle: "Pattern, pleasure, warmth and light.",
     summary: "A curated journey through Marrakech, the Atlas Mountains, and Essaouira",
     imageSlotKey: "destination-morocco",
     defaultImage: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=1200",
@@ -23,7 +23,7 @@ export const DESTINATIONS: Destination[] = [
   {
     slug: "hydra",
     title: "Hydra",
-    subtitle: "Coming Soon",
+    subtitle: "White stone. Salt water. Nothing extra.",
     summary: "Stone, water, and stillness on a car-free Greek island",
     imageSlotKey: "destination-hydra",
     defaultImage: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&q=80&w=1200",
@@ -31,29 +31,29 @@ export const DESTINATIONS: Destination[] = [
     available: false
   },
   {
-    slug: "slow-travel",
-    title: "Slow Travel",
-    subtitle: "Philosophy",
-    summary: "Less, but longer. The art of staying somewhere long enough to belong",
+    slug: "mallorca",
+    title: "Mallorca",
+    subtitle: "Stay a little longer.",
+    summary: "Sun-bleached stone, olive groves, and the pace you forgot existed",
     imageSlotKey: "destination-slow-travel",
     defaultImage: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=1200",
-    route: "/coming-soon/slow-travel",
+    route: "/coming-soon/mallorca",
     available: false
   },
   {
-    slug: "retreat",
-    title: "Ritual Retreat",
-    subtitle: "Coming Soon",
-    summary: "Movement, then stillness. Places designed for practice and presence",
+    slug: "amangiri",
+    title: "Amangiri",
+    subtitle: "Into the desert.",
+    summary: "Silence, scale, and the most beautiful emptiness you've ever seen",
     imageSlotKey: "destination-retreat",
     defaultImage: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1200",
-    route: "/coming-soon/retreat",
+    route: "/coming-soon/amangiri",
     available: false
   },
   {
     slug: "new-york",
     title: "New York",
-    subtitle: "Coming Soon",
+    subtitle: "The city, always.",
     summary: "The weekend that holds. Culture, food, and a different kind of pace",
     imageSlotKey: "destination-new-york",
     defaultImage: "https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&q=80&w=1200",

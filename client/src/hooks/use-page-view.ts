@@ -39,6 +39,11 @@ export function usePageView() {
     const timeOnPreviousPage = Date.now() - pageEntryTime.current;
     pageEntryTime.current = Date.now();
 
+    // Store last meaningful page for returning user redirect
+    if (location !== "/" && location !== "/profile") {
+      try { localStorage.setItem("fdv_last_page", location); } catch {}
+    }
+
     trackEvent("page_view", {
       sourcePage: location,
       metadata: {
