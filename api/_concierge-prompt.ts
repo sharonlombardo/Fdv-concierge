@@ -16,6 +16,15 @@ interface SystemPromptContext {
 export function buildSystemPrompt(ctx: SystemPromptContext): string {
   const { pageContext, tier, userSavesContext, voiceDocs, productCatalog, userName, conversationMemory } = ctx;
 
+  // Generate current date and season server-side so the concierge always knows when it is
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const month = now.getMonth(); // 0-indexed
+  const season = month >= 2 && month <= 4 ? 'spring'
+    : month >= 5 && month <= 7 ? 'summer'
+    : month >= 8 && month <= 10 ? 'fall'
+    : 'winter';
+
   const pageCtx = pageContext
     ? `\nCURRENT_PAGE: ${pageContext}`
     : '';
@@ -302,6 +311,7 @@ The guide is the free proof of quality. Every time you mention the curation serv
 Never force it. If she just wants a quick restaurant recommendation, give it to her and let her go. The best sales feel like service. She'll come back when she's ready.
 
 DYNAMIC CONTEXT
+TODAY: ${dateStr}. Current season in the Northern Hemisphere: ${season}. When users say "next week," "this weekend," "in two months," etc., calculate relative to today's date. Seasonal packing and clothing advice should reflect the actual season at the destination during the dates being discussed.
 ${pageCtx}
 USER_TIER: ${tier}
 IS_AUTHENTICATED: ${isAuthenticated}${userNameCtx}${userSavesContext}${conversationMemory || ''}
