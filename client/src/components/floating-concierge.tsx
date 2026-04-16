@@ -117,12 +117,12 @@ export function FloatingConcierge() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  // Tracks how many messages existed when the chat last closed — messages before this index don't animate on reopen
-  const animateFromIndexRef = useRef(messages.length);
 
   const [messages, setMessages] = useState<Message[]>(() => {
     try { const s = sessionStorage.getItem("fdv_concierge_messages"); return s ? JSON.parse(s) : []; } catch { return []; }
   });
+  // Tracks how many messages existed when the chat last closed — messages before this index don't animate on reopen
+  const animateFromIndexRef = useRef(messages.length);
   const [userMsgCount, setUserMsgCount] = useState(() => {
     try { return parseInt(sessionStorage.getItem("fdv_concierge_msg_count") || "0"); } catch { return 0; }
   });
