@@ -133,12 +133,6 @@ export function FloatingConcierge() {
     ? "responding"
     : "idle";
 
-  // "Thinking..." removed — the orb's animation shift communicates processing state
-  const statusLabel = isListening
-    ? "Listening..."
-    : isSpeaking
-    ? ""
-    : "Your Concierge";
 
   // Global open event
   const handleOpenRef = useRef<() => void>(() => {});
@@ -420,27 +414,6 @@ export function FloatingConcierge() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <ConciergeOrb state={orbState} circleSize={170} amplitude={voiceAmplitude} />
             </div>
-            {/* Status label — listening indicator only; thinking state removed */}
-            <p
-              style={{
-                fontFamily: "'Instrument Sans', Inter, sans-serif",
-                fontSize: 13,
-                letterSpacing: "0.3em",
-                textTransform: "uppercase",
-                color: "#c9a84c",
-                margin: "28px 0 0",
-                opacity: statusLabel ? 0.75 : 0,
-                transition: "opacity 0.35s",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              {isListening && (
-                <span style={{ fontSize: 7, animation: "listeningDot 0.9s ease-in-out infinite", display: "inline-block" }}>●</span>
-              )}
-              {statusLabel}
-            </p>
           </div>
 
           {/* ── Gradient: top area fades to transparent so messages dissolve into orb ── */}
@@ -528,6 +501,12 @@ export function FloatingConcierge() {
           >
             {/* Scrollable messages — top padding reserves space for the floating orb */}
             <div style={{ flex: 1, overflowY: "auto", padding: "280px 28px 28px", WebkitOverflowScrolling: "touch" }}>
+              {/* Label scrolls away naturally as conversation grows */}
+              <div style={{ textAlign: "center", marginBottom: 28 }}>
+                <span style={{ fontFamily: "'Instrument Sans', Inter, sans-serif", fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: "#c9a84c", opacity: 0.6 }}>
+                  Your Concierge
+                </span>
+              </div>
               {messages.map((msg, i) => (
                 <div key={i} style={{ marginBottom: 24, display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
                   <div
@@ -628,13 +607,13 @@ export function FloatingConcierge() {
                   rows={1}
                   style={{ flex: 1, border: "1px solid rgba(201,168,76,0.22)", background: "transparent", padding: "10px 14px", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 18, color: "#d4c9b8", resize: "none", outline: "none", lineHeight: 1.5, borderRadius: 0 }}
                 />
-                {/* SEND — 48px tap target, 16px bold text */}
+                {/* Send arrow — 48px tap target */}
                 <button
-                  onClick={() => sendMessage()}
-                  disabled={isLoading || !input.trim() || isGated || isListening}
+                  onClick={() => { if (isListening) stopListening(); sendMessage(); }}
+                  disabled={isLoading || !input.trim() || isGated}
                   style={{
                     background: "none",
-                    color: isLoading || !input.trim() || isGated || isListening ? "rgba(201,168,76,0.25)" : "#c9a84c",
+                    color: isLoading || !input.trim() || isGated ? "rgba(201,168,76,0.25)" : "#c9a84c",
                     border: "none",
                     padding: 0,
                     minWidth: 48,
@@ -642,19 +621,16 @@ export function FloatingConcierge() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontFamily: "'Instrument Sans', Inter, sans-serif",
-                    fontSize: 16,
-                    fontWeight: 600,
-                    letterSpacing: "0.10em",
-                    textTransform: "uppercase",
-                    cursor: isLoading || !input.trim() || isGated || isListening ? "default" : "pointer",
-                    whiteSpace: "nowrap",
+                    cursor: isLoading || !input.trim() || isGated ? "default" : "pointer",
                     flexShrink: 0,
                     transition: "color 0.2s",
                     WebkitTapHighlightColor: "transparent",
                   }}
                 >
-                  Send
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5" />
+                    <polyline points="5 12 12 5 19 12" />
+                  </svg>
                 </button>
               </div>
             </div>
