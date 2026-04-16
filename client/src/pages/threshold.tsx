@@ -291,23 +291,22 @@ export default function Threshold() {
                       padding: "0 32px 56px",
                     }}
                   >
-                    {dest.available && (
-                      <span
-                        style={{
-                          marginBottom: 16,
-                          padding: "4px 12px",
-                          fontSize: 10,
-                          letterSpacing: "0.2em",
-                          textTransform: "uppercase" as const,
-                          border: "1px solid rgba(245,240,235,0.5)",
-                          color: "#F5F0EB",
-                          fontFamily: IS,
-                          borderRadius: 999,
-                        }}
-                      >
-                        Guide
-                      </span>
-                    )}
+                    <span
+                      style={{
+                        marginBottom: 16,
+                        padding: "4px 12px",
+                        fontSize: 10,
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase" as const,
+                        border: "1px solid rgba(245,240,235,0.5)",
+                        color: "#F5F0EB",
+                        fontFamily: IS,
+                        borderRadius: 999,
+                        visibility: dest.available ? "visible" : "hidden",
+                      }}
+                    >
+                      Guide
+                    </span>
                     <h2
                       style={{
                         fontFamily: "'Lora', serif",
