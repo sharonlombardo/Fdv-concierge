@@ -10,8 +10,9 @@ interface Message {
 }
 
 // ─── Greetings ────────────────────────────────────────────────────────────────
+const ANON_WELCOME = "Welcome. I'm your concierge — I can help you plan a trip, pack for it, find the perfect restaurant, or just point you somewhere beautiful. Everything here is shoppable, saveable, and yours. Ask me anything, or just start exploring.";
+
 const FIRST_TIME_GREETINGS: Record<string, string> = {
-  "/": "Welcome. Start with Morocco — it's live now, everything from where to stay (El Fenn, always) to what to pack (the Marrakech Pants were literally designed for that city). Everything in the guides is shoppable — see something, tap it, it's yours. And when you're ready, I can build the whole trip for you — curated itinerary, wardrobe, packing list, bookings. All of it. I'm here whenever.",
   "/guides/morocco": "You're in the right place. This is the full Morocco guide — every restaurant, hotel, and experience I'd send a friend to, plus the wardrobe to match. Everything's shoppable directly. And if you want the whole thing personalized — your itinerary, your packing list, your reservations — that's what I'm really here for. Where do you want to start?",
   "/destinations": "You're in the right place. This is the full Morocco guide — every restaurant, hotel, and experience I'd send a friend to, plus the wardrobe to match. Everything's shoppable directly. And if you want the whole thing personalized — your itinerary, your packing list, your reservations — that's what I'm really here for. Where do you want to start?",
   "/shop": "This is the full collection — wardrobe, accessories, beauty. Fewer things, better things. If you tell me what you're dressing for — a dinner in Marrakech, a week on an island, a Tuesday that needs saving — I can pull a wardrobe edit just for you.",
@@ -19,32 +20,25 @@ const FIRST_TIME_GREETINGS: Record<string, string> = {
   "/profile": "This is your home base. The more you explore and save, the better I get at reading what you actually want — not what an algorithm guesses.",
 };
 const FIRST_TIME_SUITCASE_HAS_SAVES = "Your suitcase is filling up. I can work with this — want me to turn what's here into a trip? Or a wardrobe edit you can actually buy?";
-const FIRST_TIME_DEFAULT = "Welcome. I'm here to help you find what you're looking for — whether that's a place, a wardrobe, or the whole trip. Start with Destinations if you want to explore, or just tell me where you're headed.";
 
 const RETURNING_GREETINGS: Record<string, string> = {
-  "/": "Welcome back. Where to?",
   "/guides/morocco": "Back in Morocco. Anything catching your eye?",
   "/destinations": "Back in Morocco. Anything catching your eye?",
   "/shop": "Browsing the collection. Want me to pull something specific, or want picks based on what you've saved?",
   "/suitcase": "Your suitcase is filling up. I can work with this — want me to turn what's here into a trip? Or a wardrobe edit you can actually buy?",
   "/profile": "Hey. Anything you need to update, or are you here to explore?",
 };
-const RETURNING_DEFAULT = "Welcome back. Where to?";
 const CURATE_PROMPT_GREETING = "I'm starting to see what moves you. Want me to build your trip around it?";
 
-function getGreeting(path: string, isFirstChat: boolean, saveCount: number, curatePromptShown: boolean): string {
-  if (saveCount >= 3 && !curatePromptShown) return CURATE_PROMPT_GREETING;
-  if (isFirstChat) {
-    if (path.startsWith("/suitcase") && saveCount > 0) return FIRST_TIME_SUITCASE_HAS_SAVES;
-    for (const [prefix, g] of Object.entries(FIRST_TIME_GREETINGS)) {
-      if (prefix === "/" ? path === "/" : path.startsWith(prefix)) return g;
-    }
-    return FIRST_TIME_DEFAULT;
+function getGreeting(path: string, isFirstChat: boolean, saveCount: number, curatePromptShown: boolean, isLoggedIn: boolean, name: string | null): string {
+  // Logged-in users get a personal greeting (curate prompt still takes priority)
+  if (isLoggedIn) {
+    if (saveCount >= 3 && !curatePromptShown) return CURATE_PROMPT_GREETING;
+    const firstName = name ? name.split(" ")[0] : null;
+    return firstName ? `Hi ${firstName}. How can I help you today?` : "Welcome back. How can I help you today?";
   }
-  for (const [prefix, g] of Object.entries(RETURNING_GREETINGS)) {
-    if (prefix === "/" ? path === "/" : path.startsWith(prefix)) return g;
-  }
-  return RETURNING_DEFAULT;
+  // Non-logged-in users always see the full welcome
+  return ANON_WELCOME;
 }
 
 const ANON_LIMIT = 3;
@@ -263,12 +257,12 @@ export function FloatingConcierge() {
           const res = await fetch("/api/concierge/greeting-context", { credentials: "include" });
           if (res.ok) { const d = await res.json(); isFirstChat = d.isFirstChat ?? true; saveCount = d.saveCount ?? 0; curatePromptShown = d.curatePromptShown ?? false; }
         } catch {}
-        const greeting = getGreeting(location, isFirstChat, saveCount, curatePromptShown);
+        const greeting = getGreeting(location, isFirstChat, saveCount, curatePromptShown, !!user, user?.name ?? null);
         setMessages([{ role: "assistant", content: greeting }]);
         if (saveCount >= 3 && !curatePromptShown) fetch("/api/concierge/mark-curate-shown", { method: "POST", credentials: "include" }).catch(() => {});
       }
     }, 700);
-  }, [location]);
+  }, [location, user]);
 
   handleOpenRef.current = handleOpen;
 
