@@ -49,7 +49,7 @@ function getGreeting(path: string, isFirstChat: boolean, saveCount: number, cura
 
 const ANON_LIMIT = 3;
 const FREE_LIMIT = 15;
-const ANON_GATE_MSG = "I'd love to keep going — I can tell you have good taste. Create your Digital Passport and I'm all yours. It takes 10 seconds.";
+const ANON_GATE_MSG = "I'd love to keep chatting. Create your Digital Passport so I can get to know you — your saves, your trips, all of it. Ten seconds.";
 const FREE_GATE_MSG = "I've enjoyed this. If you want me to really learn what moves you — what you save, what catches your eye, what you'd never wear — that's your Gold Passport. I get a lot better when I know you.";
 
 // ─── Speech helpers ───────────────────────────────────────────────────────────
@@ -77,7 +77,7 @@ type Phase = "closed" | "entering" | "open" | "closing";
 // ─── Component ────────────────────────────────────────────────────────────────
 export function FloatingConcierge() {
   const [location] = useLocation();
-  const { user, email, setShowPassportGate, setPendingSaveCallback } = useUser();
+  const { user, email, setShowPassportGate, setPendingSaveCallback, signup, login } = useUser();
 
   const [phase, setPhase] = useState<Phase>("closed");
   const phaseTimerRef = useRef<ReturnType<typeof setTimeout>>();
@@ -85,6 +85,10 @@ export function FloatingConcierge() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGated, setIsGated] = useState(false);
+
+  // Inline signup flow
+  const [signupStage, setSignupStage] = useState<'idle' | 'collecting_email' | 'collecting_password' | 'logging_in'>('idle');
+  const [pendingSignupEmail, setPendingSignupEmail] = useState('');
 
   // Brief 'pressed' pulse when the chat opens → gold flood effect
   const [orbFlood, setOrbFlood] = useState(false);
@@ -144,7 +148,7 @@ export function FloatingConcierge() {
 
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
   useEffect(() => { if (phase === "open" && inputRef.current) setTimeout(() => inputRef.current?.focus(), 500); }, [phase]);
-  useEffect(() => { if (isGated && isAuthenticated) setIsGated(false); }, [isAuthenticated, isGated]);
+  useEffect(() => { if (isAuthenticated) { setIsGated(false); setSignupStage('idle'); } }, [isAuthenticated]);
 
   // ─── Amplitude tracking ───────────────────────────────────────────────────
   const stopAmplitude = useCallback(() => {
@@ -270,15 +274,93 @@ export function FloatingConcierge() {
   // ─── Send ─────────────────────────────────────────────────────────────────
   const sendMessage = useCallback(async (overrideText?: string) => {
     const text = (overrideText ?? input).trim();
-    if (!text || isLoading || isGated) return;
-    const newCount = userMsgCount + 1;
-    if (newCount > messageLimit) {
-      const gateMsg = tier === "anon" ? ANON_GATE_MSG : FREE_GATE_MSG;
-      setMessages((prev) => [...prev, { role: "user", content: text }, { role: "gate", content: gateMsg }]);
-      setInput("");
-      setIsGated(true);
+    if (!text || isLoading) return;
+
+    // ── Inline signup: collecting email ──
+    if (signupStage === 'collecting_email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      setMessages((prev) => [...prev, { role: 'user', content: text }]);
+      setInput('');
+      if (!emailRegex.test(text)) {
+        setMessages((prev) => [...prev, { role: 'assistant', content: "That doesn't look like an email address — just drop it here and we're good to go." }]);
+        return;
+      }
+      setPendingSignupEmail(text);
+      setSignupStage('collecting_password');
+      setMessages((prev) => [...prev, { role: 'assistant', content: "Pick a password — at least 6 characters. I'll keep it safe." }]);
       return;
     }
+
+    // ── Inline signup: collecting password ──
+    if (signupStage === 'collecting_password') {
+      const masked = '•'.repeat(Math.min(text.length, 10));
+      if (text.length < 6) {
+        setMessages((prev) => [...prev, { role: 'user', content: masked }, { role: 'assistant', content: "Just a bit longer — needs to be at least 6 characters." }]);
+        setInput('');
+        return;
+      }
+      setMessages((prev) => [...prev, { role: 'user', content: masked }]);
+      setInput('');
+      setIsLoading(true);
+      const result = await signup('', pendingSignupEmail, text);
+      setIsLoading(false);
+      if (result.success) {
+        setSignupStage('idle');
+        setIsGated(false);
+        setUserMsgCount(0);
+        setMessages((prev) => [...prev, { role: 'assistant', content: "You're in. Everything from here — saves, trips, recommendations — it's all yours now." }]);
+      } else if (result.error?.toLowerCase().includes('already exists') || result.error?.toLowerCase().includes('already')) {
+        setSignupStage('logging_in');
+        setMessages((prev) => [...prev, { role: 'assistant', content: "That email already has a Passport. Drop your password and I'll log you in." }]);
+      } else {
+        setMessages((prev) => [...prev, { role: 'assistant', content: "Something went wrong — try that again, or tap the button below to sign up the usual way." }]);
+      }
+      return;
+    }
+
+    // ── Inline signup: logging in existing user ──
+    if (signupStage === 'logging_in') {
+      const masked = '•'.repeat(Math.min(text.length, 10));
+      setMessages((prev) => [...prev, { role: 'user', content: masked }]);
+      setInput('');
+      setIsLoading(true);
+      const result = await login(pendingSignupEmail, text);
+      setIsLoading(false);
+      if (result.success) {
+        setSignupStage('idle');
+        setIsGated(false);
+        setUserMsgCount(0);
+        setMessages((prev) => [...prev, { role: 'assistant', content: "Welcome back. Where were we?" }]);
+      } else {
+        setMessages((prev) => [...prev, { role: 'assistant', content: "Hmm, that password didn't match. Try again, or tap the button below to start fresh." }]);
+      }
+      return;
+    }
+
+    // ── Free-tier gate (no inline signup) ──
+    if (isGated) return;
+
+    const newCount = userMsgCount + 1;
+    if (newCount > messageLimit) {
+      if (tier === "anon") {
+        // Start inline signup flow
+        setMessages((prev) => [
+          ...prev,
+          { role: "user", content: text },
+          { role: "gate", content: ANON_GATE_MSG },
+          { role: "assistant", content: "What's your email? I'll create your Digital Passport right here so nothing we talk about gets lost." },
+        ]);
+        setInput('');
+        setSignupStage('collecting_email');
+        return;
+      } else {
+        setMessages((prev) => [...prev, { role: "user", content: text }, { role: "gate", content: FREE_GATE_MSG }]);
+        setInput("");
+        setIsGated(true);
+        return;
+      }
+    }
+
     setUserMsgCount(newCount);
     const allMsgs: Message[] = [...messages, { role: "user", content: text }];
     setMessages(allMsgs);
@@ -302,7 +384,7 @@ export function FloatingConcierge() {
     } finally {
       setIsLoading(false);
     }
-  }, [input, isLoading, isGated, messages, userMsgCount, messageLimit, tier, location, email, speakText]);
+  }, [input, isLoading, isGated, signupStage, pendingSignupEmail, signup, login, messages, userMsgCount, messageLimit, tier, location, email, speakText]);
 
   sendMessageRef.current = sendMessage;
 
@@ -503,8 +585,8 @@ export function FloatingConcierge() {
             <div style={{ flex: 1, overflowY: "auto", padding: "280px 28px 28px", WebkitOverflowScrolling: "touch" }}>
               {/* Label scrolls away naturally as conversation grows */}
               <div style={{ textAlign: "center", marginBottom: 28 }}>
-                <span style={{ fontFamily: "'Instrument Sans', Inter, sans-serif", fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: "#c9a84c", opacity: 0.6 }}>
-                  Your Concierge
+                <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, fontStyle: "italic", letterSpacing: "0.02em", color: "#c9a84c", opacity: 0.75 }}>
+                  How can I help you?
                 </span>
               </div>
               {messages.map((msg, i) => (
@@ -527,8 +609,8 @@ export function FloatingConcierge() {
                     }}
                   >
                     {msg.content}
-                    {msg.role === "gate" && tier === "anon" && (
-                      <button onClick={handleGateAction} style={{ display: "block", marginTop: 12, background: "#c9a84c", color: "#0D0B09", border: "none", padding: "10px 24px", fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer" }}>
+                    {msg.role === "gate" && tier === "anon" && signupStage === 'idle' && (
+                      <button onClick={handleGateAction} style={{ display: "block", marginTop: 14, background: "rgba(201,168,76,0.10)", color: "#c9a84c", border: "1px solid rgba(201,168,76,0.32)", padding: "11px 28px", fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer", borderRadius: 9999, backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 0 16px rgba(201,168,76,0.06)" }}>
                         Create Your Digital Passport
                       </button>
                     )}
@@ -554,21 +636,33 @@ export function FloatingConcierge() {
             {/* Input bar */}
             <div
               style={{
-                borderTop: "1px solid rgba(201,168,76,0.09)",
-                padding: "8px 12px",
-                paddingBottom: "calc(8px + env(safe-area-inset-bottom))",
-                background: "#0D0B09",
+                padding: "10px 16px",
+                paddingBottom: "calc(10px + env(safe-area-inset-bottom))",
+                background: "transparent",
                 flexShrink: 0,
               }}
             >
               {isListening && (
-                <div style={{ marginBottom: 6, fontFamily: "Inter, sans-serif", fontSize: 10, color: "rgba(201,168,76,0.7)", letterSpacing: "0.07em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ marginBottom: 8, fontFamily: "Inter, sans-serif", fontSize: 10, color: "rgba(201,168,76,0.7)", letterSpacing: "0.07em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6, paddingLeft: 4 }}>
                   <span style={{ fontSize: 6, animation: "listeningDot 0.9s ease-in-out infinite" }}>●</span>
                   Listening — speak now
                 </div>
               )}
-              <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                {/* Microphone — 48×48 tap target, 24px icon */}
+              {/* Glassy pill container */}
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                borderRadius: 9999,
+                background: "rgba(255,255,255,0.055)",
+                backdropFilter: "blur(24px)",
+                WebkitBackdropFilter: "blur(24px)",
+                border: "1px solid rgba(201,168,76,0.28)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07), 0 0 28px rgba(201,168,76,0.07), 0 2px 12px rgba(0,0,0,0.28)",
+                padding: "2px 4px 2px 4px",
+                minHeight: 52,
+                gap: 0,
+              }}>
+                {/* Microphone — inside pill, left */}
                 {hasSpeechRecognition && (
                   <button
                     onClick={startListening}
@@ -578,18 +672,18 @@ export function FloatingConcierge() {
                       border: "none",
                       cursor: "pointer",
                       padding: 0,
-                      width: 48,
-                      height: 48,
+                      width: 44,
+                      height: 44,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      color: isListening ? "#c9a84c" : "rgba(201,168,76,0.45)",
+                      color: isListening ? "#c9a84c" : "rgba(201,168,76,0.40)",
                       flexShrink: 0,
                       transition: "color 0.2s",
                       WebkitTapHighlightColor: "transparent",
                     }}
                   >
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <rect x="9" y="2" width="6" height="11" rx="3" />
                       <path d="M5 10a7 7 0 0014 0" />
                       <line x1="12" y1="22" x2="12" y2="17" />
@@ -602,32 +696,53 @@ export function FloatingConcierge() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={isGated ? "Create your passport to continue..." : isListening ? "Listening..." : "Ask your concierge..."}
-                  disabled={isGated || isListening}
+                  placeholder={
+                    isGated && signupStage === 'idle' ? "Create your passport to continue..." :
+                    signupStage === 'collecting_email' ? "Your email address..." :
+                    signupStage === 'collecting_password' || signupStage === 'logging_in' ? "Password..." :
+                    isListening ? "Listening..." :
+                    "Ask your concierge..."
+                  }
+                  disabled={isListening || (isGated && signupStage === 'idle')}
                   rows={1}
-                  style={{ flex: 1, border: "1px solid rgba(201,168,76,0.22)", background: "transparent", padding: "10px 14px", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 18, color: "#d4c9b8", resize: "none", outline: "none", lineHeight: 1.5, borderRadius: 0 }}
+                  style={{
+                    flex: 1,
+                    border: "none",
+                    background: "transparent",
+                    padding: "10px 10px",
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontSize: 18,
+                    color: "#d4c9b8",
+                    resize: "none",
+                    outline: "none",
+                    lineHeight: 1.5,
+                    borderRadius: 0,
+                    ...(signupStage === 'collecting_password' || signupStage === 'logging_in'
+                      ? { WebkitTextSecurity: 'disc' } as React.CSSProperties
+                      : {}),
+                  }}
                 />
-                {/* Send arrow — 48px tap target */}
+                {/* Send arrow — inside pill, right */}
                 <button
                   onClick={() => { if (isListening) stopListening(); sendMessage(); }}
-                  disabled={isLoading || !input.trim() || isGated}
+                  disabled={isLoading || !input.trim() || (isGated && signupStage === 'idle')}
                   style={{
                     background: "none",
-                    color: isLoading || !input.trim() || isGated ? "rgba(201,168,76,0.25)" : "#c9a84c",
+                    color: isLoading || !input.trim() || (isGated && signupStage === 'idle') ? "rgba(201,168,76,0.22)" : "#c9a84c",
                     border: "none",
                     padding: 0,
-                    minWidth: 48,
-                    height: 48,
+                    width: 44,
+                    height: 44,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    cursor: isLoading || !input.trim() || isGated ? "default" : "pointer",
+                    cursor: isLoading || !input.trim() || (isGated && signupStage === 'idle') ? "default" : "pointer",
                     flexShrink: 0,
                     transition: "color 0.2s",
                     WebkitTapHighlightColor: "transparent",
                   }}
                 >
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="19" x2="12" y2="5" />
                     <polyline points="5 12 12 5 19 12" />
                   </svg>
