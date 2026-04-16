@@ -127,6 +127,16 @@ export default function Threshold() {
     return () => el.removeEventListener("scroll", onScroll);
   }, [getSlideWidth]);
 
+  const scrollTo = useCallback((index: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const slideWidth = getSlideWidth() + GAP;
+    el.scrollTo({ left: index * slideWidth, behavior: "smooth" });
+  }, [getSlideWidth]);
+
+  const goNext = () => scrollTo(activeIndex < DESTINATIONS.length - 1 ? activeIndex + 1 : 0);
+  const goPrev = () => scrollTo(activeIndex > 0 ? activeIndex - 1 : DESTINATIONS.length - 1);
+
   const editItems = EDIT_PRODUCTS.map((ep) => {
     const product = getProductByKey(ep.genomeKey);
     const imageUrl = getShopImageUrl(ep.genomeKey);
@@ -175,145 +185,207 @@ export default function Threshold() {
           The Guides
         </p>
 
-        <div
-          ref={scrollRef}
-          style={{
-            display: "flex",
-            gap: GAP,
-            overflowX: "scroll",
-            scrollSnapType: "x mandatory",
-            WebkitOverflowScrolling: "touch",
-            paddingLeft: sidePadding,
-            paddingRight: sidePadding,
-            msOverflowStyle: "none",
-            scrollbarWidth: "none",
-          }}
-          className="hide-scrollbar"
-        >
-          {DESTINATIONS.map((dest) => {
-            const imgUrl = getImageUrl(dest.imageSlotKey) || dest.defaultImage;
-            return (
-              <div
-                key={dest.slug}
-                onClick={() => dest.available && navigate(dest.route)}
-                style={{
-                  flex: `0 0 ${SLIDE_WIDTH_PERCENT}vw`,
-                  scrollSnapAlign: "center",
-                  borderRadius: 16,
-                  overflow: "hidden",
-                  position: "relative",
-                  height: "70vh",
-                  minHeight: 480,
-                  cursor: dest.available ? "pointer" : "default",
-                }}
-              >
+        <div style={{ position: "relative" }}>
+          <div
+            ref={scrollRef}
+            style={{
+              display: "flex",
+              gap: GAP,
+              overflowX: "scroll",
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+              paddingLeft: sidePadding,
+              paddingRight: sidePadding,
+              msOverflowStyle: "none",
+              scrollbarWidth: "none",
+            }}
+            className="hide-scrollbar"
+          >
+            {DESTINATIONS.map((dest) => {
+              const imgUrl = getImageUrl(dest.imageSlotKey) || dest.defaultImage;
+              return (
                 <div
+                  key={dest.slug}
+                  onClick={() => dest.available && navigate(dest.route)}
                   style={{
-                    position: "absolute",
-                    inset: 0,
-                    backgroundImage: `url(${imgUrl})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    filter: dest.available ? "none" : "saturate(0.7)",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "linear-gradient(transparent 40%, rgba(0,0,0,0.55) 100%)",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    padding: "24px 24px 28px",
+                    flex: `0 0 ${SLIDE_WIDTH_PERCENT}vw`,
+                    scrollSnapAlign: "center",
+                    borderRadius: 16,
+                    overflow: "hidden",
+                    position: "relative",
+                    height: "70vh",
+                    minHeight: 480,
+                    cursor: dest.available ? "pointer" : "default",
+                    flexShrink: 0,
                   }}
                 >
-                  <h2
+                  <div
                     style={{
-                      fontFamily: CG,
-                      fontSize: 34,
-                      fontWeight: 400,
-                      color: "#fff",
-                      margin: 0,
-                      lineHeight: 1.2,
-                      textShadow: "0 1px 8px rgba(0,0,0,0.3)",
+                      position: "absolute",
+                      inset: 0,
+                      backgroundImage: `url(${imgUrl})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      filter: dest.available ? "none" : "saturate(0.7)",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: dest.available
+                        ? "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.05) 70%)"
+                        : "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.15) 70%)",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      padding: "0 32px 56px",
                     }}
                   >
-                    {dest.title}
-                  </h2>
-                  <p
-                    style={{
-                      fontFamily: CG,
-                      fontSize: 16,
-                      fontStyle: "italic",
-                      fontWeight: 300,
-                      color: "rgba(255,255,255,0.85)",
-                      margin: "6px 0 20px",
-                    }}
-                  >
-                    {dest.subtitle}
-                  </p>
-                  {dest.available ? (
-                    <Link href={dest.route}>
-                      <button
+                    {dest.available && (
+                      <span
                         style={{
-                          background: "#fff",
-                          color: "#1a1a1a",
-                          border: "none",
-                          padding: "12px 28px",
-                          fontFamily: IS,
-                          fontSize: 12,
-                          fontWeight: 600,
-                          letterSpacing: "0.1em",
+                          marginBottom: 16,
+                          padding: "4px 12px",
+                          fontSize: 10,
+                          letterSpacing: "0.2em",
                           textTransform: "uppercase" as const,
-                          cursor: "pointer",
+                          border: "1px solid rgba(245,240,235,0.5)",
+                          color: "#F5F0EB",
+                          fontFamily: IS,
+                          borderRadius: 999,
                         }}
                       >
-                        View Guide
-                      </button>
-                    </Link>
-                  ) : (
-                    <button
+                        Guide
+                      </span>
+                    )}
+                    <h2
                       style={{
-                        background: "transparent",
-                        color: "rgba(255,255,255,0.5)",
-                        border: "1px solid rgba(255,255,255,0.3)",
-                        padding: "12px 28px",
-                        fontFamily: IS,
-                        fontSize: 12,
-                        fontWeight: 600,
-                        letterSpacing: "0.1em",
+                        fontFamily: "'Lora', serif",
+                        fontSize: "clamp(2.5rem, 8vw, 4rem)",
+                        fontWeight: 500,
+                        color: "#ffffff",
+                        letterSpacing: "0.08em",
                         textTransform: "uppercase" as const,
-                        cursor: "default",
+                        lineHeight: 1.1,
+                        textAlign: "center",
+                        margin: "0 0 12px",
                       }}
                     >
-                      Coming Soon
-                    </button>
-                  )}
+                      {dest.title}
+                    </h2>
+                    <p
+                      style={{
+                        fontFamily: IS,
+                        fontSize: 14,
+                        lineHeight: 1.6,
+                        color: "#F5F0EB",
+                        opacity: 0.85,
+                        textAlign: "center",
+                        maxWidth: "80%",
+                        margin: "0 0 32px",
+                      }}
+                    >
+                      {dest.summary}
+                    </p>
+                    {dest.available ? (
+                      <Link href={dest.route}>
+                        <span
+                          style={{
+                            fontSize: 12,
+                            letterSpacing: "0.2em",
+                            textTransform: "uppercase" as const,
+                            color: "#F5F0EB",
+                            fontFamily: IS,
+                            fontWeight: 500,
+                            cursor: "pointer",
+                          }}
+                        >
+                          View Guide
+                        </span>
+                      </Link>
+                    ) : (
+                      <span
+                        style={{
+                          fontSize: 12,
+                          letterSpacing: "0.2em",
+                          textTransform: "uppercase" as const,
+                          color: "#F5F0EB",
+                          opacity: 0.4,
+                          fontFamily: IS,
+                          fontWeight: 500,
+                        }}
+                      >
+                        Coming Soon
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
 
-        <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 20 }}>
-          {DESTINATIONS.map((_, i) => (
-            <div
-              key={i}
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: i === activeIndex ? "#2a2520" : "rgba(42,37,32,0.2)",
-                transition: "background 0.3s",
-              }}
-            />
-          ))}
+          {/* Left chevron */}
+          <button
+            onClick={goPrev}
+            style={{
+              position: "absolute",
+              left: 8,
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              backgroundColor: "rgba(0,0,0,0.3)",
+              border: "none",
+              cursor: "pointer",
+              opacity: 0.7,
+            }}
+            aria-label="Previous destination"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+
+          {/* Right chevron */}
+          <button
+            onClick={goNext}
+            style={{
+              position: "absolute",
+              right: 8,
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              backgroundColor: "rgba(0,0,0,0.3)",
+              border: "none",
+              cursor: "pointer",
+              opacity: 0.7,
+            }}
+            aria-label="Next destination"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 6 15 12 9 18" />
+            </svg>
+          </button>
         </div>
       </section>
 
@@ -474,7 +546,7 @@ export default function Threshold() {
       {/* ── EDITORIAL BREAK 3 ── */}
       <EditorialBreak
         text="Or ask your concierge ✦"
-        imageSrc="https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/Malgosia-Bela-by-Cedric-Bihr-HTSI-magazine-june-17-00002.jpeg.webp"
+        imageSrc="https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/4.3/IMG_1759.jpeg"
       />
 
       {/* Bottom padding for nav bar */}
