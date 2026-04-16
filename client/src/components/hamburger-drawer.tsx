@@ -8,7 +8,7 @@ const MENU_ITEMS = [
   { num: "04", label: "YOUR CONCIERGE", desc: "Plan, ask, curate", action: "concierge" },
   { num: "05", label: "YOUR SUITCASE", desc: "Saves, edits, trips", href: "/suitcase" },
   { num: "06", label: "YOUR PASSPORT", desc: "Membership + details", href: "/profile" },
-  { num: "", label: "THE CURRENT", desc: "Editorial stories + shopping", href: "/current" },
+  { num: "07", label: "THE CURRENT", desc: "Editorial stories + shopping", href: "/current" },
 ];
 
 interface HamburgerDrawerProps {

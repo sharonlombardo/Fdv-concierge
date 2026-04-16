@@ -38,7 +38,7 @@ function EditorialBreak({ text, imageSrc, placeholderColor = "#2a2420" }: Editor
     <div
       style={{
         width: "100%",
-        minHeight: "75vh",
+        height: "75vh",
         position: "relative",
         overflow: "hidden",
         backgroundColor: placeholderColor,
@@ -55,7 +55,7 @@ function EditorialBreak({ text, imageSrc, placeholderColor = "#2a2420" }: Editor
         style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(transparent 45%, rgba(0,0,0,0.38) 100%)",
+          background: "linear-gradient(transparent 35%, rgba(0,0,0,0.55) 100%)",
           pointerEvents: "none",
         }}
       />
@@ -99,7 +99,9 @@ export default function Threshold() {
   };
 
   useEffect(() => {
-    if (user) {
+    // Only redirect once per session — subsequent HOME taps show the landing page
+    if (user && !sessionStorage.getItem("fdv_home_redirect")) {
+      sessionStorage.setItem("fdv_home_redirect", "1");
       const lastPage = localStorage.getItem("fdv_last_page");
       if (lastPage && lastPage !== "/") {
         navigate(lastPage);
@@ -140,7 +142,9 @@ export default function Threshold() {
 
   const sidePadding = `${(100 - SLIDE_WIDTH_PERCENT) / 2}vw`;
 
-  if (user) return null;
+  // Suppress the landing page only while the initial redirect hasn't happened yet
+  // (avoids a flash before the redirect fires). After that, HOME works normally.
+  if (user && !sessionStorage.getItem("fdv_home_redirect")) return null;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8f5f0" }}>
@@ -148,10 +152,10 @@ export default function Threshold() {
       {/* ── HERO VIDEO ── */}
       <HeroAnimation />
 
-      {/* ── EDITORIAL BREAK 1 (add imageSrc="/editorial-break-1.jpg" when ready) ── */}
+      {/* ── EDITORIAL BREAK 1 ── */}
       <EditorialBreak
         text="You're going somewhere. We've thought of everything."
-        placeholderColor="#2a2420"
+        imageSrc="https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/_%20%2810%29%20copy.jpeg"
       />
 
       {/* ── THE GUIDES label + destination carousel ── */}
@@ -313,11 +317,11 @@ export default function Threshold() {
         </div>
       </section>
 
-      {/* ── EDITORIAL BREAK 2 (add imageSrc="/editorial-break-2.jpg" when ready) ── */}
+      {/* ── EDITORIAL BREAK 2 ── */}
       <div style={{ marginTop: 56 }}>
         <EditorialBreak
           text="The places. The wardrobe. The details."
-          placeholderColor="#242018"
+          imageSrc="https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/IMG_7473.jpg"
         />
       </div>
 
@@ -467,10 +471,10 @@ export default function Threshold() {
         </section>
       )}
 
-      {/* ── EDITORIAL BREAK 3 (add imageSrc="/editorial-break-3.jpg" when ready) ── */}
+      {/* ── EDITORIAL BREAK 3 ── */}
       <EditorialBreak
         text="Or ask your concierge ✦"
-        placeholderColor="#1e1c18"
+        imageSrc="https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/Malgosia-Bela-by-Cedric-Bihr-HTSI-magazine-june-17-00002.jpeg.webp"
       />
 
       {/* Bottom padding for nav bar */}
