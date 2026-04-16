@@ -135,7 +135,7 @@ export default function BottomNav() {
         className="flex flex-col items-center justify-center bg-transparent border-none cursor-pointer w-full"
         style={{ gap: 0, paddingTop: 2 }}
       >
-        <ConciergeOrb state={orbPressed ? "pressed" : "idle"} circleSize={28} />
+        <ConciergeOrb state={orbPressed ? "pressed" : "idle"} circleSize={44} />
         <span
           style={{
             fontSize: 8,

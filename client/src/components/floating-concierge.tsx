@@ -335,15 +335,13 @@ export function FloatingConcierge() {
       <style>{`
         @keyframes orbRise {
           from {
-            transform: translate(calc(50vw - 14px), calc(100vh - 46px)) scale(1);
+            transform: translate(calc(50vw - 22px), calc(100vh - 52px)) scale(1);
             opacity: 1;
-            box-shadow: 0 0 16px rgba(201,168,76,0.6);
           }
           72% { opacity: 1; }
           to {
-            transform: translate(calc(50vw - 14px), calc(20vh - 14px)) scale(5.2);
+            transform: translate(calc(50vw - 22px), calc(20vh - 22px)) scale(3.86);
             opacity: 0;
-            box-shadow: 0 0 120px rgba(201,168,76,0.65), 0 0 300px rgba(201,168,76,0.15);
           }
         }
         @keyframes chatFadeIn {
@@ -378,10 +376,11 @@ export function FloatingConcierge() {
             position: "fixed",
             top: 0,
             left: 0,
-            width: 28,
-            height: 28,
+            width: 44,
+            height: 44,
             borderRadius: "50%",
-            background: "radial-gradient(circle at 32% 32%, #f2e4ad, #c9a84c 50%, #9c7c2a)",
+            background: "radial-gradient(circle at 38% 36%, rgba(255,252,232,0.96), rgba(245,228,155,0.88) 30%, rgba(210,168,72,0.55) 65%, transparent)",
+            filter: "blur(3px)",
             zIndex: 10002,
             pointerEvents: "none",
             animation: "orbRise 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards",
@@ -423,15 +422,15 @@ export function FloatingConcierge() {
                 <button
                   onClick={() => setVoiceEnabled((v) => !v)}
                   title={voiceEnabled ? "Mute" : "Enable voice"}
-                  style={{ background: "none", border: "none", cursor: "pointer", padding: 6, color: voiceEnabled ? "#c9a84c" : "rgba(255,255,255,0.28)", display: "flex" }}
+                  style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: voiceEnabled ? "#c9a84c" : "rgba(201,168,76,0.25)", display: "flex" }}
                 >
                   {voiceEnabled ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
                       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                       <path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" />
                     </svg>
                   ) : (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
                       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                       <line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
                     </svg>
@@ -440,7 +439,7 @@ export function FloatingConcierge() {
               )}
               <button
                 onClick={handleClose}
-                style={{ background: "none", border: "none", cursor: "pointer", padding: 6, color: "rgba(255,255,255,0.35)", fontSize: 18, lineHeight: 1, display: "flex" }}
+                style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "rgba(201,168,76,0.45)", fontSize: 16, lineHeight: 1, display: "flex" }}
               >
                 ✕
               </button>
@@ -448,18 +447,18 @@ export function FloatingConcierge() {
 
             {/* ─── THE ORB — 140px, hero of the screen ─── */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <ConciergeOrb state={orbState} circleSize={140} amplitude={voiceAmplitude} />
+              <ConciergeOrb state={orbState} circleSize={170} amplitude={voiceAmplitude} />
             </div>
 
             {/* Status text */}
             <p
               style={{
-                fontFamily: "Lora, serif",
-                fontSize: 11,
-                letterSpacing: "0.22em",
+                fontFamily: "'Instrument Sans', Inter, sans-serif",
+                fontSize: 14,
+                letterSpacing: "0.3em",
                 textTransform: "uppercase",
                 color: "#c9a84c",
-                margin: "16px 0 0",
+                margin: "32px 0 0",
                 opacity: statusLabel ? 0.85 : 0,
                 transition: "opacity 0.35s",
                 display: "flex",
@@ -486,21 +485,24 @@ export function FloatingConcierge() {
             }}
           >
             {/* Messages */}
-            <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px", WebkitOverflowScrolling: "touch" }}>
+            <div style={{ flex: 1, overflowY: "auto", padding: "28px 28px", WebkitOverflowScrolling: "touch" }}>
               {messages.map((msg, i) => (
-                <div key={i} style={{ marginBottom: 14, display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
+                <div key={i} style={{ marginBottom: 24, display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
                   <div
                     style={{
-                      maxWidth: "85%",
-                      padding: "11px 16px",
-                      background: msg.role === "user" ? "rgba(201,168,76,0.14)" : msg.role === "gate" ? "rgba(201,168,76,0.07)" : "rgba(255,255,255,0.05)",
-                      color: msg.role === "user" ? "#f0e6c8" : "#d4c9a8",
-                      border: msg.role === "user" ? "1px solid rgba(201,168,76,0.22)" : msg.role === "gate" ? "1px solid rgba(201,168,76,0.18)" : "1px solid rgba(255,255,255,0.06)",
-                      fontFamily: "Lora, serif",
-                      fontSize: 14,
-                      lineHeight: 1.75,
+                      maxWidth: "88%",
+                      fontFamily: msg.role === "user"
+                        ? "'Instrument Sans', Inter, sans-serif"
+                        : "'Cormorant Garamond', Georgia, serif",
+                      fontSize: msg.role === "user" ? 14 : 20,
+                      fontStyle: msg.role === "gate" ? "italic" : "normal",
+                      lineHeight: msg.role === "user" ? 1.5 : 1.7,
+                      color: msg.role === "user"
+                        ? "#c9a84c"
+                        : msg.role === "gate"
+                        ? "rgba(201,168,76,0.72)"
+                        : "#d4c9b8",
                       whiteSpace: "pre-wrap",
-                      borderRadius: 2,
                     }}
                   >
                     {msg.content}
@@ -519,8 +521,8 @@ export function FloatingConcierge() {
               ))}
 
               {isLoading && (
-                <div style={{ display: "flex", marginBottom: 14 }}>
-                  <div style={{ padding: "11px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", fontFamily: "Lora, serif", fontSize: 13, color: "rgba(201,168,76,0.45)", fontStyle: "italic", borderRadius: 2 }}>
+                <div style={{ display: "flex", marginBottom: 24 }}>
+                  <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 20, color: "rgba(201,168,76,0.45)", fontStyle: "italic" }}>
                     ...
                   </div>
                 </div>
@@ -549,7 +551,7 @@ export function FloatingConcierge() {
                   <button
                     onClick={startListening}
                     title={isListening ? "Stop" : "Speak"}
-                    style={{ background: isListening ? "#c9a84c" : "rgba(255,255,255,0.06)", border: isListening ? "none" : "1px solid rgba(201,168,76,0.18)", borderRadius: 2, cursor: "pointer", padding: "10px 12px", color: isListening ? "#0D0B09" : "rgba(201,168,76,0.55)", display: "flex", alignItems: "center", flexShrink: 0, transition: "all 0.2s" }}
+                    style={{ background: "none", border: "none", cursor: "pointer", padding: "8px", color: isListening ? "#c9a84c" : "rgba(201,168,76,0.4)", display: "flex", alignItems: "center", flexShrink: 0, transition: "color 0.2s" }}
                   >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <rect x="9" y="2" width="6" height="11" rx="3" />
@@ -567,12 +569,12 @@ export function FloatingConcierge() {
                   placeholder={isGated ? "Create your passport to continue..." : isListening ? "Listening..." : "Ask your concierge..."}
                   disabled={isGated || isListening}
                   rows={1}
-                  style={{ flex: 1, border: "1px solid rgba(201,168,76,0.14)", background: isGated || isListening ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.06)", padding: "10px 14px", fontFamily: "Lora, serif", fontSize: 14, color: "#d4c9a8", resize: "none", outline: "none", lineHeight: 1.5, borderRadius: 0 }}
+                  style={{ flex: 1, border: "1px solid rgba(201,168,76,0.22)", background: "transparent", padding: "10px 14px", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 18, color: "#d4c9b8", resize: "none", outline: "none", lineHeight: 1.5, borderRadius: 0 }}
                 />
                 <button
                   onClick={() => sendMessage()}
                   disabled={isLoading || !input.trim() || isGated || isListening}
-                  style={{ background: isLoading || !input.trim() || isGated || isListening ? "rgba(255,255,255,0.07)" : "#c9a84c", color: isLoading || !input.trim() || isGated || isListening ? "rgba(255,255,255,0.2)" : "#0D0B09", border: "none", padding: "10px 16px", fontFamily: "Lora, serif", fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", cursor: isLoading || !input.trim() || isGated || isListening ? "default" : "pointer", whiteSpace: "nowrap", flexShrink: 0, transition: "all 0.2s" }}
+                  style={{ background: "none", color: isLoading || !input.trim() || isGated || isListening ? "rgba(201,168,76,0.25)" : "#c9a84c", border: "none", padding: "10px 12px", fontFamily: "'Instrument Sans', Inter, sans-serif", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", cursor: isLoading || !input.trim() || isGated || isListening ? "default" : "pointer", whiteSpace: "nowrap", flexShrink: 0, transition: "color 0.2s" }}
                 >
                   Send
                 </button>
