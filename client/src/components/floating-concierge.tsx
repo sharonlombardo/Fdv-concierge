@@ -74,6 +74,15 @@ function pickVoice(): SpeechSynthesisVoice | null {
 
 type Phase = "closed" | "entering" | "open" | "closing";
 
+// Split assistant text into sentences for staggered reveal animation
+function splitToSentences(text: string): string[] {
+  return text
+    .replace(/([.!?…])\s+/g, '$1\x01')
+    .split(/\x01|\n/)
+    .map(s => s.trim())
+    .filter(Boolean);
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 export function FloatingConcierge() {
   const [location] = useLocation();
@@ -108,6 +117,8 @@ export function FloatingConcierge() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  // Tracks how many messages existed when the chat last closed — messages before this index don't animate on reopen
+  const animateFromIndexRef = useRef(messages.length);
 
   const [messages, setMessages] = useState<Message[]>(() => {
     try { const s = sessionStorage.getItem("fdv_concierge_messages"); return s ? JSON.parse(s) : []; } catch { return []; }
@@ -264,12 +275,14 @@ export function FloatingConcierge() {
   // ─── Close ────────────────────────────────────────────────────────────────
   const handleClose = useCallback(() => {
     clearTimeout(phaseTimerRef.current);
+    // Snapshot current message count so they won't reanimate on next open
+    animateFromIndexRef.current = messages.length;
     setPhase("closing");
     stopListening();
     window.speechSynthesis?.cancel();
     setIsSpeaking(false);
     phaseTimerRef.current = setTimeout(() => setPhase("closed"), 320);
-  }, [stopListening]);
+  }, [stopListening, messages.length]);
 
   // ─── Send ─────────────────────────────────────────────────────────────────
   const sendMessage = useCallback(async (overrideText?: string) => {
@@ -422,6 +435,10 @@ export function FloatingConcierge() {
         @keyframes chatFadeIn {
           from { opacity: 0; }
           to   { opacity: 1; }
+        }
+        @keyframes msgLineFadeIn {
+          from { opacity: 0; transform: translateY(4px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
         @keyframes listeningDot {
           0%, 100% { opacity: 1; }
@@ -589,44 +606,88 @@ export function FloatingConcierge() {
                   How can I help you?
                 </span>
               </div>
-              {messages.map((msg, i) => (
-                <div key={i} style={{ marginBottom: 24, display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
-                  <div
-                    style={{
-                      maxWidth: "88%",
-                      fontFamily: msg.role === "user"
-                        ? "'Instrument Sans', Inter, sans-serif"
-                        : "'Cormorant Garamond', Georgia, serif",
-                      fontSize: msg.role === "user" ? 14 : 20,
-                      fontStyle: msg.role === "gate" ? "italic" : "normal",
-                      lineHeight: msg.role === "user" ? 1.5 : 1.7,
-                      color: msg.role === "user"
-                        ? "#c9a84c"
-                        : msg.role === "gate"
-                        ? "rgba(201,168,76,0.72)"
-                        : "#d4c9b8",
-                      whiteSpace: "pre-wrap",
-                    }}
-                  >
-                    {msg.content}
-                    {msg.role === "gate" && tier === "anon" && signupStage === 'idle' && (
-                      <button onClick={handleGateAction} style={{ display: "block", marginTop: 14, background: "rgba(201,168,76,0.10)", color: "#c9a84c", border: "1px solid rgba(201,168,76,0.32)", padding: "11px 28px", fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer", borderRadius: 9999, backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 0 16px rgba(201,168,76,0.06)" }}>
-                        Create Your Digital Passport
-                      </button>
-                    )}
-                    {msg.role === "gate" && tier === "free" && (
-                      <div style={{ marginTop: 10, padding: "9px 14px", background: "rgba(201,168,76,0.07)", border: "1px solid rgba(201,168,76,0.18)", fontFamily: "Inter, sans-serif", fontSize: 11, color: "#9a823e", lineHeight: 1.5 }}>
-                        Gold Passport — $29/mo · Unlimited concierge · Personalized
+              {messages.map((msg, i) => {
+                const isNew = i >= animateFromIndexRef.current;
+                const msgBaseStyle: React.CSSProperties = {
+                  fontFamily: "'Instrument Sans', Inter, sans-serif",
+                  fontSize: 18,
+                  lineHeight: 1.65,
+                  letterSpacing: "0.01em",
+                };
+
+                if (msg.role === "user") {
+                  return (
+                    <div key={i} style={{ marginBottom: 24, display: "flex", justifyContent: "flex-end" }}>
+                      <div style={{
+                        maxWidth: "88%",
+                        ...msgBaseStyle,
+                        color: "#c9a84c",
+                        whiteSpace: "pre-wrap",
+                        ...(isNew ? { opacity: 0, animation: "msgLineFadeIn 320ms ease-out forwards" } : {}),
+                      }}>
+                        {msg.content}
                       </div>
-                    )}
+                    </div>
+                  );
+                }
+
+                if (msg.role === "assistant") {
+                  const sentences = splitToSentences(msg.content);
+                  return (
+                    <div key={i} style={{ marginBottom: 24, display: "flex", justifyContent: "flex-start" }}>
+                      <div style={{ maxWidth: "88%", ...msgBaseStyle, color: "#d4c9b8" }}>
+                        {isNew ? sentences.map((sentence, si) => (
+                          <span
+                            key={si}
+                            style={{
+                              display: "block",
+                              opacity: 0,
+                              animation: "msgLineFadeIn 460ms ease-out forwards",
+                              animationDelay: `${si * 260}ms`,
+                              ...(si > 0 ? { marginTop: "0.45em" } : {}),
+                            }}
+                          >
+                            {sentence}
+                          </span>
+                        )) : (
+                          <span style={{ display: "block", whiteSpace: "pre-wrap" }}>{msg.content}</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Gate message
+                return (
+                  <div key={i} style={{ marginBottom: 24, display: "flex", justifyContent: "flex-start" }}>
+                    <div style={{
+                      maxWidth: "88%",
+                      ...msgBaseStyle,
+                      fontStyle: "italic",
+                      color: "rgba(201,168,76,0.72)",
+                      whiteSpace: "pre-wrap",
+                      ...(isNew ? { opacity: 0, animation: "msgLineFadeIn 460ms ease-out forwards" } : {}),
+                    }}>
+                      {msg.content}
+                      {msg.role === "gate" && tier === "anon" && signupStage === 'idle' && (
+                        <button onClick={handleGateAction} style={{ display: "block", marginTop: 14, background: "rgba(201,168,76,0.10)", color: "#c9a84c", border: "1px solid rgba(201,168,76,0.32)", padding: "11px 28px", fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer", borderRadius: 9999, backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 0 16px rgba(201,168,76,0.06)" }}>
+                          Create Your Digital Passport
+                        </button>
+                      )}
+                      {msg.role === "gate" && tier === "free" && (
+                        <div style={{ marginTop: 10, padding: "9px 14px", background: "rgba(201,168,76,0.07)", border: "1px solid rgba(201,168,76,0.18)", fontFamily: "Inter, sans-serif", fontSize: 11, color: "#9a823e", lineHeight: 1.5 }}>
+                          Gold Passport — $29/mo · Unlimited concierge · Personalized
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
               {isLoading && (
                 <div style={{ display: "flex", marginBottom: 24 }}>
-                  <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 20, color: "rgba(201,168,76,0.45)", fontStyle: "italic" }}>
-                    ...
+                  <div style={{ fontFamily: "'Instrument Sans', Inter, sans-serif", fontSize: 18, color: "rgba(201,168,76,0.40)", letterSpacing: "0.12em" }}>
+                    · · ·
                   </div>
                 </div>
               )}
