@@ -557,7 +557,7 @@ export function FloatingConcierge() {
                 )}
               </button>
             )}
-            {/* Close X — 56×56 tap target, 24px icon, high-contrast */}
+            {/* Close X — 78×78 tap target, 34px icon, high-contrast */}
             <button
               onClick={handleClose}
               aria-label="Close"
@@ -566,8 +566,8 @@ export function FloatingConcierge() {
                 border: "none",
                 cursor: "pointer",
                 padding: 0,
-                width: 56,
-                height: 56,
+                width: 78,
+                height: 78,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -576,7 +576,7 @@ export function FloatingConcierge() {
                 flexShrink: 0,
               }}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
@@ -727,8 +727,8 @@ export function FloatingConcierge() {
                       border: "none",
                       cursor: "pointer",
                       padding: 0,
-                      width: 44,
-                      height: 44,
+                      width: 62,
+                      height: 62,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -738,7 +738,7 @@ export function FloatingConcierge() {
                       WebkitTapHighlightColor: "transparent",
                     }}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <rect x="9" y="2" width="6" height="11" rx="3" />
                       <path d="M5 10a7 7 0 0014 0" />
                       <line x1="12" y1="22" x2="12" y2="17" />
@@ -765,8 +765,8 @@ export function FloatingConcierge() {
                     border: "none",
                     background: "transparent",
                     padding: "10px 10px",
-                    fontFamily: "'Cormorant Garamond', Georgia, serif",
-                    fontSize: 18,
+                    fontFamily: "'Instrument Sans', Inter, sans-serif",
+                    fontSize: 17,
                     color: "#d4c9b8",
                     resize: "none",
                     outline: "none",
@@ -786,8 +786,8 @@ export function FloatingConcierge() {
                     color: isLoading || !input.trim() || (isGated && signupStage === 'idle') ? "rgba(201,168,76,0.22)" : "#c9a84c",
                     border: "none",
                     padding: 0,
-                    width: 44,
-                    height: 44,
+                    width: 62,
+                    height: 62,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -797,7 +797,7 @@ export function FloatingConcierge() {
                     WebkitTapHighlightColor: "transparent",
                   }}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="19" x2="12" y2="5" />
                     <polyline points="5 12 12 5 19 12" />
                   </svg>
