@@ -1,100 +1,47 @@
-import { useEffect, useRef } from "react";
-
 export type OrbState = "idle" | "pressed" | "listening" | "thinking" | "responding";
 
 interface ConciergeOrbProps {
   state: OrbState;
   circleSize?: number;
-  amplitude?: number;
+  amplitude?: number; // kept for API compat, not used
   style?: React.CSSProperties;
   className?: string;
 }
 
 /**
- * Living luminous orb — pure CSS radial gradient + blur. No canvas. No particles.
- * Like a candle behind frosted glass. Smooth. Luminous. Zero granularity.
+ * Living luminous orb — pure CSS keyframe animations. No RAF. No canvas.
+ * Guaranteed smooth by the browser's compositor. Always breathing.
  *
- * Two layers:
- *   1. Outer atmospheric glow — large blurred div, breathes via scale transform in RAF
- *   2. Inner bright core — fills circleSize area, very slight blur, no hard edge
- *
- * The outer div is positioned absolutely, extending circleSize * 3.2 in diameter,
- * centered via negative margins so glow bleeds into surrounding dark space.
- * Parent container is exactly circleSize × circleSize — used for layout.
+ * Idle:      slow 4s deep breath — scale 1.0 → 1.08. Dreamy.
+ * Thinking:  slightly contracted, faster 2s — scale 0.88 → 1.02.
+ * Listening: fast reactive pulse, 1.2s — scale 0.96 → 1.30 outer.
+ * Responding: expanded and fuller, 2.5s — scale 1.05 → 1.22 outer.
  */
-export function ConciergeOrb({ state, circleSize = 44, amplitude = 0, style, className }: ConciergeOrbProps) {
-  const outerRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
-  const stateRef = useRef(state);
-  const ampRef = useRef(amplitude);
-  const pressRef = useRef(0);
-  const animRef = useRef<number>(0);
-  const tRef = useRef(0);
-  const lastTsRef = useRef(0);
-
-  useEffect(() => {
-    const prev = stateRef.current;
-    stateRef.current = state;
-    if (state === "pressed" && prev !== "pressed") {
-      pressRef.current = 1;
-    }
-  }, [state]);
-
-  useEffect(() => { ampRef.current = amplitude; }, [amplitude]);
-
-  useEffect(() => {
-    const animate = (ts: number) => {
-      const dt = Math.min((ts - lastTsRef.current) / 1000, 0.05);
-      lastTsRef.current = ts;
-      tRef.current += dt;
-      const t = tRef.current;
-      const st = stateRef.current;
-      const amp = ampRef.current;
-
-      if (pressRef.current > 0) pressRef.current = Math.max(0, pressRef.current - dt * 4.5);
-      const pp = pressRef.current;
-
-      const breathe = Math.sin(t * (Math.PI * 2 / 3.5));
-      let outerScale = 1.0;
-      let innerScale = 1.0;
-
-      if (st === "thinking") {
-        outerScale = 0.65 + breathe * 0.06;
-        innerScale = 0.90 + breathe * 0.04;
-      } else if (st === "listening") {
-        const eff = amp > 0.01 ? amp : Math.abs(Math.sin(t * Math.PI * 2.8));
-        outerScale = 1.0 + eff * 0.65;
-        innerScale = 1.0 + eff * 0.18;
-      } else if (st === "responding") {
-        outerScale = 1.06 + breathe * 0.09;
-        innerScale = 1.04 + breathe * 0.04;
-      } else {
-        // idle — gentle 3.5s breathing, more pronounced on outer glow
-        outerScale = 1.015 + breathe * 0.13;
-        innerScale = 1.0 + breathe * 0.055;
-      }
-
-      if (pp > 0) {
-        outerScale = Math.max(outerScale, 1.0 + pp * 0.9);
-        innerScale = Math.max(innerScale, 1.0 + pp * 0.3);
-      }
-
-      if (outerRef.current) {
-        outerRef.current.style.transform = `scale(${outerScale.toFixed(4)})`;
-      }
-      if (innerRef.current) {
-        innerRef.current.style.transform = `scale(${innerScale.toFixed(4)})`;
-      }
-
-      animRef.current = requestAnimationFrame(animate);
-    };
-    animRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animRef.current);
-  }, []);
-
+export function ConciergeOrb({ state, circleSize = 44, style, className }: ConciergeOrbProps) {
   const outerDiam = circleSize * 3.2;
   const blurPx = Math.round(circleSize * 0.55);
   const innerBlurPx = Math.max(1, Math.round(circleSize * 0.07));
+
+  // Animation durations per state
+  const dur =
+    state === "thinking"   ? "2s"   :
+    state === "listening"  ? "1.2s" :
+    state === "responding" ? "2.5s" :
+    "4s"; // idle / pressed
+
+  // Outer glow animation name per state
+  const outerAnim =
+    state === "thinking"   ? "orbOuterThink"   :
+    state === "listening"  ? "orbOuterListen"  :
+    state === "responding" ? "orbOuterRespond" :
+    "orbOuterIdle";
+
+  // Inner core animation name per state
+  const innerAnim =
+    state === "thinking"   ? "orbInnerThink"   :
+    state === "listening"  ? "orbInnerListen"  :
+    state === "responding" ? "orbInnerRespond" :
+    "orbInnerIdle";
 
   return (
     <div
@@ -107,9 +54,50 @@ export function ConciergeOrb({ state, circleSize = 44, amplitude = 0, style, cla
         ...style,
       }}
     >
-      {/* Outer atmospheric glow — large blurred circle, animates via scale */}
+      <style>{`
+        /* ── IDLE: slow 4s deep breath ── */
+        @keyframes orbOuterIdle {
+          0%, 100% { transform: scale(1.00); }
+          50%       { transform: scale(1.18); }
+        }
+        @keyframes orbInnerIdle {
+          0%, 100% { transform: scale(1.00); }
+          50%       { transform: scale(1.08); }
+        }
+
+        /* ── THINKING: contracted, faster ── */
+        @keyframes orbOuterThink {
+          0%, 100% { transform: scale(0.88); }
+          50%       { transform: scale(1.04); }
+        }
+        @keyframes orbInnerThink {
+          0%, 100% { transform: scale(0.90); }
+          50%       { transform: scale(1.02); }
+        }
+
+        /* ── LISTENING: reactive, quick pulse ── */
+        @keyframes orbOuterListen {
+          0%, 100% { transform: scale(0.96); }
+          50%       { transform: scale(1.35); }
+        }
+        @keyframes orbInnerListen {
+          0%, 100% { transform: scale(0.96); }
+          50%       { transform: scale(1.18); }
+        }
+
+        /* ── RESPONDING: expanded, full ── */
+        @keyframes orbOuterRespond {
+          0%, 100% { transform: scale(1.06); }
+          50%       { transform: scale(1.24); }
+        }
+        @keyframes orbInnerRespond {
+          0%, 100% { transform: scale(1.04); }
+          50%       { transform: scale(1.11); }
+        }
+      `}</style>
+
+      {/* Outer atmospheric glow — large blurred circle, breathes via CSS animation */}
       <div
-        ref={outerRef}
         style={{
           position: "absolute",
           top: "50%",
@@ -122,15 +110,15 @@ export function ConciergeOrb({ state, circleSize = 44, amplitude = 0, style, cla
           background:
             "radial-gradient(circle, rgba(245,228,168,0.52) 0%, rgba(201,168,76,0.28) 28%, rgba(201,168,76,0.10) 55%, transparent 78%)",
           filter: `blur(${blurPx}px)`,
-          transform: "scale(1.015)",
           transformOrigin: "center center",
           pointerEvents: "none",
           willChange: "transform",
+          animation: `${outerAnim} ${dur} ease-in-out infinite`,
         }}
       />
-      {/* Inner bright core — fills circleSize, animates via scale in RAF */}
+
+      {/* Inner bright core — fills circleSize, breathes via CSS animation */}
       <div
-        ref={innerRef}
         style={{
           position: "absolute",
           inset: 0,
@@ -141,6 +129,7 @@ export function ConciergeOrb({ state, circleSize = 44, amplitude = 0, style, cla
           pointerEvents: "none",
           transformOrigin: "center center",
           willChange: "transform",
+          animation: `${innerAnim} ${dur} ease-in-out infinite`,
         }}
       />
     </div>

@@ -133,10 +133,9 @@ export function FloatingConcierge() {
     ? "responding"
     : "idle";
 
+  // "Thinking..." removed — the orb's animation shift communicates processing state
   const statusLabel = isListening
     ? "Listening..."
-    : isLoading
-    ? "Thinking..."
     : isSpeaking
     ? ""
     : "Your Concierge";
@@ -402,81 +401,35 @@ export function FloatingConcierge() {
             animation: isVisible ? "chatFadeIn 0.4s ease-out" : "none",
           }}
         >
-          {/* ══ TOP 40%: pure dark, large centered orb ══ */}
+          {/* ── Orb floating at top — no background, transparent, pointer-events none ── */}
           <div
             style={{
-              height: "40%",
-              minHeight: 220,
-              background: "#0D0B09",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 260,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              position: "relative",
-              flexShrink: 0,
+              pointerEvents: "none",
+              zIndex: 15,
             }}
           >
-            {/* Top-right controls */}
-            <div style={{ position: "absolute", top: 16, right: 16, display: "flex", alignItems: "center", gap: 10 }}>
-              {hasSpeechSynthesis && (
-                <button
-                  onClick={() => setVoiceEnabled((v) => !v)}
-                  title={voiceEnabled ? "Mute" : "Enable voice"}
-                  style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: voiceEnabled ? "#c9a84c" : "rgba(201,168,76,0.25)", display: "flex" }}
-                >
-                  {voiceEnabled ? (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
-                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                      <path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" />
-                    </svg>
-                  ) : (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
-                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                      <line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
-                    </svg>
-                  )}
-                </button>
-              )}
-              <button
-                onClick={handleClose}
-                aria-label="Close"
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: 0,
-                  width: 44,
-                  height: 44,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "rgba(201,168,76,0.60)",
-                  WebkitTapHighlightColor: "transparent",
-                  flexShrink: 0,
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-            </div>
-
-            {/* ─── THE ORB — 140px, hero of the screen ─── */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <ConciergeOrb state={orbState} circleSize={170} amplitude={voiceAmplitude} />
             </div>
-
-            {/* Status text */}
+            {/* Status label — listening indicator only; thinking state removed */}
             <p
               style={{
                 fontFamily: "'Instrument Sans', Inter, sans-serif",
-                fontSize: 14,
+                fontSize: 13,
                 letterSpacing: "0.3em",
                 textTransform: "uppercase",
                 color: "#c9a84c",
-                margin: "32px 0 0",
-                opacity: statusLabel ? 0.85 : 0,
+                margin: "28px 0 0",
+                opacity: statusLabel ? 0.75 : 0,
                 transition: "opacity 0.35s",
                 display: "flex",
                 alignItems: "center",
@@ -490,34 +443,91 @@ export function FloatingConcierge() {
             </p>
           </div>
 
-          {/* ══ BOTTOM 60%: messages + input ══ */}
+          {/* ── Gradient: top area fades to transparent so messages dissolve into orb ── */}
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 300,
+              background: "linear-gradient(to bottom, #0D0B09 0%, #0D0B09 38%, rgba(13,11,9,0.75) 62%, transparent 100%)",
+              pointerEvents: "none",
+              zIndex: 10,
+            }}
+          />
+
+          {/* ── Controls — absolute top-right, z-index above gradient ── */}
+          <div style={{ position: "absolute", top: 20, right: 12, display: "flex", alignItems: "center", gap: 0, zIndex: 20 }}>
+            {hasSpeechSynthesis && (
+              <button
+                onClick={() => setVoiceEnabled((v) => !v)}
+                title={voiceEnabled ? "Mute" : "Enable voice"}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 0,
+                  width: 44,
+                  height: 44,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: voiceEnabled ? "#c9a84c" : "rgba(201,168,76,0.30)",
+                  WebkitTapHighlightColor: "transparent",
+                }}
+              >
+                {voiceEnabled ? (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" />
+                  </svg>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
+                  </svg>
+                )}
+              </button>
+            )}
+            {/* Close X — 56×56 tap target, 24px icon, high-contrast */}
+            <button
+              onClick={handleClose}
+              aria-label="Close"
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+                width: 56,
+                height: 56,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "rgba(201,168,76,0.85)",
+                WebkitTapHighlightColor: "transparent",
+                flexShrink: 0,
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+
+          {/* ── Messages + input fill full height — text scrolls behind floating orb ── */}
           <div
             style={{
               flex: 1,
               display: "flex",
               flexDirection: "column",
-              background: "rgba(13,11,9,0.98)",
-              borderTop: "1px solid rgba(201,168,76,0.1)",
               overflow: "hidden",
             }}
           >
-            {/* Messages — wrapped in a relative container so the fade overlay can sit on top */}
-            <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
-              {/* Gradient fade at the top — text dissolves into the orb rather than hard-cutting */}
-              <div
-                aria-hidden
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: 56,
-                  background: "linear-gradient(to bottom, rgba(13,11,9,0.98) 0%, transparent 100%)",
-                  pointerEvents: "none",
-                  zIndex: 2,
-                }}
-              />
-            <div style={{ height: "100%", overflowY: "auto", padding: "28px 28px", WebkitOverflowScrolling: "touch" }}>
+            {/* Scrollable messages — top padding reserves space for the floating orb */}
+            <div style={{ flex: 1, overflowY: "auto", padding: "280px 28px 28px", WebkitOverflowScrolling: "touch" }}>
               {messages.map((msg, i) => (
                 <div key={i} style={{ marginBottom: 24, display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
                   <div
@@ -561,32 +571,46 @@ export function FloatingConcierge() {
               )}
               <div ref={messagesEndRef} />
             </div>
-            </div>{/* end relative wrapper */}
 
             {/* Input bar */}
             <div
               style={{
                 borderTop: "1px solid rgba(201,168,76,0.09)",
-                padding: "10px 16px",
-                paddingBottom: "calc(10px + env(safe-area-inset-bottom))",
+                padding: "8px 12px",
+                paddingBottom: "calc(8px + env(safe-area-inset-bottom))",
                 background: "#0D0B09",
                 flexShrink: 0,
               }}
             >
               {isListening && (
-                <div style={{ marginBottom: 8, fontFamily: "Inter, sans-serif", fontSize: 10, color: "rgba(201,168,76,0.7)", letterSpacing: "0.07em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ marginBottom: 6, fontFamily: "Inter, sans-serif", fontSize: 10, color: "rgba(201,168,76,0.7)", letterSpacing: "0.07em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
                   <span style={{ fontSize: 6, animation: "listeningDot 0.9s ease-in-out infinite" }}>●</span>
                   Listening — speak now
                 </div>
               )}
-              <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+              <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                {/* Microphone — 48×48 tap target, 24px icon */}
                 {hasSpeechRecognition && (
                   <button
                     onClick={startListening}
                     title={isListening ? "Stop" : "Speak"}
-                    style={{ background: "none", border: "none", cursor: "pointer", padding: "8px", color: isListening ? "#c9a84c" : "rgba(201,168,76,0.4)", display: "flex", alignItems: "center", flexShrink: 0, transition: "color 0.2s" }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      width: 48,
+                      height: 48,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: isListening ? "#c9a84c" : "rgba(201,168,76,0.45)",
+                      flexShrink: 0,
+                      transition: "color 0.2s",
+                      WebkitTapHighlightColor: "transparent",
+                    }}
                   >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <rect x="9" y="2" width="6" height="11" rx="3" />
                       <path d="M5 10a7 7 0 0014 0" />
                       <line x1="12" y1="22" x2="12" y2="17" />
@@ -604,10 +628,31 @@ export function FloatingConcierge() {
                   rows={1}
                   style={{ flex: 1, border: "1px solid rgba(201,168,76,0.22)", background: "transparent", padding: "10px 14px", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 18, color: "#d4c9b8", resize: "none", outline: "none", lineHeight: 1.5, borderRadius: 0 }}
                 />
+                {/* SEND — 48px tap target, 16px bold text */}
                 <button
                   onClick={() => sendMessage()}
                   disabled={isLoading || !input.trim() || isGated || isListening}
-                  style={{ background: "none", color: isLoading || !input.trim() || isGated || isListening ? "rgba(201,168,76,0.25)" : "#c9a84c", border: "none", padding: "10px 12px", fontFamily: "'Instrument Sans', Inter, sans-serif", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", cursor: isLoading || !input.trim() || isGated || isListening ? "default" : "pointer", whiteSpace: "nowrap", flexShrink: 0, transition: "color 0.2s" }}
+                  style={{
+                    background: "none",
+                    color: isLoading || !input.trim() || isGated || isListening ? "rgba(201,168,76,0.25)" : "#c9a84c",
+                    border: "none",
+                    padding: 0,
+                    minWidth: 48,
+                    height: 48,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontFamily: "'Instrument Sans', Inter, sans-serif",
+                    fontSize: 16,
+                    fontWeight: 600,
+                    letterSpacing: "0.10em",
+                    textTransform: "uppercase",
+                    cursor: isLoading || !input.trim() || isGated || isListening ? "default" : "pointer",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                    transition: "color 0.2s",
+                    WebkitTapHighlightColor: "transparent",
+                  }}
                 >
                   Send
                 </button>
