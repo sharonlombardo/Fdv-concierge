@@ -8,6 +8,10 @@ import { PinButton } from "@/components/pin-button";
 import { getProductByKey, getShopImageUrl } from "@/lib/brand-genome";
 import { useUser } from "@/contexts/user-context";
 
+// Typography constants
+const CG = "'Cormorant Garamond', Georgia, serif";
+const IS = "'Instrument Sans', Inter, sans-serif";
+
 // Products for THE EDIT carousel — hand-curated hero pieces
 const EDIT_PRODUCTS = [
   { genomeKey: "look:fildevie:steviecaftan:black.jpg", fallbackTitle: "Stevie Caftan", fallbackBrand: "FIL DE VIE", fallbackPrice: "$825" },
@@ -18,8 +22,65 @@ const EDIT_PRODUCTS = [
   { genomeKey: "look:fdv:steviecaftan:black.jpg", fallbackTitle: "Stevie Caftan", fallbackBrand: "FIL DE VIE", fallbackPrice: "$825" },
 ];
 
-const SLIDE_WIDTH_PERCENT = 68; // Match destinations page — ~16% peek each side
-const GAP = 3; // Thin sliver between cards like Zara
+const SLIDE_WIDTH_PERCENT = 68;
+const GAP = 3;
+
+// Full-bleed editorial break — placeholder until images arrive
+// To add image: set imageSrc="/your-image.jpg" (place file in public/)
+type EditorialBreakProps = {
+  text: string;
+  imageSrc?: string;
+  placeholderColor?: string;
+};
+
+function EditorialBreak({ text, imageSrc, placeholderColor = "#2a2420" }: EditorialBreakProps) {
+  return (
+    <div
+      style={{
+        width: "100%",
+        minHeight: "75vh",
+        position: "relative",
+        overflow: "hidden",
+        backgroundColor: placeholderColor,
+        backgroundImage: imageSrc ? `url(${imageSrc})` : undefined,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "center",
+        paddingBottom: 40,
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(transparent 45%, rgba(0,0,0,0.38) 100%)",
+          pointerEvents: "none",
+        }}
+      />
+      <p
+        style={{
+          position: "relative",
+          fontFamily: CG,
+          fontStyle: "italic",
+          fontWeight: 300,
+          fontSize: 28,
+          lineHeight: 1.35,
+          color: "#fff",
+          textShadow: "0 1px 3px rgba(0,0,0,0.4)",
+          textAlign: "center",
+          maxWidth: 320,
+          margin: 0,
+          padding: "0 24px",
+          zIndex: 1,
+        }}
+      >
+        {text}
+      </p>
+    </div>
+  );
+}
 
 export default function Threshold() {
   const { data: imageSlotsData } = useImageSlots();
@@ -37,7 +98,6 @@ export default function Threshold() {
     return defaultSlot?.defaultUrl || "";
   };
 
-  // Returning user redirect
   useEffect(() => {
     if (user) {
       const lastPage = localStorage.getItem("fdv_last_page");
@@ -49,7 +109,6 @@ export default function Threshold() {
     }
   }, [user, navigate]);
 
-  // Destination carousel scroll tracking
   const getSlideWidth = useCallback(() => {
     return (window.innerWidth * SLIDE_WIDTH_PERCENT) / 100;
   }, []);
@@ -66,7 +125,6 @@ export default function Threshold() {
     return () => el.removeEventListener("scroll", onScroll);
   }, [getSlideWidth]);
 
-  // Resolve products for THE EDIT carousel
   const editItems = EDIT_PRODUCTS.map((ep) => {
     const product = getProductByKey(ep.genomeKey);
     const imageUrl = getShopImageUrl(ep.genomeKey);
@@ -78,42 +136,41 @@ export default function Threshold() {
       imageUrl: imageUrl || "",
       shopUrl: product?.shopUrl || "",
     };
-  }).filter((item) => item.imageUrl); // Only show items with images
+  }).filter((item) => item.imageUrl);
 
   const sidePadding = `${(100 - SLIDE_WIDTH_PERCENT) / 2}vw`;
 
-  // If authenticated, the useEffect above will redirect — render nothing while redirecting
   if (user) return null;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#fafaf9" }}>
-      {/* === SECTION 1: HERO VIDEO === */}
+    <div className="min-h-screen" style={{ backgroundColor: "#f8f5f0" }}>
+
+      {/* ── HERO VIDEO ── */}
       <HeroAnimation />
 
-      {/* === SECTION 2: ATMOSPHERIC TEXT === */}
-      <section
-        style={{
-          backgroundColor: "#fafaf9",
-          padding: "80px 24px",
-          textAlign: "center",
-        }}
-      >
+      {/* ── EDITORIAL BREAK 1 (add imageSrc="/editorial-break-1.jpg" when ready) ── */}
+      <EditorialBreak
+        text="You're going somewhere. We've thought of everything."
+        placeholderColor="#2a2420"
+      />
+
+      {/* ── THE GUIDES label + destination carousel ── */}
+      <section style={{ backgroundColor: "#f8f5f0", paddingTop: 56, paddingBottom: 0 }}>
         <p
           style={{
-            fontFamily: "'Lora', Georgia, serif",
-            fontSize: 26,
-            lineHeight: 1.65,
-            color: "#2c2416",
-            maxWidth: 560,
-            margin: "0 auto",
+            fontFamily: IS,
+            fontWeight: 400,
+            fontSize: 11,
+            letterSpacing: "0.25em",
+            textTransform: "uppercase" as const,
+            color: "#8a7e72",
+            textAlign: "center",
+            margin: "0 0 40px",
           }}
         >
-          Pick your destination. We've thought of everything — the places, the wardrobe, the details.
+          The Guides
         </p>
-      </section>
 
-      {/* === SECTION 3: DESTINATION CARDS CAROUSEL === */}
-      <section style={{ backgroundColor: "#fafaf9", paddingBottom: 40 }}>
         <div
           ref={scrollRef}
           style={{
@@ -146,7 +203,6 @@ export default function Threshold() {
                   cursor: dest.available ? "pointer" : "default",
                 }}
               >
-                {/* Image */}
                 <div
                   style={{
                     position: "absolute",
@@ -157,7 +213,6 @@ export default function Threshold() {
                     filter: dest.available ? "none" : "saturate(0.7)",
                   }}
                 />
-                {/* Gradient overlay */}
                 <div
                   style={{
                     position: "absolute",
@@ -165,7 +220,6 @@ export default function Threshold() {
                     background: "linear-gradient(transparent 40%, rgba(0,0,0,0.55) 100%)",
                   }}
                 />
-                {/* Text + button */}
                 <div
                   style={{
                     position: "absolute",
@@ -177,7 +231,7 @@ export default function Threshold() {
                 >
                   <h2
                     style={{
-                      fontFamily: "'Lora', Georgia, serif",
+                      fontFamily: CG,
                       fontSize: 34,
                       fontWeight: 400,
                       color: "#fff",
@@ -190,9 +244,10 @@ export default function Threshold() {
                   </h2>
                   <p
                     style={{
-                      fontFamily: "'Lora', Georgia, serif",
+                      fontFamily: CG,
                       fontSize: 16,
                       fontStyle: "italic",
+                      fontWeight: 300,
                       color: "rgba(255,255,255,0.85)",
                       margin: "6px 0 20px",
                     }}
@@ -207,11 +262,11 @@ export default function Threshold() {
                           color: "#1a1a1a",
                           border: "none",
                           padding: "12px 28px",
-                          fontFamily: "'Inter', sans-serif",
+                          fontFamily: IS,
                           fontSize: 12,
                           fontWeight: 600,
                           letterSpacing: "0.1em",
-                          textTransform: "uppercase",
+                          textTransform: "uppercase" as const,
                           cursor: "pointer",
                         }}
                       >
@@ -225,11 +280,11 @@ export default function Threshold() {
                         color: "rgba(255,255,255,0.5)",
                         border: "1px solid rgba(255,255,255,0.3)",
                         padding: "12px 28px",
-                        fontFamily: "'Inter', sans-serif",
+                        fontFamily: IS,
                         fontSize: 12,
                         fontWeight: 600,
                         letterSpacing: "0.1em",
-                        textTransform: "uppercase",
+                        textTransform: "uppercase" as const,
                         cursor: "default",
                       }}
                     >
@@ -242,7 +297,6 @@ export default function Threshold() {
           })}
         </div>
 
-        {/* Dot indicators */}
         <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 20 }}>
           {DESTINATIONS.map((_, i) => (
             <div
@@ -251,7 +305,7 @@ export default function Threshold() {
                 width: 6,
                 height: 6,
                 borderRadius: "50%",
-                background: i === activeIndex ? "#2c2416" : "rgba(44,36,22,0.2)",
+                background: i === activeIndex ? "#2a2520" : "rgba(42,37,32,0.2)",
                 transition: "background 0.3s",
               }}
             />
@@ -259,110 +313,75 @@ export default function Threshold() {
         </div>
       </section>
 
-      {/* === SECTION 4A: EDITORIAL CODA === */}
+      {/* ── EDITORIAL BREAK 2 (add imageSrc="/editorial-break-2.jpg" when ready) ── */}
+      <div style={{ marginTop: 56 }}>
+        <EditorialBreak
+          text="The places. The wardrobe. The details."
+          placeholderColor="#242018"
+        />
+      </div>
+
+      {/* ── SHORT STATEMENT + THE EDIT label + script accent ── */}
       <section
         style={{
-          backgroundColor: "#fafaf9",
-          padding: "64px 24px",
+          backgroundColor: "#f8f5f0",
+          padding: "72px 24px 40px",
           textAlign: "center",
         }}
       >
-        <div style={{ maxWidth: 520, margin: "0 auto" }}>
-          <p
-            style={{
-              fontFamily: "'Lora', Georgia, serif",
-              fontSize: 17,
-              lineHeight: 1.8,
-              color: "#2c2416",
-              marginBottom: 24,
-            }}
-          >
-            Everything in our guides is shoppable — see it, love it,{" "}
-            <Link href="/shop">
-              <span style={{ color: "#c9a84c", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" }}>
-                it's yours
-              </span>
-            </Link>
-            . We'll even{" "}
-            <span
-              onClick={() => window.dispatchEvent(new CustomEvent("open-concierge"))}
-              style={{ color: "#c9a84c", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" }}
-            >
-              curate your own edit
-            </span>
-            {" "}— a capsule built around where you're going and how you travel.
-          </p>
-          <p
-            style={{
-              fontFamily: "'Lora', Georgia, serif",
-              fontSize: 17,
-              lineHeight: 1.8,
-              color: "#2c2416",
-              marginBottom: 24,
-            }}
-          >
-            Save what stops you. Your{" "}
-            <Link href="/suitcase">
-              <span style={{ color: "#c9a84c", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" }}>
-                suitcase
-              </span>
-            </Link>
-            {" "}keeps it all.
-          </p>
-          <p
-            style={{
-              fontFamily: "'Lora', Georgia, serif",
-              fontSize: 17,
-              lineHeight: 1.8,
-              color: "#2c2416",
-            }}
-          >
-            When you're ready, we'll{" "}
-            <span
-              onClick={() => window.dispatchEvent(new CustomEvent("open-concierge"))}
-              style={{ color: "#c9a84c", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" }}
-            >
-              build the whole trip
-            </span>
-            {" "}— wardrobe, itinerary, reservations. All of it.
-          </p>
-        </div>
+        <p
+          style={{
+            fontFamily: CG,
+            fontStyle: "italic",
+            fontWeight: 300,
+            fontSize: 28,
+            lineHeight: 1.3,
+            letterSpacing: "0.02em",
+            color: "#2a2520",
+            maxWidth: 320,
+            margin: "0 auto 64px",
+          }}
+        >
+          See it. Save it. It's yours.
+        </p>
+
+        <p
+          style={{
+            fontFamily: IS,
+            fontWeight: 400,
+            fontSize: 11,
+            letterSpacing: "0.25em",
+            textTransform: "uppercase" as const,
+            color: "#8a7e72",
+            margin: "0 0 16px",
+          }}
+        >
+          The Edit
+        </p>
+
+        <p
+          style={{
+            fontFamily: CG,
+            fontStyle: "italic",
+            fontWeight: 300,
+            fontSize: 22,
+            color: "#5a5048",
+            margin: "8px 0 0",
+          }}
+        >
+          A few things worth having.
+        </p>
       </section>
 
-      {/* === SECTION 4B: THE EDIT — SHOPPABLE CAROUSEL === */}
+      {/* ── THE EDIT carousel — tiles 40% larger (224px vs 160px) ── */}
       {editItems.length > 0 && (
-        <section style={{ backgroundColor: "#fafaf9", paddingBottom: 48 }}>
-          <div style={{ textAlign: "center", padding: "0 24px 24px" }}>
-            <p
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: 11,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: "rgba(44,36,22,0.35)",
-                marginBottom: 6,
-              }}
-            >
-              The Edit
-            </p>
-            <p
-              style={{
-                fontFamily: "'Lora', Georgia, serif",
-                fontSize: 16,
-                fontStyle: "italic",
-                color: "rgba(44,36,22,0.55)",
-              }}
-            >
-              A few things worth having.
-            </p>
-          </div>
-
+        <section style={{ backgroundColor: "#f8f5f0", paddingBottom: 56 }}>
           <div
             style={{
               display: "flex",
               gap: 14,
               overflowX: "scroll",
-              padding: "0 24px",
+              padding: "24px 24px 0",
               msOverflowStyle: "none",
               scrollbarWidth: "none",
               WebkitOverflowScrolling: "touch",
@@ -372,15 +391,12 @@ export default function Threshold() {
             {editItems.map((item) => (
               <div
                 key={item.genomeKey}
-                style={{
-                  flex: "0 0 160px",
-                  position: "relative",
-                }}
+                style={{ flex: "0 0 224px", position: "relative" }}
               >
                 <div
                   style={{
                     aspectRatio: "3/4",
-                    backgroundColor: "#f0ece4",
+                    backgroundColor: "#ede9e2",
                     overflow: "hidden",
                     position: "relative",
                   }}
@@ -388,13 +404,9 @@ export default function Threshold() {
                   <img
                     src={item.imageUrl}
                     alt={item.title}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
+                    style={{ width: "100%", height: "100%", objectFit: "contain" }}
                   />
-                  <div style={{ position: "absolute", top: 6, right: 6 }}>
+                  <div style={{ position: "absolute", top: 8, right: 8 }}>
                     <PinButton
                       itemType="style"
                       itemId={`landing-edit-${item.genomeKey}`}
@@ -412,14 +424,15 @@ export default function Threshold() {
                     />
                   </div>
                 </div>
-                <div style={{ padding: "8px 2px 0" }}>
+                <div style={{ padding: "10px 2px 0" }}>
                   <p
                     style={{
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: 10,
-                      letterSpacing: "0.08em",
-                      textTransform: "uppercase",
-                      color: "rgba(44,36,22,0.4)",
+                      fontFamily: IS,
+                      fontSize: 12,
+                      fontWeight: 400,
+                      letterSpacing: "0.05em",
+                      textTransform: "uppercase" as const,
+                      color: "#8a7e72",
                       margin: 0,
                     }}
                   >
@@ -427,20 +440,22 @@ export default function Threshold() {
                   </p>
                   <p
                     style={{
-                      fontFamily: "'Inter', sans-serif",
+                      fontFamily: IS,
                       fontSize: 12,
-                      color: "#2c2416",
-                      margin: "2px 0 0",
+                      fontWeight: 400,
+                      color: "#2a2520",
+                      margin: "3px 0 0",
                     }}
                   >
                     {item.title}
                   </p>
                   <p
                     style={{
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: 11,
-                      color: "rgba(44,36,22,0.5)",
-                      margin: "2px 0 0",
+                      fontFamily: IS,
+                      fontSize: 12,
+                      fontWeight: 400,
+                      color: "#8a7e72",
+                      margin: "3px 0 0",
                     }}
                   >
                     {item.price}
@@ -452,32 +467,15 @@ export default function Threshold() {
         </section>
       )}
 
-      {/* === SECTION 4C: QUIET CLOSER === */}
-      <section
-        style={{
-          backgroundColor: "#fafaf9",
-          padding: "40px 24px 100px",
-          textAlign: "center",
-        }}
-      >
-        <p
-          onClick={() => window.dispatchEvent(new CustomEvent("open-concierge"))}
-          style={{
-            fontFamily: "'Lora', Georgia, serif",
-            fontSize: 15,
-            color: "rgba(44,36,22,0.35)",
-            cursor: "pointer",
-            transition: "color 0.2s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(44,36,22,0.6)")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(44,36,22,0.35)")}
-        >
-          Or ask your concierge{" "}
-          <span style={{ color: "#c9a84c" }}>✦</span>
-        </p>
-      </section>
+      {/* ── EDITORIAL BREAK 3 (add imageSrc="/editorial-break-3.jpg" when ready) ── */}
+      <EditorialBreak
+        text="Or ask your concierge ✦"
+        placeholderColor="#1e1c18"
+      />
 
-      {/* Hide scrollbar utility */}
+      {/* Bottom padding for nav bar */}
+      <div style={{ height: 100, backgroundColor: "#f8f5f0" }} />
+
       <style>{`
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
