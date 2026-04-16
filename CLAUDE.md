@@ -598,6 +598,93 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 16, 2026 | Claude Code + Notion — Concierge UI Overhaul, Inline Signup, Landing Page Polish, FDV Daily Weather Fix Spec, Notion Triage
+
+**The day in one line:** The concierge became the front door — inline signup, personalized greetings, full Instrument Sans type system, and a rebuilt destination carousel.
+
+---
+
+**FDV Daily:**
+- April 16 edition deployed (Marcel, Cherry Blossoms, Le Labo) — midnight auto-deploy ran early before the edition was ready; redeployed manually in the morning.
+- Identified that weather data is static/baked into `picks.json` at build time — not live.
+- Designed live weather fix using Open-Meteo API (free, no key required): fetch at render time, inject current temp + conditions into the picks page. Code spec fully written. **Not yet implemented** — queued for next FDV Daily session.
+
+---
+
+**FDV Concierge — Major UI/UX session (10+ deploys):**
+
+**Navigation + Layout:**
+- Fixed home button navigation — was redirecting away from landing page instead of staying.
+- Fixed hamburger menu `[07]` numbering for THE CURRENT item.
+- Inserted 3 editorial break images from Vercel Blob into landing page: striped shirt sunbathing, coastal water, Mediterranean colonnade. Each is a 75vh full-bleed section with gradient overlay. Break up the destination card scroll with atmosphere.
+
+**Destination Carousel Rebuild:**
+- Landing page carousel rebuilt as true infinite circular loop.
+- Card bleed on both sides (no edge gap) — matches Guides page exactly.
+- Removed rounded corners on destination cards.
+- Consistent title positioning across all cards.
+- Carousel behavior now identical to `/destinations` page.
+
+**Concierge Orb + Chat Panel:**
+- Orb: constant CSS breathing animation (4s idle cycle). Dark background container removed — orb floats transparently over scrolling chat text with gradient fade.
+- Removed "Thinking..." text — orb animation is the only loading feedback.
+- Close X enlarged to 78px tap target / 34px icon.
+- Mic icon enlarged to 62px tap target / 28px icon.
+- Send button: replaced "SEND" text with upward arrow SVG icon, 62px tap target.
+
+**Input + Typography:**
+- Glassy pill input: frosted glass capsule with `backdrop-filter: blur`, replacing rectangular input box.
+- "CREATE YOUR DIGITAL PASSPORT" button: matching pill/glass treatment.
+- Chat text: **Instrument Sans 18px**, 1.65 line height, sentence-by-sentence fade-in reveal animation (each sentence fades in sequentially as the response streams).
+- Pill input font: Instrument Sans 17px (matches chat text family).
+- Landing page CTA label changed from "YOUR CONCIERGE" to **"How can I help you?"**.
+
+**Inline Conversational Signup (NEW — major feature):**
+- Concierge now collects email + password **inside the chat conversation** — no modal, no redirect, no page break.
+- When an unauthenticated user triggers a gate, the concierge speaks the ask naturally as a chat bubble.
+- On submission, Digital Passport is created and conversation continues seamlessly.
+- Concierge IS the onboarding. No separate signup flow needed.
+
+**Personalized Greetings (NEW):**
+- Logged-in users: "Hi [Name]. How can I help you today?"
+- Returning users (authenticated, no display name): "Welcome back."
+- New/anonymous users: full welcome message.
+- **New welcome copy:** "Welcome. I'm your concierge — I can help you plan a trip, pack for it, find the perfect restaurant, or just point you somewhere beautiful. Everything here is shoppable, saveable, and yours. Ask me anything, or just start exploring."
+
+**Concierge Date Awareness:**
+- System prompt now dynamically injects current date + season at request time.
+- Concierge knows what month it is and can give seasonally accurate recommendations.
+
+---
+
+**Notion — Task Triage:**
+- Triaged 69 past-due tasks (Feb–Apr): 4 marked done, 14 killed/archived, 16 rescheduled this week, 35 pushed to later.
+- Personal tasks preserved with real dates.
+- FDV website SEO pushed to May 28.
+- Business cards task restored to this week.
+
+---
+
+**Architecture Decisions Confirmed Today:**
+
+- **Transactional signup happens inside the concierge conversation.** The concierge IS the onboarding — no separate signup flow.
+- **"Taste" removed from copy** per Sharon's direction. Using warmer, more personal language throughout.
+- **Copy direction locked:** warm host, not tour guide. Conversational, not institutional.
+- **Instrument Sans is the type system for all concierge chat UI** (both bubbles and input).
+
+---
+
+**Current Strategic Priorities (Sharon's words):**
+1. Get FDV Concierge website live and in shape
+2. Get FIL DE VIE growing again
+3. Raising money
+
+---
+
+**Context for next session:** Concierge UI is polished and the front door is set. FDV Daily weather fix is spec'd and ready to implement. Next FDV Concierge focus: destination guide sprints (Hydra), Stripe payment for trip briefs, Taste Intelligence Phase B. FDV Daily: implement Open-Meteo live weather in picks page.
+
+---
+
 ### April 15, 2026 | Claude.ai + Claude Code — FULL DAY: 22 Features + 8 Bug Fixes. North Star V2 Complete.
 
 **The day in one line:** The product that exists tonight is fundamentally different from the one that existed this morning.
