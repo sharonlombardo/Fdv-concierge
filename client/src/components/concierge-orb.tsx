@@ -4,7 +4,7 @@ export type OrbState = "idle" | "pressed" | "listening" | "thinking" | "respondi
 
 interface ConciergeOrbProps {
   state: OrbState;
-  circleSize?: number; // diameter of the gold circle in px
+  circleSize?: number; // diameter of the luminous core in px
   /** 0-1 real amplitude from voice input; falls back to simulated beat when 0 */
   amplitude?: number;
   style?: React.CSSProperties;
@@ -12,18 +12,20 @@ interface ConciergeOrbProps {
 }
 
 /**
- * Living gold orb — canvas particles, breathing glow, state-responsive animation.
+ * Living luminous orb — pure radial gradient light, no hard shapes, no star.
+ * Like looking at a candle flame or distant star through atmosphere.
  *
- * Canvas is circleSize * 2.5 wide/tall so glow and particles have room at any size.
- * Use margin: -(circleSize * 0.75)px to pull the canvas back so the
- * gold circle aligns with the layout box.
+ * Canvas is circleSize * 2.5 wide/tall so the glow bleeds beyond the circle
+ * bounds into surrounding dark space (nav bar, screen backdrop, etc.)
+ * Use margin: -(circleSize * 0.75)px to pull canvas back so the
+ * luminous core aligns with the layout box.
  *
  * States:
- *   idle       — gentle breathing + orbiting particles + glint flash
- *   pressed    — quick expansion pulse, particles scatter
- *   listening  — rapid pulse (amplitude-driven if provided, else simulated)
- *   thinking   — particles orbit tight and fast, glow dims
- *   responding — warm outward drift, calm steady glow
+ *   idle       — gentle breathing + dust particles drifting in glow + glint flash
+ *   pressed    — quick expansion burst, glow floods outward
+ *   listening  — glow expands/contracts with voice amplitude
+ *   thinking   — glow tightens and brightens at center, particles spin faster
+ *   responding — warm steady outward glow drift
  */
 export function ConciergeOrb({ state, circleSize = 28, amplitude = 0, style, className }: ConciergeOrbProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -48,7 +50,8 @@ export function ConciergeOrb({ state, circleSize = 28, amplitude = 0, style, cla
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Canvas = circleSize * 2.5 → padding = circleSize * 0.75 on each side
+    // Canvas = circleSize * 2.5 → PADDING = circleSize * 0.75 on each side
+    // Glow bleeds into the PADDING area, visually spilling beyond the "circle" boundary
     const PADDING = Math.round(circleSize * 0.75);
     const canvasSize = circleSize + PADDING * 2; // ≈ circleSize * 2.5
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -60,21 +63,25 @@ export function ConciergeOrb({ state, circleSize = 28, amplitude = 0, style, cla
     canvas.height = canvasSize * dpr;
     ctx.scale(dpr, dpr);
 
-    // More particles for larger orbs; proportional sizes and orbit radii
-    const COUNT = circleSize >= 80 ? 16 : circleSize >= 40 ? 12 : 8;
+    // More particles, smaller, slower — dust motes in golden light, not orbiting planets
+    const COUNT = circleSize >= 80 ? 26 : circleSize >= 40 ? 22 : 20;
     const pScale = Math.max(1, circleSize / 28);
+    // Cap size scale to keep particles fine at large orb sizes
+    const pSizeCap = Math.min(pScale, 2.5);
 
-    const particles = Array.from({ length: COUNT }, (_, i) => ({
-      angle: (i / COUNT) * Math.PI * 2 + Math.random() * 0.9,
-      orbitR: r * (1.1 + (i % 4) * 0.035), // proportional — just outside the circle
-      speed: (0.28 + Math.random() * 0.18) / Math.sqrt(pScale), // slower for big orbs
-      size: pScale * (0.75 + Math.random() * 0.8),
-      opacity: 0.45 + Math.random() * 0.35,
-      lighter: i % 3 === 0,
+    const particles = Array.from({ length: COUNT }, () => ({
+      angle: Math.random() * Math.PI * 2,
+      // Cloud distribution: from inside core to just beyond — feels like atmosphere, not ring
+      orbitR: r * (0.55 + Math.random() * 0.85),
+      // ~50% slower; some go CW, some CCW — floating not orbiting
+      speed: (0.12 + Math.random() * 0.09) * (Math.random() < 0.5 ? 1 : -1) / Math.sqrt(pScale),
+      size: pSizeCap * (0.45 + Math.random() * 0.60), // 0.45–1.05px per scale unit
+      opacity: 0.18 + Math.random() * 0.62,            // 0.18–0.80 (wider range per spec)
+      lighter: Math.random() < 0.4,
     }));
 
     let glintProgress = -1;
-    let glintCooldown = 5 + Math.random() * 4;
+    let glintCooldown = 5 + Math.random() * 5;
     let glintTimer = 0;
     let lastTime = 0;
 
@@ -88,7 +95,7 @@ export function ConciergeOrb({ state, circleSize = 28, amplitude = 0, style, cla
       const st = stateRef.current;
       const amp = amplitudeRef.current;
 
-      // Decay pressed pulse (decays in ~220ms at 4.5/s)
+      // Decay pressed pulse (~220ms at 4.5/s)
       if (pressedPulseRef.current > 0) {
         pressedPulseRef.current = Math.max(0, pressedPulseRef.current - dt * 4.5);
       }
@@ -97,82 +104,78 @@ export function ConciergeOrb({ state, circleSize = 28, amplitude = 0, style, cla
       // Breathing cycle — 3.5s, 0→1
       const breathe = Math.sin(time * (Math.PI * 2 / 3.5)) * 0.5 + 0.5;
 
-      // State-driven parameters
-      let glowAlpha = 0.28 + breathe * 0.16;
-      let glowRadiusMult = 1.45 + breathe * 0.15;
+      // ── State-driven parameters ──
+      // glowRadiusMult at 2.0+ ensures glow bleeds visibly beyond the circle area
+      let outerAlpha = 0.42 + breathe * 0.18;
+      let glowRadiusMult = 2.0 + breathe * 0.25;
+      let coreR = r * (0.70 + breathe * 0.06);
+      let coreAlpha = 0.88 + breathe * 0.10;
       let orbitMult = 1.0;
       let speedMult = 1.0;
       let particleOpacity = 1.0;
 
       if (st === "thinking") {
-        orbitMult = 0.62;
-        speedMult = 2.2;
-        glowAlpha = 0.16;
-        glowRadiusMult = 1.2;
-        particleOpacity = 0.5;
+        // Glow tightens and brightens at center
+        orbitMult = 0.52;
+        speedMult = 2.5;
+        outerAlpha = 0.28;
+        glowRadiusMult = 1.45;
+        coreR = r * 0.62;
+        coreAlpha = 0.98; // intense bright core
+        particleOpacity = 0.30;
       } else if (st === "listening") {
-        // Use real amplitude when available, otherwise simulate
         const effectiveAmp = amp > 0.01 ? amp : Math.abs(Math.sin(time * Math.PI * 2.8));
-        orbitMult = 1 + effectiveAmp * 0.5;
-        glowAlpha = 0.42 + effectiveAmp * 0.32;
-        glowRadiusMult = 1.55 + effectiveAmp * 0.55;
+        orbitMult = 1 + effectiveAmp * 0.45;
+        outerAlpha = 0.55 + effectiveAmp * 0.40;
+        glowRadiusMult = 2.1 + effectiveAmp * 0.70;
+        coreR = r * (0.70 + effectiveAmp * 0.20);
       } else if (st === "responding") {
-        orbitMult = 1.2;
-        glowAlpha = 0.4 + breathe * 0.12;
-        glowRadiusMult = 1.65;
+        orbitMult = 1.15;
+        outerAlpha = 0.50 + breathe * 0.16;
+        glowRadiusMult = 2.25;
+        coreR = r * 0.72;
       }
 
-      // Pressed pulse — brief expansion burst
+      // Pressed pulse — brief expansion flood
       if (pp > 0) {
-        glowAlpha = Math.max(glowAlpha, pp * 0.8);
-        glowRadiusMult = Math.max(glowRadiusMult, 1.5 + pp * 1.4);
+        outerAlpha = Math.max(outerAlpha, pp * 0.92);
+        glowRadiusMult = Math.max(glowRadiusMult, 2.0 + pp * 2.2);
+        coreR = Math.max(coreR, r * (0.72 + pp * 0.30));
       }
 
-      // Clamp glow to canvas bounds
       const maxGlowR = canvasSize / 2 - 1;
       const glowR = Math.min(r * glowRadiusMult, maxGlowR);
+      const actualCoreR = Math.min(coreR, maxGlowR * 0.62);
 
-      // ── Glow ──
-      const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
-      glow.addColorStop(0.15, `rgba(201, 168, 76, ${glowAlpha})`);
-      glow.addColorStop(0.55, `rgba(201, 168, 76, ${glowAlpha * 0.4})`);
-      glow.addColorStop(1, "rgba(201, 168, 76, 0)");
-      ctx.fillStyle = glow;
+      // ── Outer atmospheric glow — bleeds well beyond circle area ──
+      const oA = Math.min(outerAlpha, 0.95);
+      const outerGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
+      outerGlow.addColorStop(0,    `rgba(245, 228, 168, ${Math.min(oA * 2.5, 0.96)})`);
+      outerGlow.addColorStop(0.15, `rgba(228, 192, 95,  ${Math.min(oA * 1.7, 0.88)})`);
+      outerGlow.addColorStop(0.42, `rgba(201, 168, 76,  ${oA * 0.75})`);
+      outerGlow.addColorStop(0.70, `rgba(201, 168, 76,  ${oA * 0.28})`);
+      outerGlow.addColorStop(1,    "rgba(201, 168, 76, 0)");
+      ctx.fillStyle = outerGlow;
       ctx.beginPath();
       ctx.arc(cx, cy, glowR, 0, Math.PI * 2);
       ctx.fill();
 
-      // ── Gold circle ──
-      const circR = r * (1 + pp * 0.2);
-      const circ = ctx.createRadialGradient(
-        cx - circR * 0.28, cy - circR * 0.28, 0,
-        cx, cy, circR
+      // ── Inner bright core — no hard edge, fades to transparent ──
+      // Slightly off-center gradient gives sense of light source
+      const core = ctx.createRadialGradient(
+        cx - actualCoreR * 0.20, cy - actualCoreR * 0.20, 0,
+        cx, cy, actualCoreR
       );
-      circ.addColorStop(0, "#f2e4ad");
-      circ.addColorStop(0.42, "#c9a84c");
-      circ.addColorStop(1, "#9c7c2a");
-      ctx.fillStyle = circ;
+      core.addColorStop(0,    `rgba(255, 252, 225, ${coreAlpha})`);
+      core.addColorStop(0.25, `rgba(248, 232, 160, ${coreAlpha * 0.88})`);
+      core.addColorStop(0.60, `rgba(224, 184, 88,  ${coreAlpha * 0.42})`);
+      core.addColorStop(1,    "rgba(201, 168, 76, 0)");
+      ctx.fillStyle = core;
       ctx.beginPath();
-      ctx.arc(cx, cy, circR, 0, Math.PI * 2);
+      ctx.arc(cx, cy, actualCoreR, 0, Math.PI * 2);
       ctx.fill();
 
-      // ── 4-pointed star icon ──
-      const s = circR * 0.36;
-      const inner = s * 0.3;
-      ctx.fillStyle = "rgba(255,255,255,0.92)";
-      ctx.beginPath();
-      ctx.moveTo(cx, cy - s * 2);
-      ctx.lineTo(cx + inner, cy - inner);
-      ctx.lineTo(cx + s * 2, cy);
-      ctx.lineTo(cx + inner, cy + inner);
-      ctx.lineTo(cx, cy + s * 2);
-      ctx.lineTo(cx - inner, cy + inner);
-      ctx.lineTo(cx - s * 2, cy);
-      ctx.lineTo(cx - inner, cy - inner);
-      ctx.closePath();
-      ctx.fill();
-
-      // ── Particles ──
+      // ── Dust particles — fine, slow, varied opacity ──
       const canvasHalf = canvasSize / 2;
       particles.forEach((p) => {
         p.angle += p.speed * speedMult * dt;
@@ -181,14 +184,14 @@ export function ConciergeOrb({ state, circleSize = 28, amplitude = 0, style, cla
         const px = cx + Math.cos(p.angle) * dist;
         const py = cy + Math.sin(p.angle) * dist;
         ctx.globalAlpha = p.opacity * particleOpacity;
-        ctx.fillStyle = p.lighter ? "#e8d5a3" : "#c9a84c";
+        ctx.fillStyle = p.lighter ? "#f2dea8" : "#c9a84c";
         ctx.beginPath();
         ctx.arc(px, py, p.size, 0, Math.PI * 2);
         ctx.fill();
       });
       ctx.globalAlpha = 1;
 
-      // ── Glint (idle / responding) ──
+      // ── Glint flash (idle / responding) — travels across the glow ──
       if (st === "idle" || st === "responding") {
         glintTimer += dt;
         if (glintProgress < 0 && glintTimer >= glintCooldown) {
@@ -197,15 +200,15 @@ export function ConciergeOrb({ state, circleSize = 28, amplitude = 0, style, cla
           glintCooldown = 5 + Math.random() * 6;
         }
         if (glintProgress >= 0) {
-          glintProgress = Math.min(1, glintProgress + dt * 1.2);
+          glintProgress = Math.min(1, glintProgress + dt * 1.1);
           const angle = -Math.PI * 0.75 + glintProgress * Math.PI * 1.3;
-          const gx = cx + Math.cos(angle) * r * 0.52;
-          const gy = cy + Math.sin(angle) * r * 0.28;
-          const gr = r * 0.3 * Math.sin(glintProgress * Math.PI);
-          if (gr > 0.5) {
+          const gx = cx + Math.cos(angle) * r * 0.42;
+          const gy = cy + Math.sin(angle) * r * 0.24;
+          const gr = r * 0.26 * Math.sin(glintProgress * Math.PI);
+          if (gr > 0.4) {
             const gg = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
-            gg.addColorStop(0, "rgba(255, 248, 220, 0.88)");
-            gg.addColorStop(1, "rgba(255, 248, 220, 0)");
+            gg.addColorStop(0, "rgba(255, 252, 228, 0.82)");
+            gg.addColorStop(1, "rgba(255, 248, 200, 0)");
             ctx.fillStyle = gg;
             ctx.beginPath();
             ctx.arc(gx, gy, gr, 0, Math.PI * 2);
@@ -236,7 +239,7 @@ export function ConciergeOrb({ state, circleSize = 28, amplitude = 0, style, cla
         width: canvasSize,
         height: canvasSize,
         display: "block",
-        margin: `-${PADDING}px`, // pull back so gold circle aligns with layout box
+        margin: `-${PADDING}px`, // pull back so luminous core aligns with layout box
         pointerEvents: "none",
         ...style,
       }}
