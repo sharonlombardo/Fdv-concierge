@@ -115,27 +115,68 @@ export default function Threshold() {
     return (window.innerWidth * SLIDE_WIDTH_PERCENT) / 100;
   }, []);
 
+  // Clone-based infinite carousel:
+  // displayItems = [clone-of-last, ...real items..., clone-of-first]
+  // DOM index 0 = clone of last, DOM 1..count = real, DOM count+1 = clone of first
+  const destCount = DESTINATIONS.length;
+  const displayItems = [
+    { ...DESTINATIONS[destCount - 1], _cloneKey: `${DESTINATIONS[destCount - 1].slug}-start` },
+    ...DESTINATIONS.map((d) => ({ ...d, _cloneKey: d.slug })),
+    { ...DESTINATIONS[0], _cloneKey: `${DESTINATIONS[0].slug}-end` },
+  ];
+
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    const onScroll = () => {
-      const slideWidth = getSlideWidth() + GAP;
-      const index = Math.round(el.scrollLeft / slideWidth);
-      setActiveIndex(Math.max(0, Math.min(index, DESTINATIONS.length - 1)));
-    };
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
-  }, [getSlideWidth]);
+    const slideWidth = getSlideWidth() + GAP;
 
-  const scrollTo = useCallback((index: number) => {
+    // Start at DOM 1 (real index 0 = Morocco) — silent, no animation
+    el.scrollLeft = slideWidth;
+    setActiveIndex(0);
+
+    let scrollTimer: ReturnType<typeof setTimeout>;
+
+    const onScroll = () => {
+      const domIdx = Math.round(el.scrollLeft / slideWidth);
+      if (domIdx >= 1 && domIdx <= destCount) {
+        setActiveIndex(domIdx - 1);
+      }
+      // After scrolling stops, teleport from clone back to real counterpart
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        const di = Math.round(el.scrollLeft / slideWidth);
+        if (di === 0) {
+          el.scrollTo({ left: destCount * slideWidth, behavior: "auto" });
+          setActiveIndex(destCount - 1);
+        } else if (di === destCount + 1) {
+          el.scrollTo({ left: slideWidth, behavior: "auto" });
+          setActiveIndex(0);
+        }
+      }, 140);
+    };
+
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      clearTimeout(scrollTimer);
+    };
+  }, [getSlideWidth, destCount]);
+
+  const goNext = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
     const slideWidth = getSlideWidth() + GAP;
-    el.scrollTo({ left: index * slideWidth, behavior: "smooth" });
+    const domIdx = Math.round(el.scrollLeft / slideWidth);
+    el.scrollTo({ left: (domIdx + 1) * slideWidth, behavior: "smooth" });
   }, [getSlideWidth]);
 
-  const goNext = () => scrollTo(activeIndex < DESTINATIONS.length - 1 ? activeIndex + 1 : 0);
-  const goPrev = () => scrollTo(activeIndex > 0 ? activeIndex - 1 : DESTINATIONS.length - 1);
+  const goPrev = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const slideWidth = getSlideWidth() + GAP;
+    const domIdx = Math.round(el.scrollLeft / slideWidth);
+    el.scrollTo({ left: (domIdx - 1) * slideWidth, behavior: "smooth" });
+  }, [getSlideWidth]);
 
   const editItems = EDIT_PRODUCTS.map((ep) => {
     const product = getProductByKey(ep.genomeKey);
@@ -201,16 +242,16 @@ export default function Threshold() {
             }}
             className="hide-scrollbar"
           >
-            {DESTINATIONS.map((dest) => {
+            {displayItems.map((dest) => {
               const imgUrl = getImageUrl(dest.imageSlotKey) || dest.defaultImage;
               return (
                 <div
-                  key={dest.slug}
+                  key={dest._cloneKey}
                   onClick={() => dest.available && navigate(dest.route)}
                   style={{
                     flex: `0 0 ${SLIDE_WIDTH_PERCENT}vw`,
                     scrollSnapAlign: "center",
-                    borderRadius: 16,
+                    borderRadius: 0,
                     overflow: "hidden",
                     position: "relative",
                     height: "70vh",
