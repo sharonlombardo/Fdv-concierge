@@ -24,6 +24,7 @@ interface ConciergeOrbProps {
  */
 export function ConciergeOrb({ state, circleSize = 44, amplitude = 0, style, className }: ConciergeOrbProps) {
   const outerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef(state);
   const ampRef = useRef(amplitude);
   const pressRef = useRef(0);
@@ -54,24 +55,35 @@ export function ConciergeOrb({ state, circleSize = 44, amplitude = 0, style, cla
       const pp = pressRef.current;
 
       const breathe = Math.sin(t * (Math.PI * 2 / 3.5));
-      let scale = 1.0;
+      let outerScale = 1.0;
+      let innerScale = 1.0;
 
       if (st === "thinking") {
-        scale = 0.65 + breathe * 0.04;
+        outerScale = 0.65 + breathe * 0.06;
+        innerScale = 0.90 + breathe * 0.04;
       } else if (st === "listening") {
         const eff = amp > 0.01 ? amp : Math.abs(Math.sin(t * Math.PI * 2.8));
-        scale = 1.0 + eff * 0.65;
+        outerScale = 1.0 + eff * 0.65;
+        innerScale = 1.0 + eff * 0.18;
       } else if (st === "responding") {
-        scale = 1.06 + breathe * 0.06;
+        outerScale = 1.06 + breathe * 0.09;
+        innerScale = 1.04 + breathe * 0.04;
       } else {
-        // idle — gentle 3.5s breathing
-        scale = 1.015 + breathe * 0.065;
+        // idle — gentle 3.5s breathing, more pronounced on outer glow
+        outerScale = 1.015 + breathe * 0.13;
+        innerScale = 1.0 + breathe * 0.055;
       }
 
-      if (pp > 0) scale = Math.max(scale, 1.0 + pp * 0.9);
+      if (pp > 0) {
+        outerScale = Math.max(outerScale, 1.0 + pp * 0.9);
+        innerScale = Math.max(innerScale, 1.0 + pp * 0.3);
+      }
 
       if (outerRef.current) {
-        outerRef.current.style.transform = `scale(${scale.toFixed(4)})`;
+        outerRef.current.style.transform = `scale(${outerScale.toFixed(4)})`;
+      }
+      if (innerRef.current) {
+        innerRef.current.style.transform = `scale(${innerScale.toFixed(4)})`;
       }
 
       animRef.current = requestAnimationFrame(animate);
@@ -116,8 +128,9 @@ export function ConciergeOrb({ state, circleSize = 44, amplitude = 0, style, cla
           willChange: "transform",
         }}
       />
-      {/* Inner bright core — fills circleSize, faint blur keeps edges soft */}
+      {/* Inner bright core — fills circleSize, animates via scale in RAF */}
       <div
+        ref={innerRef}
         style={{
           position: "absolute",
           inset: 0,
@@ -126,6 +139,8 @@ export function ConciergeOrb({ state, circleSize = 44, amplitude = 0, style, cla
             "radial-gradient(circle at 38% 36%, rgba(255,252,232,0.96) 0%, rgba(245,228,155,0.88) 22%, rgba(210,168,72,0.55) 55%, transparent 80%)",
           filter: `blur(${innerBlurPx}px)`,
           pointerEvents: "none",
+          transformOrigin: "center center",
+          willChange: "transform",
         }}
       />
     </div>

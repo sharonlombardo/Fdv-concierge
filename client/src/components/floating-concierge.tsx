@@ -439,9 +439,26 @@ export function FloatingConcierge() {
               )}
               <button
                 onClick={handleClose}
-                style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "rgba(201,168,76,0.45)", fontSize: 16, lineHeight: 1, display: "flex" }}
+                aria-label="Close"
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 0,
+                  width: 44,
+                  height: 44,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "rgba(201,168,76,0.60)",
+                  WebkitTapHighlightColor: "transparent",
+                  flexShrink: 0,
+                }}
               >
-                ✕
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
               </button>
             </div>
 
@@ -484,8 +501,23 @@ export function FloatingConcierge() {
               overflow: "hidden",
             }}
           >
-            {/* Messages */}
-            <div style={{ flex: 1, overflowY: "auto", padding: "28px 28px", WebkitOverflowScrolling: "touch" }}>
+            {/* Messages — wrapped in a relative container so the fade overlay can sit on top */}
+            <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+              {/* Gradient fade at the top — text dissolves into the orb rather than hard-cutting */}
+              <div
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 56,
+                  background: "linear-gradient(to bottom, rgba(13,11,9,0.98) 0%, transparent 100%)",
+                  pointerEvents: "none",
+                  zIndex: 2,
+                }}
+              />
+            <div style={{ height: "100%", overflowY: "auto", padding: "28px 28px", WebkitOverflowScrolling: "touch" }}>
               {messages.map((msg, i) => (
                 <div key={i} style={{ marginBottom: 24, display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
                   <div
@@ -529,6 +561,7 @@ export function FloatingConcierge() {
               )}
               <div ref={messagesEndRef} />
             </div>
+            </div>{/* end relative wrapper */}
 
             {/* Input bar */}
             <div

@@ -152,7 +152,7 @@ export default function Threshold() {
           el.scrollTo({ left: slideWidth, behavior: "auto" });
           setActiveIndex(0);
         }
-      }, 140);
+      }, 300);
     };
 
     el.addEventListener("scroll", onScroll, { passive: true });
@@ -291,22 +291,32 @@ export default function Threshold() {
                       padding: "0 32px 56px",
                     }}
                   >
-                    <span
+                    {/* Fixed-height badge slot — always same height whether visible or not */}
+                    <div
                       style={{
+                        height: 28,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                         marginBottom: 16,
-                        padding: "4px 12px",
-                        fontSize: 10,
-                        letterSpacing: "0.2em",
-                        textTransform: "uppercase" as const,
-                        border: "1px solid rgba(245,240,235,0.5)",
-                        color: "#F5F0EB",
-                        fontFamily: IS,
-                        borderRadius: 999,
-                        visibility: dest.available ? "visible" : "hidden",
                       }}
                     >
-                      Guide
-                    </span>
+                      <span
+                        style={{
+                          padding: "4px 12px",
+                          fontSize: 10,
+                          letterSpacing: "0.2em",
+                          textTransform: "uppercase" as const,
+                          border: "1px solid rgba(245,240,235,0.5)",
+                          color: "#F5F0EB",
+                          fontFamily: IS,
+                          borderRadius: 999,
+                          opacity: dest.available ? 1 : 0,
+                        }}
+                      >
+                        Guide
+                      </span>
+                    </div>
                     <h2
                       style={{
                         fontFamily: "'Lora', serif",
@@ -322,20 +332,36 @@ export default function Threshold() {
                     >
                       {dest.title}
                     </h2>
-                    <p
+                    {/* Fixed-height description — 2 lines max so title stays at same Y on every card */}
+                    <div
                       style={{
-                        fontFamily: IS,
-                        fontSize: 14,
-                        lineHeight: 1.6,
-                        color: "#F5F0EB",
-                        opacity: 0.85,
-                        textAlign: "center",
+                        height: 46,
+                        overflow: "hidden",
+                        display: "flex",
+                        alignItems: "flex-start",
+                        marginBottom: 32,
                         maxWidth: "80%",
-                        margin: "0 0 32px",
                       }}
                     >
-                      {dest.summary}
-                    </p>
+                      <p
+                        style={{
+                          fontFamily: IS,
+                          fontSize: 14,
+                          lineHeight: 1.6,
+                          color: "#F5F0EB",
+                          opacity: 0.85,
+                          textAlign: "center",
+                          margin: 0,
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical" as const,
+                          overflow: "hidden",
+                          width: "100%",
+                        } as React.CSSProperties}
+                      >
+                        {dest.summary}
+                      </p>
+                    </div>
                     {dest.available ? (
                       <Link href={dest.route}>
                         <span
