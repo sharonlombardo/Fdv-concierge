@@ -576,9 +576,9 @@ export default function Threshold() {
       <div style={{ height: 128, backgroundColor: CREAM }} />
       <FullBleed src={`${BLOB}red_suitcase.jpeg`} />
 
-      {/* ── S18: CONTAINED ── malgosia steps (nestled to red suitcase) */}
+      {/* ── S18: FULL BLEED ── malgosia steps (nestled to red suitcase, matching width) */}
       <div style={{ height: 2, backgroundColor: CREAM }} />
-      <Contained src={`${BLOB}hydra_malgosia_steps.jpg`} height="70vh" />
+      <FullBleed src={`${BLOB}hydra_malgosia_steps.jpg`} height="70vh" />
 
       {/* ── S19: FULL BLEED ── back float (space above and below) */}
       <div style={{ height: 128, backgroundColor: CREAM }} />
