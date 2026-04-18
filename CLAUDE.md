@@ -557,6 +557,116 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 18, 2026 | Claude.ai — Full Session Summary: Landing Page Scroll Redesign, Copy Decisions, Destination Scout Filter V2
+
+---
+
+## WHAT SHIPPED TODAY
+
+### Landing Page Scroll Redesign — Magazine Editorial Format
+The landing page was completely rebuilt as a Zara Home-inspired magazine scroll. This is the third iteration of the landing page in four days — from the original editorial magazine (The Current), to the stripped-down video → text → cards version, to this: a full editorial scroll that functions as brand manifesto, product explainer, and atmosphere builder all at once.
+
+**The scroll structure (32 sections):**
+1. Hero video (LANDING FINAL.mp4)
+2. Manifesto: "*Travel.* A STATE OF MIND. Some trips you remember for the place. Some for how you felt in it. We think about both — *the destination, what you bring,* and the art of arriving like you already belong there. '26"
+3. ~20 atmospheric editorial images (all Hydra photography, uploaded to Vercel Blob)
+4. Bridge line: "You're going somewhere. We've thought of everything."
+5. Three numbered principles:
+   - 01/03 — *THE DESTINATION.* "Start with the place. The one you've been thinking about..."
+   - 02/03 — *WHAT YOU BRING.* "Every piece considered for the place..."
+   - 03/03 — *WE GO WITH YOU.* "Tell the concierge where and when..."
+6. THE GUIDES '26 + destination cards carousel
+7. "THE PLACES, THE WARDROBE, THE DETAILS"
+8. More atmospheric images
+9. "*TRAVEL.* A STATE OF MIND. '26" (repeated before shop section)
+10. THE EDIT — "A few things worth having." + shoppable carousel
+11. "Or ask your concierge ✦"
+12. "*Come with us.*" email signup (replaced "Stay In Touch")
+13. Footer
+
+### Typography & Design Polish (~16 commits)
+- "Travel." rendered in Allura (handwritten script font)
+- "'26" marks tilted -8°, enlarged, positioned to match Zara Home treatment
+- Principle text blocks left-aligned (was centered)
+- Principle numbers (01/03 etc.) inline, 50% larger, handwritten style
+- Principle text widened to 720px max
+- Manifesto body text sized up and bolder
+- Image spacing doubled for magazine breathing room
+- Image order corrected to match PDF layout
+
+### Destination Scout Curation Filter V2
+Expanded the scoring system for FDV Concierge guide curation from 5 criteria to 8 scored criteria + 4 pass/fail gates.
+
+**4 Gates (auto-exclude):**
+- No chains (hotels, restaurants, brands)
+- No crowd experiences
+- Elegance register (would a woman spending $800/night feel at home?)
+- The eye-roll test (would a stylish local roll their eyes?)
+
+**8 Scored Criteria (min 50/80):**
+1. Soul — does this place have an inner life?
+2. Authenticity — real thing or performance?
+3. Sensory texture — can you describe what it smells/sounds/feels like at a specific hour?
+4. Wardrobe moment — does this create a "what do I wear?" question?
+5. Return-worthiness — would you go back?
+6. Insider discovery — would a stylish local be surprised you found this?
+7. Cinematic quality — the Sofia Coppola test
+8. World coherence — does it fit THIS destination's emotional register?
+
+**Brand taste profile documented:** soul as anchor word, "local but with a little bit of tourist fabulous," elegant even in a rustic way, cinematic in a low-key way, grown-up travel, soulful luxury.
+
+Committed to shared brain + uploaded to project knowledge.
+
+---
+
+## KEY COPY DECISIONS LOCKED
+
+**Brand manifesto:** "Some trips you remember for the place. Some for how you felt in it. We think about both."
+
+**Brand tagline usage:** "*Travel.* A STATE OF MIND." — used as opening declaration and repeated before shop section.
+
+**"What you bring" replaces "wardrobe"** in manifesto context — genderless, encompasses everything (clothes, bags, beauty, accessories, luggage, objects).
+
+**"Come with us."** replaces "Stay In Touch" for email signup.
+
+**Three principles framework:**
+- The Destination (the guides)
+- What You Bring (the shopping/curation)
+- We Go With You (the concierge + curated trip service)
+
+---
+
+## WHAT'S NEXT
+
+### Immediate
+1. **Hydra destination scout** — run the scout using Curation Filter V2, build the guide
+2. **Mallorca / Amangiri / NYC scouts** — same process, each turns a COMING SOON card into VIEW GUIDE
+3. **Edits surfacing** — figure out where Desert Neutrals, Riad Evenings, and future curated edits live (shop page, suitcase, and/or concierge greeting)
+
+### Taste Intelligence
+4. **Phase B:** user_taste_profile JSON extraction after each chat
+5. **Phase C:** Wellspring self-model connection
+
+### Revenue
+6. **Stripe payment flow** for trip briefs
+7. **Curated trip pricing** finalized
+
+### Business
+8. Financial model update
+9. VC deck revision (transactional model, live product examples)
+10. Outreach: Lisa Ruffle, Gillian/April, Melissa/Exclusive Resorts, Chad Nelson, GC/Pear
+
+### Polish
+11. Desktop QA pass
+12. Product genome enrichment (~10 Phoebe Philo items)
+
+---
+
+## CONTEXT FOR NEXT SESSION
+Landing page scroll is live with the full magazine editorial format. All copy is final. The Destination Scout Curation Filter V2 is ready for Hydra. Voice doc has been updated with manifesto copy principles and new FDV language decisions. Next focus: Hydra guide sprint.
+
+---
+
 ### April 18, 2026 (afternoon) | Claude Code (web) — Landing Page Typography + Layout Polish Against Canva PDF
 
 **The day in one line:** A focused PDF-to-production typography and layout pass on the landing page — Allura script for the "Travel." display word, bigger/bolder manifesto copy, enlarged left-aligned Principle blocks with vertically-centered handwritten numbers, all handwritten marks tilted, darkened, and repositioned to match Sharon's Canva layout.
