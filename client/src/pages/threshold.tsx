@@ -289,7 +289,20 @@ export default function Threshold() {
           <em>the destination, what you bring,</em>
           {" "}and the art of arriving like you already belong there.
         </p>
-        <p style={{ fontFamily: AD, fontSize: 24, color: MUTED, margin: 0 }}>
+        <p
+          style={{
+            fontFamily: AD,
+            fontSize: 54,
+            color: MUTED,
+            margin: 0,
+            textAlign: "right" as const,
+            paddingRight: "8vw",
+            transform: "rotate(-4deg)",
+            transformOrigin: "right center",
+            display: "inline-block",
+            width: "100%",
+          }}
+        >
           '26
         </p>
       </section>
