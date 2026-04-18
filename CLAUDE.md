@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** April 15, 2026
-**Updated by:** Claude Code session (landing page redesign, concierge saves, trip brief form, about page rewrite, taste intelligence Phase A, admin chat logging)
+**Last updated:** April 18, 2026
+**Updated by:** Dispatch brain sync (quiet Saturday; flags Apr 16 brain sync still unmerged on claude/distracted-napier)
 
 > **📍 CURRENT STRATEGIC TRUTH:** See `FDV_USER_JOURNEY_NORTH_STAR_V2.md`
 > (April 14, 2026) at the repo root. That doc defines the current site
@@ -554,6 +554,47 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 18, 2026 | Dispatch Brain Sync — Quiet Saturday; April 16 Brain Sync Still Unmerged
+
+**The day in one line:** Automated sync on a quiet weekend day — main takeaway is a hygiene flag: the April 16 UI overhaul brain sync is still sitting on a side branch and hasn't made it to `main`.
+
+**Overview:** No active Dispatch conversations with Sharon today. No FDV Daily edition (Saturday; runs Mon–Fri). No commits pushed to `fdv-concierge` or `fdv-daily-deploy` since April 16. Automated `dispatch-brain-sync` scheduled task ran.
+
+**FDV Daily:**
+- No edition today (weekend). Last deployed edition: **April 17 Harlem Night** (Super/Natural, Sugar Monk, Bill's Place) — committed April 16 evening.
+- `fdv-midnight-deploy` scheduled task is currently **disabled** in `scheduled-tasks.json` (last ran April 16 at 00:00 UTC for the April 16 Madison Avenue edition). Worth confirming whether to re-enable it for next week's editions.
+
+**FDV Concierge:**
+- No activity on `main` today. Last `main` commit touching `CLAUDE.md`: `845b780` (Apr 15 — Claude.ai full-day summary for April 15).
+- **Gap flagged (most important hygiene item):** The April 16 session — "concierge UI overhaul, inline signup, Instrument Sans rollout, editorial breaks, destination carousel rebuild" (~15 commits plus a `Brain sync: April 16 session` CLAUDE.md update, commit `0493aa4`) — lives on branch `claude/distracted-napier` and was **never merged to `main`**. Main's CLAUDE.md therefore skips from April 15 straight to today. That April 16 branch either needs a PR/merge or a cherry-pick of the brain sync content so the shared brain reflects that day's UI work.
+- No April 17 work was logged (no commits anywhere, no dispatch summary file).
+- No April 18 work yet prior to this entry.
+
+**Dispatch Summary Coverage Gaps:**
+- `dispatch-apr-16.md` — missing
+- `dispatch-apr-17.md` — missing
+- Today's summary (`dispatch-apr-18.md`) is the first dispatch summary since `dispatch-apr-15.md`. Weekly rhythm has lapsed.
+
+**Email / Notion / iMessage:**
+- No Dispatch email triage today. No new Notion activity surfaced via filesystem signals.
+- `chat.db` (Messages) last modified **April 17 23:24 ET** — some iMessage traffic yesterday, none logged today.
+
+**What Needs Attention:**
+1. **Merge or cherry-pick the April 16 brain sync** from `claude/distracted-napier` → `main`. Without it, `CLAUDE.md` on main does not reflect the April 16 concierge UI overhaul, inline signup, Instrument Sans rollout, editorial break wiring, or destination carousel rebuild.
+2. **Decide fate of `fdv-midnight-deploy`** — disabled since April 16. If next week should auto-deploy, re-enable it; otherwise document the manual process.
+3. **Carryover items still open from April 15 summary:**
+   - GEMINI 30 mil plan open question: which top-converting ShopMy brands are on Shopify (blocks Phase 2 brand outreach / Violet integration readiness)?
+   - North Star V2 + GEMINI plan alignment in `CLAUDE.md`.
+   - Obsolete Collective / Melissa's Deià residency reply — now **5 days stale** (unanswered since April 13).
+   - Concierge system prompt rewrite — still listed as #1 North Star V2 build priority.
+4. **Weekend cadence check-in** — 3 days in a row (Apr 16–18) with zero or minimal `main` activity. If intentional rest, fine; otherwise worth a Monday check-in on what's blocking.
+
+**Notes on This Run:**
+- Automated run of the `dispatch-brain-sync` scheduled task. No user present. All conclusions based on filesystem, git, and scheduled-task state — no Dispatch chat transcripts were available for today (none existed).
+- **Append step completed by Cowork directly, not Claude Code CLI.** The Claude Code CLI (`/usr/local/bin/claude`) returned a 401 authentication error (`Please run /login`) when invoked by the scheduled task, so Cowork performed the CLAUDE.md edit, commit, and push itself. Sharon should run `claude /login` on this machine so future runs can hand this step off to Claude Code as the skill intends.
 
 ---
 
