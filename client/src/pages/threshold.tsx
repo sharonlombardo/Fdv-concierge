@@ -248,7 +248,10 @@ export default function Threshold() {
       {/* ── S1: HERO VIDEO ── */}
       <HeroAnimation />
 
-      {/* ── S2: MANIFESTO ── */}
+      {/* ── S2: FULL BLEED ── pier model (tall hero-after image) */}
+      <FullBleed src={`${BLOB}hydra_pier_model_white.jpg`} height="90vh" />
+
+      {/* ── S3: MANIFESTO ── */}
       <section style={{ backgroundColor: CREAM, padding: "96px 32px 80px", textAlign: "center" }}>
         <p style={{ fontFamily: AD, fontSize: 52, color: INK, margin: "0 0 10px", lineHeight: 1 }}>
           Travel.
@@ -288,10 +291,10 @@ export default function Threshold() {
         </p>
       </section>
 
-      {/* ── S3: FULL BLEED ── striped shirt relax */}
+      {/* ── S4: FULL BLEED ── striped shirt relax */}
       <FullBleed src={`${BLOB}hydra_striped_shirt_relax.jpeg`} />
 
-      {/* ── S4: BRIDGE LINE ── */}
+      {/* ── S5: BRIDGE LINE ── */}
       <section style={{ backgroundColor: CREAM, padding: "80px 32px", textAlign: "center" }}>
         <p
           style={{
@@ -308,9 +311,6 @@ export default function Threshold() {
           You're going somewhere. We've thought of everything.
         </p>
       </section>
-
-      {/* ── S5: FULL BLEED ── pier model */}
-      <FullBleed src={`${BLOB}hydra_pier_model_white.jpg`} />
 
       {/* ── S6: PRINCIPLE 01/03 ── */}
       <Principle
@@ -581,12 +581,13 @@ export default function Threshold() {
       <div style={{ height: 2, backgroundColor: CREAM }} />
       <FullBleed src={`${BLOB}hydra_back_float.jpeg`} />
 
-      {/* ── S20: SIDE BY SIDE ── harbor lunch + octopus */}
+      {/* ── S20a: FULL BLEED ── harbor lunch stripe awning */}
       <div style={{ height: 2, backgroundColor: CREAM }} />
-      <SideBySide
-        left={`${BLOB}hydra_harbor_lunch_stripe_awning.jpg`}
-        right={`${BLOB}hydra_octopus_lunch.jpg`}
-      />
+      <FullBleed src={`${BLOB}hydra_harbor_lunch_stripe_awning.jpg`} />
+
+      {/* ── S20b: FULL BLEED ── octopus lunch */}
+      <div style={{ height: 2, backgroundColor: CREAM }} />
+      <FullBleed src={`${BLOB}hydra_octopus_lunch.jpg`} />
 
       {/* ── S21: FULL BLEED ── coats villas */}
       <div style={{ height: 2, backgroundColor: CREAM }} />
