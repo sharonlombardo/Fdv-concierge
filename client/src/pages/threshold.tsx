@@ -274,14 +274,14 @@ export default function Threshold() {
         <p
           style={{
             fontFamily: CG,
-            fontSize: 17,
-            letterSpacing: "0.18em",
+            fontSize: 24,
+            letterSpacing: "0.06em",
             textTransform: "uppercase" as const,
             color: INK,
-            lineHeight: 2.1,
-            maxWidth: 560,
+            lineHeight: 1.5,
+            maxWidth: 760,
             margin: "0 auto 52px",
-            fontWeight: 400,
+            fontWeight: 500,
           }}
         >
           Some trips you remember for the place. Some for how you felt in it.
