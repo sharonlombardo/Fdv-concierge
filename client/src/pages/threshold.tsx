@@ -12,6 +12,7 @@ const BLOB = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/";
 const CG = "'Cormorant Garamond', Georgia, serif";
 const IS = "'Instrument Sans', Inter, sans-serif";
 const AD = "'Architects Daughter', cursive";
+const SCRIPT = "'Allura', 'Allura', cursive";
 const LORA = "'Lora', Georgia, serif";
 const CREAM = "#faf9f6";
 const INK = "#2c2416";
@@ -83,12 +84,12 @@ function Collage({ top, bottomLeft, bottomRight }: { top: string; bottomLeft: st
 function Principle({ num, title, body }: { num: string; title: React.ReactNode; body: string }) {
   return (
     <section style={{ backgroundColor: CREAM, padding: "80px 32px" }}>
-      <div style={{ maxWidth: 960, margin: 0, display: "flex", alignItems: "center", gap: 32 }}>
+      <div style={{ maxWidth: 1040, margin: 0, display: "flex", alignItems: "center", gap: 36 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <p
             style={{
               fontFamily: LORA,
-              fontSize: 22,
+              fontSize: 27,
               fontWeight: 500,
               letterSpacing: "0.06em",
               textTransform: "uppercase" as const,
@@ -102,10 +103,10 @@ function Principle({ num, title, body }: { num: string; title: React.ReactNode; 
           <p
             style={{
               fontFamily: LORA,
-              fontSize: 20,
+              fontSize: 25,
               fontWeight: 300,
               color: INK,
-              lineHeight: 1.6,
+              lineHeight: 1.55,
               margin: 0,
               opacity: 0.85,
             }}
@@ -255,13 +256,13 @@ export default function Threshold() {
 
       {/* ── S2: MANIFESTO ── */}
       <section style={{ backgroundColor: CREAM, padding: "96px 32px 80px", textAlign: "center" }}>
-        <p style={{ fontFamily: AD, fontSize: 52, color: INK, margin: "0 0 10px", lineHeight: 1 }}>
+        <p style={{ fontFamily: SCRIPT, fontSize: 96, color: INK, margin: "0 0 10px", lineHeight: 1, fontWeight: 400 }}>
           Travel.
         </p>
         <p
           style={{
             fontFamily: IS,
-            fontSize: 11,
+            fontSize: 12,
             letterSpacing: "0.32em",
             textTransform: "uppercase" as const,
             color: MUTED,
@@ -273,12 +274,12 @@ export default function Threshold() {
         <p
           style={{
             fontFamily: CG,
-            fontSize: 13,
-            letterSpacing: "0.2em",
+            fontSize: 17,
+            letterSpacing: "0.18em",
             textTransform: "uppercase" as const,
             color: INK,
-            lineHeight: 2.3,
-            maxWidth: 340,
+            lineHeight: 2.1,
+            maxWidth: 560,
             margin: "0 auto 52px",
             fontWeight: 400,
           }}
