@@ -651,9 +651,9 @@ export default function Threshold() {
             fontFamily: AD,
             fontSize: 78,
             color: MUTED,
-            margin: "-8px 0 0",
+            margin: "40px 0 0",
             display: "inline-block",
-            transform: "rotate(-8deg)",
+            transform: "translateX(72px) rotate(-8deg)",
             transformOrigin: "center",
             lineHeight: 1,
           }}
