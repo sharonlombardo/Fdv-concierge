@@ -83,7 +83,7 @@ function Collage({ top, bottomLeft, bottomRight }: { top: string; bottomLeft: st
 function Principle({ num, title, body }: { num: string; title: React.ReactNode; body: string }) {
   return (
     <section style={{ backgroundColor: CREAM, padding: "80px 32px" }}>
-      <div style={{ maxWidth: 440, margin: 0 }}>
+      <div style={{ maxWidth: 720, margin: 0 }}>
         <p
           style={{
             fontFamily: LORA,
