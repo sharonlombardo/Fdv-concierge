@@ -557,6 +557,71 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 18, 2026 (afternoon) | Claude Code (web) — Landing Page Typography + Layout Polish Against Canva PDF
+
+**The day in one line:** A focused PDF-to-production typography and layout pass on the landing page — Allura script for the "Travel." display word, bigger/bolder manifesto copy, enlarged left-aligned Principle blocks with vertically-centered handwritten numbers, all handwritten marks tilted, darkened, and repositioned to match Sharon's Canva layout.
+
+**Working context:** Sharon QA'd the deployed landing page (`fdv-concierge.vercel.app`) in Safari side-by-side with her Canva design PDF (`Dropbox/FDV CONCIERGE/landing page/LANDING PAGE SCROLL 4:18.pdf`), sending screenshot comparisons with precise callouts (yours on left, mine on right). We iterated commit-by-commit off those screenshots. All commits pushed direct to `origin/main` from the worktree at `.claude/worktrees/sleepy-liskov-350e49` via `git push origin HEAD:main` — no PR, Vercel auto-deployed each push.
+
+---
+
+**What shipped today (17 commits to main on `client/src/pages/threshold.tsx` + 1 on `client/index.html`):**
+
+**1. Image order + spacing pass (commits `32993e4`, `6fa7454`, `b283ab7`, `2035938`)**
+- Reordered the hero → manifesto → editorial image sequence: Hero video → 80px space → Manifesto → striped_shirt → Bridge line → pier_model → Principle 01 (previous version had pier_model before Manifesto).
+- Applied PDF-specific spacing pattern across ~12 images: **2px tight clusters** where the PDF showed images nestled together, and **big breathing gaps** (first 40–80px, then doubled to 128–160px after Sharon said "a little tight") where the PDF showed deliberate air.
+- Fixed the `red_suitcase` → `malgosia_steps` width mismatch by switching S18 from `<Contained>` to `<FullBleed>` so both images hit the same edge.
+
+**2. Principle block rebuild (commits `b0048d0`, `73ca9e4`, `b91a960`, `b23a56b`)**
+- **Left-aligned** the three numbered principle text blocks (was `margin: "0 auto"` — centered). Changed to `margin: 0` so title + body hug the left edge.
+- **Widened** the block `maxWidth: 440 → 720 → 960 → 1040` across iterations so each principle reads in 2 (max 3) lines instead of the 5+ it had been.
+- **Refactored from stacked to flex layout:** title + body are now in a `flex: 1` column on the left; the handwritten number (01/03, 02/03, 03/03) sits to the right of the column, vertically centered inline with the text instead of hanging below it.
+- **Enlarged text** across passes: title `17 → 22 → 27px`, body `15 → 20 → 25px`. Line-height tightened for denser, more editorial feel.
+- **Number enlarged** and tilted: `22 → 33 → 43px` (net +95%), with `transform: rotate(-8deg)` to match the hand-drawn look of the '26 marks.
+
+**3. "Travel." script font — Allura (commits `b744f01`, `159bc48`)**
+- Architects Daughter was reading as casual/printed for the display word "Travel." — the PDF called for an elegant flowing cursive.
+- Added **Allura** to Google Fonts load in `client/index.html` (spliced into the existing `family=...` multi-font URL next to Architects Daughter). Defined as new constant `SCRIPT = "'Allura', 'Allura', cursive"` in `threshold.tsx`.
+- Applied to **both** "Travel." display words: top Manifesto section at 96px, bottom pre-THE-EDIT section at 88px. Architects Daughter retained for the smaller handwritten numbers (it reads right at that scale; Allura would disappear).
+
+**4. Manifesto body text (commit `3e46340`)**
+- Sharon kept flagging "not big and bold enough" comparing to the PDF. Final values: `fontSize: 13 → 17 → 24px`, `fontWeight: 400 → 500`, `maxWidth: 340 → 560 → 760`, `letterSpacing: 0.2em → 0.06em`, `lineHeight: 2.3 → 1.5`.
+- The combined effect: fewer, longer, bolder lines — the body copy now has the physical weight the PDF does instead of reading as a faint typewriter caption.
+
+**5. Handwritten '26 marks — size, position, tilt, color (commits `78dee08`, `472be4f`, `9ecb817`, `f0468ab`, `9ef702f`, `b4fc90f`)**
+- Three '26 instances exist on the page: top manifesto, THE GUIDES section header, bottom pre-THE-EDIT section.
+- **Top manifesto '26:** `24 → 54 → 78px`; tilt `0° → -4° → -8°`; position evolved from centered → right-padded 8vw → right-padded 4vw → center-aligned with `paddingLeft: 22%` (which reads as "sits just right of the text block edge"); pulled up `-32px` closer to the text.
+- **Bottom '26:** matched to top at 78px / -8° tilt, then shifted `translateX(72px)` (~¾") right and `marginTop: 40px` (~½") down because centered-below-the-script felt too tight against the text.
+- **All three '26 marks darkened** from `MUTED` (`#8a7e72`) → `INK` (`#2c2416`) per Sharon's final color callout.
+
+---
+
+**Key design decisions locked this session:**
+
+**Allura for display, Architects Daughter for numbers.** The two handwritten fonts serve different roles: Allura is the elegant editorial script for large display words ("Travel."), Architects Daughter is the looser, notebook-style hand for small marginal marks ('26, 01/03). Using one font for both reads wrong — the numbers either look too formal (Allura at small size loses shape) or the display word looks too casual (AD at large size feels like a note, not a title).
+
+**Handwritten marks need a uniform tilt.** -8° applied to every handwritten element (three '26s + three Principle numbers) so the page feels like it was marked up by one hand, not assembled from unrelated assets. Tilt less than -5° reads as "oops the CSS is broken"; more than -10° reads as "trying too hard." -8° is the sweet spot.
+
+**Principle text wants to breathe horizontally, not vertically.** Original stacked layout (title / body / right-aligned number below) created a tall narrow column even with body widened to 720px. Switching to a flex layout where the number sits beside the text — vertically centered, flex-shrink 0 — lets the text block use the full container width and the number visually balances it rather than stacking below.
+
+**Color contrast matters for hand-marks.** MUTED was too soft for the '26 marks — they faded visually against the cream background at large sizes and failed to register as "marginalia by a real person." INK at the same size reads clearly as a handwritten editorial stamp, not a decorative flourish.
+
+**Visual QA loop works.** Sharon's side-by-side Safari/PDF + screenshot callout method is fast and precise — it surfaced 17 distinct improvements in one afternoon without needing a formal design spec document. Each callout was actionable in 1–3 CSS values.
+
+---
+
+**Files modified:**
+- `client/src/pages/threshold.tsx` — landing page, all 17 commits' worth of typography, layout, spacing, and handwriting treatment changes
+- `client/index.html` — Allura added to Google Fonts load URL
+
+**Files with no changes but worth noting:** The Manifesto section markup is still the same structural JSX — it's purely a typography/values pass, no new components or layout primitives added. The existing `<FullBleed>`, `<Contained>`, and `<Principle>` helpers held up. `<Principle>` got refactored internally (stacked → flex) but its public API (`num`, `title`, `body`) stayed identical.
+
+**Worktree note:** All work happened in `.claude/worktrees/sleepy-liskov-350e49`. Because the worktree's branch is `claude/sleepy-liskov-350e49` but Vercel deploys from `main`, every commit was pushed via `git push origin HEAD:main` — a pattern worth remembering when iterating from a worktree. The branch ref on the worktree itself stays behind `main` because we're not updating it locally; this is fine, the working tree is still clean and the deploys are all up-to-date.
+
+**Nothing left unfinished from this session.** Working tree clean at the close. Every Canva PDF callout Sharon flagged today is shipped.
+
+---
+
 ### April 18, 2026 | Dispatch Brain Sync — Quiet Saturday; April 16 Brain Sync Still Unmerged
 
 **The day in one line:** Automated sync on a quiet weekend day — main takeaway is a hygiene flag: the April 16 UI overhaul brain sync is still sitting on a side branch and hasn't made it to `main`.
