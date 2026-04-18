@@ -346,7 +346,7 @@ export default function Threshold() {
 
       {/* ── S9: THREE IMAGES ── full bleed + contained + full bleed */}
       <FullBleed src={`${BLOB}hydra_red_bougainvilla.jpg`} />
-      <div style={{ height: 80, backgroundColor: CREAM }} />
+      <div style={{ height: 160, backgroundColor: CREAM }} />
       <Contained src={`${BLOB}hydra_packed_suitcase_red_stripes.jpg`} height="60vh" />
       <div style={{ height: 2, backgroundColor: CREAM }} />
       <FullBleed src={`${BLOB}hydra_red_window_sill.jpg`} />
@@ -573,7 +573,7 @@ export default function Threshold() {
       <FullBleed src={`${BLOB}hydra_interior_cool_cropped.png`} />
 
       {/* ── S17: FULL BLEED ── red suitcase */}
-      <div style={{ height: 64, backgroundColor: CREAM }} />
+      <div style={{ height: 128, backgroundColor: CREAM }} />
       <FullBleed src={`${BLOB}red_suitcase.jpeg`} />
 
       {/* ── S18: CONTAINED ── malgosia steps (nestled to red suitcase) */}
@@ -581,11 +581,11 @@ export default function Threshold() {
       <Contained src={`${BLOB}hydra_malgosia_steps.jpg`} height="70vh" />
 
       {/* ── S19: FULL BLEED ── back float (space above and below) */}
-      <div style={{ height: 64, backgroundColor: CREAM }} />
+      <div style={{ height: 128, backgroundColor: CREAM }} />
       <FullBleed src={`${BLOB}hydra_back_float.jpeg`} />
 
       {/* ── S20a: FULL BLEED ── harbor lunch stripe awning */}
-      <div style={{ height: 64, backgroundColor: CREAM }} />
+      <div style={{ height: 128, backgroundColor: CREAM }} />
       <FullBleed src={`${BLOB}hydra_harbor_lunch_stripe_awning.jpg`} />
 
       {/* ── S20b: FULL BLEED ── octopus lunch (nestled to harbor lunch) */}
@@ -593,11 +593,11 @@ export default function Threshold() {
       <FullBleed src={`${BLOB}hydra_octopus_lunch.jpg`} />
 
       {/* ── S21: FULL BLEED ── coats villas (space from octopus) */}
-      <div style={{ height: 64, backgroundColor: CREAM }} />
+      <div style={{ height: 128, backgroundColor: CREAM }} />
       <FullBleed src={`${BLOB}hydra_coats_villas.jpg`} />
 
       {/* ── S22: CONTAINED CENTERED ── oxblood bag */}
-      <div style={{ height: 64, backgroundColor: CREAM }} />
+      <div style={{ height: 128, backgroundColor: CREAM }} />
       <Contained src={`${BLOB}travel_bag_oxblood.jpg`} height="60vh" />
 
       {/* ── S23: CONTAINED ── malgosia wall (nestled to oxblood bag) */}
@@ -605,7 +605,7 @@ export default function Threshold() {
       <Contained src={`${BLOB}hydra_malgosia_wall.jpg`} height="70vh" />
 
       {/* ── S24: FULL BLEED ── overview boat (space from malgosia wall) */}
-      <div style={{ height: 64, backgroundColor: CREAM }} />
+      <div style={{ height: 128, backgroundColor: CREAM }} />
       <FullBleed src={`${BLOB}hydra_overview_boat.jpeg`} />
 
       {/* ── S25: SIDE BY SIDE ── restaurant + pouch (clustered to overview boat) */}
@@ -616,7 +616,7 @@ export default function Threshold() {
       />
 
       {/* ── S26: FULL BLEED ── coffee stone (space from cluster) */}
-      <div style={{ height: 64, backgroundColor: CREAM }} />
+      <div style={{ height: 128, backgroundColor: CREAM }} />
       <FullBleed src={`${BLOB}hydra_coffee_stone.jpg`} />
 
       {/* ── S27: SHOP HEADER ── */}
