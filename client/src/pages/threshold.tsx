@@ -248,10 +248,10 @@ export default function Threshold() {
       {/* ── S1: HERO VIDEO ── */}
       <HeroAnimation />
 
-      {/* ── S2: FULL BLEED ── pier model (tall hero-after image) */}
-      <FullBleed src={`${BLOB}hydra_pier_model_white.jpg`} height="90vh" />
+      {/* ── Space between hero and manifesto ── */}
+      <div style={{ height: 80, backgroundColor: CREAM }} />
 
-      {/* ── S3: MANIFESTO ── */}
+      {/* ── S2: MANIFESTO ── */}
       <section style={{ backgroundColor: CREAM, padding: "96px 32px 80px", textAlign: "center" }}>
         <p style={{ fontFamily: AD, fontSize: 52, color: INK, margin: "0 0 10px", lineHeight: 1 }}>
           Travel.
@@ -291,10 +291,10 @@ export default function Threshold() {
         </p>
       </section>
 
-      {/* ── S4: FULL BLEED ── striped shirt relax */}
+      {/* ── S3: FIRST SHOT ── striped shirt relax (seated, head back) */}
       <FullBleed src={`${BLOB}hydra_striped_shirt_relax.jpeg`} />
 
-      {/* ── S5: BRIDGE LINE ── */}
+      {/* ── S4: BRIDGE LINE ── */}
       <section style={{ backgroundColor: CREAM, padding: "80px 32px", textAlign: "center" }}>
         <p
           style={{
@@ -311,6 +311,9 @@ export default function Threshold() {
           You're going somewhere. We've thought of everything.
         </p>
       </section>
+
+      {/* ── S5: SECOND SHOT ── pier model white (walking through arches) */}
+      <FullBleed src={`${BLOB}hydra_pier_model_white.jpg`} height="90vh" />
 
       {/* ── S6: PRINCIPLE 01/03 ── */}
       <Principle
