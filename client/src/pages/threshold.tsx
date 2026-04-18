@@ -121,6 +121,8 @@ function Principle({ num, title, body }: { num: string; title: React.ReactNode; 
             color: MUTED,
             margin: 0,
             flexShrink: 0,
+            transform: "rotate(-8deg)",
+            transformOrigin: "center",
           }}
         >
           {num}
@@ -292,15 +294,16 @@ export default function Threshold() {
         <p
           style={{
             fontFamily: AD,
-            fontSize: 54,
+            fontSize: 78,
             color: MUTED,
-            margin: 0,
+            margin: "-24px 0 0",
             textAlign: "right" as const,
-            paddingRight: "8vw",
-            transform: "rotate(-4deg)",
+            paddingRight: "4vw",
+            transform: "rotate(-8deg)",
             transformOrigin: "right center",
             display: "inline-block",
             width: "100%",
+            lineHeight: 1,
           }}
         >
           '26
