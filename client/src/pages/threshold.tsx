@@ -646,7 +646,18 @@ export default function Threshold() {
         <p style={{ fontFamily: IS, fontSize: 12, letterSpacing: "0.32em", textTransform: "uppercase" as const, color: MUTED, margin: "0 0 10px" }}>
           A State of Mind
         </p>
-        <p style={{ fontFamily: AD, fontSize: 24, color: MUTED, margin: 0 }}>
+        <p
+          style={{
+            fontFamily: AD,
+            fontSize: 78,
+            color: MUTED,
+            margin: "-8px 0 0",
+            display: "inline-block",
+            transform: "rotate(-8deg)",
+            transformOrigin: "center",
+            lineHeight: 1,
+          }}
+        >
           '26
         </p>
       </section>
