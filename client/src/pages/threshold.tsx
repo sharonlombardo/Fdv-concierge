@@ -295,7 +295,7 @@ export default function Threshold() {
           style={{
             fontFamily: AD,
             fontSize: 78,
-            color: MUTED,
+            color: INK,
             margin: "-32px 0 0",
             textAlign: "center" as const,
             paddingLeft: "22%",
@@ -398,7 +398,7 @@ export default function Threshold() {
           >
             The Guides
           </p>
-          <p style={{ fontFamily: AD, fontSize: 24, color: MUTED, margin: 0 }}>
+          <p style={{ fontFamily: AD, fontSize: 24, color: INK, margin: 0 }}>
             '26
           </p>
         </div>
@@ -650,7 +650,7 @@ export default function Threshold() {
           style={{
             fontFamily: AD,
             fontSize: 78,
-            color: MUTED,
+            color: INK,
             margin: "40px 0 0",
             display: "inline-block",
             transform: "translateX(72px) rotate(-8deg)",
