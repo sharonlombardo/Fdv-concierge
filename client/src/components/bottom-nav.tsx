@@ -37,10 +37,10 @@ export default function BottomNav() {
   // Shared icon + label style for supporting tabs
   const iconColor = (active: boolean) => (active ? ACTIVE : INACTIVE);
   const labelStyle = (active: boolean): React.CSSProperties => ({
-    fontSize: 8,
+    fontSize: 9,
     textTransform: "uppercase",
     letterSpacing: "0.07em",
-    fontWeight: 400,
+    fontWeight: 600,
     fontFamily: "Inter, sans-serif",
     color: active ? ACTIVE : INACTIVE,
     marginTop: 1,
@@ -84,12 +84,12 @@ export default function BottomNav() {
         >
           {/* Architectural house: clean roofline + minimal body + door */}
           <svg
-            width="20"
-            height="20"
+            width="22"
+            height="22"
             viewBox="0 0 24 24"
             fill="none"
             stroke={iconColor(isHome)}
-            strokeWidth="1.5"
+            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
@@ -113,12 +113,12 @@ export default function BottomNav() {
       >
         {/* Three elegant horizontal lines */}
         <svg
-          width="20"
-          height="20"
+          width="22"
+          height="22"
           viewBox="0 0 24 24"
           fill="none"
           stroke={INACTIVE}
-          strokeWidth="1.5"
+          strokeWidth="2"
           strokeLinecap="round"
         >
           <line x1="4" y1="6" x2="20" y2="6" />
@@ -135,13 +135,13 @@ export default function BottomNav() {
         className="flex flex-col items-center justify-center bg-transparent border-none cursor-pointer w-full"
         style={{ gap: 0, paddingTop: 2 }}
       >
-        <ConciergeOrb state={orbPressed ? "pressed" : "idle"} circleSize={44} />
+        <ConciergeOrb state={orbPressed ? "pressed" : "idle"} circleSize={44} palette="silver" />
         <span
           style={{
-            fontSize: 8,
+            fontSize: 9,
             textTransform: "uppercase",
             letterSpacing: "0.07em",
-            fontWeight: 400,
+            fontWeight: 600,
             fontFamily: "Inter, sans-serif",
             color: ACTIVE,
             marginTop: 1,
@@ -159,12 +159,12 @@ export default function BottomNav() {
         >
           {/* Travel suitcase: rectangular case + handle + horizontal band */}
           <svg
-            width="20"
-            height="20"
+            width="22"
+            height="22"
             viewBox="0 0 24 24"
             fill="none"
             stroke={iconColor(isSuitcase)}
-            strokeWidth="1.5"
+            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
@@ -188,12 +188,12 @@ export default function BottomNav() {
         >
           {/* Passport book: rectangle with spine + globe motif */}
           <svg
-            width="20"
-            height="20"
+            width="22"
+            height="22"
             viewBox="0 0 24 24"
             fill="none"
             stroke={iconColor(isPassport)}
-            strokeWidth="1.5"
+            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           >

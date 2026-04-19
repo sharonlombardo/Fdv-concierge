@@ -4,6 +4,7 @@ interface ConciergeOrbProps {
   state: OrbState;
   circleSize?: number;
   amplitude?: number; // kept for API compat, not used
+  palette?: "gold" | "silver";
   style?: React.CSSProperties;
   className?: string;
 }
@@ -17,7 +18,7 @@ interface ConciergeOrbProps {
  * Listening: fast reactive pulse, 1.2s — scale 0.96 → 1.30 outer.
  * Responding: expanded and fuller, 2.5s — scale 1.05 → 1.22 outer.
  */
-export function ConciergeOrb({ state, circleSize = 44, style, className }: ConciergeOrbProps) {
+export function ConciergeOrb({ state, circleSize = 44, palette = "gold", style, className }: ConciergeOrbProps) {
   const outerDiam = circleSize * 3.2;
   const blurPx = Math.round(circleSize * 0.55);
   const innerBlurPx = Math.max(1, Math.round(circleSize * 0.07));
@@ -107,8 +108,9 @@ export function ConciergeOrb({ state, circleSize = 44, style, className }: Conci
           marginTop: -(outerDiam / 2),
           marginLeft: -(outerDiam / 2),
           borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(245,228,168,0.52) 0%, rgba(201,168,76,0.28) 28%, rgba(201,168,76,0.10) 55%, transparent 78%)",
+          background: palette === "silver"
+            ? "radial-gradient(circle, rgba(255,255,255,0.60) 0%, rgba(220,218,214,0.32) 28%, rgba(200,198,194,0.10) 55%, transparent 78%)"
+            : "radial-gradient(circle, rgba(245,228,168,0.52) 0%, rgba(201,168,76,0.28) 28%, rgba(201,168,76,0.10) 55%, transparent 78%)",
           filter: `blur(${blurPx}px)`,
           transformOrigin: "center center",
           pointerEvents: "none",
@@ -123,8 +125,9 @@ export function ConciergeOrb({ state, circleSize = 44, style, className }: Conci
           position: "absolute",
           inset: 0,
           borderRadius: "50%",
-          background:
-            "radial-gradient(circle at 38% 36%, rgba(255,252,232,0.96) 0%, rgba(245,228,155,0.88) 22%, rgba(210,168,72,0.55) 55%, transparent 80%)",
+          background: palette === "silver"
+            ? "radial-gradient(circle at 38% 36%, rgba(255,255,255,0.98) 0%, rgba(242,240,236,0.90) 22%, rgba(210,208,204,0.55) 55%, transparent 80%)"
+            : "radial-gradient(circle at 38% 36%, rgba(255,252,232,0.96) 0%, rgba(245,228,155,0.88) 22%, rgba(210,168,72,0.55) 55%, transparent 80%)",
           filter: `blur(${innerBlurPx}px)`,
           pointerEvents: "none",
           transformOrigin: "center center",
