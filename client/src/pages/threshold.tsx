@@ -7,6 +7,7 @@ import { IMAGE_SLOTS } from "@shared/image-slots";
 import { PinButton } from "@/components/pin-button";
 import { getProductByKey, getShopImageUrl } from "@/lib/brand-genome";
 import { useUser } from "@/contexts/user-context";
+import { ItemModal, type ItemModalData } from "@/components/item-modal";
 
 const BLOB = "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/";
 const CG = "'Cormorant Garamond', Georgia, serif";
@@ -142,6 +143,7 @@ export default function Threshold() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<ItemModalData | null>(null);
 
   const getImageUrl = (assetKey: string): string => {
     if (imageSlotsData?.slots) {
@@ -680,10 +682,26 @@ export default function Threshold() {
             className="hide-scrollbar"
           >
             {editItems.map((item) => (
-              <div key={item.genomeKey} style={{ flex: "0 0 224px", position: "relative" }}>
+              <div
+                key={item.genomeKey}
+                style={{ flex: "0 0 224px", position: "relative", cursor: "pointer" }}
+                onClick={() => setSelectedItem({
+                  id: `landing-edit-${item.genomeKey}`,
+                  title: item.title,
+                  bucket: "Your Style",
+                  pinType: "style",
+                  assetKey: item.genomeKey,
+                  storyTag: "the-edit",
+                  imageUrl: item.imageUrl,
+                  brand: item.brand,
+                  price: item.price,
+                  shopUrl: item.shopUrl,
+                  genomeKey: item.genomeKey,
+                })}
+              >
                 <div style={{ aspectRatio: "3/4", backgroundColor: "#ede9e2", overflow: "hidden", position: "relative" }}>
                   <img src={item.imageUrl} alt={item.title} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-                  <div style={{ position: "absolute", top: 8, right: 8 }}>
+                  <div style={{ position: "absolute", top: 8, right: 8 }} onClick={(e) => e.stopPropagation()}>
                     <PinButton
                       itemType="style"
                       itemId={`landing-edit-${item.genomeKey}`}
@@ -781,6 +799,13 @@ export default function Threshold() {
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
+
+      <ItemModal
+        item={selectedItem}
+        open={selectedItem !== null}
+        onOpenChange={(open) => { if (!open) setSelectedItem(null); }}
+        source="current"
+      />
     </div>
   );
 }
