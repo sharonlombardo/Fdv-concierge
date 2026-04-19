@@ -40,7 +40,7 @@ export default function BottomNav() {
     fontSize: 9,
     textTransform: "uppercase",
     letterSpacing: "0.07em",
-    fontWeight: 600,
+    fontWeight: 700,
     fontFamily: "Inter, sans-serif",
     color: active ? ACTIVE : INACTIVE,
     marginTop: 1,
@@ -84,12 +84,12 @@ export default function BottomNav() {
         >
           {/* Architectural house: clean roofline + minimal body + door */}
           <svg
-            width="22"
-            height="22"
+            width="24"
+            height="24"
             viewBox="0 0 24 24"
             fill="none"
             stroke={iconColor(isHome)}
-            strokeWidth="2.5"
+            strokeWidth="3.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
@@ -113,12 +113,12 @@ export default function BottomNav() {
       >
         {/* Three elegant horizontal lines */}
         <svg
-          width="22"
-          height="22"
+          width="24"
+          height="24"
           viewBox="0 0 24 24"
           fill="none"
           stroke={INACTIVE}
-          strokeWidth="2.5"
+          strokeWidth="3.5"
           strokeLinecap="round"
         >
           <line x1="4" y1="6" x2="20" y2="6" />
@@ -141,7 +141,7 @@ export default function BottomNav() {
             fontSize: 9,
             textTransform: "uppercase",
             letterSpacing: "0.07em",
-            fontWeight: 600,
+            fontWeight: 700,
             fontFamily: "Inter, sans-serif",
             color: ACTIVE,
             marginTop: 1,
@@ -159,12 +159,12 @@ export default function BottomNav() {
         >
           {/* Travel suitcase: rectangular case + handle + horizontal band */}
           <svg
-            width="22"
-            height="22"
+            width="24"
+            height="24"
             viewBox="0 0 24 24"
             fill="none"
             stroke={iconColor(isSuitcase)}
-            strokeWidth="2"
+            strokeWidth="3.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
@@ -188,12 +188,12 @@ export default function BottomNav() {
         >
           {/* Passport book: rectangle with spine + globe motif */}
           <svg
-            width="22"
-            height="22"
+            width="24"
+            height="24"
             viewBox="0 0 24 24"
             fill="none"
             stroke={iconColor(isPassport)}
-            strokeWidth="2.5"
+            strokeWidth="3.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
