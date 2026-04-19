@@ -308,9 +308,6 @@ export default function Threshold() {
 
       {/* ── S3: FIRST SHOT ── striped shirt relax (seated, head back) */}
       <FullBleed src={`${BLOB}hydra_striped_shirt_relax.jpeg`} />
-      <div style={{ height: 40, backgroundColor: CREAM, position: "relative" }}>
-        <span style={{ position: "absolute", bottom: 8, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right bottom" }}>en route</span>
-      </div>
 
       {/* ── S4: BRIDGE LINE ── */}
       <section style={{ backgroundColor: CREAM, padding: "80px 32px", textAlign: "center" }}>
@@ -587,6 +584,9 @@ export default function Threshold() {
       {/* ── S18: FULL BLEED ── malgosia steps (nestled to red suitcase, matching width) */}
       <div style={{ height: 2, backgroundColor: CREAM }} />
       <FullBleed src={`${BLOB}hydra_malgosia_steps.jpg`} height="70vh" />
+      <div style={{ height: 36, backgroundColor: CREAM, position: "relative" }}>
+        <span style={{ position: "absolute", bottom: 8, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right bottom" }}>en route</span>
+      </div>
 
       {/* ── S19: FULL BLEED ── back float (space above and below) */}
       <div style={{ height: 128, backgroundColor: CREAM }} />
