@@ -7,8 +7,8 @@ import { ConciergeOrb } from "./concierge-orb";
 // Level 2 — Active page: bright #c9a84c + tiny gold dot
 // Level 3 — Inactive: quiet #a08a5c, thin stroke, no animation
 
-const INACTIVE = "#a08a5c";
-const ACTIVE = "#c9a84c";
+const INACTIVE = "rgba(255,255,255,0.55)";
+const ACTIVE = "#ffffff";
 
 export default function BottomNav() {
   const [location] = useLocation();

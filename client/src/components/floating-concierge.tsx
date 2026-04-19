@@ -446,7 +446,7 @@ export function FloatingConcierge() {
         style={{
           position: "fixed",
           inset: 0,
-          background: "#0D0B09",
+          background: "#faf9f6",
           zIndex: 10000,
           opacity: isClosing ? 0 : 1,
           transition: isClosing ? "opacity 0.32s ease-in" : "opacity 0.08s",
@@ -518,7 +518,7 @@ export function FloatingConcierge() {
               left: 0,
               right: 0,
               height: 300,
-              background: "linear-gradient(to bottom, #0D0B09 0%, #0D0B09 38%, rgba(13,11,9,0.75) 62%, transparent 100%)",
+              background: "linear-gradient(to bottom, #faf9f6 0%, #faf9f6 38%, rgba(250,249,246,0.75) 62%, transparent 100%)",
               pointerEvents: "none",
               zIndex: 10,
             }}
@@ -540,7 +540,7 @@ export function FloatingConcierge() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: voiceEnabled ? "#c9a84c" : "rgba(201,168,76,0.30)",
+                  color: voiceEnabled ? "#2c2416" : "rgba(44,36,22,0.25)",
                   WebkitTapHighlightColor: "transparent",
                 }}
               >
@@ -571,7 +571,7 @@ export function FloatingConcierge() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "rgba(201,168,76,0.85)",
+                color: "rgba(44,36,22,0.65)",
                 WebkitTapHighlightColor: "transparent",
                 flexShrink: 0,
               }}
@@ -596,7 +596,7 @@ export function FloatingConcierge() {
             <div style={{ flex: 1, overflowY: "auto", padding: "280px 28px 28px", WebkitOverflowScrolling: "touch" }}>
               {/* Label scrolls away naturally as conversation grows */}
               <div style={{ textAlign: "center", marginBottom: 28 }}>
-                <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, fontStyle: "italic", letterSpacing: "0.02em", color: "#c9a84c", opacity: 0.75 }}>
+                <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, fontStyle: "italic", letterSpacing: "0.02em", color: "#2c2416", opacity: 0.55 }}>
                   How can I help you?
                 </span>
               </div>
@@ -615,7 +615,7 @@ export function FloatingConcierge() {
                       <div style={{
                         maxWidth: "88%",
                         ...msgBaseStyle,
-                        color: "#c9a84c",
+                        color: "#2c2416",
                         whiteSpace: "pre-wrap",
                         ...(isNew ? { opacity: 0, animation: "msgLineFadeIn 320ms ease-out forwards" } : {}),
                       }}>
@@ -629,7 +629,7 @@ export function FloatingConcierge() {
                   const sentences = splitToSentences(msg.content);
                   return (
                     <div key={i} style={{ marginBottom: 24, display: "flex", justifyContent: "flex-start" }}>
-                      <div style={{ maxWidth: "88%", ...msgBaseStyle, color: "#d4c9b8" }}>
+                      <div style={{ maxWidth: "88%", ...msgBaseStyle, color: "#2c2416" }}>
                         {isNew ? sentences.map((sentence, si) => (
                           <span
                             key={si}
@@ -658,7 +658,7 @@ export function FloatingConcierge() {
                       maxWidth: "88%",
                       ...msgBaseStyle,
                       fontStyle: "italic",
-                      color: "rgba(201,168,76,0.72)",
+                      color: "rgba(44,36,22,0.6)",
                       whiteSpace: "pre-wrap",
                       ...(isNew ? { opacity: 0, animation: "msgLineFadeIn 460ms ease-out forwards" } : {}),
                     }}>
@@ -708,11 +708,11 @@ export function FloatingConcierge() {
                 display: "flex",
                 alignItems: "center",
                 borderRadius: 9999,
-                background: "rgba(255,255,255,0.055)",
+                background: "rgba(255,255,255,0.88)",
                 backdropFilter: "blur(24px)",
                 WebkitBackdropFilter: "blur(24px)",
-                border: "1px solid rgba(201,168,76,0.28)",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07), 0 0 28px rgba(201,168,76,0.07), 0 2px 12px rgba(0,0,0,0.28)",
+                border: "1px solid rgba(44,36,22,0.10)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.06)",
                 padding: "2px 4px 2px 4px",
                 minHeight: 52,
                 gap: 0,
@@ -732,7 +732,7 @@ export function FloatingConcierge() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      color: isListening ? "#c9a84c" : "rgba(201,168,76,0.40)",
+                      color: isListening ? "#2c2416" : "rgba(44,36,22,0.28)",
                       flexShrink: 0,
                       transition: "color 0.2s",
                       WebkitTapHighlightColor: "transparent",
@@ -767,7 +767,7 @@ export function FloatingConcierge() {
                     padding: "10px 10px",
                     fontFamily: "'Instrument Sans', Inter, sans-serif",
                     fontSize: 17,
-                    color: "#d4c9b8",
+                    color: "#2c2416",
                     resize: "none",
                     outline: "none",
                     lineHeight: 1.5,
