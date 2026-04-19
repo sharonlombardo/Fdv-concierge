@@ -378,26 +378,14 @@ export default function Threshold() {
         body="Tell the concierge where and when. She'll build your itinerary, your wardrobe edit, your packing list — all of it shaped around what you saved and how you travel. Built for you. No one else."
       />
 
-      {/* ── S11: THE GUIDES '26 HEADER ── */}
+      {/* ── S11: THE GUIDES 2026 HEADER ── */}
       <section style={{ backgroundColor: CREAM, paddingTop: 64, paddingBottom: 40, textAlign: "center" }}>
-        <div style={{ display: "inline-flex", alignItems: "baseline", gap: 10 }}>
-          <p
-            style={{
-              fontFamily: IS,
-              fontWeight: 400,
-              fontSize: 14,
-              letterSpacing: "0.3em",
-              textTransform: "uppercase" as const,
-              color: INK,
-              margin: 0,
-            }}
-          >
-            The Guides
-          </p>
-          <p style={{ fontFamily: BRITTANY, fontSize: 28, color: INK, margin: 0, transform: "rotate(-7deg)", display: "inline-block" }}>
-            '26
-          </p>
-        </div>
+        <p style={{ fontFamily: CG, fontWeight: 400, fontSize: 22, fontStyle: "italic", letterSpacing: "0.06em", color: INK, margin: "0 0 4px" }}>
+          The Guides
+        </p>
+        <p style={{ fontFamily: CG, fontWeight: 300, fontSize: 14, letterSpacing: "0.3em", textTransform: "uppercase" as const, color: MUTED, margin: 0 }}>
+          2026
+        </p>
       </section>
 
       {/* ── S12: DESTINATION CAROUSEL ── */}
