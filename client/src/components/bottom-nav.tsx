@@ -7,7 +7,7 @@ import { ConciergeOrb } from "./concierge-orb";
 // Level 2 — Active page: bright #c9a84c + tiny gold dot
 // Level 3 — Inactive: quiet #a08a5c, thin stroke, no animation
 
-const INACTIVE = "rgba(255,255,255,0.55)";
+const INACTIVE = "#ffffff";
 const ACTIVE = "#ffffff";
 
 export default function BottomNav() {
@@ -186,7 +186,7 @@ export default function BottomNav() {
           className="flex flex-col items-center justify-center bg-transparent border-none cursor-pointer w-full"
           style={{ gap: 0 }}
         >
-          {/* Passport book: rectangle with spine + globe motif */}
+          {/* Passport: simple book outline + center circle */}
           <svg
             width="24"
             height="24"
@@ -197,16 +197,8 @@ export default function BottomNav() {
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            {/* Book body */}
-            <rect x="4" y="2" width="15" height="20" rx="1.5" />
-            {/* Spine */}
-            <line x1="8" y1="2" x2="8" y2="22" />
-            {/* Globe circle (photo area) */}
-            <circle cx="14" cy="13" r="4" />
-            {/* Globe meridian */}
-            <line x1="14" y1="9" x2="14" y2="17" />
-            {/* Globe equator */}
-            <line x1="10" y1="13" x2="18" y2="13" />
+            <rect x="4" y="2" width="16" height="20" rx="2.5" />
+            <circle cx="12" cy="11" r="3.5" />
           </svg>
           {isPassport ? <ActiveDot /> : <div style={{ height: 6 }} />}
           <span style={labelStyle(isPassport)}>Passport</span>
