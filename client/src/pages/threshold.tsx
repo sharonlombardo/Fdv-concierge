@@ -109,7 +109,7 @@ function Principle({ num, title, body }: { num: string; title: React.ReactNode; 
               fontSize: 18,
               color: MUTED,
               margin: "0 0 0 16px",
-              transform: "rotate(-2deg)",
+              transform: "rotate(-5deg)",
               flexShrink: 0,
               lineHeight: 1,
             }}
