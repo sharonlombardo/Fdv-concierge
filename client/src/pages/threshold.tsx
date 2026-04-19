@@ -14,6 +14,7 @@ const CG = "'Cormorant Garamond', Georgia, serif";
 const IS = "'Instrument Sans', Inter, sans-serif";
 const AD = "'Architects Daughter', cursive";
 const SCRIPT = "'Allura', 'Allura', cursive";
+const BRITTANY = "'Brittany Signature', 'Allura', cursive";
 const CAVEAT = "'Caveat', cursive";
 const LORA = "'Lora', Georgia, serif";
 const CREAM = "#faf9f6";
@@ -263,7 +264,7 @@ export default function Threshold() {
       <section style={{ backgroundColor: CREAM, padding: "36px 32px 32px", textAlign: "center" }}>
         {/* "Travel." + "A STATE OF MIND" — nearly inline, editorial */}
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 10, marginBottom: 20 }}>
-          <span style={{ fontFamily: SCRIPT, fontSize: 30, color: INK, lineHeight: 1, fontWeight: 400, display: "inline-block", transform: "rotate(-2deg)" }}>
+          <span style={{ fontFamily: BRITTANY, fontSize: 30, color: INK, lineHeight: 1, fontWeight: 400, display: "inline-block", transform: "rotate(-2deg)" }}>
             Travel.
           </span>
           <span style={{ fontFamily: IS, fontSize: 11, fontWeight: 500, letterSpacing: "0.26em", textTransform: "uppercase" as const, color: MUTED }}>
@@ -291,7 +292,7 @@ export default function Threshold() {
           </p>
           <p
             style={{
-              fontFamily: SCRIPT,
+              fontFamily: BRITTANY,
               fontSize: 22,
               color: MUTED,
               margin: "10px 0 0",
