@@ -716,9 +716,9 @@ export default function Threshold() {
           onClick={() => window.dispatchEvent(new CustomEvent("open-concierge"))}
           style={{ fontFamily: IS, fontStyle: "italic", fontWeight: 400, fontSize: 22, color: MUTED, margin: "0 0 20px", cursor: "pointer" }}
         >
-          or leave it to us ✦
+          Or leave it to us ✦
         </p>
-        <img src="/fdv-concierge-seal.png" alt="FDV Concierge" style={{ width: 64, height: 64, objectFit: "contain", opacity: 0.7 }} />
+        <img src="/fdv-concierge-seal.png" alt="FDV Concierge" style={{ width: 110, height: 110, objectFit: "contain", opacity: 0.7, display: "block", margin: "0 auto" }} />
       </section>
 
       {/* ── S31: EMAIL SIGNUP ── */}
