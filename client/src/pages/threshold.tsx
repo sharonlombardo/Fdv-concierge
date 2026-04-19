@@ -648,10 +648,10 @@ export default function Threshold() {
 
       {/* ── S28: THE EDIT HEADER ── */}
       <section style={{ backgroundColor: CREAM, padding: "48px 24px 40px", textAlign: "center" }}>
-        <p style={{ fontFamily: IS, fontWeight: 400, fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase" as const, color: MUTED, margin: "0 0 16px" }}>
+        <p style={{ fontFamily: CG, fontWeight: 400, fontSize: 27, letterSpacing: "0.06em", color: INK, margin: "0 0 4px" }}>
           The Edit
         </p>
-        <p style={{ fontFamily: CG, fontStyle: "italic", fontWeight: 300, fontSize: 22, color: INK, margin: 0 }}>
+        <p style={{ fontFamily: IS, fontStyle: "italic", fontWeight: 400, fontSize: 17, color: MUTED, margin: 0 }}>
           A few things worth having.
         </p>
       </section>
