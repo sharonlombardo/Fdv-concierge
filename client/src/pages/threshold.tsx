@@ -45,7 +45,7 @@ function FullBleed({ src, height = "80vh" }: { src: string; height?: string }) {
 
 function Contained({ src, height = "65vh" }: { src: string; height?: string }) {
   return (
-    <div style={{ margin: "0 24px", height, overflow: "hidden" }}>
+    <div style={{ margin: 0, height, overflow: "hidden" }}>
       <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
     </div>
   );
