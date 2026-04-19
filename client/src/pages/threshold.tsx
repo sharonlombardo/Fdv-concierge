@@ -627,7 +627,7 @@ export default function Threshold() {
         <p style={{ fontFamily: BRITTANY, fontSize: 44, color: INK, margin: "0 0 10px", lineHeight: 1, fontWeight: 400 }}>
           Travel.
         </p>
-        <p style={{ fontFamily: IS, fontSize: 17, letterSpacing: "0.32em", textTransform: "uppercase" as const, color: MUTED, margin: "0 0 10px" }}>
+        <p style={{ fontFamily: IS, fontSize: 17, letterSpacing: "0.32em", textTransform: "uppercase" as const, color: MUTED, margin: "4px 0 10px" }}>
           A State of Mind
         </p>
         <p
