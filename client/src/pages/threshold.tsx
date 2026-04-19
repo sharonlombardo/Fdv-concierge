@@ -86,49 +86,48 @@ function Collage({ top, bottomLeft, bottomRight }: { top: string; bottomLeft: st
 
 function Principle({ num, title, body }: { num: string; title: React.ReactNode; body: string }) {
   return (
-    <section style={{ backgroundColor: CREAM, padding: "80px 32px" }}>
-      <div style={{ maxWidth: 1040, margin: 0, display: "flex", alignItems: "center", gap: 36 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
+    <section style={{ backgroundColor: CREAM, padding: "32px 32px 28px" }}>
+      <div style={{ maxWidth: 480, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
           <p
             style={{
-              fontFamily: LORA,
-              fontSize: 27,
-              fontWeight: 500,
-              letterSpacing: "0.06em",
+              fontFamily: IS,
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.2em",
               textTransform: "uppercase" as const,
               color: INK,
-              margin: "0 0 24px",
-              lineHeight: 1.5,
+              margin: 0,
+              lineHeight: 1.3,
             }}
           >
             {title}
           </p>
           <p
             style={{
-              fontFamily: LORA,
-              fontSize: 25,
-              fontWeight: 300,
-              color: INK,
-              lineHeight: 1.55,
-              margin: 0,
-              opacity: 0.85,
+              fontFamily: BRITTANY,
+              fontSize: 15,
+              color: MUTED,
+              margin: "0 0 0 16px",
+              transform: "rotate(-2deg)",
+              flexShrink: 0,
+              lineHeight: 1,
             }}
           >
-            {body}
+            {num}
           </p>
         </div>
         <p
           style={{
-            fontFamily: AD,
-            fontSize: 43,
-            color: MUTED,
+            fontFamily: CG,
+            fontSize: 13,
+            color: INK,
+            lineHeight: 1.4,
             margin: 0,
-            flexShrink: 0,
-            transform: "rotate(-8deg)",
-            transformOrigin: "center",
+            opacity: 0.85,
           }}
         >
-          {num}
+          {body}
         </p>
       </div>
     </section>
