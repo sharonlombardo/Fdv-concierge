@@ -14,6 +14,7 @@ const CG = "'Cormorant Garamond', Georgia, serif";
 const IS = "'Instrument Sans', Inter, sans-serif";
 const AD = "'Architects Daughter', cursive";
 const SCRIPT = "'Allura', 'Allura', cursive";
+const CAVEAT = "'Caveat', cursive";
 const LORA = "'Lora', Georgia, serif";
 const CREAM = "#faf9f6";
 const INK = "#2c2416";
@@ -256,60 +257,53 @@ export default function Threshold() {
       <HeroAnimation />
 
       {/* ── Space between hero and manifesto ── */}
-      <div style={{ height: 80, backgroundColor: CREAM }} />
+      <div style={{ height: 40, backgroundColor: CREAM }} />
 
       {/* ── S2: MANIFESTO ── */}
-      <section style={{ backgroundColor: CREAM, padding: "96px 32px 80px", textAlign: "center" }}>
-        <p style={{ fontFamily: SCRIPT, fontSize: 96, color: INK, margin: "0 0 10px", lineHeight: 1, fontWeight: 400 }}>
-          Travel.
-        </p>
-        <p
-          style={{
-            fontFamily: IS,
-            fontSize: 12,
-            letterSpacing: "0.32em",
-            textTransform: "uppercase" as const,
-            color: MUTED,
-            margin: "0 0 52px",
-          }}
-        >
-          A State of Mind
-        </p>
-        <p
-          style={{
-            fontFamily: CG,
-            fontSize: 24,
-            letterSpacing: "0.06em",
-            textTransform: "uppercase" as const,
-            color: INK,
-            lineHeight: 1.5,
-            maxWidth: 760,
-            margin: "0 auto 52px",
-            fontWeight: 500,
-          }}
-        >
-          Some trips you remember for the place. Some for how you felt in it.
-          We think about both —{" "}
-          <em>the destination, what you bring,</em>
-          {" "}and the art of arriving like you already belong there.
-        </p>
-        <p
-          style={{
-            fontFamily: AD,
-            fontSize: 78,
-            color: INK,
-            margin: "-32px 0 0",
-            textAlign: "center" as const,
-            paddingLeft: "22%",
-            transform: "rotate(-8deg)",
-            transformOrigin: "center",
-            display: "inline-block",
-            width: "100%",
-            lineHeight: 1,
-          }}
-        >
-          '26
-        </p>
+      <section style={{ backgroundColor: CREAM, padding: "36px 32px 32px", textAlign: "center" }}>
+        {/* "Travel." + "A STATE OF MIND" — nearly inline, editorial */}
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 10, marginBottom: 20 }}>
+          <span style={{ fontFamily: CAVEAT, fontSize: 30, color: INK, lineHeight: 1, fontWeight: 400, display: "inline-block", transform: "rotate(-2deg)" }}>
+            Travel.
+          </span>
+          <span style={{ fontFamily: IS, fontSize: 10, letterSpacing: "0.26em", textTransform: "uppercase" as const, color: MUTED }}>
+            A State of Mind
+          </span>
+        </div>
+        {/* Body + date block */}
+        <div style={{ position: "relative", maxWidth: 460, margin: "0 auto" }}>
+          <p
+            style={{
+              fontFamily: IS,
+              fontSize: 11,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase" as const,
+              color: INK,
+              lineHeight: 1.5,
+              margin: 0,
+              fontWeight: 400,
+            }}
+          >
+            Some trips you remember for the place. Some for how you felt in it.
+            We think about both —{" "}
+            <em>the destination, what you bring,</em>
+            {" "}and the art of arriving like you already belong there.
+          </p>
+          <p
+            style={{
+              fontFamily: CAVEAT,
+              fontSize: 22,
+              color: MUTED,
+              margin: "10px 0 0",
+              textAlign: "right" as const,
+              transform: "rotate(-2deg)",
+              transformOrigin: "right center",
+              lineHeight: 1,
+            }}
+          >
+            04/26
+          </p>
+        </div>
       </section>
 
       {/* ── S3: FIRST SHOT ── striped shirt relax (seated, head back) */}
