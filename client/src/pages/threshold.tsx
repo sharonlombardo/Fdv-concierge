@@ -594,7 +594,7 @@ export default function Threshold() {
 
       {/* ── S20a: FULL BLEED ── harbor lunch stripe awning */}
       <div style={{ height: 128, backgroundColor: CREAM, position: "relative" }}>
-        <span style={{ position: "absolute", bottom: 14, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right bottom" }}>Hydra</span>
+        <span style={{ position: "absolute", top: 10, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right top" }}>Hydra</span>
       </div>
       <FullBleed src={`${BLOB}hydra_harbor_lunch_stripe_awning.jpg`} />
 
