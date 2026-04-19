@@ -604,13 +604,13 @@ export default function Threshold() {
 
       {/* ── S21: FULL BLEED ── coats villas (space from octopus) */}
       <div style={{ height: 128, backgroundColor: CREAM, position: "relative" }}>
-        <span style={{ position: "absolute", bottom: 14, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right bottom" }}>Omilos</span>
+        <span style={{ position: "absolute", top: 10, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right top" }}>Omilos</span>
       </div>
       <FullBleed src={`${BLOB}hydra_coats_villas.jpg`} />
 
       {/* ── S22: CONTAINED CENTERED ── oxblood bag */}
       <div style={{ height: 128, backgroundColor: CREAM, position: "relative" }}>
-        <span style={{ position: "absolute", bottom: 14, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right bottom" }}>arriving by sea</span>
+        <span style={{ position: "absolute", top: 10, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right top" }}>arriving by sea</span>
       </div>
       <Contained src={`${BLOB}travel_bag_oxblood.jpg`} height="60vh" />
 
@@ -620,7 +620,7 @@ export default function Threshold() {
 
       {/* ── S24: FULL BLEED ── overview boat (space from malgosia wall) */}
       <div style={{ height: 128, backgroundColor: CREAM, position: "relative" }}>
-        <span style={{ position: "absolute", bottom: 14, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right bottom" }}>afternoon shadows</span>
+        <span style={{ position: "absolute", top: 10, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right top" }}>afternoon shadows</span>
       </div>
       <FullBleed src={`${BLOB}hydra_overview_boat.jpeg`} />
 
@@ -633,7 +633,7 @@ export default function Threshold() {
 
       {/* ── S26: FULL BLEED ── coffee stone (space from cluster) */}
       <div style={{ height: 128, backgroundColor: CREAM, position: "relative" }}>
-        <span style={{ position: "absolute", bottom: 14, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right bottom" }}>the taverna</span>
+        <span style={{ position: "absolute", top: 10, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right top" }}>the taverna</span>
       </div>
       <FullBleed src={`${BLOB}hydra_coffee_stone.jpg`} />
 
