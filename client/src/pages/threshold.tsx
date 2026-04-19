@@ -266,7 +266,7 @@ export default function Threshold() {
           <span style={{ fontFamily: BRITTANY, fontSize: 30, color: INK, lineHeight: 1, fontWeight: 400, display: "inline-block", transform: "rotate(-2deg)" }}>
             Travel.
           </span>
-          <span style={{ fontFamily: IS, fontSize: 11, fontWeight: 500, letterSpacing: "0.26em", textTransform: "uppercase" as const, color: MUTED }}>
+          <span style={{ fontFamily: IS, fontSize: 16, fontWeight: 500, letterSpacing: "0.26em", textTransform: "uppercase" as const, color: MUTED }}>
             A State of Mind
           </span>
         </div>
