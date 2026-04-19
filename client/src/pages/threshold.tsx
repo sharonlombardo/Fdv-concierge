@@ -91,7 +91,7 @@ function Principle({ num, title, body }: { num: string; title: React.ReactNode; 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
           <p
             style={{
-              fontFamily: IS,
+              fontFamily: LORA,
               fontSize: 11,
               fontWeight: 600,
               letterSpacing: "0.2em",
@@ -106,7 +106,7 @@ function Principle({ num, title, body }: { num: string; title: React.ReactNode; 
           <p
             style={{
               fontFamily: BRITTANY,
-              fontSize: 15,
+              fontSize: 18,
               color: MUTED,
               margin: "0 0 0 16px",
               transform: "rotate(-2deg)",
