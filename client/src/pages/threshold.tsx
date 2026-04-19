@@ -624,7 +624,7 @@ export default function Threshold() {
 
       {/* ── S27: SHOP HEADER ── */}
       <section style={{ backgroundColor: CREAM, padding: "96px 32px 24px", textAlign: "center" }}>
-        <p style={{ fontFamily: BRITTANY, fontSize: 88, color: INK, margin: "0 0 10px", lineHeight: 1, fontWeight: 400 }}>
+        <p style={{ fontFamily: BRITTANY, fontSize: 44, color: INK, margin: "0 0 10px", lineHeight: 1, fontWeight: 400 }}>
           Travel.
         </p>
         <p style={{ fontFamily: IS, fontSize: 17, letterSpacing: "0.32em", textTransform: "uppercase" as const, color: MUTED, margin: "0 0 10px" }}>
@@ -633,9 +633,9 @@ export default function Threshold() {
         <p
           style={{
             fontFamily: BRITTANY,
-            fontSize: 78,
+            fontSize: 39,
             color: INK,
-            margin: "40px 0 0",
+            margin: "20px 0 0",
             display: "inline-block",
             transform: "translateX(72px) rotate(-5deg)",
             transformOrigin: "center",
