@@ -394,7 +394,7 @@ export default function Threshold() {
           >
             The Guides
           </p>
-          <p style={{ fontFamily: AD, fontSize: 24, color: INK, margin: 0 }}>
+          <p style={{ fontFamily: BRITTANY, fontSize: 24, color: INK, margin: 0, transform: "rotate(-3deg)", display: "inline-block" }}>
             '26
           </p>
         </div>
@@ -644,12 +644,12 @@ export default function Threshold() {
         </p>
         <p
           style={{
-            fontFamily: AD,
+            fontFamily: BRITTANY,
             fontSize: 78,
             color: INK,
             margin: "40px 0 0",
             display: "inline-block",
-            transform: "translateX(72px) rotate(-8deg)",
+            transform: "translateX(72px) rotate(-5deg)",
             transformOrigin: "center",
             lineHeight: 1,
           }}
