@@ -42,7 +42,7 @@ export function HeroAnimation() {
         onClick={toggleMute}
         style={{
           position: "absolute",
-          top: 48,
+          top: 6,
           right: 16,
           zIndex: 20,
           background: "rgba(0, 0, 0, 0.4)",
