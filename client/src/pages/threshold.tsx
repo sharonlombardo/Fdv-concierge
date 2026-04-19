@@ -380,7 +380,7 @@ export default function Threshold() {
 
       {/* ── S11: THE GUIDES 2026 HEADER ── */}
       <section style={{ backgroundColor: CREAM, paddingTop: 64, paddingBottom: 40, textAlign: "center" }}>
-        <p style={{ fontFamily: CG, fontWeight: 400, fontSize: 22, fontStyle: "italic", letterSpacing: "0.06em", color: INK, margin: "0 0 4px" }}>
+        <p style={{ fontFamily: CG, fontWeight: 400, fontSize: 22, letterSpacing: "0.06em", color: INK, margin: "0 0 4px" }}>
           The Guides
         </p>
         <p style={{ fontFamily: CG, fontWeight: 300, fontSize: 14, letterSpacing: "0.3em", textTransform: "uppercase" as const, color: MUTED, margin: 0 }}>
