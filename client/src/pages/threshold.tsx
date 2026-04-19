@@ -361,7 +361,9 @@ export default function Threshold() {
 
       {/* ── S9: THREE IMAGES ── full bleed + contained + full bleed */}
       <FullBleed src={`${BLOB}hydra_red_bougainvilla.jpg`} />
-      <div style={{ height: 160, backgroundColor: CREAM }} />
+      <div style={{ height: 160, backgroundColor: CREAM, position: "relative" }}>
+        <span style={{ position: "absolute", top: 10, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right top" }}>the slow way home</span>
+      </div>
       <Contained src={`${BLOB}hydra_packed_suitcase_red_stripes.jpg`} height="60vh" />
       <div style={{ height: 2, backgroundColor: CREAM }} />
       <FullBleed src={`${BLOB}hydra_red_window_sill.jpg`} />
