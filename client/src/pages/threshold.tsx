@@ -633,9 +633,9 @@ export default function Threshold() {
         <p
           style={{
             fontFamily: BRITTANY,
-            fontSize: 39,
+            fontSize: 44,
             color: INK,
-            margin: "20px 0 0",
+            margin: "16px 0 0",
             display: "inline-block",
             transform: "translateX(72px) rotate(-5deg)",
             transformOrigin: "center",
