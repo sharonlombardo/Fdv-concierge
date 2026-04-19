@@ -89,7 +89,7 @@ export default function BottomNav() {
             viewBox="0 0 24 24"
             fill="none"
             stroke={iconColor(isHome)}
-            strokeWidth="2"
+            strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
@@ -118,7 +118,7 @@ export default function BottomNav() {
           viewBox="0 0 24 24"
           fill="none"
           stroke={INACTIVE}
-          strokeWidth="2"
+          strokeWidth="2.5"
           strokeLinecap="round"
         >
           <line x1="4" y1="6" x2="20" y2="6" />
@@ -175,7 +175,7 @@ export default function BottomNav() {
             {/* Horizontal band — luggage strap */}
             <line x1="3" y1="14" x2="21" y2="14" />
           </svg>
-          {isSuitcase ? <ActiveDot /> : <div style={{ height: 6 }} />}
+          <div style={{ height: 6 }} />
           <span style={labelStyle(isSuitcase)}>Suitcase</span>
         </button>
       </Link>
@@ -193,7 +193,7 @@ export default function BottomNav() {
             viewBox="0 0 24 24"
             fill="none"
             stroke={iconColor(isPassport)}
-            strokeWidth="2"
+            strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
