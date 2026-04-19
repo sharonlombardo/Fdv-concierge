@@ -577,7 +577,7 @@ export default function Threshold() {
 
       {/* ── S17: FULL BLEED ── red suitcase */}
       <div style={{ height: 128, backgroundColor: CREAM, position: "relative" }}>
-        <span style={{ position: "absolute", bottom: 14, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right bottom" }}>the details matter</span>
+        <span style={{ position: "absolute", top: 10, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right top" }}>the details matter</span>
       </div>
       <FullBleed src={`${BLOB}red_suitcase.jpeg`} />
 
@@ -585,7 +585,7 @@ export default function Threshold() {
       <div style={{ height: 2, backgroundColor: CREAM }} />
       <FullBleed src={`${BLOB}hydra_malgosia_steps.jpg`} height="70vh" />
       <div style={{ height: 36, backgroundColor: CREAM, position: "relative" }}>
-        <span style={{ position: "absolute", bottom: 8, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right bottom" }}>en route</span>
+        <span style={{ position: "absolute", top: 8, right: 24, fontFamily: BRITTANY, fontSize: 15, color: "#aaa", transform: "rotate(-3deg)", display: "inline-block", transformOrigin: "right top" }}>en route</span>
       </div>
 
       {/* ── S19: FULL BLEED ── back float (space above and below) */}
