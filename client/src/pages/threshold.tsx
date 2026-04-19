@@ -714,13 +714,11 @@ export default function Threshold() {
       <section style={{ backgroundColor: CREAM, padding: "72px 32px 48px", textAlign: "center" }}>
         <p
           onClick={() => window.dispatchEvent(new CustomEvent("open-concierge"))}
-          style={{ fontFamily: CG, fontStyle: "italic", fontWeight: 300, fontSize: 22, color: MUTED, margin: "0 0 16px", cursor: "pointer" }}
+          style={{ fontFamily: IS, fontStyle: "italic", fontWeight: 400, fontSize: 22, color: MUTED, margin: "0 0 20px", cursor: "pointer" }}
         >
-          Or ask your concierge ✦
+          or leave it to us ✦
         </p>
-        <p style={{ fontFamily: IS, fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase" as const, color: INK, margin: 0, opacity: 0.35 }}>
-          FDV Concierge
-        </p>
+        <img src="/fdv-concierge-seal.png" alt="FDV Concierge" style={{ width: 64, height: 64, objectFit: "contain", opacity: 0.7 }} />
       </section>
 
       {/* ── S31: EMAIL SIGNUP ── */}
