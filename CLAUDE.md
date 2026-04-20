@@ -557,6 +557,141 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 18–20, 2026 | Claude Code (web) — Two-Day Summary: Landing Page Complete Redesign, Nav Overhaul, Brittany Signature Font, Hero Video
+
+**The arc in one line:** The landing page went from a first-pass editorial scroll to a fully resolved magazine layout — new custom font, handwritten captions, editorial section headers, a redesigned bottom nav, a lightened concierge panel, and two hero video updates.
+
+---
+
+## APRIL 18 — Landing Page Scroll Redesign + Typography Polish Against Canva PDF
+
+The landing page was completely rebuilt as a 32-section magazine editorial scroll (the third iteration in four days). Sharon QA'd side-by-side in Safari against the Canva PDF (`Dropbox/FDV CONCIERGE/landing page/LANDING PAGE SCROLL 4:18.pdf`), sending screenshot comparisons (yours on left, mine on right). 17 commits shipped across the day via direct push to `origin HEAD:main`.
+
+**Font decisions:**
+- `Allura` added to Google Fonts (spliced into the existing multi-family `<link>` in `index.html`). Defined as `SCRIPT` constant.
+- `SCRIPT` applied to both "Travel." display words (top manifesto at 96px, bottom pre-EDIT at 88px).
+- `Architects Daughter` (`AD`) retained for small handwritten marks ('26, principle numbers) — Allura reads too formal at small size.
+
+**Principle blocks:**
+- Layout switched from stacked (title / body / number below) to **flex row** (text column left, number right, vertically centered). This let text use the full container width.
+- `maxWidth` widened 440 → 720 → 960 → 1040px so body wraps in 2–3 lines not 5.
+- Title: 17 → 27px. Body: 15 → 25px. Number: 22 → 43px, `transform: rotate(-8deg)`.
+- Left-aligned (was `margin: 0 auto` centered).
+
+**Manifesto body:**
+- `fontSize` 13 → 24px, `fontWeight` 400 → 500, `maxWidth` 340 → 760px, `letterSpacing` 0.2em → 0.06em, `lineHeight` 2.3 → 1.5.
+
+**'26 handwritten marks (three instances: top manifesto, THE GUIDES header, bottom section):**
+- All enlarged to 78px, `transform: rotate(-8deg)` — uniform tilt across all handwritten elements so page reads as one hand.
+- Top: `paddingLeft: "22%"` + `marginTop: -32px` to pull close to text.
+- Bottom: `transform: translateX(72px) rotate(-8deg)`, `marginTop: 40px` — shifted ¾" right and ½" down from text per Sharon's callout.
+- All three darkened from `MUTED` (#8a7e72) → `INK` (#2c2416) — MUTED faded against cream background at large size.
+
+**Image order + spacing:**
+- Reordered to match PDF: Hero → Manifesto → striped_shirt → Bridge → pier_model → Principles.
+- Spacing pattern: 2px tight clusters where PDF showed images nestled; 128–160px breathing gaps where PDF showed deliberate air.
+- `red_suitcase` → `malgosia_steps` width unified by switching S18 to `<FullBleed>`.
+
+**Commits (17 to main):** `32993e4` through `b4fc90f`.
+
+**Also April 18:** Claude.ai session produced Destination Scout Curation Filter V2 (4 gates + 8 scored criteria) and locked all copy decisions. Both the Claude Code technical log and the Claude.ai strategic summary were committed to CLAUDE.md.
+
+---
+
+## APRIL 19 — Font Swap to Brittany Signature, Captions, Section Headers, Nav Overhaul, Concierge Panel
+
+**Font swap — Brittany Signature replaces Allura/Architects Daughter:**
+- `BrittanySignature.woff2` + `.woff` installed to `client/public/fonts/`.
+- `@font-face` declaration added to `client/index.html` before the Google Fonts link.
+- `BRITTANY` constant: `"'Brittany Signature', 'Allura', cursive"`.
+- Applied to: both "Travel." display words, all '26 marks, handwritten captions, principle numbers.
+- Allura removed from use (but still loaded via Google Fonts as fallback). Reason: Brittany Signature is Sharon's own font, more on-brand than a Google Fonts generic.
+
+**Principle blocks — compact editorial:**
+- Rebuilt as tight editorial blocks: Lora 11px uppercase titles, Cormorant Garamond 13px body.
+- Number inline right of title, baseline-aligned, Brittany Signature 18px, -5° tilt.
+- maxWidth 480px, left-aligned.
+
+**Section headers:**
+- THE GUIDES: Cormorant Garamond regular 27px + CG weight 300 19px uppercase "2026" (spelled out).
+- THE EDIT: CG 27px title + Instrument Sans italic 17px subtitle.
+- Bottom Travel. section (S27): Brittany Signature 44px for "Travel.", IS 17px "A STATE OF MIND", margin-top 22px for optical centering, Brittany Signature 44px rotate(-5deg) for '26.
+
+**Bottom CTA (S30):**
+- Text: "Or ask your concierge ✦" → **"Or leave it to us ✦"** (IS italic 22px).
+- FDV text logo replaced with circular seal image (`/fdv-concierge-seal.png`, 320×320px centered).
+
+**Handwritten photo captions (8 locations):**
+- Brittany Signature 15px, color #aaa, rotate(-3deg), right-aligned.
+- All positioned `top: 10` (hugging bottom edge of image above, not below).
+- Captions: "the details matter" · "en route" · "Hydra" · "Omilos" · "arriving by sea" · "afternoon shadows" · "the taverna" · "the slow way home" (under bougainvillea doorway).
+- Multiple rounds to get positioning right — Sharon wanted captions to read as belonging to the image above, not below.
+
+**Contained images full-width:**
+- `Contained` component margin: `"0 24px"` → `0`. All images now run edge-to-edge.
+
+**Fix: product modals on The Edit carousel:**
+- Tap-to-open was broken for product cards. Restored `onProductTap` handler wiring.
+
+**Bottom nav overhaul (`client/src/components/bottom-nav.tsx`):**
+- Icons: white (#ffffff) always — no active/inactive dimming.
+- Icon size: 20 → 24px. strokeWidth: 1.5 → 3.5.
+- Labels: fontWeight 400 → 700, fontSize 8 → 9px.
+- Passport icon simplified: complex book+spine+globe → clean rounded rect (`rx="2.5"`) + centered circle — readable at 24px.
+- Active dot under Suitcase removed.
+- Orb: `palette="silver"` passed to `ConciergeOrb` on nav bar (white/silver glow). Gold orb preserved in concierge panel.
+
+**ConciergeOrb palette prop (`client/src/components/concierge-orb.tsx`):**
+- Added `palette?: "gold" | "silver"` prop (default `"gold"`).
+- Silver: white/grey radial gradients. Gold: original unchanged.
+- Nav bar passes `silver`, panel uses `gold`.
+
+**Concierge panel lightened (`client/src/components/floating-concierge.tsx`):**
+- Background: `#0D0B09` (dark) → `#faf9f6` (cream).
+- Gradient: dark fade → cream fade.
+- All text (messages, labels, buttons): `#2c2416` dark ink.
+- Input pill: white/frosted with subtle border.
+- Gold orb and send arrow stay gold.
+
+**Mute button repositioned:** Moved up to align with nav row height.
+
+**Commits (10 to main):** `7128d2d` through `0aad54c`. Brain sync committed at `1e8f656`.
+
+**Files modified April 19:**
+- `client/src/pages/threshold.tsx`
+- `client/src/components/bottom-nav.tsx`
+- `client/src/components/floating-concierge.tsx`
+- `client/src/components/concierge-orb.tsx`
+- `client/src/components/hero-animation.tsx` (mute button)
+- `client/index.html` (Brittany Signature @font-face)
+- `client/public/fonts/BrittanySignature.woff2` + `.woff` (new)
+- `client/public/fdv-concierge-seal.png` (new)
+
+---
+
+## APRIL 20 — Hero Video Updated
+
+Sharon re-exported the landing page video in CapCut and uploaded two versions to Vercel Blob. Two URL swaps committed:
+1. `35847eb` — `LANDING%20FINAL.mp4` → `final%20landing%20video_4_26.mp4`
+2. `070f529` — Corrected to final URL: `landing%20page%20video%20final%204_26.mp4`
+
+Current live video URL: `https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/landing%20page%20video%20final%204_26.mp4`
+
+**File modified:** `client/src/components/hero-animation.tsx`
+
+---
+
+**State of the landing page as of April 20:**
+The scroll is fully resolved. Brittany Signature is the handwriting voice throughout. The manifesto, three principles, section headers, image captions, and bottom CTA are all typographically locked. The bottom nav is bold and clean (white icons, no dimming). The concierge panel is light/cream. The hero video is the latest CapCut export. No open design callouts remain from the Canva PDF review.
+
+**Next focus (from April 18 Claude.ai session):**
+1. Hydra destination scout using Curation Filter V2
+2. Taste Intelligence Phase B (extracted taste profiles)
+3. Stripe payment flow for trip briefs
+4. Financial model update + VC deck revision
+
+---
+
 ### April 19, 2026 | Claude Code (web) — Landing Page Polish, Nav Bar Overhaul
 
 **The day in one line:** A full mobile QA and polish pass on the landing page scroll and bottom nav bar — typography, captions, image alignment, nav icons, orb color, and concierge panel theme.
