@@ -557,6 +557,91 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 19, 2026 | Claude Code (web) — Landing Page Polish, Nav Bar Overhaul
+
+**The day in one line:** A full mobile QA and polish pass on the landing page scroll and bottom nav bar — typography, captions, image alignment, nav icons, orb color, and concierge panel theme.
+
+---
+
+**Landing Page (`client/src/pages/threshold.tsx`):**
+
+**Principle sections (FIRST THE DESTINATION / WHAT YOU BRING / WE GO WITH YOU):**
+- Rebuilt as compact editorial blocks: Lora 11px uppercase titles, Cormorant Garamond 13px body, Brittany Signature 18px numbering tilted -5°
+- Switched from large centered layout to tight left-aligned max-width 480px blocks
+- Number sits inline right of title, vertically baseline-aligned
+
+**Section headers:**
+- "The Guides '26" → Cormorant Garamond regular 27px + CG weight 300 19px uppercase "2026" (spelled out, not '26)
+- "The Edit / A Few Things Worth Having" → CG 27px title + Instrument Sans italic 17px subtitle
+- Bottom "Travel. A State of Mind" (S27) → Brittany Signature 44px for "Travel.", IS 17px for "A STATE OF MIND" with margin-top: 22px for optical centering, Brittany Signature 44px rotate(-5deg) for "'26"
+
+**Bottom CTA (S30):**
+- Text changed from "Or ask your concierge ✦" → "Or leave it to us ✦" (IS italic 22px)
+- FDV text logo replaced with circular seal image (`/fdv-concierge-seal.png`) at 320×320px centered
+
+**Photo captions:**
+- Added 8 handwritten captions in Brittany Signature 15px, color #aaa, rotate(-3deg), right-aligned
+- All use `top: 10` positioning (hugging bottom of image above): "the details matter" (under interior shot), "en route" (under stairs/steps image), "Hydra" (under back-float image), "Omilos", "arriving by sea", "afternoon shadows", "the taverna", "the slow way home" (under bougainvillea doorway)
+
+**Image alignment:**
+- `Contained` component margin changed from `"0 24px"` to `0` — all images now run edge-to-edge
+
+**Font:**
+- Brittany Signature .woff2 + .woff installed to `client/public/fonts/`
+- `@font-face` declaration added to `client/index.html` before Google Fonts link
+- `BRITTANY` constant defined as `"'Brittany Signature', 'Allura', cursive"`
+
+---
+
+**Bottom Nav Bar (`client/src/components/bottom-nav.tsx`):**
+- Icons: white (`#ffffff`), always full brightness — no active/inactive dimming (`INACTIVE = ACTIVE = "#ffffff"`)
+- Icon size: 20px → 24px
+- strokeWidth: 1.5 → 3.5 on all four icons (Home, Menu, Suitcase, Passport)
+- Labels: fontWeight 400 → 700, fontSize 8px → 9px
+- Passport icon: replaced complex book+spine+globe with clean rounded rect (`rx="2.5"`) + centered circle — readable at 24px
+- Active dot under Suitcase removed
+- Orb: `palette="silver"` on nav bar (white/silver glow, same breathing animation). Gold orb unchanged in concierge panel — `palette` prop added to `ConciergeOrb` component to support both
+
+**Concierge Panel (`client/src/components/floating-concierge.tsx`):**
+- Background: `#0D0B09` (dark) → `#faf9f6` (cream)
+- Gradient: dark → cream fade so orb floats over light background
+- All text (user messages, assistant messages, "How can I help you?" label): dark ink `#2c2416`
+- Close X, voice/mic buttons: dark ink
+- Input pill: white/frosted with subtle border
+- Gold orb and send arrow remain gold (orb-interaction elements)
+
+**ConciergeOrb (`client/src/components/concierge-orb.tsx`):**
+- Added `palette?: "gold" | "silver"` prop (default: `"gold"`)
+- Silver: white/grey radial gradients for outer glow and inner core
+- Gold: unchanged original gradients
+- Nav bar passes `palette="silver"`, floating panel uses default `"gold"`
+
+---
+
+**Commits this session (all pushed to main):**
+- `7128d2d` — Move 'en route' caption to stairs image (S18)
+- `a81f0a8` — Captions hug bottom edge of image above (top: 10/8)
+- `6930bb6` — 'Hydra' caption hugs float image above
+- `0ead642` — All captions use top positioning
+- `318cdfa` — Add 'the slow way home' caption under bougainvillea
+- `7440316` — White bottom nav icons, light concierge panel
+- `a83654b` — Bolder icons (22px/stroke 2), silver orb; gold in panel
+- `29a1136` — Home/Menu/Passport strokeWidth 2.5, remove suitcase dot
+- `2d3b4ef` — All icons 24px/strokeWidth 3.5, labels fontWeight 700
+- `0aad54c` — All icons full white always, simpler passport icon
+
+**Files modified:**
+- `client/src/pages/threshold.tsx`
+- `client/src/components/bottom-nav.tsx`
+- `client/src/components/floating-concierge.tsx`
+- `client/src/components/concierge-orb.tsx`
+- `client/src/components/hero-animation.tsx` (mute button repositioned)
+- `client/index.html` (Brittany Signature @font-face + Caveat added)
+- `client/public/fonts/BrittanySignature.woff2` + `.woff` (new)
+- `client/public/fdv-concierge-seal.png` (new)
+
+---
+
 ### April 18, 2026 | Claude.ai — Full Session Summary: Landing Page Scroll Redesign, Copy Decisions, Destination Scout Filter V2
 
 ---
