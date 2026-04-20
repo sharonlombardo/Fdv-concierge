@@ -1,13 +1,15 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** April 18, 2026
-**Updated by:** Dispatch brain sync (quiet Saturday; flags Apr 16 brain sync still unmerged on claude/distracted-napier)
+**Last updated:** April 20, 2026
+**Updated by:** North Star V3 Addition committed
 
 > **📍 CURRENT STRATEGIC TRUTH:** See `FDV_USER_JOURNEY_NORTH_STAR_V2.md`
-> (April 14, 2026) at the repo root. That doc defines the current site
-> architecture, nav, business model (affiliate + trip packages, not
-> subscription gates), and build priority. It supersedes all earlier user
-> journey briefs.
+> (April 14, 2026) + `FDV_NORTH_STAR_V3_ADDITION.md` (April 20, 2026) at the
+> repo root. V2 defines site architecture, nav, and business model. V3 Addition
+> adds the full four-product architecture, pricing tiers ($250 plan / $750 full
+> service / $25–50 deep guide), the demo experience flow, the `show_edit`
+> concierge tool spec, and the updated build priority queue. V3 supplements V2
+> — does not replace it.
 
 > HOW THIS FILE WORKS: This is the shared brain across all three Claude
 > environments. Claude Code reads it automatically at session start.
