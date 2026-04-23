@@ -564,6 +564,57 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+## April 23, 2026 — Cowork Session (Purchase Flow + Business Model + FDV Daily)
+
+### FDV Daily — Two Editions Built
+- **April 22 "Opening Night Downtown"**: Peter Hujar: The Gracie Mansion Show at Ortuzar Projects (SEE), Odo East Village kaiseki izakaya (EAT), Downtown NYC JazzFest opening night at The Django (DO).
+- **April 23 "Thursday Only"**: Tom Sachs: Furniture at Salon 94 opening night (SEE), Tashca Portuguese restaurant — Thursdays only (EAT), DOORS NYC concept store in SoHo (SHOP).
+
+### Business Model + Revenue Architecture
+Major strategic session defining the complete purchase architecture. Created canonical business model document covering:
+
+**Four Products (Transactional, Not Subscription):**
+1. **The Guide** (free) — Editorial destination guides with shoppable wardrobe. Revenue: affiliate commission.
+2. **Curated Edits** (free) — Concierge-served personalized capsule wardrobes. Revenue: affiliate commerce. Curation is the sales mechanism, not the product.
+3. **The Compass** ($250) — Personalized itinerary + wardrobe edit per day + packing list. One round of concierge changes included.
+4. **The Passage** ($750) — Everything in Compass + detailed daily flow itinerary + all bookings handled. Offered as upsell through concierge after Compass purchase, NOT shown on pricing page.
+5. **The Deep Guide** ($25-50) — Digital product: everything the concierge knows about a destination. Future build.
+
+**The Trunk** (variable) — Complete wardrobe capsule bundle purchase. Future build.
+
+**Key Decision:** Curation is NOT the product — it's the sales mechanism. No membership gates. Curation happens proactively (on-site, via email) in service of selling products and trips. "Curate for Me" CTA evolves from "request a service" to "let the site learn you faster."
+
+**Naming:** Travel-inspired tier names — The Compass, The Passage, The Trunk. Matches Passport and Suitcase in the existing UX.
+
+### Trip Purchase Flow — Built and Deployed
+Complete purchase experience from guide to checkout:
+
+**Bottom of guide:** Full-bleed hero image card with "THE COMPASS" heading + "Your personalized itinerary, wardrobe, travel essentials, and packing list — built by your concierge." + intro text "Your turn. The Compass is your trip — personalized, styled, and packed." Two buttons: CURATE MY TRIP + ASK YOUR CONCIERGE.
+
+**CURATE MY TRIP → modal:** Aman-inspired product detail page. Two editorial images, features list with ✦ bullets, expandable "What happens next?" accordion, sample itinerary + sample packing list preview images (60% width, labeled as examples), $250 price, CURATE MY TRIP + ♡ SAVE FOR LATER buttons.
+
+**After purchase:** Simulated Stripe checkout → concierge opens immediately with contextual message collecting trip details (when, how long, who with, what matters). 30-second simulated delay → gold dot notification on concierge icon → "Your Compass is ready" message.
+
+**Suitcase My Trips:** Shows saved/purchased trips with tier badges and status dots (grey=saved, gold=being curated, green=ready).
+
+**The Passage lives in the concierge upsell** — not visible in the purchase UI. One product, one price, upsell through relationship.
+
+### Priority List Updated
+Section 8 of CLAUDE.md replaced with 28-item prioritized list. Revenue unlock (Stripe + purchase flow) as #1-4.
+
+### Remaining TODOs from this session:
+- Connect real Stripe (currently simulated)
+- Build Hydra Compass deliverable (itinerary overview like Morocco)
+- Swap affiliate links to real affiliate URLs
+- Build "show_edit" concierge tool for visual capsule display
+- Concierge email notification when trip is ready (in addition to gold dot)
+- Build The Deep Guide as purchasable digital product ($25-50)
+- "Look" modal for multi-product editorial image taps
+- Landing page clickable images (depends on look modal + trip purchase modal)
+- Update investment deck with live product screenshots
+
+---
+
 ### April 23, 2026 | Dispatch Brain Sync — Quiet Thursday; Backfills April 20–22 Gap
 
 **The day in one line:** No active Dispatch chat sessions today — automated brain sync only. Sharon manually pushed a major SECTION 8 priorities rewrite this morning (commit `90481c3`) reframing the open-items list around a **revenue-unlock critical path** (Stripe trip purchase flow + trip-purchase modal as #1 and #2). This entry is the Dispatch-side mirror covering the April 20–23 gap (no individual dispatch summary files existed for those days).
