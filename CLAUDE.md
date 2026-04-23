@@ -559,6 +559,51 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 22, 2026 | Claude Code (web) — Hydra Destination Guide: Full Build
+
+**The day in one line:** Hydra guide is live — full editorial destination guide matching Morocco's component patterns, 47 scroll positions, all three wardrobe carousels, product tiles, trip brief form, and concierge knowledge updated.
+
+**What shipped (1 commit to main — `2b88936`):**
+
+**1. `client/src/pages/guides/hydra.tsx` (NEW — ~700 lines)**
+Full Hydra destination guide built from the 47-section scroll position map. Components identical to Morocco: `PlaceImages` (infinite-loop snap carousel with cloned slides + chevron arrows), `PlaceContact` (address + Instagram + phone icons), `HydraTripTeaserAndBriefForm` (trip teaser prose + brief form sending `destination: 'Hydra'`), `renderProductTile` (genome key → studio shot → tile with PinButton), `openEditorialProductModal` (shared tap handler).
+
+Sections built:
+- S1-S4: Hero + island intro + WHAT NOT TO MISS header
+- S5-S10: DESTE Foundation (Dakis Joannou, harbor butcher shop)
+- S11-S17: The Kamini Walk (cobblestone path, swimming spots)
+- S18: Curate for Me prompt (links to `/suitcase?curate=true`)
+- S19-S24: Harbor at Night (Pirate Bar, Spilia sea cave)
+- S25-S31: EAT & DRINK — Téchnē, Omilos, Pirofani, Spilia, Pirate Bar, Amalour
+- S32-S38: SHOP LOCAL — Hydra Book Club, Elena Votsi (red text correction applied)
+- S39-S42: THE STAY — Dimitri's, Bratsera, Mandraki
+- S43: Wardrobe section header
+- S44: Day on the Island carousel (7 products: Lilith Caftan, Cybel, Diana, Loewe sunglasses, Kir sandal, hoops, Immortelle oil) + Shop the Full Edit link
+- S45: Evening at the Harbor carousel (7 products: Isadora, Alaïa mules, Calypso, Silk Set, Bulgari, Paco Rabanne, Poppy King lipstick)
+- S47 area: What Travels Well carousel (6 products: Atlas Scarf, Kalimero, Loewe sunglasses, hoops, Robe Slides, Le Prunier sunscreen)
+- HydraTripTeaserAndBriefForm with full "Your First Afternoon in Hydra" prose (8 paragraphs)
+- Footer, ItemModal, EditorialProductOverlay
+
+Key decisions:
+- CSS: reuses `./morocco-guide.css` via `className="morocco-guide"` — no new CSS file
+- BLOB: `https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com` (not in images-v2 subfolder)
+- `storyTag: 'hydra'` on all PinButton saves
+- Red text corrections from brief applied: S4 = "WHAT NOT TO MISS / THE ISLAND'S ESSENTIALS", S22 caption corrected, S28 = Elena Votsi (not Keramidas Lykourgos), S29/S33/S35 captions corrected
+
+**2. `shared/destinations.ts`**
+Hydra updated: `available: true`, `route: '/guides/hydra'`, `defaultImage` → Vercel Blob `hydra_coats_villas.jpg`. Both the destinations carousel (`/destinations`) and the landing page carousel (`threshold.tsx`) automatically show the GUIDE badge + VIEW GUIDE link.
+
+**3. `client/src/App.tsx`**
+Added `import HydraGuide from "@/pages/guides/hydra"`, route `<Route path="/guides/hydra" component={HydraGuide} />`, and redirect from `/destinations/hydra` → `/guides/hydra`.
+
+**4. `api/_concierge-prompt.ts`**
+- Updated DESTINATIONS line: "Morocco and Hydra are live. Mallorca, Amangiri, and New York are coming."
+- Added full HYDRA KNOWLEDGE section: Bratsera/Dimitri's/Mandraki hotels, Téchnē/Omilos/Pirofani restaurants, Spilia/Pirate Bar/Amalour bars, Elena Votsi/Hydra Book Club shops, DESTE Foundation, Kamini walk, Harbor at Night, wardrobe direction (Lilith Caftan + stripe sets for day, Isadora/Calypso for evening), practical notes (no cars, water taxis, stone steps).
+
+**Context for next session:** Hydra is live. Two destination guides now active. Next priority: run curation pass on the Hydra wardrobe carousels (remove any products with missing studio shots, same process as Morocco pass). Then: Mallorca scout + guide sprint.
+
+---
+
 ### April 18–20, 2026 | Claude Code (web) — Two-Day Summary: Landing Page Complete Redesign, Nav Overhaul, Brittany Signature Font, Hero Video
 
 **The arc in one line:** The landing page went from a first-pass editorial scroll to a fully resolved magazine layout — new custom font, handwritten captions, editorial section headers, a redesigned bottom nav, a lightened concierge panel, and two hero video updates.
