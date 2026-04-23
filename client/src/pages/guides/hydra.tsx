@@ -656,9 +656,9 @@ export default function HydraGuide() {
             </div>
           </div>
           <div className="img-small" style={{ position: 'relative' }}>
-            <img src={`${BLOB}/hydra_omilos_broad_view.jpg`} alt="Omilos view" />
+            <img src={`https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/IMG_2893.jpeg`} alt="Omilos view" />
             <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}>
-              <PinButton itemType="place" itemId="hydra-omilos-view" itemData={{ title: 'Omilos', imageUrl: `${BLOB}/hydra_omilos_broad_view.jpg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'restaurant']} size="sm" />
+              <PinButton itemType="place" itemId="hydra-omilos-view" itemData={{ title: 'Omilos', imageUrl: `https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/IMG_2893.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'restaurant']} size="sm" />
             </div>
           </div>
           <div className="img-small" style={{ position: 'relative' }}>
