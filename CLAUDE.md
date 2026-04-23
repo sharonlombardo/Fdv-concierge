@@ -438,44 +438,49 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
-## SECTION 8 — OPEN ITEMS (updated April 1, 2026)
+## SECTION 8 — OPEN ITEMS (updated April 23, 2026)
 
-**Immediate (User Journey Redesign — from Oren/Susannah feedback):**
-- Navigation restructure: DESTINATIONS · SHOP · SUITCASE🧳 · CONCIERGE · PASSPORT
-- Destinations grid (5 cards: Morocco, Hydra, Mallorca, Amangiri, New York)
-- Tappable image mechanic (Zara Home split screen: editorial LEFT, product(s) RIGHT)
-- Early sign-up prompt (taste profile framing, access not friction)
-- Save moment enhancement ("Saved to your Edit. The more you save, the better I know you.")
-- Gate 1: end of guide → Digital Passport → Itinerary Overview
-- Returning user detection
-- Concierge woven into journey moments (floating widget from arrival)
-- About page with tiers clearly explained
-- Gates 2 + 3 (Gold/Black upsells)
+## Current Priorities (Updated April 23, 2026)
 
-**Technical:**
-- OpenWeatherMap API key → add to Vercel environment variables
-- Fix Bottega Solstice 403 broken link
-- Fix Phoebe Philo boot 503 warning link
+### Critical Path — Revenue Unlock
+1. **Trip purchase flow (Stripe)** — How someone actually buys a curated itinerary/trip package ($250–$1000). This is the single piece that makes everything else revenue-generating. Not started.
+2. **Trip purchase modal / point-of-purchase design** — The modal that opens when tapping place images. Sells the trip itself — image, description, purchase CTA. Needs to work on landing page, guides, and concierge. Not started.
+3. **Curated trip pricing and margins** — Finalize pricing tiers. Not done.
+4. **Refund/cancellation policy** — Required before payment goes live. Not done.
 
-**Post-Pilot Active:**
-- Lisa Ruffle outreach message (warm, peer-to-peer)
-- Gillian intro via April (creative director, Brooklyn, modern marketplace)
-- Product genome enrichment — ~10 Phoebe Philo items need atelier_codes
-- "Static Preference to Taste in Motion" slide revision
-- Phase 1 SQL migrations brief (Wellspring build sequence)
-- Map atelier_codes to Wellspring controlled vocabulary
-- Financial model completion
+### Content — Destination Guides
+5. **Hydra guide** — ✅ Built and proofed (April 22). Live.
+6. **Mallorca guide** — Not started. Run Curation Filter V2, build guide.
+7. **Amangiri guide** — Not started.
+8. **NYC guide** — Not started.
+9. **Remaining 4 Morocco stories** for The Current Issue 1 — Not done.
 
-**Ongoing / Not Blocking Pilot:**
-- Resend domain verification — fdvconcierge.com DNS records on GoDaddy
-- Klaviyo access for email open rate (needed for financial model)
-- Trip purchase pricing/margins — flat fee structure, numbers TBD
-- Refund/cancellation policy for subscriptions and trip purchases
-- Curate My Edit algorithm deep build — Phase 2, ontology-driven (core IP)
-- Taste signal extraction from concierge conversations (Phase 2)
-- Remaining 4 Morocco stories for The Current Issue 1
-- Morocco route migration: /concierge → /destinations/morocco
-- Rotate Anthropic API key (was shared in chat — should regenerate)
+### Product — Clickable Everything
+10. **"Look" modal component** — New multi-product modal for fashion editorial images. Shows 3-5 items together (the dress, the sandal, the sunscreen) as a complete look. Not started.
+11. **Landing page clickable images** — Every image becomes a door. Fashion editorials open to "look" modals. Place images open to trip purchase modals. Depends on #2 and #10.
+12. **Product genome enrichment** — ~10 Phoebe Philo items need atelier_codes.
+
+### Intelligence — Taste System
+13. **Taste Intelligence Phase B** — Extract user taste profile (JSONB) after each chat session. Planned, not started.
+14. **Taste Intelligence Phase C** — Wellspring self-model connection, map conversation signals to taste axes. Planned, not started.
+15. **Save moment enhancement copy** — "Saved to your Edit. The more you save, the better I know you." Not started.
+
+### Outreach
+16. Lisa Ruffle (warm, peer-to-peer)
+17. Gillian intro via April (Brooklyn creative director)
+18. Melissa / Exclusive Resorts
+19. Chad Nelson
+20. GC / Pear
+
+### Technical Cleanup
+21. OpenWeatherMap API key → Vercel env vars
+22. Fix Bottega Solstice 403 broken link
+23. Fix Phoebe Philo boot 503 warning link
+24. Resend domain verification (fdvconcierge.com DNS on GoDaddy)
+25. Rotate Anthropic API key (was shared in chat)
+26. Desktop QA pass
+27. Financial model completion
+28. VC deck revision (transactional model, live product examples)
 
 ---
 
