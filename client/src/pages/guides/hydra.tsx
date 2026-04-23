@@ -773,7 +773,7 @@ export default function HydraGuide() {
           <PinButton itemType="style" itemId="hydra-break-s20" itemData={{ title: 'Hydra swimming', imageUrl: `${BLOB}/hydra_malgosia_black_swim.JPG`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'travel', 'style']} size="sm" />
         </div>
       </div>
-      <div className="editorial-caption">Salt water, bare feet, a cold glass. Repeat.</div>
+      <div className="editorial-caption">Sun-dried. Sea-salted. Not going anywhere.</div>
 
       {/* ═══ S21: Pirate Bar ═══ */}
       <div className="place-block">
