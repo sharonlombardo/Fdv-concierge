@@ -1184,12 +1184,6 @@ export default function HydraGuide() {
 
       {/* ═══ FOOTER ═══ */}
       <div className="guide-footer">
-        <div className="closing">Some places don&rsquo;t need to be explained. They need to be felt.</div>
-        <div style={{ textAlign: 'center', padding: '16px 24px 0', maxWidth: 600, margin: '0 auto' }}>
-          <p style={{ fontFamily: 'Lora, serif', fontSize: 14, fontStyle: 'italic', color: '#999', letterSpacing: '0.02em' }}>
-            Love this? Tap the share icon above &mdash; your friends will thank you.
-          </p>
-        </div>
         <div className="brand-mark">FDV Destination Guide &mdash; Fil de Vie Concierge</div>
       </div>
 
