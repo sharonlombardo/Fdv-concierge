@@ -143,10 +143,10 @@ export function FloatingConcierge() {
     : "idle";
 
 
-  // Global open event
-  const handleOpenRef = useRef<() => void>(() => {});
+  // Global open event — accepts optional { message } in CustomEvent.detail
+  const handleOpenRef = useRef<(customMessage?: string) => void>(() => {});
   useEffect(() => {
-    const h = () => handleOpenRef.current();
+    const h = (e: Event) => handleOpenRef.current((e as CustomEvent).detail?.message);
     window.addEventListener("open-concierge", h);
     return () => window.removeEventListener("open-concierge", h);
   }, []);
@@ -240,7 +240,7 @@ export function FloatingConcierge() {
   useEffect(() => { if (!voiceEnabled) { window.speechSynthesis?.cancel(); setIsSpeaking(false); } }, [voiceEnabled]);
 
   // ─── Open ─────────────────────────────────────────────────────────────────
-  const handleOpen = useCallback(async () => {
+  const handleOpen = useCallback(async (customMessage?: string) => {
     clearTimeout(phaseTimerRef.current);
     setPhase("entering");
 
@@ -250,7 +250,13 @@ export function FloatingConcierge() {
       setOrbFlood(true);
       setTimeout(() => setOrbFlood(false), 130);
 
-      if (!hasGreeted.current) {
+      if (customMessage) {
+        // Post-purchase or contextual trigger: inject the message and reset the greeting flag
+        // so it doesn't fire the standard greeting on top of it
+        hasGreeted.current = true;
+        animateFromIndexRef.current = 0;
+        setMessages([{ role: "assistant", content: customMessage }]);
+      } else if (!hasGreeted.current) {
         hasGreeted.current = true;
         let isFirstChat = true, saveCount = 0, curatePromptShown = false;
         try {

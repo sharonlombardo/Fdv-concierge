@@ -3,6 +3,7 @@ import { Link } from 'wouter';
 import { ItemModal, type ItemModalData } from '@/components/item-modal';
 import { PinButton } from '@/components/pin-button';
 import { EditorialProductOverlay, ShoppableIndicator, type EditorialProduct } from '@/components/editorial-product-overlay';
+import { TripProductCard } from '@/components/trip-product-card';
 import { useUser } from '@/contexts/user-context';
 import { getProductByKey, isShoppable, getShopImageUrl } from '@/lib/brand-genome';
 import { useScrollDepth } from '@/hooks/use-scroll-depth';
@@ -209,8 +210,8 @@ function HydraTripTeaserAndBriefForm() {
   const [duration, setDuration] = useState('');
   const [travelParty, setTravelParty] = useState('');
   const [priorities, setPriorities] = useState('');
-  const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showProductCard, setShowProductCard] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -234,15 +235,9 @@ function HydraTripTeaserAndBriefForm() {
           userEmail: email,
         }),
       });
-      setSubmitted(true);
-      setTimeout(() => {
-        window.dispatchEvent(new CustomEvent('open-concierge'));
-      }, 2000);
-    } catch {
-      setSubmitted(true);
-    } finally {
-      setSubmitting(false);
-    }
+    } catch {}
+    setSubmitting(false);
+    setShowProductCard(true);
   };
 
   const inputStyle: React.CSSProperties = {
@@ -297,9 +292,20 @@ function HydraTripTeaserAndBriefForm() {
       </section>
 
       {/* ═══ TRIP BRIEF FORM ═══ */}
+      {showProductCard && (
+        <TripProductCard
+          destination="Hydra"
+          travelDates={travelDates}
+          duration={duration}
+          travelParty={travelParty}
+          priorities={priorities}
+          userEmail={email || ''}
+          onClose={() => setShowProductCard(false)}
+        />
+      )}
       <section style={{ background: '#faf9f6', padding: '48px 24px 80px' }}>
         <div style={{ maxWidth: 440, margin: '0 auto' }}>
-          {!submitted ? (
+          {!showProductCard && (
             <>
               <h2 style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 28, fontWeight: 400, textAlign: 'center', color: '#2c2416', marginBottom: 8 }}>
                 Want yours?
@@ -341,13 +347,6 @@ function HydraTripTeaserAndBriefForm() {
                 </button>
               </form>
             </>
-          ) : (
-            <div style={{ textAlign: 'center' }}>
-              <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 22, color: '#2c2416', marginBottom: 12 }}>We're on it.</p>
-              <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 15, color: 'rgba(44, 36, 22, 0.6)', lineHeight: 1.7 }}>
-                Your concierge will be in touch to refine the details. In the meantime, keep saving — every heart helps us build a better trip.
-              </p>
-            </div>
           )}
         </div>
       </section>

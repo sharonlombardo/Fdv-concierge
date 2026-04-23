@@ -1220,52 +1220,127 @@ export default function SuitcasePage() {
                 )}
               </div>
             ) : activeTab === "my-trips" ? (
-              <div className="space-y-6">
-                {displayedSaves.map((save) => (
-                  <Link key={save.id} href="/concierge">
-                    <div
-                      className="relative overflow-hidden rounded-lg cursor-pointer group"
-                      data-testid={`card-trip-${save.id}`}
-                    >
-                      <div className="aspect-[21/9] relative">
-                        {(save.assetUrl || save.metadata?.imageUrl) ? (
-                          <img
-                            src={save.assetUrl || save.metadata?.imageUrl || ''}
-                            alt={save.title || save.metadata?.title || 'Trip'}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 dark:from-stone-700 dark:to-stone-800" />
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                        <div className="absolute bottom-0 left-0 right-0 p-6">
-                          <h3 className="font-serif text-2xl md:text-3xl text-white mb-1">
-                            {save.title || save.metadata?.title || 'Trip'}
-                          </h3>
-                          {save.metadata?.subtitle && (
-                            <p className="text-sm text-white/70">{save.metadata.subtitle}</p>
+              <div className="space-y-5">
+                {displayedSaves.map((save) => {
+                  const dest: string = save.metadata?.destination || "";
+                  const tier: string = save.metadata?.tier || "";
+                  const status: string = save.metadata?.status || "";
+                  const purchaseStatus: string = save.metadata?.purchaseStatus || "saved";
+                  const tierName: string = save.metadata?.tierName || "";
+                  const price: number | undefined = save.metadata?.price;
+
+                  // Determine destination link
+                  let href = "/concierge";
+                  if (purchaseStatus === "purchased") {
+                    if (dest === "Morocco" && tier === "compass") href = "/editorial";
+                    else if (dest === "Morocco" && tier === "passage") href = "/daily-flow";
+                    else if (dest === "Hydra") href = "/guides/hydra";
+                  } else {
+                    if (dest === "Morocco") href = "/guides/morocco";
+                    else if (dest === "Hydra") href = "/guides/hydra";
+                  }
+
+                  // Status label + color
+                  const statusLabel =
+                    purchaseStatus === "purchased"
+                      ? status === "ready" ? "Ready" : "Being curated..."
+                      : "Saved";
+                  const statusDot =
+                    purchaseStatus === "purchased"
+                      ? status === "ready" ? "#4ade80" : "#c9a84c"
+                      : "#94a3b8";
+
+                  return (
+                    <Link key={save.id} href={href}>
+                      <div
+                        className="relative overflow-hidden cursor-pointer group"
+                        style={{ borderRadius: 4 }}
+                        data-testid={`card-trip-${save.id}`}
+                      >
+                        <div style={{ aspectRatio: "16/7", position: "relative", overflow: "hidden" }}>
+                          {(save.assetUrl || save.metadata?.imageUrl) ? (
+                            <img
+                              src={save.assetUrl || save.metadata?.imageUrl || ""}
+                              alt={save.title || save.metadata?.title || "Trip"}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300" />
                           )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+                          {/* Tier badge top-left */}
+                          {tierName && (
+                            <div style={{
+                              position: "absolute", top: 12, left: 14,
+                              background: "rgba(13,11,9,0.65)", backdropFilter: "blur(4px)",
+                              padding: "4px 10px",
+                              fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 600,
+                              letterSpacing: "0.15em", textTransform: "uppercase", color: "#c9a84c",
+                            }}>
+                              {tierName}
+                              {price ? ` · $${price}` : ""}
+                            </div>
+                          )}
+
+                          {/* Status badge top-right */}
+                          <div style={{
+                            position: "absolute", top: 12, right: 44,
+                            background: "rgba(13,11,9,0.65)", backdropFilter: "blur(4px)",
+                            padding: "4px 10px", display: "flex", alignItems: "center", gap: 5,
+                            fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 500,
+                            letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.85)",
+                          }}>
+                            <span style={{ width: 5, height: 5, borderRadius: "50%", background: statusDot, flexShrink: 0 }} />
+                            {statusLabel}
+                          </div>
+
+                          {/* Remove button */}
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              removeMutation.mutate(save.itemId);
+                            }}
+                            data-testid={`button-remove-trip-${save.id}`}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+
+                          {/* Trip info overlay */}
+                          <div className="absolute bottom-0 left-0 right-0" style={{ padding: "16px 16px 18px" }}>
+                            <h3 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, fontWeight: 400, color: "#fff", marginBottom: 3, lineHeight: 1.2 }}>
+                              {save.title || save.metadata?.title || "Trip"}
+                            </h3>
+                            {save.metadata?.subtitle && (
+                              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.6)", letterSpacing: "0.04em" }}>
+                                {save.metadata.subtitle}
+                              </p>
+                            )}
+                            {purchaseStatus === "purchased" && status === "ready" && (
+                              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, color: "#4ade80", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: 6, fontWeight: 600 }}>
+                                View your trip →
+                              </p>
+                            )}
+                            {purchaseStatus === "purchased" && status === "curating" && (
+                              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, color: "#c9a84c", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: 6 }}>
+                                In progress...
+                              </p>
+                            )}
+                          </div>
                         </div>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            removeMutation.mutate(save.itemId);
-                          }}
-                          data-testid={`button-remove-trip-${save.id}`}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  );
+                })}
                 {displayedSaves.length === 0 && (
                   <div className="text-center py-12">
-                    <p className="text-muted-foreground">No trips saved yet. Visit a destination to save it as a trip.</p>
+                    <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: "italic", color: "rgba(44,36,22,0.45)" }}>
+                      No trips yet. Visit a destination guide and tell us where you're going.
+                    </p>
                   </div>
                 )}
               </div>
