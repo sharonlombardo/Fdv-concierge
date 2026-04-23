@@ -958,7 +958,7 @@ export default function HydraGuide() {
           <PinButton itemType="style" itemId="hydra-break-s31" itemData={{ title: 'Hydra', imageUrl: `${BLOB}/hydra_malgosia_black_dress_stone_sea.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'style', 'hotel']} size="sm" />
         </div>
       </div>
-      <div className="editorial-caption">Stone walls thick enough to keep the heat out. Windows that frame the harbor like they were placed by a painter. Hydra doesn&rsquo;t do hotels the way other islands do. It does houses that happen to take guests.</div>
+      <div className="editorial-caption">Silk, salt, and the sea.</div>
 
       {/* ═══ S32: Dimitri's Stylish Island House ═══ */}
       <div className="place-block">
