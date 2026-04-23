@@ -1,8 +1,16 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export function HeroAnimation() {
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    v.loop = true;
+    v.play().catch(() => {});
+  }, []);
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -27,6 +35,10 @@ export function HeroAnimation() {
         muted
         loop
         playsInline
+        onEnded={() => {
+          const v = videoRef.current;
+          if (v) { v.currentTime = 0; v.play().catch(() => {}); }
+        }}
         style={{
           position: "absolute",
           inset: 0,
