@@ -564,6 +564,42 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 23, 2026 | Dispatch Brain Sync — Quiet Thursday; Backfills April 20–22 Gap
+
+**The day in one line:** No active Dispatch chat sessions today — automated brain sync only. Sharon manually pushed a major SECTION 8 priorities rewrite this morning (commit `90481c3`) reframing the open-items list around a **revenue-unlock critical path** (Stripe trip purchase flow + trip-purchase modal as #1 and #2). This entry is the Dispatch-side mirror covering the April 20–23 gap (no individual dispatch summary files existed for those days).
+
+**Dispatch-layer activity today:** None. No chat with Sharon, no email triage, no Notion task work, no outreach drafts. iMessage `chat.db` last touched 10:05 ET. Local session history shows only automated brain-sync runs.
+
+**Today's off-Dispatch activity (Sharon, direct):**
+- Single commit on `main` (`90481c3`, 09:22 ET) — rewrote SECTION 8 OPEN ITEMS as a 28-item prioritized list. Critical-path revenue items (1–4): Stripe trip purchase flow, point-of-purchase modal design, pricing/margins, refund policy. Content sprint (5–9): Hydra ✅, then Mallorca → Amangiri → NYC + remaining Morocco stories. Product (10–12): "Look" modal component (NEW — multi-product modal for fashion editorial images), landing-page clickable images, product genome enrichment. Intelligence (13–15): Taste Phase B + C, save-moment copy. Outreach (16–20) + technical cleanup (21–28). Old user-journey-redesign list from April 1 removed — superseded by North Star V2/V3.
+
+**April 20–22 backfill (already brain-synced by Claude Code, mirrored here for Dispatch-side completeness):**
+- **April 20:** Hero video URL fixes (`35847eb`, `070f529`); two-day CLAUDE.md summary append (`1a11dfb`); **North Star V3 Addition** committed at repo root (`5de3a25`) — product architecture, pricing tiers, demo experience, build priority.
+- **April 21:** No `fdv-concierge` activity. FDV Daily April 21 (Guston/R&W Guild/Kiki's) deployed via `fdv-daily-deploy 780b68f` 08:38 ET. April 22 edition deployed evening (`d201e94`).
+- **April 22:** Big day. Hydra destination guide built (`2b88936`) + full proofing pass (~12 commits 21:27–22:51 ET). Plus three global bug fixes worth flagging: (1) save auth gate race condition — PinButton/ItemModal/both guide trip forms were showing the Passport modal to signed-in users because auth check hadn't completed; fixed with `!authLoading && !user` gate across 4 call sites (`d50f78e`, `b711d67`); (2) passport nav icon alignment — SVG rect was 2px tall (`68321ca`); (3) landing video looping fix — imperative `useEffect` for loop/muted on DOM element + `onEnded` Safari fallback (`b39e03f`). FDV Daily April 23 (Tom Sachs/Tashca/DOORS NYC) shipped 20:50 ET on the deploy repo. Full detail in the existing April 22 entries below.
+
+**Resolved since April 19:**
+- ✅ Hydra guide is live — was the #1 content priority, done.
+- ✅ Save auth gate race condition — silent friction hitting every signed-in saver, fixed.
+- ✅ Hero video looping — final URL set, loop bug squashed.
+
+**Still open / carryover:**
+1. **`fdv-midnight-deploy` scheduled task — disabled 7 days** (since April 16). Decide: re-enable or document the manual evening-commit cadence as the new normal.
+2. **Dispatch brain-sync schedule itself** — firing late and only catching one day at a time (`scheduled-tasks.json` shows `lastScheduledFor: 2026-04-23T01:00:00.000Z` vs `lastRunAt: 2026-04-23T14:18:25.970Z`). Cadence has skipped 5 of last 7 days.
+3. **`claude /login` on this machine** — still pending from April 18 + 19 notes. Claude Code `--print` hand-off for step 3 of this skill hung again; this entry was committed via Cowork fallback after the local repo was reset to origin/main (local was 27 commits behind).
+4. Stripe trip purchase flow + point-of-purchase modal (today's #1 and #2). No code yet.
+5. Curated trip pricing/margins + refund policy — required before payment goes live.
+6. "Look" modal component — new this week, blocks landing-page clickable images.
+7. Mallorca guide — next destination after Hydra. Curation Filter V2 ready, scout not run.
+8. GEMINI 30 mil plan: which top-converting ShopMy brands are on Shopify? No movement 10+ days.
+9. **Obsolete Collective / Melissa's Deià residency reply — now 10 days stale** (since April 13). Past the polite window.
+10. **Concierge system prompt rewrite** — was North Star V2's #1 build priority on April 14, no movement through three weeks of UI/landing/Hydra work. Worth a direct conversation about whether revenue-unlock has formally displaced it as the top priority frame.
+11. `fdv-concierge` working tree has 25+ untracked items (videos, screen recordings, scripts, screenshots, `CANONICAL_DATA_REFERENCE.md`). Worth a `.gitignore` pass or tidy commit.
+
+**Source file:** `/Users/sharonlombardo/Desktop/CLAUDE/dispatch-session-summaries/dispatch-apr-23.md` (full Dispatch-side record).
+
+---
+
 ### April 22, 2026 | Claude Code (web) — Hydra Destination Guide: Full Build
 
 **The day in one line:** Hydra guide is live — full editorial destination guide matching Morocco's component patterns, 47 scroll positions, all three wardrobe carousels, product tiles, trip brief form, and concierge knowledge updated.
