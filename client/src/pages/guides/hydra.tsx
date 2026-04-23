@@ -500,7 +500,7 @@ export default function HydraGuide() {
           <h3>DESTE Foundation. The Slaughterhouse</h3>
           <div className="tagline">Where the art world comes to a rock with 2,000 people on it.</div>
           <div className="description">A former abattoir turned into one of the most respected summer exhibition spaces in contemporary art. Collector Dakis Joannou commissions a single artist each year for a site-specific installation. Jeff Koons, George Condo, Kara Walker, Kiki Smith have all shown here. The 2026 exhibition is Nari Ward: &ldquo;Until That Day,&rdquo; opening June 23. Jeff Koons&rsquo; Apollo wind spinner still catches the light above the building. Walk from the port along the water. Check hours before you go. It keeps its own schedule.</div>
-          <PlaceContact venueName="DESTE Foundation" address="On the road to Spilia, past the port" url="http://deste.gr" />
+          <PlaceContact venueName="DESTE Foundation" address="On the road to Spilia, past the port" url="http://deste.gr" instagramHandle="destefoundation" phone="+30 210 275 8490" />
         </div>
       </div>
 
@@ -627,7 +627,7 @@ export default function HydraGuide() {
           <h3>T&eacute;chn&#275;</h3>
           <div className="tagline">The dinner you&rsquo;ll book twice.</div>
           <div className="description">Set in a converted 1870s boat factory above Avlaki beach, T&eacute;chn&#275; is the most design-forward restaurant on the island. And the food matches the setting. Modern Greek with Mediterranean influence. The sea bass with wild greens, the slow-cooked beef rib, the panna cotta with halva. Come for sunset and stay past it. The crowd is right. Young couples, tanned Europeans, the occasional local who&rsquo;s been coming for years. Book ahead.</div>
-          <PlaceContact venueName="Téchnē" address="Avlaki beach, on the road to Kamini" url="http://techne-hydra.com" />
+          <PlaceContact venueName="Téchnē" address="Avlaki beach, on the road to Kamini" url="http://techne-hydra.com" instagramHandle="techne.hydra" phone="+30 2298 052500" />
         </div>
       </div>
 
@@ -666,7 +666,7 @@ export default function HydraGuide() {
           <h3>Omilos</h3>
           <div className="tagline">Sunset here is non-negotiable.</div>
           <div className="description">Perched above the sea among pine trees, Omilos is the restaurant everyone talks about. And for once they&rsquo;re right. It started in the &rsquo;60s as a legendary cosmopolitan hangout, and the setting is still genuinely stunning. White-washed, modern Greek seafood, waves hitting the rocks below your table. This is where you go the night you want to remember. The crab balls and the sea urchin salad are off-menu. Ask.</div>
-          <PlaceContact venueName="Omilos" address="On the road to Spilia" url="http://omiloshydra.com" />
+          <PlaceContact venueName="Omilos" address="On the road to Spilia" url="http://omiloshydra.com" instagramHandle="omilos_restaurant" phone="+30 2298 053800" />
         </div>
       </div>
 
@@ -705,7 +705,7 @@ export default function HydraGuide() {
           <h3>Pirofani</h3>
           <div className="tagline">The one the locals don&rsquo;t want you to find.</div>
           <div className="description">Hidden in Kamini, a 20-minute walk from the port. White-washed courtyard, blue wooden chairs, a family running the place since 1994. The owner Theo often hosts the evening himself. The almond-crusted sea bass is the dish people text their friends about. Fava beans, crisp house wine, honest prices. This isn&rsquo;t where you go to be seen. It&rsquo;s where you go to eat like you live here.</div>
-          <PlaceContact venueName="Pirofani" address="Kamini, 20-minute walk from port" />
+          <PlaceContact venueName="Pirofani" address="Kamini, 20-minute walk from port" url="http://pirofani.com" instagramHandle="pirofanihydra" phone="+30 22980 53175" />
         </div>
       </div>
 
@@ -756,7 +756,7 @@ export default function HydraGuide() {
           <h3>Spilia Beach Bar</h3>
           <div className="tagline">A drink, a dip, a drink, a dip.</div>
           <div className="description">Forget sandy beaches. On Hydra you swim off the rocks, into water so clear it barely looks real. Spilia is carved into the coastline near the port. A bar on the rocks where you alternate between a cocktail and the Aegean. It&rsquo;s not fancy. It doesn&rsquo;t need to be. The water is the whole point. Come in the afternoon when the light is low and gold.</div>
-          <PlaceContact venueName="Spilia Beach Bar" address="On the rocks, walking distance from the port toward Kamini" />
+          <PlaceContact venueName="Spilia Beach Bar" address="On the rocks, walking distance from the port toward Kamini" url="http://spiliacafe.com" instagramHandle="spiliahydra" phone="+30 2298 052240" />
         </div>
       </div>
 
@@ -795,7 +795,7 @@ export default function HydraGuide() {
           <h3>Pirate Bar</h3>
           <div className="tagline">Where everyone ends up.</div>
           <div className="description">On the corner of the harbor, open all day, impossible to avoid. This is Hydra&rsquo;s people-watching capital. The spot where locals and visitors orbit all evening, drink in hand, watching the harbor do what it does. It&rsquo;s not designed. It&rsquo;s not trying. It just happens to be exactly where you want to be at 7pm with an aperitivo. You&rsquo;ll go once and then go back every night.</div>
-          <PlaceContact venueName="Pirate Bar" address="Harbor corner, port of Hydra" />
+          <PlaceContact venueName="Pirate Bar" address="Harbor corner, port of Hydra" instagramHandle="thepiratebar_hydra" phone="+30 2298 052711" />
         </div>
       </div>
 
@@ -834,7 +834,7 @@ export default function HydraGuide() {
           <h3>Amalour</h3>
           <div className="tagline">The one where you got dressed.</div>
           <div className="description">Hydra&rsquo;s cocktail bar. This is where the evening shifts. From the casual, salty energy of the afternoon to something more considered. Good drinks, the right crowd, and the feeling that the night is just starting. Come after Pirate Bar, before dinner. Or after dinner, when you&rsquo;re not ready for the day to end.</div>
-          <PlaceContact venueName="Amalour" address="Hydra port area" />
+          <PlaceContact venueName="Amalour" address="Hydra port area" instagramHandle="amalourbar.hydra" phone="+30 6976 907718" />
         </div>
       </div>
 
@@ -883,7 +883,7 @@ export default function HydraGuide() {
           <h3>Hydra Book Club</h3>
           <div className="tagline">Three floors of books, art, and the island&rsquo;s literary soul.</div>
           <div className="description">This is not a souvenir shop. The Hydra Book Club is a bookstore, gallery, and event space. Three floors of books and culture with a roof terrace for reading. They host visiting writers, publish their own literary journal, and collaborate with the Historical Archives Museum. Open April through November. If you read, if you care about art, if you want to understand why the creative world keeps coming back to this island, start here.</div>
-          <PlaceContact venueName="Hydra Book Club" address="Hydra port area" url="http://hydrabookclub.com" />
+          <PlaceContact venueName="Hydra Book Club" address="Hydra port area" url="http://hydrabookclub.com" instagramHandle="hydrabookclub" />
         </div>
       </div>
 
@@ -1019,7 +1019,7 @@ export default function HydraGuide() {
           <h3>Bratsera Hotel</h3>
           <div className="tagline">A sponge factory that became the best hotel on the island.</div>
           <div className="description">Built in the 19th century as a sponge-processing factory, Bratsera is now a 25-room boutique hotel with the only outdoor pool in Hydra. Stone walls, exposed beams, nautical details that feel earned rather than decorative. The courtyard restaurant is one of the better meals on the island. Close to the port but set back enough to feel like a secret. The bar still feels like a place where sponge divers would drink ouzo after a long day. And they did.</div>
-          <PlaceContact venueName="Bratsera Hotel" address="Hydra port area" url="http://bratserahotel.com" />
+          <PlaceContact venueName="Bratsera Hotel" address="Hydra port area" url="http://bratserahotel.com" instagramHandle="bratsera_hotel" phone="+30 22980 53971" />
         </div>
       </div>
 
@@ -1058,7 +1058,7 @@ export default function HydraGuide() {
           <h3>Mandraki Beach Resort</h3>
           <div className="tagline">The escape from the escape.</div>
           <div className="description">The only proper beachfront option on the island. Seven suites and a villa, 25 minutes on foot from the port or a quick water taxi ride. The restaurant is exceptional. The beach is right there. This is for the person who wants to swim and eat and not think about anything else. And then take the water taxi into town when the energy shifts. The simplicity is the luxury.</div>
-          <PlaceContact venueName="Mandraki Beach Resort" address="Mandraki area, Hydra — water taxi from port" />
+          <PlaceContact venueName="Mandraki Beach Resort" address="Mandraki area, Hydra — water taxi from port" url="http://mandrakibeachresort.com" instagramHandle="mandrakibeachresort" phone="+30 2298 052110" />
         </div>
       </div>
 
