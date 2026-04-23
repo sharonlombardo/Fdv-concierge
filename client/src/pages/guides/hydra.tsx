@@ -1075,7 +1075,7 @@ export default function HydraGuide() {
           <PinButton itemType="place" itemId="hydra-break-s37" itemData={{ title: 'Hydra coastline', imageUrl: `${BLOB}/hydra_coast_line_above.jpg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'travel']} size="sm" />
         </div>
       </div>
-      <div className="editorial-caption">Seven suites, one beach, and nothing to decide.</div>
+      <div className="editorial-caption">The coastline doesn&rsquo;t end. You just stop walking.</div>
 
       <hr className="divider" />
 
