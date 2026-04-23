@@ -278,28 +278,16 @@ function HydraTripTeaserAndBriefForm() {
           <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 16, lineHeight: 1.85, color: '#2c2416' }}>
             <p style={{ fontWeight: 600, fontSize: 18, marginBottom: 20 }}>Your First Afternoon in Hydra</p>
             <p style={{ marginBottom: 16 }}>
-              The hydrofoil from Piraeus takes two hours. You'll see the harbor before you see the island. A horseshoe of stone buildings stacked up the hillside, fishing boats and water taxis bobbing in front.
+              The hydrofoil from Piraeus takes two hours. You&rsquo;ll see the harbor before you see the island. Step off the ferry. No taxi rank, no car waiting. A porter with a donkey takes your bags. You walk.
             </p>
             <p style={{ marginBottom: 16 }}>
-              Step off the ferry. No taxi rank, no car waiting. A porter with a donkey takes your bags. You walk.
+              Check in at Dimitri&rsquo;s. The stone walls are cool, the shutters are open. Unpack slowly. Walk to Spilia. The rocks are warm. The water is absurd. Swim. Dry off. Swim again.
             </p>
             <p style={{ marginBottom: 16 }}>
-              Check in at Dimitri's. The stone walls are cool, the shutters are open, and the courtyard is the kind of place where you sit down with a book and look up an hour later wondering where the time went. Unpack slowly.
-            </p>
-            <p style={{ marginBottom: 16 }}>
-              Walk to Spilia. The rocks are warm. The water is absurd. So clear that the bottom looks painted on. Swim. Dry off. Order something cold from the bar. Swim again.
-            </p>
-            <p style={{ marginBottom: 16 }}>
-              Late afternoon: the walk to Kamini. Stop at the Leonard Cohen bench. Keep going. Arrive at Pirofani with salt still in your hair. The almond-crusted sea bass. A glass of cold white wine. Theo brings you something extra because it&rsquo;s that kind of place.
-            </p>
-            <p style={{ marginBottom: 16 }}>
-              Walk back along the water as the light turns gold. The ferries have left. The harbor is almost empty. The lanterns are coming on.
-            </p>
-            <p style={{ marginBottom: 16 }}>
-              Evening: Pirate Bar for an aperitivo. The harbor-facing table if you can get it. Watch the sky change. Then T&eacute;chn&#275; for dinner. You booked this morning. The sea bass. The sunset. The panna cotta with halva.
+              Late afternoon: the walk to Kamini. Stop at the Leonard Cohen bench. Arrive at Pirofani with salt still in your hair. The almond-crusted sea bass. A glass of cold white wine.
             </p>
             <p style={{ marginBottom: 0 }}>
-              Walk home through empty stone streets. No cars. No music. Just your footsteps and the water and the sound of the island doing what it does when nobody&rsquo;s watching.
+              Evening: Pirate Bar for an aperitivo. Watch the sky change. Then T&eacute;chn&#275; for dinner. The sea bass. The sunset. The panna cotta with halva. Walk home through empty stone streets. Just your footsteps and the water.
             </p>
           </div>
           <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(44, 36, 22, 0.45)', textAlign: 'center', marginTop: 32 }}>
