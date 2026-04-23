@@ -197,7 +197,7 @@ export default function BottomNav() {
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <rect x="4" y="2" width="16" height="20" rx="2.5" />
+            <rect x="4" y="2" width="16" height="18" rx="2.5" />
             <circle cx="12" cy="11" r="3.5" />
           </svg>
           {isPassport ? <ActiveDot /> : <div style={{ height: 6 }} />}
