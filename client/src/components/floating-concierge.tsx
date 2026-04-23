@@ -256,7 +256,18 @@ export function FloatingConcierge() {
         hasGreeted.current = true;
         animateFromIndexRef.current = 0;
         setMessages([{ role: "assistant", content: customMessage }]);
-      } else if (!hasGreeted.current) {
+      } else {
+        // Check for a queued trip-ready message (fired 30s after purchase)
+        let tripReadyMsg: string | null = null;
+        try { tripReadyMsg = sessionStorage.getItem("fdv_trip_ready_message"); } catch {}
+        if (tripReadyMsg) {
+          try { sessionStorage.removeItem("fdv_trip_ready_message"); } catch {}
+          hasGreeted.current = true;
+          animateFromIndexRef.current = 0;
+          setMessages([{ role: "assistant", content: tripReadyMsg }]);
+        }
+      }
+      if (!customMessage && !hasGreeted.current) {
         hasGreeted.current = true;
         let isFirstChat = true, saveCount = 0, curatePromptShown = false;
         try {

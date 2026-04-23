@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/contexts/user-context";
 
@@ -30,9 +29,29 @@ const DESTINATION_IMAGES: Record<string, { card: string; img1: string; img2: str
   },
 };
 
-const DESTINATION_QUESTIONS: Record<string, string> = {
-  Morocco: "the food, the souks, the quiet riads, the Atlas",
-  Hydra: "the food, the quiet, the swimming, the art",
+const DESTINATION_PREVIEWS: Record<string, {
+  itinerary: { day: string; items: string[]; wardrobe: string };
+  packing: string[];
+  conciergeQ: string;
+}> = {
+  Morocco: {
+    itinerary: {
+      day: "Day 1 — Arrival / Marrakech",
+      items: ["Airport → private transfer to medina", "Check-in: El Fenn riad", "Rooftop sundowner at Nomad", "Dinner at Le Jardin"],
+      wardrobe: "Juno Blouse & Marrakech Pants",
+    },
+    packing: ["Linen caftan", "Flat leather sandals", "Atlas Scarf", "Evening dress", "Sunscreen SPF 50"],
+    conciergeQ: "the food, the souks, the quiet riads, the Atlas",
+  },
+  Hydra: {
+    itinerary: {
+      day: "Day 1 — Arrival / Hydra",
+      items: ["Hydrofoil from Piraeus (2 hrs)", "Check-in: Dimitri's Hotel", "Afternoon swim at Spilia", "Dinner at Téchnē"],
+      wardrobe: "Jil Sander Linen Shirt & trousers",
+    },
+    packing: ["Striped linen shirt", "Swimsuit", "Flat espadrilles", "Evening dress", "Biodegradable sunscreen"],
+    conciergeQ: "the food, the quiet, the swimming, the art",
+  },
 };
 
 export interface TripProductCardProps {
@@ -44,12 +63,12 @@ export interface TripProductCardProps {
 export function TripProductCard({ destination, userEmail, onClose }: TripProductCardProps) {
   const [stage, setStage] = useState<Stage>("detail");
   const [nextOpen, setNextOpen] = useState(false);
-  const [, navigate] = useLocation();
   const { toast } = useToast();
   const { email } = useUser();
 
   const effectiveEmail = email || userEmail;
   const images = DESTINATION_IMAGES[destination] ?? DESTINATION_IMAGES.Morocco;
+  const preview = DESTINATION_PREVIEWS[destination] ?? DESTINATION_PREVIEWS.Morocco;
 
   const F = {
     serif: "'Cormorant Garamond', Georgia, serif" as const,
@@ -120,21 +139,21 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
     await new Promise(r => setTimeout(r, 1800));
     try { await saveTrip("purchased"); } catch {}
     setStage("success");
-    setTimeout(() => {
-      const questions = DESTINATION_QUESTIONS[destination] ?? "the food, the quiet, the experiences";
-      window.dispatchEvent(
-        new CustomEvent("open-concierge", {
-          detail: {
-            message: `Welcome to your ${destination} trip. I'm building your ${COMPASS.name} now. To make it perfect — when are you thinking of going? How long do you have? Who's coming with you? And what matters most to you — ${questions}?`,
-          },
-        })
-      );
-    }, 1200);
-  }
 
-  function handleViewTrip() {
-    navigate(destination === "Morocco" ? "/editorial" : "/suitcase");
-    onClose();
+    // Open concierge immediately with data-collection message
+    const conciergeMsg = `Your Compass is underway. I just need a few details to make it perfect — when are you thinking of going? How long do you have? Who's joining you? And what matters most — the food, the quiet, the art, the shopping? Once I have this, I'll have your itinerary, wardrobe, and packing list ready within the hour.`;
+
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("open-concierge", { detail: { message: conciergeMsg } }));
+      onClose();
+    }, 600);
+
+    // 30 seconds later: simulate trip ready, queue notification
+    setTimeout(() => {
+      const readyMsg = `Your ${destination} Compass is ready. Open your Suitcase to see your itinerary, wardrobe, and packing list.`;
+      try { sessionStorage.setItem("fdv_trip_ready_message", readyMsg); } catch {}
+      window.dispatchEvent(new CustomEvent("trip-ready", { detail: { destination, message: readyMsg } }));
+    }, 30000);
   }
 
   // ─── Detail ───────────────────────────────────────────────────────────────
@@ -152,7 +171,7 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
             </svg>
           </button>
 
-          {/* Two editorial images side by side */}
+          {/* Two editorial images */}
           <div style={{ display: "flex", gap: 2, height: "36vh", overflow: "hidden", borderRadius: "16px 16px 0 0" }}>
             <div style={{ flex: 1, overflow: "hidden" }}>
               <img src={images.img1} alt={`${destination} destination`} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
@@ -173,6 +192,7 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
               {COMPASS.headline}
             </p>
 
+            {/* Features list */}
             <p style={{ fontFamily: F.ui, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(44,36,22,0.38)", marginBottom: 14 }}>
               What's included:
             </p>
@@ -184,6 +204,54 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
                 </li>
               ))}
             </ul>
+
+            {/* ── Preview cards ── */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 26 }}>
+
+              {/* Itinerary preview */}
+              <div style={{ background: "#fff", border: "1px solid rgba(44,36,22,0.08)", padding: "16px 18px" }}>
+                <p style={{ fontFamily: F.ui, fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 10 }}>
+                  Sample Day
+                </p>
+                <p style={{ fontFamily: F.serif, fontSize: 15, fontWeight: 600, color: "#2c2416", marginBottom: 10, lineHeight: 1.2 }}>
+                  {preview.itinerary.day}
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 5, marginBottom: 12 }}>
+                  {preview.itinerary.items.map((item, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                      <span style={{ fontFamily: F.ui, fontSize: 10, color: "#c9a84c", flexShrink: 0, marginTop: 1 }}>→</span>
+                      <span style={{ fontFamily: F.ui, fontSize: 12, color: "rgba(44,36,22,0.7)", lineHeight: 1.4 }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ borderTop: "1px solid rgba(44,36,22,0.06)", paddingTop: 10, display: "flex", alignItems: "center", gap: 8 }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" strokeWidth="1.5">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                  </svg>
+                  <span style={{ fontFamily: F.body, fontSize: 12, fontStyle: "italic", color: "rgba(44,36,22,0.45)" }}>
+                    Wear: {preview.itinerary.wardrobe}
+                  </span>
+                </div>
+              </div>
+
+              {/* Packing list preview */}
+              <div style={{ background: "#fff", border: "1px solid rgba(44,36,22,0.08)", padding: "16px 18px" }}>
+                <p style={{ fontFamily: F.ui, fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 10 }}>
+                  Your Packing List
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 7, marginBottom: 10 }}>
+                  {preview.packing.map((item, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ width: 14, height: 14, border: "1px solid rgba(44,36,22,0.2)", flexShrink: 0, borderRadius: 2 }} />
+                      <span style={{ fontFamily: F.ui, fontSize: 12, color: "rgba(44,36,22,0.7)" }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <p style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", color: "rgba(44,36,22,0.35)", margin: 0 }}>
+                  A packing list you can actually print and check off.
+                </p>
+              </div>
+            </div>
 
             {/* Expandable "What happens next?" */}
             <div style={{ borderTop: "1px solid rgba(44,36,22,0.08)", borderBottom: "1px solid rgba(44,36,22,0.08)", marginBottom: 26 }}>
@@ -203,11 +271,13 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
               )}
             </div>
 
+            {/* Price */}
             <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 24 }}>
               <span style={{ fontFamily: F.serif, fontSize: 44, fontWeight: 400, color: "#2c2416", lineHeight: 1 }}>$250</span>
               <span style={{ fontFamily: F.body, fontSize: 13, fontStyle: "italic", color: "rgba(44,36,22,0.38)" }}>one-time</span>
             </div>
 
+            {/* Buttons */}
             <button
               onClick={() => setStage("checkout")}
               style={{ width: "100%", padding: "15px 0", background: "#2c2416", color: "#faf9f6", border: "none", fontFamily: F.ui, fontSize: 11, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", cursor: "pointer", marginBottom: 10 }}
@@ -306,35 +376,21 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
     );
   }
 
-  // ─── Success ──────────────────────────────────────────────────────────────
+  // ─── Success (brief flash — concierge opens on top) ───────────────────────
   if (stage === "success") {
     return (
       <div style={overlay}>
-        <div style={{ ...sheet, padding: "28px 20px 52px", textAlign: "center" }}>
-          <div style={{ marginBottom: 18 }}>
-            <span style={{ fontSize: 28, color: "#c9a84c" }}>✦</span>
-          </div>
-          <p style={{ fontFamily: F.ui, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 10 }}>
+        <div style={{ ...sheet, padding: "52px 20px 52px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "32vh", textAlign: "center" }}>
+          <span style={{ fontSize: 30, color: "#c9a84c", marginBottom: 16 }}>✦</span>
+          <p style={{ fontFamily: F.ui, fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 10 }}>
             Confirmed
           </p>
-          <h2 style={{ fontFamily: F.serif, fontSize: 30, fontWeight: 400, color: "#2c2416", marginBottom: 10, lineHeight: 1.2 }}>
-            Your trip is<br />being curated.
-          </h2>
-          <p style={{ fontFamily: F.body, fontSize: 13, fontStyle: "italic", color: "rgba(44,36,22,0.4)", lineHeight: 1.7, maxWidth: 300, margin: "0 auto 30px" }}>
-            Your concierge is opening now to begin building your trip.
+          <p style={{ fontFamily: F.serif, fontSize: 28, color: "#2c2416", lineHeight: 1.2, marginBottom: 8 }}>
+            Your Compass<br />is underway.
           </p>
-          <button
-            onClick={handleViewTrip}
-            style={{ width: "100%", padding: "14px 0", background: "#2c2416", color: "#fff", border: "none", fontFamily: F.ui, fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", cursor: "pointer", marginBottom: 10 }}
-          >
-            {destination === "Morocco" ? "View Your Morocco Overview →" : "Check Your Suitcase →"}
-          </button>
-          <button
-            onClick={onClose}
-            style={{ width: "100%", padding: "13px 0", background: "transparent", color: "rgba(44,36,22,0.45)", border: "1px solid rgba(44,36,22,0.14)", fontFamily: F.ui, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}
-          >
-            Continue Browsing
-          </button>
+          <p style={{ fontFamily: F.body, fontSize: 13, fontStyle: "italic", color: "rgba(44,36,22,0.42)" }}>
+            Your concierge is opening now…
+          </p>
         </div>
       </div>
     );

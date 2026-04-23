@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { ConciergeOrb } from "./concierge-orb";
 
@@ -13,6 +13,18 @@ const ACTIVE = "#ffffff";
 export default function BottomNav() {
   const [location] = useLocation();
   const [orbPressed, setOrbPressed] = useState(false);
+  const [tripReady, setTripReady] = useState(false);
+
+  useEffect(() => {
+    const onTripReady = () => setTripReady(true);
+    const onOpenConcierge = () => setTripReady(false);
+    window.addEventListener("trip-ready", onTripReady);
+    window.addEventListener("open-concierge", onOpenConcierge);
+    return () => {
+      window.removeEventListener("trip-ready", onTripReady);
+      window.removeEventListener("open-concierge", onOpenConcierge);
+    };
+  }, []);
 
   const isHome = location === "/";
   const isSuitcase =
@@ -135,7 +147,22 @@ export default function BottomNav() {
         className="flex flex-col items-center justify-center bg-transparent border-none cursor-pointer w-full"
         style={{ gap: 0, paddingTop: 2 }}
       >
-        <ConciergeOrb state={orbPressed ? "pressed" : "idle"} circleSize={44} palette="silver" />
+        <div style={{ position: "relative", display: "inline-flex" }}>
+          <ConciergeOrb state={orbPressed ? "pressed" : "idle"} circleSize={44} palette="silver" />
+          {tripReady && (
+            <div style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: 9,
+              height: 9,
+              borderRadius: "50%",
+              background: "#c9a84c",
+              border: "1.5px solid #1A1A18",
+              pointerEvents: "none",
+            }} />
+          )}
+        </div>
         <span
           style={{
             fontSize: 9,
