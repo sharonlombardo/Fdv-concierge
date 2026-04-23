@@ -188,9 +188,9 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
             <div style={{ display: "flex", flexDirection: "column", gap: 20, marginBottom: 26, alignItems: "center" }}>
 
               {/* Itinerary preview */}
-              <div style={{ width: "88%", display: "flex", flexDirection: "column", gap: 8 }}>
-                <p style={{ fontFamily: F.ui, fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(44,36,22,0.4)", margin: 0, textAlign: "center" }}>
-                  Your day-by-day itinerary
+              <div style={{ width: "60%", display: "flex", flexDirection: "column", gap: 8 }}>
+                <p style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", color: "rgba(44,36,22,0.38)", margin: 0, textAlign: "center" }}>
+                  Sample itinerary
                 </p>
                 <img
                   src={PREVIEW_IMAGES.itinerary}
@@ -206,9 +206,9 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
               </div>
 
               {/* Packing list preview */}
-              <div style={{ width: "88%", display: "flex", flexDirection: "column", gap: 8 }}>
-                <p style={{ fontFamily: F.ui, fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(44,36,22,0.4)", margin: 0, textAlign: "center" }}>
-                  Your wardrobe and packing list
+              <div style={{ width: "60%", display: "flex", flexDirection: "column", gap: 8 }}>
+                <p style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", color: "rgba(44,36,22,0.38)", margin: 0, textAlign: "center" }}>
+                  Sample packing list
                 </p>
                 <img
                   src={PREVIEW_IMAGES.packing}
