@@ -12,34 +12,34 @@ const BLOB = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com';
 
 /* ── Day on the Island — clothing, footwear, accessories ── */
 const HYDRA_DAY_PRODUCTS: EditorialProduct[] = [
-  { id: 'hydra-day-lillith', brand: 'FIL DE VIE', name: 'Lilith Caftan', price: '$475', shopUrl: 'https://fildevie.com/collections/shop-all/products/lilith-caftan', imageUrl: '', genomeKey: 'STYLE_FDV_LILITHCAFTAN_CRM.JPEG' },
-  { id: 'hydra-day-cybel', brand: 'FIL DE VIE', name: 'Cybel Blouse', price: '$395', shopUrl: 'https://fildevie.com/collections/tops-auto/products/cybele-blouse', imageUrl: '', genomeKey: 'STYLE_FDV_CYBEL_BLOUSE_STRIPE.JPEG' },
-  { id: 'hydra-day-diana', brand: 'FIL DE VIE', name: 'Diana Dress', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'STYLE_FDV_DIANA_DRESS_STRIPE.JPEG' },
-  { id: 'hydra-day-loewe', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: '', genomeKey: 'ACCESS_LOEWE_INFLATED_SUNGLASSES_BLK.JPEG' },
-  { id: 'hydra-day-sandal', brand: 'A Emery', name: 'Kir Sandal', price: '$185', shopUrl: 'https://aemery.com/products/the-kir-sandal-black', imageUrl: '', genomeKey: 'FOOTWEAR_AEMERY_KIR_SANDAL_BLK.JPEG' },
-  { id: 'hydra-day-hoops', brand: 'Phoebe Philo', name: 'Gold Studded Mini Hoops', price: '$550', shopUrl: 'https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver', imageUrl: '', genomeKey: 'Jewelry_phoebephilo_mini_hoops_studs_gold' },
-  { id: 'hydra-day-immortelle', brand: 'Hildegaard', name: 'Immortelle Oil', price: '$375', shopUrl: 'https://hildegaard.com/products/immortelle', imageUrl: '', genomeKey: 'BEAUTY_HILDEGAARD_IMMORTELLEOIL.JPEG', bucket: 'Objects of Desire', pinType: 'object' },
+  { id: 'hydra-day-lillith', brand: 'FIL DE VIE', name: 'Lilith Caftan', price: '$475', shopUrl: 'https://fildevie.com/collections/shop-all/products/lilith-caftan', imageUrl: '', genomeKey: 'look:fdv:lillithcaftan:ivory.jpg' },
+  { id: 'hydra-day-cybel', brand: 'FIL DE VIE', name: 'Cybel Blouse', price: '$395', shopUrl: 'https://fildevie.com/collections/tops-auto/products/cybele-blouse', imageUrl: '', genomeKey: 'look:fdv:cybelblouse:stripe.jpg' },
+  { id: 'hydra-day-diana', brand: 'FIL DE VIE', name: 'Diana Dress', price: '$475', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fdv:dianadres:stripe.jpg' },
+  { id: 'hydra-day-loewe', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: '', genomeKey: 'access:sugnlasses:loewe:black.jpg' },
+  { id: 'hydra-day-sandal', brand: 'A Emery', name: 'Kir Sandal', price: '$185', shopUrl: 'https://aemery.com/products/the-kir-sandal-black', imageUrl: '', genomeKey: 'footwear, amery kit sandal.jpg' },
+  { id: 'hydra-day-hoops', brand: 'Phoebe Philo', name: 'Gold Studded Mini Hoops', price: '$550', shopUrl: 'https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver', imageUrl: '', genomeKey: 'feb 26 prod info pg 1.jpg - item 6' },
+  { id: 'hydra-day-immortelle', brand: 'Hildegaard', name: 'Immortelle Oil', price: '$375', shopUrl: 'https://hildegaard.com/products/immortelle', imageUrl: '', genomeKey: 'beauty:imortelle oil.jpg', bucket: 'Objects of Desire', pinType: 'object' },
 ];
 
 /* ── Evening at the Harbor — dresses, shoes, jewelry, beauty ── */
 const HYDRA_EVE_PRODUCTS: EditorialProduct[] = [
-  { id: 'hydra-eve-isadora', brand: 'FIL DE VIE', name: 'Isadora Dress', price: '$795', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'STYLE_FDV_ISADORA_DRESS_BLK.JPEG' },
-  { id: 'hydra-eve-alaia', brand: 'Alaïa', name: 'Heel Thong Sandals', price: '$1,450', shopUrl: 'https://www.bergdorfgoodman.com/p/alaia-velvet-kitten-heel-thong-sandals-prodt196740019', imageUrl: '', genomeKey: 'FOOTWEAR_ALAIA_THONG_SANDAL_VELVET_BLK.JPEG' },
+  { id: 'hydra-eve-isadora', brand: 'FIL DE VIE', name: 'Isadora Dress', price: '$795', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'look:fdv:isadoradress:blk.jpg' },
+  { id: 'hydra-eve-alaia', brand: 'Alaïa', name: 'Heel Thong Sandals', price: '$1,450', shopUrl: 'https://www.bergdorfgoodman.com/p/alaia-velvet-kitten-heel-thong-sandals-prodt196740019', imageUrl: '', genomeKey: 'footwear:alaia:black.jpg' },
   { id: 'hydra-eve-calypso', brand: 'FIL DE VIE', name: 'Calypso Dress', price: '$600', shopUrl: 'https://fildevie.com/collections/dresses/products/calypso-dress', imageUrl: '', genomeKey: 'LOOK:FDV:CALYPSODRESS:BLACK.jpg' },
   { id: 'hydra-eve-silkset', brand: 'FIL DE VIE', name: 'Crepe Silk Set', price: '$498', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'STYLE_FDV_SILK_SET_BLK.jpg' },
   { id: 'hydra-eve-bulgari', brand: 'Bulgari', name: 'Serpenti Watch', price: '$13,200', shopUrl: 'https://www.bulgari.com/en-us/watches/', imageUrl: '', genomeKey: 'ACCESSORY:BULGAR:SERPENTI:BLK.jpg' },
-  { id: 'hydra-eve-paco', brand: 'Paco Rabanne', name: 'Gold Pailette Handbag', price: '$1,490', shopUrl: 'https://fashion.rabanne.com/en-us/', imageUrl: '', genomeKey: 'ACCESS_PACORABANNE_HANDBAG_GOLD.JPEG' },
-  { id: 'hydra-eve-poppy', brand: 'PoppyKing', name: 'Original Sin Lipstick', price: '$34', shopUrl: 'https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622', imageUrl: '', genomeKey: 'BEAUTY_POPPYKING_ORIGINALSIN_LIPSTICK.JPEG', bucket: 'Objects of Desire', pinType: 'object' },
+  { id: 'hydra-eve-paco', brand: 'Paco Rabanne', name: 'Gold Pailette Handbag', price: '$1,490', shopUrl: 'https://fashion.rabanne.com/en-us/', imageUrl: '', genomeKey: 'feb 26 prod info pg 1.jpg - item 1' },
+  { id: 'hydra-eve-poppy', brand: 'PoppyKing', name: 'Original Sin Lipstick', price: '$34', shopUrl: 'https://www.modaoperandi.com/beauty/p/poppy-king/original-sin-lipstick/618622', imageUrl: '', genomeKey: 'beauty:poppyking:sinlipstick:red.jpg', bucket: 'Objects of Desire', pinType: 'object' },
 ];
 
 /* ── What Travels Well — accessories, beauty, objects ── */
 const HYDRA_TRAVEL_PRODUCTS: EditorialProduct[] = [
   { id: 'hydra-trv-atlasscarf', brand: 'FIL DE VIE', name: 'Atlas Scarf', price: '$275', shopUrl: 'http://www.fildevie.com', imageUrl: '', genomeKey: 'LOOK:FDV:ATLASSCARF:IVORY.jpg' },
   { id: 'hydra-trv-kalimero', brand: 'Bottega Veneta', name: 'Kalimero Bag', price: '$4,100', shopUrl: 'https://www.bottegaveneta.com', imageUrl: '', genomeKey: 'ACCESSORY:BAG:BOTTEGA:KALIMERO:BLACK.jpg' },
-  { id: 'hydra-trv-loewe', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: '', genomeKey: 'ACCESS_LOEWE_INFLATED_SUNGLASSES_BLK.JPEG' },
-  { id: 'hydra-trv-hoops', brand: 'Phoebe Philo', name: 'Gold Studded Mini Hoops', price: '$550', shopUrl: 'https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver', imageUrl: '', genomeKey: 'Jewelry_phoebephilo_mini_hoops_studs_gold' },
-  { id: 'hydra-trv-slides', brand: 'Phoebe Philo', name: 'Robe Slide', price: '$890', shopUrl: 'https://us.phoebephilo.com', imageUrl: '', genomeKey: 'ACCESSORY:FOOTWEAR:PHOEBEPHILO_ROBE_SLIPPERS_IVORY' },
-  { id: 'hydra-trv-sunscreen', brand: 'Le Prunier', name: 'Plumscreen Sunscreen', price: '$80', shopUrl: 'https://www.leprunier.com', imageUrl: '', genomeKey: 'BEAUTY_LEPRUNIER_SUNSCREEN', bucket: 'Objects of Desire', pinType: 'object' },
+  { id: 'hydra-trv-loewe', brand: 'Loewe', name: 'Inflated Cat Eye Sunglasses', price: '$440', shopUrl: 'https://www.saksfifthavenue.com/product/loewe-inflated-46mm-cat-eye-sunglasses-0400019603124.html', imageUrl: '', genomeKey: 'access:sugnlasses:loewe:black.jpg' },
+  { id: 'hydra-trv-hoops', brand: 'Phoebe Philo', name: 'Gold Studded Mini Hoops', price: '$550', shopUrl: 'https://us.phoebephilo.com/products/beaded-hoop-earrings-small-in-gold-plated-sterling-silver', imageUrl: '', genomeKey: 'feb 26 prod info pg 1.jpg - item 6' },
+  { id: 'hydra-trv-slides', brand: 'Phoebe Philo', name: 'Robe Slide', price: '$890', shopUrl: 'https://us.phoebephilo.com', imageUrl: '', genomeKey: 'footwear:khaite:otto:wht.jpg' },
+  { id: 'hydra-trv-sunscreen', brand: 'Le Prunier', name: 'Plumscreen Sunscreen', price: '$80', shopUrl: 'https://www.leprunier.com', imageUrl: '', genomeKey: 'le prunier sunscreen.jpg', bucket: 'Objects of Desire', pinType: 'object' },
 ];
 
 /* ══════════════════════════════════════════════
