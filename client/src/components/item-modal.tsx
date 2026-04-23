@@ -74,7 +74,7 @@ function getDestinationTag(storyTag: string): string {
 
 export function ItemModal({ item, open, onOpenChange, source = "current" }: ItemModalProps) {
   const fromSuitcase = source === "suitcase";
-  const { user, email, setShowPassportGate, setPendingSaveCallback } = useUser();
+  const { user, authLoading, email, setShowPassportGate, setPendingSaveCallback } = useUser();
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifySubmitted, setNotifySubmitted] = useState(false);
 
@@ -637,7 +637,7 @@ export function ItemModal({ item, open, onOpenChange, source = "current" }: Item
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (!user && !isSaved) {
+                    if (!authLoading && !user && !isSaved) {
                       setPendingSaveCallback(() => () => saveMutation.mutate());
                       setShowPassportGate(true);
                       return;

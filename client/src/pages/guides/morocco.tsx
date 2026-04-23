@@ -351,7 +351,7 @@ function PlaceImages({
 const TEASER_IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/stay-1-large.jpg';
 
 function TripTeaserAndBriefForm() {
-  const { user, email, setShowPassportGate, setPendingSaveCallback } = useUser();
+  const { user, authLoading, email, setShowPassportGate, setPendingSaveCallback } = useUser();
   const [travelDates, setTravelDates] = useState('');
   const [duration, setDuration] = useState('');
   const [travelParty, setTravelParty] = useState('');
@@ -361,7 +361,7 @@ function TripTeaserAndBriefForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!user) {
+    if (!authLoading && !user) {
       setPendingSaveCallback(() => () => handleSubmit(e));
       setShowPassportGate(true);
       return;

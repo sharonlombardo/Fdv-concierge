@@ -204,7 +204,7 @@ function PlaceContact({
    "A Taste of Your Trip" + "Want yours?" form
 ══════════════════════════════════════════════ */
 function HydraTripTeaserAndBriefForm() {
-  const { user, email, setShowPassportGate, setPendingSaveCallback } = useUser();
+  const { user, authLoading, email, setShowPassportGate, setPendingSaveCallback } = useUser();
   const [travelDates, setTravelDates] = useState('');
   const [duration, setDuration] = useState('');
   const [travelParty, setTravelParty] = useState('');
@@ -214,7 +214,7 @@ function HydraTripTeaserAndBriefForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!user) {
+    if (!authLoading && !user) {
       setPendingSaveCallback(() => () => handleSubmit(e));
       setShowPassportGate(true);
       return;
