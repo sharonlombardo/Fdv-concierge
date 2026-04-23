@@ -241,10 +241,10 @@ function HydraTripTeaserAndBriefForm() {
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: 10 }}>
               Trip Curation
             </p>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 38, fontWeight: 400, color: '#faf9f6', marginBottom: 8, lineHeight: 1.1 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 72, fontWeight: 400, color: '#faf9f6', marginBottom: 10, lineHeight: 1.0 }}>
               The Compass
             </h2>
-            <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(250,249,246,0.72)', marginBottom: 26, lineHeight: 1.6 }}>
+            <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 18, fontStyle: 'italic', color: 'rgba(250,249,246,0.78)', marginBottom: 28, lineHeight: 1.65 }}>
               Your personalized itinerary, wardrobe, travel essentials, and packing list — built by your concierge.
             </p>
             <div style={{ display: 'flex', gap: 10 }}>
@@ -264,7 +264,7 @@ function HydraTripTeaserAndBriefForm() {
                   cursor: 'pointer',
                 }}
               >
-                Build My Trip
+                Curate My Trip
               </button>
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('open-concierge'))}
@@ -1118,6 +1118,9 @@ export default function HydraGuide() {
       <hr className="divider" />
 
       {/* ═══ S45 + S46 + S47: A TASTE OF YOUR TRIP + "Want yours?" ═══ */}
+      <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 20, fontStyle: 'italic', fontWeight: 400, color: '#2c2416', textAlign: 'center', margin: '48px 24px 0', lineHeight: 1.6 }}>
+        Your turn. The Compass is your trip — personalized, styled, and packed.
+      </p>
       <HydraTripTeaserAndBriefForm />
 
       {/* ═══ FOOTER ═══ */}

@@ -253,7 +253,7 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
               onClick={() => setStage("checkout")}
               style={{ width: "100%", padding: "15px 0", background: "#2c2416", color: "#faf9f6", border: "none", fontFamily: F.ui, fontSize: 11, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", cursor: "pointer", marginBottom: 10 }}
             >
-              Build My Trip
+              Curate My Trip
             </button>
             <button
               onClick={handleSaveForLater}
