@@ -57,7 +57,7 @@ export function PinButton({
 }: PinButtonProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { email, incrementSaveCount, user, setShowPassportGate, setPendingSaveCallback } = useUser();
+  const { email, incrementSaveCount, user, authLoading, setShowPassportGate, setPendingSaveCallback } = useUser();
   
   const { data: isPinned } = useQuery({
     queryKey: ['/api/saves/check', itemId],
@@ -184,8 +184,8 @@ export function PinButton({
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        // If user has no account and trying to save (not unsave), show Passport gate
-        if (!user && !isPinned) {
+        // Only gate when auth has confirmed the user is anonymous (not while still loading)
+        if (!authLoading && !user && !isPinned) {
           setPendingSaveCallback(() => () => pinMutation.mutate());
           setShowPassportGate(true);
           return;
