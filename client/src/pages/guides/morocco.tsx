@@ -347,82 +347,90 @@ function PlaceImages({
   );
 }
 
-/* ── Itinerary Teaser — slim preview card that gates access to /concierge ── */
+/* ── Morocco Trip Offer Card ── */
 
-const TEASER_IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/stay-1-large.jpg';
+const MOROCCO_CARD_IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/Marrakech%2C%20%40amanjena%20copy.jpeg';
 
 function TripTeaserAndBriefForm() {
   const { email } = useUser();
-  const [showProductCard, setShowProductCard] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <>
-      {/* ═══ TRIP TEASER — A taste of Day 1 ═══ */}
-      <section style={{ background: '#faf9f6', padding: '64px 24px', margin: '40px 0 0' }}>
-        <div style={{ maxWidth: 520, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', textAlign: 'center', marginBottom: 32 }}>
-            A Taste of Your Trip
-          </p>
-
-          <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 16, lineHeight: 1.85, color: '#2c2416' }}>
-            <p style={{ fontWeight: 600, fontSize: 18, marginBottom: 20 }}>Your First Day in Marrakech</p>
-
-            <p style={{ marginBottom: 16 }}>
-              Arrive. A private transfer is waiting — no haggling, no confusion. Your driver knows the way.
-            </p>
-
-            <p style={{ marginBottom: 16 }}>
-              Check in at El Fenn. The riad is quiet, the courtyard pool is cool, and someone has already drawn the curtains against the afternoon sun. Take an hour.
-            </p>
-
-            <p style={{ marginBottom: 16 }}>
-              Evening: Dinner at Le Jardin. Ask for the table under the banana leaves. Order the lamb tagine and the roasted aubergine — trust me. Wear the Isadora Dress. The courtyard is candlelit and you'll want to feel like you belong there.
-            </p>
-
-            <p style={{ marginBottom: 0 }}>
-              After: Walk back through the medina. The lanterns are lit. The air smells like orange blossom. This is why you came.
-            </p>
-          </div>
-
-          <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(44, 36, 22, 0.45)', textAlign: 'center', marginTop: 32 }}>
-            This is what a FIL DE VIE trip looks like. Every detail considered — from the transfer to the dress.
-          </p>
-        </div>
-      </section>
-
-      {/* ═══ BUILD MY TRIP CTA ═══ */}
-      {showProductCard && (
+      {showModal && (
         <TripProductCard
           destination="Morocco"
           userEmail={email || ''}
-          onClose={() => setShowProductCard(false)}
+          onClose={() => setShowModal(false)}
         />
       )}
-      <section style={{ background: '#faf9f6', padding: '48px 24px 80px' }}>
-        <div style={{ maxWidth: 440, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 28, fontWeight: 400, color: '#2c2416', marginBottom: 16 }}>
-            Want yours?
-          </h2>
-          <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 15, color: 'rgba(44, 36, 22, 0.6)', lineHeight: 1.7, marginBottom: 36 }}>
-            Your itinerary, your wardrobe, your packing list. Every detail curated to you. From $250.
-          </p>
-          <button
-            onClick={() => setShowProductCard(true)}
-            style={{
-              padding: '14px 48px',
-              background: '#1a1a1a',
-              color: '#fff',
-              border: 'none',
-              fontFamily: "'Inter', sans-serif",
-              fontSize: 12,
-              fontWeight: 600,
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              cursor: 'pointer',
-            }}
-          >
-            Build My Trip
-          </button>
+      <section style={{ margin: '40px 0 0', position: 'relative' }}>
+        <div style={{ position: 'relative', height: '65vh', overflow: 'hidden' }}>
+          <img
+            src={MOROCCO_CARD_IMG}
+            alt="Morocco"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to top, rgba(13,11,9,0.88) 0%, rgba(13,11,9,0.45) 55%, rgba(13,11,9,0.08) 100%)',
+          }} />
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: '32px 24px 40px',
+          }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: 10 }}>
+              Trip Curation
+            </p>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 38, fontWeight: 400, color: '#faf9f6', marginBottom: 8, lineHeight: 1.1 }}>
+              The Compass
+            </h2>
+            <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(250,249,246,0.72)', marginBottom: 26 }}>
+              Your trip, curated.
+            </p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button
+                onClick={() => setShowModal(true)}
+                style={{
+                  flex: 1,
+                  padding: '13px 0',
+                  background: '#faf9f6',
+                  color: '#2c2416',
+                  border: 'none',
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: '0.18em',
+                  textTransform: 'uppercase',
+                  cursor: 'pointer',
+                }}
+              >
+                Build My Trip
+              </button>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-concierge'))}
+                style={{
+                  flex: 1,
+                  padding: '13px 0',
+                  background: 'transparent',
+                  color: '#faf9f6',
+                  border: '1px solid rgba(250,249,246,0.45)',
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: '0.18em',
+                  textTransform: 'uppercase',
+                  cursor: 'pointer',
+                }}
+              >
+                Ask Your Concierge
+              </button>
+            </div>
+          </div>
         </div>
       </section>
     </>

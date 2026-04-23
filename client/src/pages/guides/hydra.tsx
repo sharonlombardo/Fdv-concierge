@@ -201,75 +201,91 @@ function PlaceContact({
 }
 
 /* ══════════════════════════════════════════════
-   HydraTripTeaserAndBriefForm
-   "A Taste of Your Trip" + "Want yours?" CTA
+   Hydra Trip Offer Card
 ══════════════════════════════════════════════ */
+
+const HYDRA_CARD_IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_coats_villas.jpg';
+
 function HydraTripTeaserAndBriefForm() {
   const { email } = useUser();
-  const [showProductCard, setShowProductCard] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <>
-      {/* ═══ TRIP TEASER ═══ */}
-      <section style={{ background: '#faf9f6', padding: '64px 24px', margin: '40px 0 0' }}>
-        <div style={{ maxWidth: 520, margin: '0 auto' }}>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', textAlign: 'center', marginBottom: 32 }}>
-            A Taste of Your Trip
-          </p>
-          <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 16, lineHeight: 1.85, color: '#2c2416' }}>
-            <p style={{ fontWeight: 600, fontSize: 18, marginBottom: 20 }}>Your First Afternoon in Hydra</p>
-            <p style={{ marginBottom: 16 }}>
-              The hydrofoil from Piraeus takes two hours. You&rsquo;ll see the harbor before you see the island. Step off the ferry. No taxi rank, no car waiting. A porter with a donkey takes your bags. You walk.
-            </p>
-            <p style={{ marginBottom: 16 }}>
-              Check in at Dimitri&rsquo;s. The stone walls are cool, the shutters are open. Unpack slowly. Walk to Spilia. The rocks are warm. The water is absurd. Swim. Dry off. Swim again.
-            </p>
-            <p style={{ marginBottom: 16 }}>
-              Late afternoon: the walk to Kamini. Stop at the Leonard Cohen bench. Arrive at Pirofani with salt still in your hair. The almond-crusted sea bass. A glass of cold white wine.
-            </p>
-            <p style={{ marginBottom: 0 }}>
-              Evening: Pirate Bar for an aperitivo. Watch the sky change. Then T&eacute;chn&#275; for dinner. The sea bass. The sunset. The panna cotta with halva. Walk home through empty stone streets. Just your footsteps and the water.
-            </p>
-          </div>
-          <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(44, 36, 22, 0.45)', textAlign: 'center', marginTop: 32 }}>
-            This is what a Fil De Vie trip looks like. Every detail considered — from the ferry to the dress.
-          </p>
-        </div>
-      </section>
-
-      {/* ═══ BUILD MY TRIP CTA ═══ */}
-      {showProductCard && (
+      {showModal && (
         <TripProductCard
           destination="Hydra"
           userEmail={email || ''}
-          onClose={() => setShowProductCard(false)}
+          onClose={() => setShowModal(false)}
         />
       )}
-      <section style={{ background: '#faf9f6', padding: '48px 24px 80px' }}>
-        <div style={{ maxWidth: 440, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 28, fontWeight: 400, color: '#2c2416', marginBottom: 16 }}>
-            Want yours?
-          </h2>
-          <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 15, color: 'rgba(44, 36, 22, 0.6)', lineHeight: 1.7, marginBottom: 36 }}>
-            Your itinerary, your wardrobe, your packing list. Every detail curated to you. From $250.
-          </p>
-          <button
-            onClick={() => setShowProductCard(true)}
-            style={{
-              padding: '14px 48px',
-              background: '#1a1a1a',
-              color: '#fff',
-              border: 'none',
-              fontFamily: "'Inter', sans-serif",
-              fontSize: 12,
-              fontWeight: 600,
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              cursor: 'pointer',
-            }}
-          >
-            Build My Trip
-          </button>
+      <section style={{ margin: '40px 0 0', position: 'relative' }}>
+        <div style={{ position: 'relative', height: '65vh', overflow: 'hidden' }}>
+          <img
+            src={HYDRA_CARD_IMG}
+            alt="Hydra"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to top, rgba(13,11,9,0.88) 0%, rgba(13,11,9,0.45) 55%, rgba(13,11,9,0.08) 100%)',
+          }} />
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: '32px 24px 40px',
+          }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: 10 }}>
+              Trip Curation
+            </p>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 38, fontWeight: 400, color: '#faf9f6', marginBottom: 8, lineHeight: 1.1 }}>
+              The Compass
+            </h2>
+            <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(250,249,246,0.72)', marginBottom: 26 }}>
+              Your trip, curated.
+            </p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button
+                onClick={() => setShowModal(true)}
+                style={{
+                  flex: 1,
+                  padding: '13px 0',
+                  background: '#faf9f6',
+                  color: '#2c2416',
+                  border: 'none',
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: '0.18em',
+                  textTransform: 'uppercase',
+                  cursor: 'pointer',
+                }}
+              >
+                Build My Trip
+              </button>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-concierge'))}
+                style={{
+                  flex: 1,
+                  padding: '13px 0',
+                  background: 'transparent',
+                  color: '#faf9f6',
+                  border: '1px solid rgba(250,249,246,0.45)',
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: '0.18em',
+                  textTransform: 'uppercase',
+                  cursor: 'pointer',
+                }}
+              >
+                Ask Your Concierge
+              </button>
+            </div>
+          </div>
         </div>
       </section>
     </>
