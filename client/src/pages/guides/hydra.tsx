@@ -900,7 +900,7 @@ export default function HydraGuide() {
           <PinButton itemType="place" itemId="hydra-break-s27" itemData={{ title: 'Hydra', imageUrl: `${BLOB}/hydra_ocean_swim.jpg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'travel']} size="sm" />
         </div>
       </div>
-      <div className="editorial-caption">The reason the art world keeps coming back isn&rsquo;t the water. It&rsquo;s this.</div>
+      <div className="editorial-caption">No beach. Just rocks, salt, and the Aegean saying come in.</div>
 
       {/* ═══ S28: Elena Votsi ═══ */}
       <div className="place-block reverse">
