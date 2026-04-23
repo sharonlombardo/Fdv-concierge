@@ -37,25 +37,18 @@ const DESTINATION_IMAGE: Record<string, string> = {
   Hydra: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_coats_villas.jpg",
 };
 
+const DESTINATION_QUESTIONS: Record<string, string> = {
+  Morocco: "the food, the souks, the quiet riads, the Atlas",
+  Hydra: "the food, the quiet, the swimming, the art",
+};
+
 export interface TripProductCardProps {
   destination: string;
-  travelDates: string;
-  duration: string;
-  travelParty: string;
-  priorities: string;
   userEmail: string;
   onClose: () => void;
 }
 
-export function TripProductCard({
-  destination,
-  travelDates,
-  duration,
-  travelParty,
-  priorities,
-  userEmail,
-  onClose,
-}: TripProductCardProps) {
+export function TripProductCard({ destination, userEmail, onClose }: TripProductCardProps) {
   const [stage, setStage] = useState<Stage>("tiers");
   const [selectedTier, setSelectedTier] = useState<TierKey | null>(null);
   const [savedTiers, setSavedTiers] = useState<Set<TierKey>>(new Set());
@@ -81,7 +74,6 @@ export function TripProductCard({
         aestheticTags: ["travel", "curated"],
         metadata: {
           title: `${destination} — ${tierData.name}`,
-          subtitle: [travelDates, duration].filter(Boolean).join(" · "),
           imageUrl,
           bucket: "my-trips",
           tier,
@@ -92,10 +84,6 @@ export function TripProductCard({
             : "saved",
           purchaseStatus,
           destination,
-          travelDates,
-          duration,
-          travelParty,
-          priorities,
         },
         userEmail: effectiveEmail,
       }),
@@ -134,10 +122,11 @@ export function TripProductCard({
 
     setTimeout(() => {
       const tierData = TIERS[selectedTier];
+      const questions = DESTINATION_QUESTIONS[destination] || "the food, the quiet, the experiences";
       window.dispatchEvent(
         new CustomEvent("open-concierge", {
           detail: {
-            message: `Welcome to your ${destination} trip. I'm building your ${tierData.name} now — your itinerary, your wardrobe, every detail curated for you. While I work on that — any restaurants you've been dreaming about? Something you're celebrating? The more you share, the better this gets.`,
+            message: `Welcome to your ${destination} trip. I'm building your ${tierData.name} now. To make it perfect — when are you thinking of going? How long do you have? Who's coming with you? And what matters most to you — ${questions}?`,
           },
         })
       );
@@ -217,12 +206,7 @@ export function TripProductCard({
               return (
                 <div
                   key={key}
-                  style={{
-                    border: "1px solid rgba(44,36,22,0.12)",
-                    background: "#fff",
-                    padding: "22px 18px 18px",
-                    position: "relative",
-                  }}
+                  style={{ border: "1px solid rgba(44,36,22,0.12)", background: "#fff", padding: "22px 18px 18px", position: "relative" }}
                 >
                   {key === "passage" && (
                     <div style={{ position: "absolute", top: 10, right: 44, background: "#c9a84c", color: "#fff", fontFamily: F.ui, fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", padding: "3px 7px" }}>
@@ -230,7 +214,6 @@ export function TripProductCard({
                     </div>
                   )}
 
-                  {/* Heart save button */}
                   <button
                     onClick={() => handleHeartTier(key)}
                     disabled={isSaved || isSaving}
@@ -333,29 +316,9 @@ export function TripProductCard({
               </span>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-              {travelDates && (
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ fontFamily: F.ui, fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(44,36,22,0.38)" }}>When</span>
-                  <span style={{ fontFamily: F.ui, fontSize: 12, color: "#2c2416" }}>{travelDates}</span>
-                </div>
-              )}
-              {duration && (
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ fontFamily: F.ui, fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(44,36,22,0.38)" }}>Duration</span>
-                  <span style={{ fontFamily: F.ui, fontSize: 12, color: "#2c2416" }}>{duration}</span>
-                </div>
-              )}
-              {travelParty && (
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ fontFamily: F.ui, fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(44,36,22,0.38)" }}>Traveling</span>
-                  <span style={{ fontFamily: F.ui, fontSize: 12, color: "#2c2416" }}>{travelParty}</span>
-                </div>
-              )}
-              <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 10, marginTop: 4, borderTop: "1px solid rgba(44,36,22,0.07)" }}>
-                <span style={{ fontFamily: F.ui, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#2c2416" }}>Total</span>
-                <span style={{ fontFamily: F.serif, fontSize: 22, color: "#2c2416" }}>${tier.price}</span>
-              </div>
+            <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 4 }}>
+              <span style={{ fontFamily: F.ui, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#2c2416" }}>Total</span>
+              <span style={{ fontFamily: F.serif, fontSize: 22, color: "#2c2416" }}>${tier.price}</span>
             </div>
           </div>
 

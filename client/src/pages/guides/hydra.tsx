@@ -1,4 +1,4 @@
-import { useState, FormEvent, useRef, useEffect, useCallback, Children, cloneElement, isValidElement, type ReactNode } from 'react';
+import { useState, useRef, useEffect, useCallback, Children, cloneElement, isValidElement, type ReactNode } from 'react';
 import { Link } from 'wouter';
 import { ItemModal, type ItemModalData } from '@/components/item-modal';
 import { PinButton } from '@/components/pin-button';
@@ -202,65 +202,11 @@ function PlaceContact({
 
 /* ══════════════════════════════════════════════
    HydraTripTeaserAndBriefForm
-   "A Taste of Your Trip" + "Want yours?" form
+   "A Taste of Your Trip" + "Want yours?" CTA
 ══════════════════════════════════════════════ */
 function HydraTripTeaserAndBriefForm() {
-  const { user, authLoading, email, setShowPassportGate, setPendingSaveCallback } = useUser();
-  const [travelDates, setTravelDates] = useState('');
-  const [duration, setDuration] = useState('');
-  const [travelParty, setTravelParty] = useState('');
-  const [priorities, setPriorities] = useState('');
-  const [submitting, setSubmitting] = useState(false);
+  const { email } = useUser();
   const [showProductCard, setShowProductCard] = useState(false);
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!authLoading && !user) {
-      setPendingSaveCallback(() => () => handleSubmit(e));
-      setShowPassportGate(true);
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await fetch('/api/trip-briefs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          destination: 'Hydra',
-          travelDates,
-          duration,
-          travelParty,
-          priorities,
-          userEmail: email,
-        }),
-      });
-    } catch {}
-    setSubmitting(false);
-    setShowProductCard(true);
-  };
-
-  const inputStyle: React.CSSProperties = {
-    width: '100%',
-    padding: '12px 16px',
-    border: '1px solid rgba(44, 36, 22, 0.15)',
-    background: '#fff',
-    fontFamily: "'Lora', Georgia, serif",
-    fontSize: 14,
-    color: '#2c2416',
-    outline: 'none',
-    borderRadius: 0,
-  };
-
-  const labelStyle: React.CSSProperties = {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 11,
-    letterSpacing: '0.08em',
-    textTransform: 'uppercase',
-    color: 'rgba(44, 36, 22, 0.5)',
-    marginBottom: 6,
-    display: 'block',
-  };
 
   return (
     <>
@@ -291,63 +237,39 @@ function HydraTripTeaserAndBriefForm() {
         </div>
       </section>
 
-      {/* ═══ TRIP BRIEF FORM ═══ */}
+      {/* ═══ BUILD MY TRIP CTA ═══ */}
       {showProductCard && (
         <TripProductCard
           destination="Hydra"
-          travelDates={travelDates}
-          duration={duration}
-          travelParty={travelParty}
-          priorities={priorities}
           userEmail={email || ''}
           onClose={() => setShowProductCard(false)}
         />
       )}
       <section style={{ background: '#faf9f6', padding: '48px 24px 80px' }}>
-        <div style={{ maxWidth: 440, margin: '0 auto' }}>
-          {!showProductCard && (
-            <>
-              <h2 style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 28, fontWeight: 400, textAlign: 'center', color: '#2c2416', marginBottom: 8 }}>
-                Want yours?
-              </h2>
-              <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 15, textAlign: 'center', color: 'rgba(44, 36, 22, 0.6)', lineHeight: 1.7, marginBottom: 36 }}>
-                Tell us about your trip. We'll build the rest — your itinerary, your wardrobe, your packing list. Every detail, curated to you.
-              </p>
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                <div>
-                  <label style={labelStyle}>When are you going?</label>
-                  <input type="text" placeholder="June 2026, flexible, etc." value={travelDates} onChange={(e) => setTravelDates(e.target.value)} style={inputStyle} />
-                </div>
-                <div>
-                  <label style={labelStyle}>How long?</label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {['A long weekend', 'A week', '10+ days', 'Not sure yet'].map((opt) => (
-                      <button key={opt} type="button" onClick={() => setDuration(opt)} style={{ padding: '8px 16px', border: duration === opt ? '1px solid #2c2416' : '1px solid rgba(44, 36, 22, 0.15)', background: duration === opt ? '#2c2416' : '#fff', color: duration === opt ? '#fff' : '#2c2416', fontFamily: "'Inter', sans-serif", fontSize: 12, cursor: 'pointer', transition: 'all 0.15s' }}>
-                        {opt}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label style={labelStyle}>Who with?</label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {['Just me', 'With a partner', 'With friends', 'Family'].map((opt) => (
-                      <button key={opt} type="button" onClick={() => setTravelParty(opt)} style={{ padding: '8px 16px', border: travelParty === opt ? '1px solid #2c2416' : '1px solid rgba(44, 36, 22, 0.15)', background: travelParty === opt ? '#2c2416' : '#fff', color: travelParty === opt ? '#fff' : '#2c2416', fontFamily: "'Inter', sans-serif", fontSize: 12, cursor: 'pointer', transition: 'all 0.15s' }}>
-                        {opt}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label style={labelStyle}>What matters most?</label>
-                  <textarea placeholder="The swimming, the quiet, the food, the art. Tell us what you're looking for..." value={priorities} onChange={(e) => setPriorities(e.target.value)} rows={4} style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }} />
-                </div>
-                <button type="submit" disabled={submitting} style={{ width: '100%', padding: '14px 0', background: '#1a1a1a', color: '#fff', border: 'none', fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: submitting ? 'default' : 'pointer', opacity: submitting ? 0.5 : 1, marginTop: 8 }}>
-                  {submitting ? 'Sending...' : 'Build My Trip'}
-                </button>
-              </form>
-            </>
-          )}
+        <div style={{ maxWidth: 440, margin: '0 auto', textAlign: 'center' }}>
+          <h2 style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 28, fontWeight: 400, color: '#2c2416', marginBottom: 16 }}>
+            Want yours?
+          </h2>
+          <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 15, color: 'rgba(44, 36, 22, 0.6)', lineHeight: 1.7, marginBottom: 36 }}>
+            Your itinerary, your wardrobe, your packing list. Every detail curated to you. From $250.
+          </p>
+          <button
+            onClick={() => setShowProductCard(true)}
+            style={{
+              padding: '14px 48px',
+              background: '#1a1a1a',
+              color: '#fff',
+              border: 'none',
+              fontFamily: "'Inter', sans-serif",
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+            }}
+          >
+            Build My Trip
+          </button>
         </div>
       </section>
     </>
