@@ -668,11 +668,12 @@ export default function HydraGuide() {
       </div>
 
       {/* ═══ S15: EDITORIAL BREAK ═══ */}
-      <div className="full-image" style={{ position: 'relative' }}>
+      <div className="full-image" style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setOverlayData({ imageUrl: `${BLOB}/images/Gemini_Generated_Image_ccik4lccik4lccik.jpeg`, imageAlt: 'Jil Sander Trench Coat', products: [{ id: 'hydra-s15-jilsander-trench', brand: 'Jil Sander', name: 'Trench Coat', price: '$1,230', shopUrl: 'https://www.jilsander.com', imageUrl: '', genomeKey: 'look:jilsander:trenchcoat:white.jpg' }] })}>
         <img src={`${BLOB}/images/Gemini_Generated_Image_ccik4lccik4lccik.jpeg`} alt="" />
         <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}>
-          <PinButton itemType="place" itemId="hydra-break-s15" itemData={{ title: 'Hydra', imageUrl: `${BLOB}/images/Gemini_Generated_Image_ccik4lccik4lccik.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'travel']} size="sm" />
+          <PinButton itemType="style" itemId="hydra-break-s15" itemData={{ title: 'Jil Sander Trench Coat', imageUrl: `${BLOB}/images/Gemini_Generated_Image_ccik4lccik4lccik.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'style', 'travel']} size="sm" />
         </div>
+        <ShoppableIndicator onClick={() => setOverlayData({ imageUrl: `${BLOB}/images/Gemini_Generated_Image_ccik4lccik4lccik.jpeg`, imageAlt: 'Jil Sander Trench Coat', products: [{ id: 'hydra-s15-jilsander-trench', brand: 'Jil Sander', name: 'Trench Coat', price: '$1,230', shopUrl: 'https://www.jilsander.com', imageUrl: '', genomeKey: 'look:jilsander:trenchcoat:white.jpg' }] })} />
       </div>
       <div className="editorial-caption">White on white on blue. The Aegean does the decorating.</div>
 
