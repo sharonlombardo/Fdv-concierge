@@ -2875,3 +2875,59 @@ Sharon caught a section I'd missed when she scrolled to the evening carousel. Re
 - North Star V2 is the new single source of truth for site architecture — all previous user journey specs are superseded
 - Concierge system prompt rewrite is #1 priority
 - Obsolete Collective reply still pending (Deià residency — Melissa responded)
+
+---
+
+## April 22, 2026 — Cowork Session (FDV Daily + Hydra Guide Proofing)
+
+### FDV Daily — Three Editions Built
+- **April 20 "MoMA Monday"** (carried over from April 19 session): Fixed broken images — previous session added images to public/ but didn't run npm run build. Rebuilt dist/ and pushed.
+- **April 22 "Opening Night Downtown"**: Peter Hujar: The Gracie Mansion Show at Ortuzar Projects (SEE), Odo East Village kaiseki izakaya (EAT), Downtown NYC JazzFest opening night at The Django (DO). All Tribeca/East Village.
+- **April 23 "Thursday Only"**: Tom Sachs: Furniture at Salon 94 opening night (SEE), Tashca Portuguese restaurant — Thursdays only (EAT), DOORS NYC concept store in SoHo (SHOP). UES/Nolita/SoHo.
+
+### Hydra Guide — Full Proofing Pass
+Major session proofing and fixing the Hydra guide that was built earlier on April 22.
+
+**PlaceContact logistics added to all 10 venue cards:**
+- DESTE Foundation, Téchnē, Omilos, Pirofani, Spilia Beach Bar, Pirate Bar, Amalour, Hydra Book Club, Bratsera Hotel, Mandraki Beach Resort
+- All now have address line + clickable Instagram/phone icons matching Morocco's format
+- First pass had visible text for handles/numbers (wrong); second pass fixed to icons-only matching Morocco exactly
+
+**Content fixes:**
+- Book Club copy was showing Amalour's text — already fixed on main
+- Elena Votsi had "Lorem Ipsum" placeholder — already fixed on main
+- "Build a Marrakech edit" → "Build a Hydra edit" — already fixed on main
+
+**Editorial caption rewrites (7 total):**
+- S10: "The harbor empties. The island begins." → "Every path leads down to the water eventually."
+- S13: "Fine dining without the pretension..." → "Dressed for dinner. Or not. Hydra doesn't mind."
+- S17: "Blue chairs, white walls..." → "The address is the water. The rest you figure out."
+- S20: "Salt water, bare feet, a cold glass. Repeat." → "Sun-dried. Sea-salted. Not going anywhere."
+- S27: "The reason the art world keeps coming back..." → "No beach. Just rocks, salt, and the Aegean saying come in."
+- S29: "Gold that belongs here..." → "Head back. Eyes closed. The whole island disappears."
+- S31: Long paragraph about stone walls/hotels → "Silk, salt, and the sea."
+- S37: "Seven suites, one beach..." → "The coastline doesn't end. You just stop walking."
+
+**Image swap:**
+- Omilos carousel slide 2: replaced blurry hydra_omilos_broad_view.jpg with crisp IMG_2893.jpeg (striped awning harbor view)
+
+**Trip teaser tightened:**
+- "Your First Afternoon in Hydra" reduced from 8 paragraphs to 4, matching Morocco's tight format
+
+**Wardrobe product tiles fixed:**
+- 13 of 18 genome keys were wrong (ALL_CAPS format instead of colon-separated). All corrected. Product images now load for all tiles across Day on the Island, Evening at the Harbor, and What Travels Well.
+
+**8 shoppable editorial overlays wired up:**
+- S6 (striped shirt) → Jil Sander Relaxed Button Down, $780
+- S8 (white trench) → Jil Sander Trench Coat, $1230
+- S13 (black jumpsuit) → YSL Jumpsuit, $1230
+- S15 (all white on pier) → Jil Sander Trench Coat, $1230
+- S20 (black swimsuit on rocks) → Eres Effigie Swimsuit, $545
+- S22 (floating/swimming) → Eres Effigie Swimsuit, $545
+- S24 (white blowing shirt) → Phoebe Philo Linen Button Down, $1200
+- S31 (black dress on rocks) → Dries Van Noten Layered Silk Dress, $750
+
+### Bug Fixes (Global)
+- **Save auth gate race condition**: PinButton, ItemModal, and both guide trip forms were showing "Create Your Digital Passport" modal for signed-in users because auth check hadn't completed yet. Fixed with `!authLoading && !user` gate pattern across all 4 call sites.
+- **Passport nav icon alignment**: SVG rect was 2px taller than other icons, pushing it below baseline. Trimmed to match.
+- **Landing page video not looping**: Added imperative `useEffect` to set loop/muted on DOM element (React boolean prop quirk) + `onEnded` fallback for Safari.
