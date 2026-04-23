@@ -939,7 +939,7 @@ export default function HydraGuide() {
           <PinButton itemType="style" itemId="hydra-break-s29" itemData={{ title: 'Hydra', imageUrl: `${BLOB}/hydra_malgosia_water.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'style']} size="sm" />
         </div>
       </div>
-      <div className="editorial-caption">Gold that belongs here. Made on the island by someone who never left.</div>
+      <div className="editorial-caption">Head back. Eyes closed. The whole island disappears.</div>
 
       <hr className="divider" />
 
