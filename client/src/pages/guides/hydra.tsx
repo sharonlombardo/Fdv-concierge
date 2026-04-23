@@ -499,11 +499,12 @@ export default function HydraGuide() {
       </div>
 
       {/* ═══ S6: EDITORIAL BREAK ═══ */}
-      <div className="full-image" style={{ position: 'relative' }}>
+      <div className="full-image" style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setOverlayData({ imageUrl: `${BLOB}/hydra_striped_shirt_relax.jpeg`, imageAlt: 'Jil Sander Button Down Shirt', products: [{ id: 'hydra-s6-jilsander-shirt', brand: 'Jil Sander', name: 'Relaxed Button Down Shirt', price: '$780', shopUrl: 'https://www.jilsander.com', imageUrl: `${BLOB}/hydra_striped_shirt_relax.jpeg`, genomeKey: '' }] })}>
         <img src={`${BLOB}/hydra_striped_shirt_relax.jpeg`} alt="" />
         <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}>
-          <PinButton itemType="place" itemId="hydra-break-s6" itemData={{ title: 'Hydra', imageUrl: `${BLOB}/hydra_striped_shirt_relax.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'travel']} size="sm" />
+          <PinButton itemType="style" itemId="hydra-break-s6" itemData={{ title: 'Jil Sander Button Down Shirt', imageUrl: `${BLOB}/hydra_striped_shirt_relax.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'style', 'travel']} size="sm" />
         </div>
+        <ShoppableIndicator onClick={() => setOverlayData({ imageUrl: `${BLOB}/hydra_striped_shirt_relax.jpeg`, imageAlt: 'Jil Sander Button Down Shirt', products: [{ id: 'hydra-s6-jilsander-shirt', brand: 'Jil Sander', name: 'Relaxed Button Down Shirt', price: '$780', shopUrl: 'https://www.jilsander.com', imageUrl: `${BLOB}/hydra_striped_shirt_relax.jpeg`, genomeKey: '' }] })} />
       </div>
       <div className="editorial-caption">Stone paths, no signs. You find things here by walking.</div>
 
@@ -538,11 +539,12 @@ export default function HydraGuide() {
       </div>
 
       {/* ═══ S8: EDITORIAL BREAK ═══ */}
-      <div className="full-image" style={{ position: 'relative' }}>
+      <div className="full-image" style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setOverlayData({ imageUrl: `${BLOB}/hydra_pier_model_white.jpg`, imageAlt: 'Jil Sander Trench Coat', products: [{ id: 'hydra-s8-jilsander-trench', brand: 'Jil Sander', name: 'Trench Coat', price: '$1,230', shopUrl: 'https://www.jilsander.com', imageUrl: '', genomeKey: 'look:jilsander:trenchcoat:white.jpg' }] })}>
         <img src={`${BLOB}/hydra_pier_model_white.jpg`} alt="" />
         <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}>
-          <PinButton itemType="place" itemId="hydra-break-s8" itemData={{ title: 'Hydra', imageUrl: `${BLOB}/hydra_pier_model_white.jpg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'travel']} size="sm" />
+          <PinButton itemType="style" itemId="hydra-break-s8" itemData={{ title: 'Jil Sander Trench Coat', imageUrl: `${BLOB}/hydra_pier_model_white.jpg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'style', 'travel']} size="sm" />
         </div>
+        <ShoppableIndicator onClick={() => setOverlayData({ imageUrl: `${BLOB}/hydra_pier_model_white.jpg`, imageAlt: 'Jil Sander Trench Coat', products: [{ id: 'hydra-s8-jilsander-trench', brand: 'Jil Sander', name: 'Trench Coat', price: '$1,230', shopUrl: 'https://www.jilsander.com', imageUrl: '', genomeKey: 'look:jilsander:trenchcoat:white.jpg' }] })} />
       </div>
       <div className="editorial-caption">The light shifts three times between the port and Kamini. You&rsquo;ll notice.</div>
 
@@ -626,11 +628,12 @@ export default function HydraGuide() {
       </div>
 
       {/* ═══ S13: EDITORIAL BREAK ═══ */}
-      <div className="full-image" style={{ position: 'relative' }}>
+      <div className="full-image" style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setOverlayData({ imageUrl: `${BLOB}/Gemini_Generated_Image_31w89131w89131w8.jpeg`, imageAlt: 'YSL Jumpsuit', products: [{ id: 'hydra-s13-ysl-jumpsuit', brand: 'YSL', name: 'Jumpsuit', price: '$1,230', shopUrl: 'https://www.fwrd.com/product-saint-laurent-sleeveless-jumpsuit-in-gris-fonce/SLAU-WC19/', imageUrl: '', genomeKey: 'look:ysl:jumpsuit:black.jpg' }] })}>
         <img src={`${BLOB}/Gemini_Generated_Image_31w89131w89131w8.jpeg`} alt="" />
         <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}>
-          <PinButton itemType="place" itemId="hydra-break-s13" itemData={{ title: 'Hydra dining', imageUrl: `${BLOB}/Gemini_Generated_Image_31w89131w89131w8.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'restaurant']} size="sm" />
+          <PinButton itemType="style" itemId="hydra-break-s13" itemData={{ title: 'YSL Jumpsuit', imageUrl: `${BLOB}/Gemini_Generated_Image_31w89131w89131w8.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'style', 'restaurant']} size="sm" />
         </div>
+        <ShoppableIndicator onClick={() => setOverlayData({ imageUrl: `${BLOB}/Gemini_Generated_Image_31w89131w89131w8.jpeg`, imageAlt: 'YSL Jumpsuit', products: [{ id: 'hydra-s13-ysl-jumpsuit', brand: 'YSL', name: 'Jumpsuit', price: '$1,230', shopUrl: 'https://www.fwrd.com/product-saint-laurent-sleeveless-jumpsuit-in-gris-fonce/SLAU-WC19/', imageUrl: '', genomeKey: 'look:ysl:jumpsuit:black.jpg' }] })} />
       </div>
       <div className="editorial-caption">Dressed for dinner. Or not. Hydra doesn&rsquo;t mind.</div>
 
@@ -755,11 +758,12 @@ export default function HydraGuide() {
       </div>
 
       {/* ═══ S20: EDITORIAL BREAK ═══ */}
-      <div className="full-image" style={{ position: 'relative' }}>
+      <div className="full-image" style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setOverlayData({ imageUrl: `${BLOB}/hydra_malgosia_black_swim.JPG`, imageAlt: 'Eres Effigie Swimsuit', products: [{ id: 'hydra-s20-eres-effigie', brand: 'Eres', name: 'Effigie Swimsuit', price: '$545', shopUrl: 'https://www.eresparis.com/us/en-US/swimwear-2/012110-01564.html', imageUrl: '', genomeKey: 'look:eres:effigieswimsuit:black.jpg' }] })}>
         <img src={`${BLOB}/hydra_malgosia_black_swim.JPG`} alt="" />
         <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}>
-          <PinButton itemType="style" itemId="hydra-break-s20" itemData={{ title: 'Hydra swimming', imageUrl: `${BLOB}/hydra_malgosia_black_swim.JPG`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'travel', 'style']} size="sm" />
+          <PinButton itemType="style" itemId="hydra-break-s20" itemData={{ title: 'Eres Effigie Swimsuit', imageUrl: `${BLOB}/hydra_malgosia_black_swim.JPG`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'style', 'swimwear']} size="sm" />
         </div>
+        <ShoppableIndicator onClick={() => setOverlayData({ imageUrl: `${BLOB}/hydra_malgosia_black_swim.JPG`, imageAlt: 'Eres Effigie Swimsuit', products: [{ id: 'hydra-s20-eres-effigie', brand: 'Eres', name: 'Effigie Swimsuit', price: '$545', shopUrl: 'https://www.eresparis.com/us/en-US/swimwear-2/012110-01564.html', imageUrl: '', genomeKey: 'look:eres:effigieswimsuit:black.jpg' }] })} />
       </div>
       <div className="editorial-caption">Sun-dried. Sea-salted. Not going anywhere.</div>
 
@@ -794,11 +798,12 @@ export default function HydraGuide() {
       </div>
 
       {/* ═══ S22: EDITORIAL BREAK ═══ */}
-      <div className="full-image" style={{ position: 'relative' }}>
+      <div className="full-image" style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setOverlayData({ imageUrl: `${BLOB}/hydra_back_float.jpeg`, imageAlt: 'Eres Effigie Swimsuit', products: [{ id: 'hydra-s22-eres-effigie', brand: 'Eres', name: 'Effigie Swimsuit', price: '$545', shopUrl: 'https://www.eresparis.com/us/en-US/swimwear-2/012110-01564.html', imageUrl: '', genomeKey: 'look:eres:effigieswimsuit:black.jpg' }] })}>
         <img src={`${BLOB}/hydra_back_float.jpeg`} alt="" />
         <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}>
-          <PinButton itemType="place" itemId="hydra-break-s22" itemData={{ title: 'Hydra swimming', imageUrl: `${BLOB}/hydra_back_float.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'swimming']} size="sm" />
+          <PinButton itemType="style" itemId="hydra-break-s22" itemData={{ title: 'Eres Effigie Swimsuit', imageUrl: `${BLOB}/hydra_back_float.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'style', 'swimwear']} size="sm" />
         </div>
+        <ShoppableIndicator onClick={() => setOverlayData({ imageUrl: `${BLOB}/hydra_back_float.jpeg`, imageAlt: 'Eres Effigie Swimsuit', products: [{ id: 'hydra-s22-eres-effigie', brand: 'Eres', name: 'Effigie Swimsuit', price: '$545', shopUrl: 'https://www.eresparis.com/us/en-US/swimwear-2/012110-01564.html', imageUrl: '', genomeKey: 'look:eres:effigieswimsuit:black.jpg' }] })} />
       </div>
       <div className="editorial-caption">The whole island is a swimming pool. You just have to find your rock.</div>
 
@@ -833,11 +838,12 @@ export default function HydraGuide() {
       </div>
 
       {/* ═══ S24: EDITORIAL BREAK ═══ */}
-      <div className="full-image" style={{ position: 'relative' }}>
+      <div className="full-image" style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setOverlayData({ imageUrl: `${BLOB}/hydra_malgosia_white_blowing_shirt.jpg`, imageAlt: 'Phoebe Philo Linen Button Down Shirt', products: [{ id: 'hydra-s24-pp-shirt', brand: 'Phoebe Philo', name: 'Linen Relaxed Button Down Shirt', price: '$1,200', shopUrl: 'https://us.phoebephilo.com', imageUrl: '', genomeKey: 'look:phoebephilo:buttondownshirt.jpg' }] })}>
         <img src={`${BLOB}/hydra_malgosia_white_blowing_shirt.jpg`} alt="" />
         <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}>
-          <PinButton itemType="style" itemId="hydra-break-s24" itemData={{ title: 'Hydra style', imageUrl: `${BLOB}/hydra_malgosia_white_blowing_shirt.jpg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'style', 'travel']} size="sm" />
+          <PinButton itemType="style" itemId="hydra-break-s24" itemData={{ title: 'Phoebe Philo Linen Button Down Shirt', imageUrl: `${BLOB}/hydra_malgosia_white_blowing_shirt.jpg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'style', 'travel']} size="sm" />
         </div>
+        <ShoppableIndicator onClick={() => setOverlayData({ imageUrl: `${BLOB}/hydra_malgosia_white_blowing_shirt.jpg`, imageAlt: 'Phoebe Philo Linen Button Down Shirt', products: [{ id: 'hydra-s24-pp-shirt', brand: 'Phoebe Philo', name: 'Linen Relaxed Button Down Shirt', price: '$1,200', shopUrl: 'https://us.phoebephilo.com', imageUrl: '', genomeKey: 'look:phoebephilo:buttondownshirt.jpg' }] })} />
       </div>
       <div className="editorial-caption">Not dressed up. Just dressed right.</div>
 
@@ -940,11 +946,12 @@ export default function HydraGuide() {
       <div className="divider-double" />
 
       {/* ═══ S31: ATMOSPHERIC BREAK — Stay intro ═══ */}
-      <div className="full-image" style={{ position: 'relative' }}>
+      <div className="full-image" style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setOverlayData({ imageUrl: `${BLOB}/hydra_malgosia_black_dress_stone_sea.jpeg`, imageAlt: 'Dries Van Noten Layered Silk Dress', products: [{ id: 'hydra-s31-dvn-dress', brand: 'Dries Van Noten', name: 'Layered Silk Dress', price: '$750', shopUrl: 'https://www.driesvannoten.com', imageUrl: '', genomeKey: 'look:driesvannoten:layeredsilkdress:black.jpg' }] })}>
         <img src={`${BLOB}/hydra_malgosia_black_dress_stone_sea.jpeg`} alt="" />
         <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}>
-          <PinButton itemType="style" itemId="hydra-break-s31" itemData={{ title: 'Hydra', imageUrl: `${BLOB}/hydra_malgosia_black_dress_stone_sea.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'style', 'hotel']} size="sm" />
+          <PinButton itemType="style" itemId="hydra-break-s31" itemData={{ title: 'Dries Van Noten Layered Silk Dress', imageUrl: `${BLOB}/hydra_malgosia_black_dress_stone_sea.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'style', 'hotel']} size="sm" />
         </div>
+        <ShoppableIndicator onClick={() => setOverlayData({ imageUrl: `${BLOB}/hydra_malgosia_black_dress_stone_sea.jpeg`, imageAlt: 'Dries Van Noten Layered Silk Dress', products: [{ id: 'hydra-s31-dvn-dress', brand: 'Dries Van Noten', name: 'Layered Silk Dress', price: '$750', shopUrl: 'https://www.driesvannoten.com', imageUrl: '', genomeKey: 'look:driesvannoten:layeredsilkdress:black.jpg' }] })} />
       </div>
       <div className="editorial-caption">Silk, salt, and the sea.</div>
 
