@@ -244,8 +244,8 @@ function HydraTripTeaserAndBriefForm() {
             <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 38, fontWeight: 400, color: '#faf9f6', marginBottom: 8, lineHeight: 1.1 }}>
               The Compass
             </h2>
-            <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(250,249,246,0.72)', marginBottom: 26 }}>
-              Your trip, curated.
+            <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(250,249,246,0.72)', marginBottom: 26, lineHeight: 1.6 }}>
+              Your personalized itinerary, wardrobe, travel essentials, and packing list — built by your concierge.
             </p>
             <div style={{ display: 'flex', gap: 10 }}>
               <button
