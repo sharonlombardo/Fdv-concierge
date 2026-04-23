@@ -644,7 +644,7 @@ export default function HydraGuide() {
           <PinButton itemType="place" itemId="hydra-break-s13" itemData={{ title: 'Hydra dining', imageUrl: `${BLOB}/Gemini_Generated_Image_31w89131w89131w8.jpeg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'restaurant']} size="sm" />
         </div>
       </div>
-      <div className="editorial-caption">Fine dining without the pretension. Bare arms, good wine, the Aegean.</div>
+      <div className="editorial-caption">Dressed for dinner. Or not. Hydra doesn&rsquo;t mind.</div>
 
       {/* ═══ S14: Omilos ═══ */}
       <div className="place-block reverse">
