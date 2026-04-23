@@ -33,6 +33,7 @@ import Destinations from "@/pages/destinations";
 import ComingSoon from "@/pages/coming-soon";
 import TravelDiary from "@/pages/travel-diary";
 import MoroccoGuide from "@/pages/guides/morocco";
+import HydraGuide from "@/pages/guides/hydra";
 import ShopPage from "@/pages/shop";
 import DailyFlow from "@/pages/daily-flow";
 import MyEdits from "@/pages/my-edits";
@@ -62,7 +63,8 @@ function Router() {
       <Route path="/" component={Threshold} />
       <Route path="/about" component={About} />
       <Route path="/destinations" component={Destinations} />
-      <Route path="/destinations/hydra" component={ComingSoon} />
+      <Route path="/guides/hydra" component={HydraGuide} />
+      <Route path="/destinations/hydra">{() => <Redirect to="/guides/hydra" />}</Route>
       <Route path="/destinations/slow-travel" component={ComingSoon} />
       <Route path="/destinations/retreat" component={ComingSoon} />
       <Route path="/destinations/new-york" component={ComingSoon} />

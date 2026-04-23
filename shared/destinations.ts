@@ -26,9 +26,9 @@ export const DESTINATIONS: Destination[] = [
     subtitle: "White stone. Salt water. Nothing extra.",
     summary: "Stone, water, and stillness on a car-free Greek island",
     imageSlotKey: "destination-hydra",
-    defaultImage: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&q=80&w=1200",
-    route: "/coming-soon/hydra",
-    available: false
+    defaultImage: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_coats_villas.jpg",
+    route: "/guides/hydra",
+    available: true
   },
   {
     slug: "mallorca",
