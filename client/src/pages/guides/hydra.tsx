@@ -595,7 +595,7 @@ export default function HydraGuide() {
           <PinButton itemType="place" itemId="hydra-break-s10" itemData={{ title: 'Hydra harbor', imageUrl: `${BLOB}/hydra_alcove_marina.jpg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'travel']} size="sm" />
         </div>
       </div>
-      <div className="editorial-caption">The harbor empties. The island begins.</div>
+      <div className="editorial-caption">Every path leads down to the water eventually.</div>
 
       <hr className="divider" />
 
