@@ -722,7 +722,7 @@ export default function HydraGuide() {
           <PinButton itemType="place" itemId="hydra-break-s17" itemData={{ title: 'Hydra overview', imageUrl: `${BLOB}/hydra_overview_.jpg`, storyTag: 'hydra' }} sourceContext="hydra-guide" aestheticTags={['hydra', 'travel']} size="sm" />
         </div>
       </div>
-      <div className="editorial-caption">Blue chairs, white walls, and a sea bass you&rsquo;ll think about for weeks.</div>
+      <div className="editorial-caption">The address is the water. The rest you figure out.</div>
 
       {/* ═══ S18: CURATE FOR ME PROMPT ═══ */}
       <div style={{ textAlign: 'center', padding: '48px 24px', maxWidth: 420, margin: '0 auto' }}>
