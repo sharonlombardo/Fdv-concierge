@@ -438,15 +438,17 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
-## SECTION 8 — OPEN ITEMS (updated April 23, 2026)
+## SECTION 8 — OPEN ITEMS (updated April 24, 2026)
 
-## Current Priorities (Updated April 23, 2026)
+## Current Priorities (Updated April 24, 2026)
 
 ### Critical Path — Revenue Unlock
-1. **Trip purchase flow (Stripe)** — How someone actually buys a curated itinerary/trip package ($250–$1000). This is the single piece that makes everything else revenue-generating. Not started.
-2. **Trip purchase modal / point-of-purchase design** — The modal that opens when tapping place images. Sells the trip itself — image, description, purchase CTA. Needs to work on landing page, guides, and concierge. Not started.
-3. **Curated trip pricing and margins** — Finalize pricing tiers. Not done.
-4. **Refund/cancellation policy** — Required before payment goes live. Not done.
+1. ✅ **Trip purchase flow (Stripe)** — MVP built April 23 with simulated Stripe checkout. Compass purchase → concierge intake → gold dot notification → "Your Compass is ready." Real Stripe connection still needed.
+2. ✅ **Trip purchase modal / point-of-purchase design** — Built April 23. Full-bleed hero, features list, expandable "What happens next?" accordion, sample preview images, $250 CTA. Live on Morocco and Hydra guides.
+3. ✅ **Curated trip pricing and margins** — Canonicalized April 23. Compass $250, Passage $750 (concierge upsell only, not on pricing page), Deep Guide $25–50 (future), Trunk (future, variable).
+4. ✅ **Refund/cancellation policy** — Defined April 24:
+   - **The Compass ($250):** Non-refundable once delivered (1–2 hours after concierge collects preferences). Full refund available within 30 minutes of purchase if concierge hasn't started.
+   - **The Passage ($750):** 24-hour cancellation window (bookings take time to confirm). Delivered within 1–2 business days.
 
 ### Content — Destination Guides
 5. **Hydra guide** — ✅ Built and proofed (April 22). Live.
@@ -459,6 +461,7 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 10. **"Look" modal component** — New multi-product modal for fashion editorial images. Shows 3-5 items together (the dress, the sandal, the sunscreen) as a complete look. Not started.
 11. **Landing page clickable images** — Every image becomes a door. Fashion editorials open to "look" modals. Place images open to trip purchase modals. Depends on #2 and #10.
 12. **Product genome enrichment** — ~10 Phoebe Philo items need atelier_codes.
+13. **Brand guidelines document** — FDV Concierge voice, tone, visual language, and copy rules in one canonical reference. Needed for concierge prompt rewrite, investor materials, and any external content. Not started.
 
 ### Intelligence — Taste System
 13. **Taste Intelligence Phase B** — Extract user taste profile (JSONB) after each chat session. Planned, not started.
