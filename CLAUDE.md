@@ -564,6 +564,28 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ---
 
+### April 23, 2026 | Dispatch Brain Sync (EOD) — Morning "Still Open" #1 and #2 Resolved Same-Day
+
+**The day in one line:** The morning Dispatch brain sync (10:29 ET, entry below) flagged Stripe trip purchase flow + trip-purchase modal as the two top "Still Open" priorities with *"No code yet"* and *"No design yet."* Between 11:50 and 15:47 ET, Sharon and Claude Code built the MVP — already brain-synced in the adjacent Cowork Session entry (`2887658`). This EOD entry is the Dispatch-side mirror, not a duplicate.
+
+**Same-day resolutions:**
+- ✅ Stripe trip purchase flow (MVP, simulated checkout) — priority #1 resolved
+- ✅ Trip-purchase modal / point-of-purchase design — priority #2 resolved
+- ✅ Pricing canonicalized — Compass $250, Passage $750 (concierge upsell, not on pricing page), Deep Guide $25–50 (future), Trunk (future, variable)
+- ✅ Four-product transactional business model written down and committed
+
+**New TODOs surfaced by the afternoon session** (not in the morning list): connect real Stripe, build Hydra Compass deliverable (itinerary overview matching Morocco), swap affiliate links to real URLs, build `show_edit` concierge tool for visual capsule display, add concierge email notification when trip is ready (in addition to gold dot), refund policy, margins modeling for Compass/Passage pricing, update investment deck with live purchase-flow screenshots.
+
+**Strategic note worth preserving:** "Curation is NOT the product — it's the sales mechanism." No membership gates. The "Curate for Me" CTA now evolves from *request a service* → *let the site learn you faster*. The Passage ($750) lives only in the concierge upsell — one product, one price, relationship-based. This displaces the April 14 North Star V2 framing where the concierge system prompt was #1. Today's work makes the system-prompt rewrite more urgent, not less, because the concierge now handles post-purchase trip intake, gold-dot notifications, and upsell to Passage.
+
+**Dispatch-layer activity EOD confirmation:** Still zero for the full day. No chat with Sharon, no email triage, no Notion writes, no outreach drafts, no pilot messages through Dispatch. All value shipped through Cowork + Claude Code web on `origin/main`.
+
+**Still open at EOD:** `fdv-midnight-deploy` disabled 7 days (unchanged), Dispatch brain-sync cadence still drifting (today the task fired twice — morning + EOD — rather than once cleanly at end-of-day), `claude /login` on this machine still pending (tested again this run: 401 authentication_error — this commit being done via Cowork fallback, again), Mallorca guide, GEMINI 30 mil Shopify-ShopMy question (10+ days stale), Obsolete Collective / Melissa Deià reply (10 days stale), concierge system prompt rewrite (still untouched, now more urgent), working-tree untracked items (25+). Local `main` was 10 commits behind `origin/main` at start of this run; pulled before writing this entry.
+
+**Source file:** `/Users/sharonlombardo/Desktop/CLAUDE/dispatch-session-summaries/dispatch-apr-23.md` — now contains both the morning summary and an EVENING UPDATE section covering the afternoon flip.
+
+---
+
 ## April 23, 2026 — Cowork Session (Purchase Flow + Business Model + FDV Daily)
 
 ### FDV Daily — Two Editions Built
