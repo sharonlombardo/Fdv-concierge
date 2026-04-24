@@ -1,4 +1,10 @@
+import { Link } from "wouter";
 import { useScrollDepth } from "@/hooks/use-scroll-depth";
+
+const goldLink: React.CSSProperties = {
+  color: "#c9a84c",
+  textDecoration: "none",
+};
 
 const sectionHeader: React.CSSProperties = {
   fontFamily: "'Inter', sans-serif",
@@ -38,10 +44,10 @@ export default function About() {
             FIL DE VIE Concierge is one place for everything that surrounds a trip — where to go, where to stay, where to eat, and what to wear when you get there.
           </p>
           <p style={{ marginBottom: 20 }}>
-            We build destination guides with the kind of detail a good friend gives you — specific restaurants, real opinions, the hotel you actually want. And everything in the guides is shoppable. See a dress you love in the Morocco wardrobe? It's yours. A pair of sunglasses for Hydra? Tap and buy.
+            We build destination <Link href="/guides" className="about-link" style={goldLink}>guides</Link> with the kind of detail a good friend gives you — specific restaurants, real opinions, the hotel you actually want. And everything is shoppable. The entire collection — wardrobe, accessories, beauty, home — is here to browse and buy in the <Link href="/shop" className="about-link" style={goldLink}>shop</Link>, whether or not you're planning a trip.
           </p>
           <p>
-            We're not a travel agency. We're not a fashion brand. We're the place where travel and wardrobe meet — because they've always been the same decision.
+            We're not a travel agency. We're not a fashion brand. We're the place where travel and wardrobe meet — and we built three ways to let you in.
           </p>
         </div>
 
@@ -51,10 +57,10 @@ export default function About() {
         <p style={sectionHeader}>How It Works</p>
         <div style={bodyText}>
           <p style={{ marginBottom: 20 }}>
-            Browse the guides. Save what stops you — a restaurant, a hotel, a dress, a pair of earrings. Everything you save goes to your Suitcase.
+            Browse the <Link href="/guides" className="about-link" style={goldLink}>guides</Link>. Save what stops you — a restaurant, a hotel, a dress, a pair of earrings. Everything you save goes to your <Link href="/suitcase" className="about-link" style={goldLink}>Suitcase</Link>.
           </p>
           <p style={{ marginBottom: 20 }}>
-            When you're ready, we build your trip. Not a template. Yours. Based on what you saved, what you told the concierge, and what we know about how you travel. A daily itinerary, a curated wardrobe, a packing list, reservations — every detail considered.
+            When you're ready, choose how deep you want to go. <Link href="/guides/morocco" className="about-link" style={goldLink}>The Compass</Link> gives you the full itinerary, wardrobe, and packing list — delivered to your <Link href="/suitcase" className="about-link" style={goldLink}>Suitcase</Link> within hours. <Link href="/guides/morocco" className="about-link" style={goldLink}>The Passage</Link> takes it further: real bookings, a travel diary, your own wardrobe uploaded alongside ours. <Link href="/guides/morocco" className="about-link" style={goldLink}>The Trunk</Link> lets you buy every piece we've curated, sourced and shipped before you leave.
           </p>
           <p>
             You just show up.
@@ -63,17 +69,20 @@ export default function About() {
 
         {divider}
 
-        {/* SECTION 3: THE CONCIERGE */}
+        {/* SECTION 3: YOUR CONCIERGE */}
         <p style={sectionHeader}>Your Concierge</p>
         <div style={bodyText}>
           <p style={{ marginBottom: 20 }}>
             The gold circle at the bottom of your screen is your concierge. Tap it anytime.
           </p>
           <p style={{ marginBottom: 20 }}>
-            She knows the guides inside and out — every restaurant, every hotel, every product in the collection. Ask her where to eat in Marrakech and she'll tell you Le Jardin, the table under the banana leaves. Ask her what to wear and she'll pull a capsule wardrobe built around where you're going.
+            She knows the <Link href="/guides" className="about-link" style={goldLink}>guides</Link> inside and out — every restaurant, every hotel, every product in the collection. Ask her where to eat in Marrakech and she'll tell you Le Jardin, the table under the banana leaves. Ask her what to wear and she'll pull a capsule wardrobe built around where you're going.
           </p>
           <p style={{ marginBottom: 20 }}>
             She remembers your conversations. She reads what you've saved. And she gets better the more you talk to her — not because of an algorithm, but because she's paying attention.
+          </p>
+          <p style={{ marginBottom: 20 }}>
+            When you purchase a trip, she opens immediately — no waiting, no email chain. Your concierge conversation starts the moment you say go.
           </p>
           <p>
             Tell her where you want to go. She'll take it from there.
@@ -86,13 +95,22 @@ export default function About() {
         <p style={sectionHeader}>What You Can Buy</p>
         <div style={bodyText}>
           <p style={{ marginBottom: 20 }}>
-            Everything in the guides is shoppable — wardrobe, accessories, beauty. Tap any product and it's yours.
+            Start with the <Link href="/shop" className="about-link" style={goldLink}>shop</Link>. The full collection lives there — wardrobe, accessories, beauty, objects — all of it travel-inspired, all of it shoppable right now. No trip required. Just things we love, available to you.
           </p>
           <p style={{ marginBottom: 20 }}>
-            Beyond that, we offer curated trip packages — a fully personalized itinerary, wardrobe edit, packing list, and booking service built around your destination, your dates, and your taste. Tell us when and where, and we'll handle the rest.
+            And when you are planning a trip:
+          </p>
+          <p style={{ marginBottom: 20 }}>
+            <strong><Link href="/guides/morocco" className="about-link" style={goldLink}>The Compass</Link></strong> — $250. Your destination, decoded. A personalized itinerary, curated wardrobe, and packing list built around where you're going, when, and how you like to travel. Delivered to your <Link href="/suitcase" className="about-link" style={goldLink}>Suitcase</Link> within hours.
+          </p>
+          <p style={{ marginBottom: 20 }}>
+            <strong><Link href="/guides/morocco" className="about-link" style={goldLink}>The Passage</Link></strong> — $750. Your trip, fully realized. Every booking confirmed, every detail handled, a travel diary that captures the whole story. Upload your own wardrobe and we'll style around what you already own.
+          </p>
+          <p style={{ marginBottom: 20 }}>
+            <strong><Link href="/guides/morocco" className="about-link" style={goldLink}>The Trunk</Link></strong> — price based on your selections. Everything we've curated for your trip — sourced, packed, and shipped before you leave. A small gift arrives before departure. The rest is waiting when you get there.
           </p>
           <p>
-            Individual pieces if you just want the packing list. The full service if you want everything handled. However you travel.
+            And soon: gift cards. For the woman who has everything except someone to plan the trip.
           </p>
         </div>
 

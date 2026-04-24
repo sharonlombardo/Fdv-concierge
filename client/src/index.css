@@ -299,3 +299,8 @@
   50% { transform: scale(1.08); box-shadow: 0 2px 16px rgba(201, 168, 76, 0.55); }
   100% { transform: scale(1); box-shadow: 0 2px 8px rgba(201, 168, 76, 0.3); }
 }
+
+.about-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
