@@ -222,14 +222,14 @@ function HydraTripTeaserAndBriefForm() {
       key: 'passage' as const,
       name: 'THE PASSAGE',
       price: '$750',
-      description: 'Everything in The Compass — plus all bookings handled, a travel diary, and your own wardrobe woven in.',
+      description: 'Your trip, fully realized. Every booking, every detail, every memory — handled.',
       cta: 'Curate My Passage',
     },
     {
       key: 'trunk' as const,
       name: 'THE TRUNK',
-      price: 'From $1,500',
-      description: 'White-glove, end to end. Your wardrobe sourced, curated, and shipped before you leave.',
+      price: 'Price on request',
+      description: 'Everything curated. Everything shipped. Everything waiting when you arrive.',
       cta: 'Begin with Your Concierge',
     },
   ];

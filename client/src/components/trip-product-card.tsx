@@ -48,7 +48,7 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
     primaryCta: "Curate My Trip",
     confirmCta: "Confirm & Pay — $250",
     whatHappensNext:
-      "Your concierge opens immediately to collect your trip details. Your personalized itinerary, wardrobe edit, and packing list will be ready within 1–2 hours.",
+      "The moment you confirm, your concierge opens and the conversation begins. Your personalized itinerary, wardrobe edit, and packing list will be delivered to your Suitcase within 1–2 hours.",
     refundPolicy:
       "Non-refundable once your concierge has started. Full refund within 30 minutes of purchase if curating hasn't begun.",
     successTitle: "Your Compass\nis underway.",
@@ -65,20 +65,20 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
     price: 750,
     priceDisplay: "$750",
     priceLabel: "one-time",
-    headline: "Your trip, handled end to end.",
+    headline: "Your trip. Your bookings. Your wardrobe. Your story.",
     features: [
-      "Personalized daily itinerary",
-      "Curated wardrobe for every day of your trip",
-      "Complete packing list",
+      "Personalized day-by-day itinerary",
+      "Curated wardrobe edit for every day",
+      "Complete packing list tailored to your trip",
       "All reservations and bookings handled",
-      "Personal travel diary — shareable keepsake",
+      "Personal travel diary — a shareable keepsake",
       "Upload your own wardrobe — mix what you own with what we curate",
       "Booking confirmations delivered to your Suitcase",
     ],
     primaryCta: "Curate My Passage",
     confirmCta: "Confirm & Pay — $750",
     whatHappensNext:
-      "Your concierge opens immediately to collect your trip details. Bookings are confirmed within 24 hours — everything arrives in your Suitcase as it comes together.",
+      "Your concierge begins immediately — learning about your trip, your style, your preferences. Within 1-2 days, your complete itinerary, all bookings, wardrobe curation, and packing list will be delivered to your Suitcase. Your travel diary begins the moment you arrive.",
     refundPolicy:
       "24-hour cancellation window after purchase. Once bookings are confirmed, the service is non-refundable.",
     successTitle: "Your Passage\nis underway.",
@@ -94,9 +94,9 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
   trunk: {
     name: "THE TRUNK",
     price: null,
-    priceDisplay: "From $1,500",
-    priceLabel: "based on your selections",
-    headline: "White-glove, from first click to touchdown.",
+    priceDisplay: "Price based on your selections",
+    priceLabel: "",
+    headline: "Your wardrobe, sourced and shipped. Your trip, handled down to the last detail.",
     features: [
       "Everything included in The Passage",
       "Your entire curated wardrobe — sourced and shipped to you",
@@ -107,7 +107,7 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
     primaryCta: "Begin with Your Concierge",
     confirmCta: null,
     whatHappensNext:
-      "The Trunk is built around your exact selections — wardrobe, bookings, and delivery. Your concierge will walk you through every detail and provide a custom quote before any commitment.",
+      "Your concierge will guide you through the full experience — building your itinerary, handling every booking, curating your wardrobe piece by piece. Once your selections are made, everything is sourced, coordinated, and shipped to arrive together. A small gift arrives before your departure — a ritual to mark the beginning.",
     refundPolicy:
       "Pricing and cancellation terms are confirmed with your concierge before any commitment.",
     successTitle: "",
@@ -353,7 +353,7 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
 
             {/* Price */}
             <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 24 }}>
-              <span style={{ fontFamily: F.serif, fontSize: tier === "trunk" ? 32 : 44, fontWeight: 400, color: "#2c2416", lineHeight: 1 }}>
+              <span style={{ fontFamily: F.serif, fontSize: tier === "trunk" ? 18 : 44, fontWeight: 400, fontStyle: tier === "trunk" ? "italic" : "normal", color: "#2c2416", lineHeight: tier === "trunk" ? 1.4 : 1 }}>
                 {cfg.priceDisplay}
               </span>
               <span style={{ fontFamily: F.body, fontSize: 13, fontStyle: "italic", color: "rgba(44,36,22,0.38)" }}>
