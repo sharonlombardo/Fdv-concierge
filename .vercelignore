@@ -1,6 +1,7 @@
 node_modules
 .npm-cache
-attached_assets
+attached_assets/*
+!attached_assets/LOGO_1767219658929.png
 backups
 brand voice
 *.mov
