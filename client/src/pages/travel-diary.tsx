@@ -1,11 +1,323 @@
 import { useState } from 'react';
 import { Link } from 'wouter';
 // GlobalNav removed — TopBar is now app-level in App.tsx
-import { useJournal } from '@/hooks/use-journal';
+import { useJournal, JournalEntries } from '@/hooks/use-journal';
 import { ITINERARY_DATA, DayPage, FlowItem } from '@shared/itinerary-data';
-import { Camera, MapPin, ChevronRight, Share2 } from 'lucide-react';
+import { Camera, MapPin, ChevronRight, Share2, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { generateStoryImage, shareImage } from '@/lib/share-utils';
+
+function generateDiaryPrintWindow(dayPages: DayPage[], entries: JournalEntries) {
+  const sealUrl = `${window.location.origin}/fdv-concierge-seal.png`;
+
+  const dayHtml = dayPages.map(day => {
+    const entryCards = day.flow.map(flowItem => {
+      const entry = entries[flowItem.id];
+      if (!entry) return '';
+      const hasNote = entry.note && entry.note.trim().length > 0;
+      const hasPhotos = entry.logImages && entry.logImages.length > 0;
+      if (!hasNote && !hasPhotos) return '';
+
+      const photosHtml = hasPhotos ? `
+        <div class="photo-grid ${entry.logImages!.length === 1 ? 'single' : 'multi'}">
+          ${entry.logImages!.map((img, i) => `
+            <div class="photo-item">
+              <img src="${img.src}" alt="${img.caption || `Photo ${i + 1}`}" loading="eager" />
+              ${img.caption ? `<p class="photo-caption">${img.caption}</p>` : ''}
+            </div>
+          `).join('')}
+        </div>` : '';
+
+      return `
+        <div class="entry-card">
+          <div class="entry-meta">Day ${day.day} &mdash; ${flowItem.time}</div>
+          <h3 class="entry-title">${flowItem.title}</h3>
+          <div class="entry-location">&#x25BE; ${day.location}</div>
+          ${hasNote ? `<blockquote class="entry-note">&ldquo;${entry.note}&rdquo;</blockquote>` : ''}
+          ${photosHtml}
+        </div>`;
+    }).filter(Boolean).join('');
+
+    if (!entryCards.trim()) return '';
+
+    return `
+      <div class="day-section">
+        <div class="day-header">
+          <div class="day-number">${day.day}</div>
+          <div class="day-info">
+            <h2 class="day-title">${day.title}</h2>
+            <p class="day-date">${day.date}</p>
+          </div>
+        </div>
+        ${entryCards}
+      </div>`;
+  }).filter(Boolean).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Travel Diary — FIL DE VIE Morocco 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: #fafaf9;
+      color: #2c2416;
+      padding: 56px 48px 72px;
+      max-width: 820px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── HEADER ── */
+    .diary-header {
+      text-align: center;
+      padding-bottom: 40px;
+      margin-bottom: 48px;
+    }
+    .seal {
+      width: 88px;
+      height: 88px;
+      display: block;
+      margin: 0 auto 20px;
+      opacity: 0.9;
+    }
+    .brand-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #2c2416;
+      margin-bottom: 10px;
+    }
+    .destination-label {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 26px;
+      font-weight: 400;
+      color: #5a5147;
+      margin-bottom: 28px;
+    }
+    .header-rule {
+      width: 48px;
+      height: 1px;
+      background: #c9a84c;
+      margin: 0 auto;
+    }
+
+    /* ── DAY SECTIONS ── */
+    .day-section {
+      margin-bottom: 56px;
+    }
+    .day-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(201,168,76,0.35);
+    }
+    .day-number {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #2c2416;
+      color: #faf8f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      flex-shrink: 0;
+    }
+    .day-title {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 21px;
+      font-weight: 500;
+      color: #2c2416;
+      margin-bottom: 3px;
+    }
+    .day-date {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: #8a7e6b;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── ENTRY CARDS ── */
+    .entry-card {
+      background: #fff;
+      border: 1px solid #f0ece4;
+      border-radius: 10px;
+      padding: 28px 28px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(44,36,22,0.06);
+    }
+    .entry-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #8a7e6b;
+      margin-bottom: 8px;
+    }
+    .entry-title {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 20px;
+      font-weight: 500;
+      color: #2c2416;
+      margin-bottom: 4px;
+    }
+    .entry-location {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: #8a7e6b;
+      margin-bottom: 16px;
+    }
+    .entry-note {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 15px;
+      font-style: italic;
+      color: #2c2416;
+      line-height: 1.65;
+      padding-left: 16px;
+      border-left: 2px solid #c9a84c;
+      margin-bottom: 20px;
+    }
+
+    /* ── PHOTOS ── */
+    .photo-grid { margin-top: 4px; }
+    .photo-grid.single .photo-item { text-align: center; }
+    .photo-grid.single img {
+      width: 65%;
+      border-radius: 6px;
+      box-shadow: 0 2px 12px rgba(44,36,22,0.1);
+      display: block;
+      margin: 0 auto;
+    }
+    .photo-grid.multi {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .photo-grid.multi img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(44,36,22,0.08);
+    }
+    .photo-caption {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 12px;
+      font-style: italic;
+      color: #8a7e6b;
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    /* ── FOOTER ── */
+    .diary-footer {
+      text-align: center;
+      padding-top: 40px;
+      margin-top: 24px;
+    }
+    .footer-rule {
+      width: 48px;
+      height: 1px;
+      background: #c9a84c;
+      margin: 0 auto 24px;
+    }
+    .tagline {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 14px;
+      color: #8a7e6b;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── PRINT OVERRIDES ── */
+    @media print {
+      @page {
+        margin: 0.75in 0.85in;
+        size: letter portrait;
+      }
+      body {
+        background: white;
+        padding: 0;
+        font-size: 10.5pt;
+        max-width: none;
+      }
+      .diary-header {
+        padding-bottom: 28px;
+        margin-bottom: 36px;
+      }
+      .day-section {
+        page-break-inside: avoid;
+        margin-bottom: 40px;
+      }
+      .entry-card {
+        page-break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #e8e4dc;
+      }
+      .photo-grid.single img {
+        width: 62%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="diary-header">
+    <img class="seal" src="${sealUrl}" alt="FIL DE VIE" />
+    <p class="brand-name">FIL DE VIE</p>
+    <p class="destination-label">Morocco 2026</p>
+    <div class="header-rule"></div>
+  </header>
+
+  <main>${dayHtml || '<p style="text-align:center;color:#8a7e6b;font-style:italic;padding:48px 0">No diary entries yet.</p>'}</main>
+
+  <footer class="diary-footer">
+    <div class="footer-rule"></div>
+    <p class="tagline">FIL DE VIE &mdash; the thread of life.</p>
+  </footer>
+
+  <script>
+    // Wait for images to load before printing
+    var images = document.querySelectorAll('img');
+    var total = images.length;
+    if (total === 0) {
+      setTimeout(function() { window.print(); }, 300);
+    } else {
+      var loaded = 0;
+      function checkDone() {
+        loaded++;
+        if (loaded >= total) setTimeout(function() { window.print(); }, 300);
+      }
+      images.forEach(function(img) {
+        if (img.complete) { checkDone(); }
+        else { img.onload = checkDone; img.onerror = checkDone; }
+      });
+      // Fallback in case some events don't fire
+      setTimeout(function() { window.print(); }, 3000);
+    }
+  </script>
+</body>
+</html>`;
+
+  const win = window.open('', '_blank', 'width=900,height=800');
+  if (win) {
+    win.document.write(html);
+    win.document.close();
+  }
+}
 
 function isDayPage(page: any): page is DayPage {
   return 'day' in page;
@@ -199,6 +511,10 @@ export default function TravelDiary() {
 
   const dayPages = ITINERARY_DATA.filter(isDayPage) as DayPage[];
 
+  const handlePrintDiary = () => {
+    generateDiaryPrintWindow(dayPages, entries);
+  };
+
   const getEntriesForDay = (day: DayPage) => {
     const dayEntries: Array<{ flowItem: FlowItem; entry: any }> = [];
     day.flow.forEach(flowItem => {
@@ -240,9 +556,32 @@ export default function TravelDiary() {
               textTransform: 'uppercase' as const,
               letterSpacing: '0.1em',
               marginTop: 0,
+              marginBottom: 20,
             }}>
               Morocco 2026
             </p>
+            <button
+              onClick={handlePrintDiary}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                background: 'transparent',
+                border: '1px solid #c9a84c',
+                color: '#2c2416',
+                borderRadius: 24,
+                padding: '10px 20px',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 11,
+                fontWeight: 600,
+                textTransform: 'uppercase' as const,
+                letterSpacing: '0.1em',
+                cursor: 'pointer',
+              }}
+            >
+              <BookOpen size={14} color="#c9a84c" />
+              Save This Memory
+            </button>
           </div>
 
           {/* Day filter tabs */}
