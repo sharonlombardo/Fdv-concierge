@@ -1,0 +1,22 @@
+node_modules
+.npm-cache
+attached_assets
+backups
+brand voice
+*.mov
+*.mp4
+*.tar.gz
+LANDING\ FINAL.mp4
+ScreenRecording*
+Screenshot*
+CLAUDE.md
+CLAUDE-PRIVATE.md
+CANONICAL_DATA_REFERENCE.md
+FDV_SESSION_*.md
+FDV_USER_JOURNEY_*.md
+FDV_NORTH_STAR_*.md
+FDV_CONCIERGE_SUMMARY.md
+.DS_Store
+.local
+.claude
+docs
