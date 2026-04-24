@@ -1,3 +1,4 @@
+// Force redeploy
 import { useState } from 'react';
 import { Link } from 'wouter';
 // GlobalNav removed — TopBar is now app-level in App.tsx
