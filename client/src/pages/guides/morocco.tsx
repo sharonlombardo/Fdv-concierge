@@ -353,19 +353,44 @@ const MOROCCO_CARD_IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.co
 
 function TripTeaserAndBriefForm() {
   const { email } = useUser();
-  const [showModal, setShowModal] = useState(false);
+  const [activeTier, setActiveTier] = useState<'compass' | 'passage' | 'trunk' | null>(null);
+
+  const tiers = [
+    {
+      key: 'compass' as const,
+      name: 'THE COMPASS',
+      price: '$250',
+      description: 'Personalized itinerary, curated wardrobe, and packing list.',
+      cta: 'Curate My Trip',
+    },
+    {
+      key: 'passage' as const,
+      name: 'THE PASSAGE',
+      price: '$750',
+      description: 'Everything in The Compass — plus all bookings handled, a travel diary, and your own wardrobe woven in.',
+      cta: 'Curate My Passage',
+    },
+    {
+      key: 'trunk' as const,
+      name: 'THE TRUNK',
+      price: 'From $1,500',
+      description: 'White-glove, end to end. Your wardrobe sourced, curated, and shipped before you leave.',
+      cta: 'Begin with Your Concierge',
+    },
+  ];
 
   return (
     <>
-      {showModal && (
+      {activeTier && (
         <TripProductCard
           destination="Morocco"
+          tier={activeTier}
           userEmail={email || ''}
-          onClose={() => setShowModal(false)}
+          onClose={() => setActiveTier(null)}
         />
       )}
       <section style={{ margin: '40px 0 0', position: 'relative' }}>
-        <div style={{ position: 'relative', height: '65vh', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', height: '52vh', overflow: 'hidden' }}>
           <img
             src={MOROCCO_CARD_IMG}
             alt="Morocco"
@@ -381,25 +406,45 @@ function TripTeaserAndBriefForm() {
             bottom: 0,
             left: 0,
             right: 0,
-            padding: '32px 24px 40px',
+            padding: '28px 24px 32px',
           }}>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: 10 }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: 8 }}>
               Trip Curation
             </p>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 72, fontWeight: 400, color: '#faf9f6', marginBottom: 10, lineHeight: 1.0 }}>
-              The Compass
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 60, fontWeight: 400, color: '#faf9f6', marginBottom: 8, lineHeight: 1.0 }}>
+              Your turn.
             </h2>
-            <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 18, fontStyle: 'italic', color: 'rgba(250,249,246,0.78)', marginBottom: 28, lineHeight: 1.65 }}>
-              Your personalized itinerary, wardrobe, travel essentials, and packing list — built by your concierge.
+            <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 16, fontStyle: 'italic', color: 'rgba(250,249,246,0.72)', lineHeight: 1.55, margin: 0 }}>
+              Choose the experience that fits your trip.
             </p>
-            <div style={{ display: 'flex', gap: 10 }}>
+          </div>
+        </div>
+
+        {/* Three tier cards */}
+        <div style={{ background: '#faf9f6', padding: '0 22px 52px' }}>
+          {tiers.map((t, i) => (
+            <div
+              key={t.key}
+              style={{
+                borderTop: '1px solid rgba(44,36,22,0.1)',
+                borderBottom: i === tiers.length - 1 ? '1px solid rgba(44,36,22,0.1)' : 'none',
+                padding: '22px 0',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
+                <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, fontWeight: 400, color: '#2c2416' }}>{t.name}</span>
+                <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 18, color: '#2c2416', flexShrink: 0, marginLeft: 12 }}>{t.price}</span>
+              </div>
+              <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(44,36,22,0.55)', lineHeight: 1.6, margin: '0 0 14px' }}>
+                {t.description}
+              </p>
               <button
-                onClick={() => setShowModal(true)}
+                onClick={() => setActiveTier(t.key)}
                 style={{
-                  flex: 1,
-                  padding: '13px 0',
-                  background: '#faf9f6',
-                  color: '#2c2416',
+                  width: '100%',
+                  padding: '12px 0',
+                  background: '#2c2416',
+                  color: '#faf9f6',
                   border: 'none',
                   fontFamily: "'Inter', sans-serif",
                   fontSize: 10,
@@ -409,27 +454,25 @@ function TripTeaserAndBriefForm() {
                   cursor: 'pointer',
                 }}
               >
-                Curate My Trip
-              </button>
-              <button
-                onClick={() => window.dispatchEvent(new CustomEvent('open-concierge'))}
-                style={{
-                  flex: 1,
-                  padding: '13px 0',
-                  background: 'transparent',
-                  color: '#faf9f6',
-                  border: '1px solid rgba(250,249,246,0.45)',
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: '0.18em',
-                  textTransform: 'uppercase',
-                  cursor: 'pointer',
-                }}
-              >
-                Ask Your Concierge
+                {t.cta}
               </button>
             </div>
+          ))}
+          <div style={{ textAlign: 'center', marginTop: 26 }}>
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-concierge'))}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontFamily: "'Lora', Georgia, serif",
+                fontSize: 14,
+                fontStyle: 'italic',
+                color: 'rgba(44,36,22,0.42)',
+                cursor: 'pointer',
+              }}
+            >
+              Not sure which is right for you? Ask your concierge ✦
+            </button>
           </div>
         </div>
       </section>

@@ -2,18 +2,122 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/contexts/user-context";
 
+export type Tier = "compass" | "passage" | "trunk";
 type Stage = "detail" | "checkout" | "processing" | "success";
 
-const COMPASS = {
-  name: "THE COMPASS",
-  price: 250,
-  headline: "Your trip. Your wardrobe. Every detail considered.",
-  features: [
-    "Personalized day-by-day itinerary",
-    "Curated wardrobe edit for every day",
-    "Packing list tailored to your trip",
-    "One round of changes with your concierge",
-  ],
+const F = {
+  serif: "'Cormorant Garamond', Georgia, serif" as const,
+  body: "'Lora', Georgia, serif" as const,
+  ui: "'Inter', sans-serif" as const,
+};
+
+interface TierConfig {
+  name: string;
+  price: number | null;
+  priceDisplay: string;
+  priceLabel: string;
+  headline: string;
+  features: string[];
+  primaryCta: string;
+  confirmCta: string | null;
+  whatHappensNext: string;
+  refundPolicy: string;
+  successTitle: string;
+  conciergeMsg: (destination: string) => string;
+  previews: Array<{ src: string; label: string }>;
+}
+
+const PREVIEW_IMAGES = {
+  itinerary: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/morocco%20itiin%20overview%20sample.jpg",
+  packing: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/daily%20itinerary%20with%20packing.jpg",
+};
+
+const TIER_CONFIG: Record<Tier, TierConfig> = {
+  compass: {
+    name: "THE COMPASS",
+    price: 250,
+    priceDisplay: "$250",
+    priceLabel: "one-time",
+    headline: "Your trip. Your wardrobe. Every detail considered.",
+    features: [
+      "Personalized day-by-day itinerary",
+      "Curated wardrobe edit for every day",
+      "Packing list tailored to your trip",
+      "One round of changes with your concierge",
+    ],
+    primaryCta: "Curate My Trip",
+    confirmCta: "Confirm & Pay — $250",
+    whatHappensNext:
+      "Your concierge opens immediately to collect your trip details. Your personalized itinerary, wardrobe edit, and packing list will be ready within 1–2 hours.",
+    refundPolicy:
+      "Non-refundable once your concierge has started. Full refund within 30 minutes of purchase if curating hasn't begun.",
+    successTitle: "Your Compass\nis underway.",
+    conciergeMsg: (destination) =>
+      `Your Compass is underway. I just need a few details to make it perfect — when are you thinking of going to ${destination}? How long do you have? Who's joining you? And what matters most — the food, the quiet, the art, the shopping? Once I have this, I'll have your itinerary, wardrobe, and packing list ready within 1–2 hours.`,
+    previews: [
+      { src: PREVIEW_IMAGES.itinerary, label: "Sample itinerary" },
+      { src: PREVIEW_IMAGES.packing, label: "Sample packing list" },
+    ],
+  },
+
+  passage: {
+    name: "THE PASSAGE",
+    price: 750,
+    priceDisplay: "$750",
+    priceLabel: "one-time",
+    headline: "Your trip, handled end to end.",
+    features: [
+      "Personalized daily itinerary",
+      "Curated wardrobe for every day of your trip",
+      "Complete packing list",
+      "All reservations and bookings handled",
+      "Personal travel diary — shareable keepsake",
+      "Upload your own wardrobe — mix what you own with what we curate",
+      "Booking confirmations delivered to your Suitcase",
+    ],
+    primaryCta: "Curate My Passage",
+    confirmCta: "Confirm & Pay — $750",
+    whatHappensNext:
+      "Your concierge opens immediately to collect your trip details. Bookings are confirmed within 24 hours — everything arrives in your Suitcase as it comes together.",
+    refundPolicy:
+      "24-hour cancellation window after purchase. Once bookings are confirmed, the service is non-refundable.",
+    successTitle: "Your Passage\nis underway.",
+    conciergeMsg: (destination) =>
+      `Your Passage is confirmed — the full experience. I'll handle everything from your itinerary to every booking. Let's start: when are you going to ${destination}? How many nights? Who's joining you? What matters most to you on this trip? I'll have everything in your Suitcase within 24 hours.`,
+    previews: [
+      { src: "", label: "Sample Travel Diary" },
+      { src: "", label: "Sample Booking Confirmation" },
+      { src: "", label: "Sample Wardrobe Integration" },
+    ],
+  },
+
+  trunk: {
+    name: "THE TRUNK",
+    price: null,
+    priceDisplay: "From $1,500",
+    priceLabel: "based on your selections",
+    headline: "White-glove, from first click to touchdown.",
+    features: [
+      "Everything included in The Passage",
+      "Your entire curated wardrobe — sourced and shipped to you",
+      "Coordinated delivery — everything arrives together, beautifully packaged",
+      "Pre-trip ritual moment — a personal gift before your journey begins",
+      "White-glove concierge from first click to touchdown",
+    ],
+    primaryCta: "Begin with Your Concierge",
+    confirmCta: null,
+    whatHappensNext:
+      "The Trunk is built around your exact selections — wardrobe, bookings, and delivery. Your concierge will walk you through every detail and provide a custom quote before any commitment.",
+    refundPolicy:
+      "Pricing and cancellation terms are confirmed with your concierge before any commitment.",
+    successTitle: "",
+    conciergeMsg: (destination) =>
+      `I'd love to walk you through The Trunk for ${destination}. This is the full experience — I'll source and ship your entire curated wardrobe, handle every booking, and make sure everything arrives beautifully before you leave. To put together an accurate quote: when are you thinking of going? How many nights? Who's joining you?`,
+    previews: [
+      { src: "", label: "Sample wardrobe delivery" },
+      { src: "", label: "Sample pre-trip gift" },
+    ],
+  },
 };
 
 const DESTINATION_IMAGES: Record<string, { card: string; img1: string; img2: string }> = {
@@ -29,18 +133,52 @@ const DESTINATION_IMAGES: Record<string, { card: string; img1: string; img2: str
   },
 };
 
-const PREVIEW_IMAGES = {
-  itinerary: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/morocco%20itiin%20overview%20sample.jpg",
-  packing: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/daily%20itinerary%20with%20packing.jpg",
-};
+function PreviewCard({ src, label }: { src: string; label: string }) {
+  return (
+    <div style={{ width: "60%", display: "flex", flexDirection: "column", gap: 8 }}>
+      <p style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", color: "rgba(44,36,22,0.38)", margin: 0, textAlign: "center" }}>
+        {label}
+      </p>
+      {src ? (
+        <img
+          src={src}
+          alt={label}
+          style={{
+            width: "100%",
+            borderRadius: 10,
+            boxShadow: "0 4px 18px rgba(44,36,22,0.13), 0 1px 4px rgba(44,36,22,0.08)",
+            display: "block",
+            border: "1px solid rgba(44,36,22,0.07)",
+          }}
+        />
+      ) : (
+        <div style={{
+          width: "100%",
+          aspectRatio: "4/3",
+          borderRadius: 10,
+          background: "rgba(44,36,22,0.03)",
+          border: "1px dashed rgba(44,36,22,0.14)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+          <span style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", color: "rgba(44,36,22,0.22)", textAlign: "center", padding: "0 16px" }}>
+            {label}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export interface TripProductCardProps {
   destination: string;
+  tier?: Tier;
   userEmail: string;
   onClose: () => void;
 }
 
-export function TripProductCard({ destination, userEmail, onClose }: TripProductCardProps) {
+export function TripProductCard({ destination, tier = "compass", userEmail, onClose }: TripProductCardProps) {
   const [stage, setStage] = useState<Stage>("detail");
   const [nextOpen, setNextOpen] = useState(false);
   const { toast } = useToast();
@@ -48,12 +186,7 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
 
   const effectiveEmail = email || userEmail;
   const images = DESTINATION_IMAGES[destination] ?? DESTINATION_IMAGES.Morocco;
-
-  const F = {
-    serif: "'Cormorant Garamond', Georgia, serif" as const,
-    body: "'Lora', Georgia, serif" as const,
-    ui: "'Inter', sans-serif" as const,
-  };
+  const cfg = TIER_CONFIG[tier];
 
   const overlay: React.CSSProperties = {
     position: "fixed",
@@ -81,17 +214,17 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
       credentials: "include",
       body: JSON.stringify({
         itemType: "trip",
-        itemId: `trip-${destination.toLowerCase()}-compass-${purchaseStatus}`,
+        itemId: `trip-${destination.toLowerCase()}-${tier}-${purchaseStatus}`,
         sourceContext: `/guides/${destination.toLowerCase()}`,
         storyTag: destination.toLowerCase(),
         aestheticTags: ["travel", "curated"],
         metadata: {
-          title: `${destination} — ${COMPASS.name}`,
+          title: `${destination} — ${cfg.name}`,
           imageUrl: images.card,
           bucket: "my-trips",
-          tier: "compass",
-          tierName: COMPASS.name,
-          price: COMPASS.price,
+          tier,
+          tierName: cfg.name,
+          price: cfg.price,
           status: purchaseStatus === "purchased"
             ? (destination === "Morocco" ? "ready" : "curating")
             : "saved",
@@ -113,23 +246,27 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
     }
   }
 
+  async function handleTrunkBegin() {
+    try { await saveTrip("saved"); } catch {}
+    window.dispatchEvent(new CustomEvent("open-concierge", {
+      detail: { message: cfg.conciergeMsg(destination) },
+    }));
+    onClose();
+  }
+
   async function handleConfirmPay() {
     setStage("processing");
     await new Promise(r => setTimeout(r, 1800));
     try { await saveTrip("purchased"); } catch {}
     setStage("success");
 
-    // Open concierge immediately with data-collection message
-    const conciergeMsg = `Your Compass is underway. I just need a few details to make it perfect — when are you thinking of going? How long do you have? Who's joining you? And what matters most — the food, the quiet, the art, the shopping? Once I have this, I'll have your itinerary, wardrobe, and packing list ready within the hour.`;
-
     setTimeout(() => {
-      window.dispatchEvent(new CustomEvent("open-concierge", { detail: { message: conciergeMsg } }));
+      window.dispatchEvent(new CustomEvent("open-concierge", { detail: { message: cfg.conciergeMsg(destination) } }));
       onClose();
     }, 600);
 
-    // 30 seconds later: simulate trip ready, queue notification
     setTimeout(() => {
-      const readyMsg = `Your ${destination} Compass is ready. Open your Suitcase to see your itinerary, wardrobe, and packing list.`;
+      const readyMsg = `Your ${destination} ${cfg.name} is ready. Open your Suitcase to see everything.`;
       try { sessionStorage.setItem("fdv_trip_ready_message", readyMsg); } catch {}
       window.dispatchEvent(new CustomEvent("trip-ready", { detail: { destination, message: readyMsg } }));
     }, 30000);
@@ -165,10 +302,10 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
               Trip Curation
             </p>
             <h2 style={{ fontFamily: F.serif, fontSize: 34, fontWeight: 400, color: "#2c2416", marginBottom: 6, lineHeight: 1.1 }}>
-              {COMPASS.name}
+              {cfg.name}
             </h2>
             <p style={{ fontFamily: F.body, fontSize: 15, fontStyle: "italic", color: "rgba(44,36,22,0.55)", marginBottom: 26, lineHeight: 1.6 }}>
-              {COMPASS.headline}
+              {cfg.headline}
             </p>
 
             {/* Features list */}
@@ -176,7 +313,7 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
               What's included:
             </p>
             <ul style={{ listStyle: "none", margin: "0 0 22px", padding: 0 }}>
-              {COMPASS.features.map((f, i) => (
+              {cfg.features.map((f, i) => (
                 <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
                   <span style={{ color: "#c9a84c", flexShrink: 0, fontSize: 11, marginTop: 3 }}>✦</span>
                   <span style={{ fontFamily: F.body, fontSize: 14, color: "#2c2416", lineHeight: 1.55 }}>{f}</span>
@@ -184,44 +321,11 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
               ))}
             </ul>
 
-            {/* ── Preview image cards ── */}
+            {/* Preview cards */}
             <div style={{ display: "flex", flexDirection: "column", gap: 20, marginBottom: 26, alignItems: "center" }}>
-
-              {/* Itinerary preview */}
-              <div style={{ width: "60%", display: "flex", flexDirection: "column", gap: 8 }}>
-                <p style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", color: "rgba(44,36,22,0.38)", margin: 0, textAlign: "center" }}>
-                  Sample itinerary
-                </p>
-                <img
-                  src={PREVIEW_IMAGES.itinerary}
-                  alt="Itinerary overview preview"
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    boxShadow: "0 4px 18px rgba(44,36,22,0.13), 0 1px 4px rgba(44,36,22,0.08)",
-                    display: "block",
-                    border: "1px solid rgba(44,36,22,0.07)",
-                  }}
-                />
-              </div>
-
-              {/* Packing list preview */}
-              <div style={{ width: "60%", display: "flex", flexDirection: "column", gap: 8 }}>
-                <p style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", color: "rgba(44,36,22,0.38)", margin: 0, textAlign: "center" }}>
-                  Sample packing list
-                </p>
-                <img
-                  src={PREVIEW_IMAGES.packing}
-                  alt="Wardrobe and packing list preview"
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    boxShadow: "0 4px 18px rgba(44,36,22,0.13), 0 1px 4px rgba(44,36,22,0.08)",
-                    display: "block",
-                    border: "1px solid rgba(44,36,22,0.07)",
-                  }}
-                />
-              </div>
+              {cfg.previews.map((p, i) => (
+                <PreviewCard key={i} src={p.src} label={p.label} />
+              ))}
             </div>
 
             {/* Expandable "What happens next?" */}
@@ -236,25 +340,36 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
                 </svg>
               </button>
               {nextOpen && (
-                <p style={{ fontFamily: F.body, fontSize: 13, fontStyle: "italic", color: "rgba(44,36,22,0.55)", lineHeight: 1.7, paddingBottom: 16, margin: 0 }}>
-                  Your concierge will be in touch within the hour to learn about your trip — when you're going, who's coming, and what matters most to you.
-                </p>
+                <div style={{ paddingBottom: 16 }}>
+                  <p style={{ fontFamily: F.body, fontSize: 13, fontStyle: "italic", color: "rgba(44,36,22,0.55)", lineHeight: 1.7, margin: "0 0 10px" }}>
+                    {cfg.whatHappensNext}
+                  </p>
+                  <p style={{ fontFamily: F.body, fontSize: 12, fontStyle: "italic", color: "rgba(44,36,22,0.32)", lineHeight: 1.6, margin: 0 }}>
+                    {cfg.refundPolicy}
+                  </p>
+                </div>
               )}
             </div>
 
             {/* Price */}
             <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 24 }}>
-              <span style={{ fontFamily: F.serif, fontSize: 44, fontWeight: 400, color: "#2c2416", lineHeight: 1 }}>$250</span>
-              <span style={{ fontFamily: F.body, fontSize: 13, fontStyle: "italic", color: "rgba(44,36,22,0.38)" }}>one-time</span>
+              <span style={{ fontFamily: F.serif, fontSize: tier === "trunk" ? 32 : 44, fontWeight: 400, color: "#2c2416", lineHeight: 1 }}>
+                {cfg.priceDisplay}
+              </span>
+              <span style={{ fontFamily: F.body, fontSize: 13, fontStyle: "italic", color: "rgba(44,36,22,0.38)" }}>
+                {cfg.priceLabel}
+              </span>
             </div>
 
-            {/* Buttons */}
+            {/* Primary CTA */}
             <button
-              onClick={() => setStage("checkout")}
+              onClick={tier === "trunk" ? handleTrunkBegin : () => setStage("checkout")}
               style={{ width: "100%", padding: "15px 0", background: "#2c2416", color: "#faf9f6", border: "none", fontFamily: F.ui, fontSize: 11, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", cursor: "pointer", marginBottom: 10 }}
             >
-              Curate My Trip
+              {cfg.primaryCta}
             </button>
+
+            {/* Save for later */}
             <button
               onClick={handleSaveForLater}
               style={{ width: "100%", padding: "14px 0", background: "transparent", color: "#2c2416", border: "1px solid rgba(44,36,22,0.22)", fontFamily: F.ui, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: 7 }}
@@ -270,8 +385,8 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
     );
   }
 
-  // ─── Checkout ─────────────────────────────────────────────────────────────
-  if (stage === "checkout") {
+  // ─── Checkout (Compass + Passage only) ────────────────────────────────────
+  if (stage === "checkout" && cfg.confirmCta) {
     return (
       <div style={overlay}>
         <div style={{ ...sheet, padding: "28px 20px 52px" }}>
@@ -289,24 +404,24 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
             Order Summary
           </p>
           <h2 style={{ fontFamily: F.serif, fontSize: 28, fontWeight: 400, color: "#2c2416", marginBottom: 22, lineHeight: 1.2 }}>
-            {COMPASS.name}
+            {cfg.name}
           </h2>
 
           <div style={{ background: "#fff", border: "1px solid rgba(44,36,22,0.1)", padding: "20px", marginBottom: 20 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: 14, marginBottom: 14, borderBottom: "1px solid rgba(44,36,22,0.07)" }}>
               <div>
                 <p style={{ fontFamily: F.ui, fontSize: 13, fontWeight: 600, color: "#2c2416", marginBottom: 2 }}>
-                  {destination} — {COMPASS.name}
+                  {destination} — {cfg.name}
                 </p>
                 <p style={{ fontFamily: F.ui, fontSize: 12, color: "rgba(44,36,22,0.45)" }}>
-                  {COMPASS.headline}
+                  {cfg.headline}
                 </p>
               </div>
-              <span style={{ fontFamily: F.serif, fontSize: 24, color: "#2c2416", flexShrink: 0, marginLeft: 12 }}>$250</span>
+              <span style={{ fontFamily: F.serif, fontSize: 24, color: "#2c2416", flexShrink: 0, marginLeft: 12 }}>{cfg.priceDisplay}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 4 }}>
               <span style={{ fontFamily: F.ui, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#2c2416" }}>Total</span>
-              <span style={{ fontFamily: F.serif, fontSize: 22, color: "#2c2416" }}>$250</span>
+              <span style={{ fontFamily: F.serif, fontSize: 22, color: "#2c2416" }}>{cfg.priceDisplay}</span>
             </div>
           </div>
 
@@ -315,7 +430,7 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
               <rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" />
             </svg>
             <p style={{ fontFamily: F.ui, fontSize: 11, color: "rgba(44,36,22,0.55)", lineHeight: 1.5, margin: 0 }}>
-              Secure payment. Your concierge will begin curating within the hour.
+              Secure payment. Your concierge begins immediately after checkout.
             </p>
           </div>
 
@@ -323,7 +438,7 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
             onClick={handleConfirmPay}
             style={{ width: "100%", padding: "16px 0", background: "#2c2416", color: "#fff", border: "none", fontFamily: F.ui, fontSize: 12, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", cursor: "pointer", marginBottom: 12 }}
           >
-            Confirm &amp; Pay — $250
+            {cfg.confirmCta}
           </button>
           <p style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", textAlign: "center", color: "rgba(44,36,22,0.32)", margin: 0 }}>
             Not ready? Your concierge is available to answer questions first.
@@ -356,8 +471,8 @@ export function TripProductCard({ destination, userEmail, onClose }: TripProduct
           <p style={{ fontFamily: F.ui, fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 10 }}>
             Confirmed
           </p>
-          <p style={{ fontFamily: F.serif, fontSize: 28, color: "#2c2416", lineHeight: 1.2, marginBottom: 8 }}>
-            Your Compass<br />is underway.
+          <p style={{ fontFamily: F.serif, fontSize: 28, color: "#2c2416", lineHeight: 1.2, marginBottom: 8, whiteSpace: "pre-line" }}>
+            {cfg.successTitle}
           </p>
           <p style={{ fontFamily: F.body, fontSize: 13, fontStyle: "italic", color: "rgba(44,36,22,0.42)" }}>
             Your concierge is opening now…
