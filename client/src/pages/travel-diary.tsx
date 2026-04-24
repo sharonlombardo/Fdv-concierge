@@ -9,50 +9,81 @@ import { Button } from '@/components/ui/button';
 import { generateStoryImage, shareImage } from '@/lib/share-utils';
 
 function generateDiaryPrintWindow(dayPages: DayPage[], entries: JournalEntries) {
-  const sealUrl = `${window.location.origin}/fdv-concierge-seal.png`;
+  const escapeHtml = (s: string) =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
-  const dayHtml = dayPages.map(day => {
-    const entryCards = day.flow.map(flowItem => {
-      const entry = entries[flowItem.id];
-      if (!entry) return '';
-      const hasNote = entry.note && entry.note.trim().length > 0;
-      const hasPhotos = entry.logImages && entry.logImages.length > 0;
-      if (!hasNote && !hasPhotos) return '';
+  const truncate = (s: string, n: number) =>
+    s.length <= n ? s : s.slice(0, n - 1).trimEnd() + '…';
 
-      const photosHtml = hasPhotos ? `
-        <div class="photo-grid ${entry.logImages!.length === 1 ? 'single' : 'multi'}">
-          ${entry.logImages!.map((img, i) => `
-            <div class="photo-item">
-              <img src="${img.src}" alt="${img.caption || `Photo ${i + 1}`}" loading="eager" />
-              ${img.caption ? `<p class="photo-caption">${img.caption}</p>` : ''}
-            </div>
-          `).join('')}
-        </div>` : '';
+  // Gather one tile of content per day (first photo + first note)
+  const tiles = dayPages
+    .map(day => {
+      let firstPhoto = '';
+      let firstNote = '';
+      for (const flowItem of day.flow) {
+        const entry = entries[flowItem.id];
+        if (!entry) continue;
+        if (!firstPhoto && entry.logImages && entry.logImages.length > 0) {
+          firstPhoto = entry.logImages[0].src;
+        }
+        if (!firstNote && entry.note && entry.note.trim().length > 0) {
+          firstNote = entry.note.trim();
+        }
+        if (firstPhoto && firstNote) break;
+      }
+      return {
+        day: day.day,
+        title: day.title,
+        location: day.location,
+        firstPhoto,
+        firstNote,
+      };
+    })
+    .filter(t => t.firstPhoto || t.firstNote);
 
-      return `
-        <div class="entry-card">
-          <div class="entry-meta">Day ${day.day} &mdash; ${flowItem.time}</div>
-          <h3 class="entry-title">${flowItem.title}</h3>
-          <div class="entry-location">&#x25BE; ${day.location}</div>
-          ${hasNote ? `<blockquote class="entry-note">&ldquo;${entry.note}&rdquo;</blockquote>` : ''}
-          ${photosHtml}
-        </div>`;
-    }).filter(Boolean).join('');
+  const count = tiles.length;
+  const isMagazine = count > 4;
+  const heroTiles = isMagazine ? tiles.slice(0, 2) : tiles;
+  const smallTiles = isMagazine ? tiles.slice(2) : [];
+  const heroCols = Math.min(Math.max(heroTiles.length, 1), 2);
+  const smallCols = smallTiles.length === 4 ? 4 : 3;
 
-    if (!entryCards.trim()) return '';
-
+  const renderTile = (t: typeof tiles[number], variant: 'hero' | 'small') => {
+    const snippetLen = variant === 'hero' ? 110 : 60;
+    const snippet = t.firstNote ? escapeHtml(truncate(t.firstNote, snippetLen)) : '';
+    const photoStyle = t.firstPhoto
+      ? `background-image: url('${t.firstPhoto.replace(/'/g, "\\'")}');`
+      : 'background: linear-gradient(135deg,#e8e1d4,#d6cdb9);';
     return `
-      <div class="day-section">
-        <div class="day-header">
-          <div class="day-number">${day.day}</div>
-          <div class="day-info">
-            <h2 class="day-title">${day.title}</h2>
-            <p class="day-date">${day.date}</p>
-          </div>
+      <div class="tile tile-${variant}" style="${photoStyle}">
+        <div class="tile-overlay"></div>
+        <div class="day-badge">${t.day}</div>
+        <div class="tile-text">
+          <h3 class="tile-title">${escapeHtml(t.title)}</h3>
+          ${snippet ? `<p class="tile-snippet">${snippet}</p>` : ''}
         </div>
-        ${entryCards}
       </div>`;
-  }).filter(Boolean).join('');
+  };
+
+  const heroHtml = heroTiles.length
+    ? `<div class="grid hero-grid" style="grid-template-columns: repeat(${heroCols}, 1fr);">
+         ${heroTiles.map(t => renderTile(t, 'hero')).join('')}
+       </div>`
+    : '';
+
+  const smallHtml = smallTiles.length
+    ? `<div class="grid small-grid" style="grid-template-columns: repeat(${smallCols}, 1fr);">
+         ${smallTiles.map(t => renderTile(t, 'small')).join('')}
+       </div>`
+    : '';
+
+  const emptyHtml = `
+    <div class="empty-state">
+      <p>No diary entries yet.</p>
+    </div>`;
+
+  const gridsHtml = count === 0 ? emptyHtml : `${heroHtml}${smallHtml}`;
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -60,260 +91,264 @@ function generateDiaryPrintWindow(dayPages: DayPage[], entries: JournalEntries) 
   <meta charset="UTF-8">
   <title>Travel Diary — FIL DE VIE Morocco 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
 
     body {
       font-family: 'Lora', Georgia, serif;
       background: #fafaf9;
       color: #2c2416;
-      padding: 56px 48px 72px;
-      max-width: 820px;
-      margin: 0 auto;
-      line-height: 1.6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .spread {
+      width: 100%;
+      max-width: 800px;
+      max-height: 600px;
+      aspect-ratio: 4 / 3;
+      background: #fafaf9;
+      padding: 24px 28px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     /* ── HEADER ── */
-    .diary-header {
+    .spread-header {
       text-align: center;
-      padding-bottom: 40px;
-      margin-bottom: 48px;
-    }
-    .seal {
-      width: 88px;
-      height: 88px;
-      display: block;
-      margin: 0 auto 20px;
-      opacity: 0.9;
+      flex-shrink: 0;
     }
     .brand-name {
       font-family: 'Inter', sans-serif;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
-      letter-spacing: 0.35em;
+      letter-spacing: 0.4em;
       text-transform: uppercase;
       color: #2c2416;
-      margin-bottom: 10px;
+      margin-bottom: 4px;
     }
     .destination-label {
       font-family: 'Lora', Georgia, serif;
       font-style: italic;
-      font-size: 26px;
+      font-size: 22px;
       font-weight: 400;
-      color: #5a5147;
-      margin-bottom: 28px;
+      color: #2c2416;
+      margin-bottom: 8px;
+      line-height: 1.1;
     }
     .header-rule {
-      width: 48px;
+      width: 36px;
       height: 1px;
       background: #c9a84c;
       margin: 0 auto;
     }
 
-    /* ── DAY SECTIONS ── */
-    .day-section {
-      margin-bottom: 56px;
-    }
-    .day-header {
+    /* ── GRID AREA ── */
+    .grids {
+      flex: 1;
       display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 28px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid rgba(201,168,76,0.35);
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
     }
-    .day-number {
-      width: 44px;
-      height: 44px;
+    .grid {
+      display: grid;
+      gap: 8px;
+      min-height: 0;
+    }
+    .hero-grid { flex: 2; }
+    .small-grid { flex: 1; }
+
+    /* When only hero grid exists (≤4 days), let it fill all space */
+    .grids:not(:has(.small-grid)) .hero-grid { flex: 1; }
+
+    /* ── TILES ── */
+    .tile {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      background-color: #2c2416;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-height: 0;
+    }
+    .tile-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 40%,
+        rgba(0,0,0,0.55) 85%,
+        rgba(0,0,0,0.75) 100%
+      );
+      pointer-events: none;
+    }
+    .day-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
-      background: #2c2416;
-      color: #faf8f5;
+      background: #c9a84c;
+      color: #2c2416;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-family: 'Inter', sans-serif;
       font-weight: 700;
-      font-size: 15px;
-      font-family: 'Inter', sans-serif;
-      flex-shrink: 0;
+      font-size: 11px;
+      letter-spacing: 0.02em;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      z-index: 2;
     }
-    .day-title {
+    .tile-text {
+      position: relative;
+      padding: 12px 14px 12px;
+      color: #fff;
+      z-index: 1;
+    }
+    .tile-title {
       font-family: 'Lora', Georgia, serif;
-      font-size: 21px;
+      font-style: italic;
       font-weight: 500;
-      color: #2c2416;
-      margin-bottom: 3px;
-    }
-    .day-date {
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      color: #8a7e6b;
-      letter-spacing: 0.04em;
-    }
-
-    /* ── ENTRY CARDS ── */
-    .entry-card {
-      background: #fff;
-      border: 1px solid #f0ece4;
-      border-radius: 10px;
-      padding: 28px 28px 24px;
-      margin-bottom: 20px;
-      box-shadow: 0 1px 4px rgba(44,36,22,0.06);
-    }
-    .entry-meta {
-      font-family: 'Inter', sans-serif;
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #8a7e6b;
-      margin-bottom: 8px;
-    }
-    .entry-title {
-      font-family: 'Lora', Georgia, serif;
-      font-size: 20px;
-      font-weight: 500;
-      color: #2c2416;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+      line-height: 1.15;
       margin-bottom: 4px;
     }
-    .entry-location {
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      color: #8a7e6b;
-      margin-bottom: 16px;
-    }
-    .entry-note {
+    .tile-snippet {
       font-family: 'Lora', Georgia, serif;
-      font-size: 15px;
-      font-style: italic;
-      color: #2c2416;
-      line-height: 1.65;
-      padding-left: 16px;
-      border-left: 2px solid #c9a84c;
-      margin-bottom: 20px;
+      color: rgba(255,255,255,0.92);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
-    /* ── PHOTOS ── */
-    .photo-grid { margin-top: 4px; }
-    .photo-grid.single .photo-item { text-align: center; }
-    .photo-grid.single img {
-      width: 65%;
-      border-radius: 6px;
-      box-shadow: 0 2px 12px rgba(44,36,22,0.1);
-      display: block;
-      margin: 0 auto;
+    /* Hero variant — larger type */
+    .tile-hero .tile-title { font-size: 18px; }
+    .tile-hero .tile-snippet { font-size: 12px; }
+
+    /* Small variant — compact type */
+    .tile-small .tile-title { font-size: 13px; margin-bottom: 2px; }
+    .tile-small .tile-snippet { font-size: 10.5px; -webkit-line-clamp: 1; }
+    .tile-small .day-badge {
+      width: 22px;
+      height: 22px;
+      font-size: 10px;
+      top: 8px;
+      left: 8px;
     }
-    .photo-grid.multi {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-    .photo-grid.multi img {
-      width: 100%;
-      aspect-ratio: 1;
-      object-fit: cover;
-      border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(44,36,22,0.08);
-    }
-    .photo-caption {
-      font-family: 'Lora', Georgia, serif;
-      font-size: 12px;
-      font-style: italic;
-      color: #8a7e6b;
-      margin-top: 6px;
-      text-align: center;
-    }
+    .tile-small .tile-text { padding: 8px 10px; }
 
     /* ── FOOTER ── */
-    .diary-footer {
+    .spread-footer {
       text-align: center;
-      padding-top: 40px;
-      margin-top: 24px;
-    }
-    .footer-rule {
-      width: 48px;
-      height: 1px;
-      background: #c9a84c;
-      margin: 0 auto 24px;
+      flex-shrink: 0;
     }
     .tagline {
       font-family: 'Lora', Georgia, serif;
       font-style: italic;
-      font-size: 14px;
+      font-size: 11px;
+      color: #c9a84c;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: #8a7e6b;
-      letter-spacing: 0.02em;
+      font-style: italic;
+      font-size: 14px;
     }
 
     /* ── PRINT OVERRIDES ── */
     @media print {
       @page {
-        margin: 0.75in 0.85in;
-        size: letter portrait;
+        margin: 0.4in;
+        size: letter landscape;
       }
-      body {
-        background: white;
-        padding: 0;
-        font-size: 10.5pt;
+      html, body { overflow: visible; }
+      body { padding: 0; background: white; }
+      .spread {
         max-width: none;
-      }
-      .diary-header {
-        padding-bottom: 28px;
-        margin-bottom: 36px;
-      }
-      .day-section {
+        max-height: none;
+        width: 100%;
+        height: 100vh;
         page-break-inside: avoid;
-        margin-bottom: 40px;
-      }
-      .entry-card {
-        page-break-inside: avoid;
-        box-shadow: none;
-        border: 1px solid #e8e4dc;
-      }
-      .photo-grid.single img {
-        width: 62%;
       }
     }
   </style>
 </head>
 <body>
-  <header class="diary-header">
-    <img class="seal" src="${sealUrl}" alt="FIL DE VIE" />
-    <p class="brand-name">FIL DE VIE</p>
-    <p class="destination-label">Morocco 2026</p>
-    <div class="header-rule"></div>
-  </header>
+  <div class="spread">
+    <header class="spread-header">
+      <p class="brand-name">FIL DE VIE</p>
+      <p class="destination-label">Morocco 2026</p>
+      <div class="header-rule"></div>
+    </header>
 
-  <main>${dayHtml || '<p style="text-align:center;color:#8a7e6b;font-style:italic;padding:48px 0">No diary entries yet.</p>'}</main>
+    <div class="grids">${gridsHtml}</div>
 
-  <footer class="diary-footer">
-    <div class="footer-rule"></div>
-    <p class="tagline">FIL DE VIE &mdash; the thread of life.</p>
-  </footer>
+    <footer class="spread-footer">
+      <p class="tagline">FIL DE VIE &mdash; the thread of life.</p>
+    </footer>
+  </div>
 
   <script>
-    // Wait for images to load before printing
-    var images = document.querySelectorAll('img');
-    var total = images.length;
-    if (total === 0) {
-      setTimeout(function() { window.print(); }, 300);
+    // Wait for background images to load before printing.
+    var tiles = document.querySelectorAll('.tile');
+    var urls = [];
+    tiles.forEach(function(t) {
+      var bg = t.style.backgroundImage;
+      var m = bg && bg.match(/url\\(['"]?(.+?)['"]?\\)/);
+      if (m && m[1]) urls.push(m[1]);
+    });
+
+    function fireprint() { setTimeout(function() { window.print(); }, 300); }
+
+    if (urls.length === 0) {
+      fireprint();
     } else {
       var loaded = 0;
-      function checkDone() {
+      var done = false;
+      function check() {
         loaded++;
-        if (loaded >= total) setTimeout(function() { window.print(); }, 300);
+        if (!done && loaded >= urls.length) { done = true; fireprint(); }
       }
-      images.forEach(function(img) {
-        if (img.complete) { checkDone(); }
-        else { img.onload = checkDone; img.onerror = checkDone; }
+      urls.forEach(function(u) {
+        var img = new Image();
+        img.onload = check;
+        img.onerror = check;
+        img.src = u;
       });
-      // Fallback in case some events don't fire
-      setTimeout(function() { window.print(); }, 3000);
+      // Safety fallback in case some images stall
+      setTimeout(function() { if (!done) { done = true; window.print(); } }, 3500);
     }
   </script>
 </body>
 </html>`;
 
-  const win = window.open('', '_blank', 'width=900,height=800');
+  const win = window.open('', '_blank', 'width=900,height=720');
   if (win) {
     win.document.write(html);
     win.document.close();
