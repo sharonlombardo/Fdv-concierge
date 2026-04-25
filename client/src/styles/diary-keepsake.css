@@ -1,0 +1,933 @@
+/* ==========================================================
+   FDV Concierge — Diary Keepsake
+   Merged from: diary-styles.css, diary-layouts.css,
+                mobile-styles.css, mobile-day-detail.css,
+                passage-modal.css
+   All rules scoped to .fdv-diary so they don't leak globally.
+   ========================================================== */
+
+.fdv-diary {
+  --paper: #faf8f5;
+  --paper-warm: #f5f0e6;
+  --ink: #2c2416;
+  --ink-soft: #5a5147;
+  --muted: #8a7e6b;
+  --taupe: #8a7e6b;
+  --rule: #e8e1d4;
+  --rule-soft: #f0ece4;
+  --gold: #c9a84c;
+  --gold-soft: #d9be77;
+  --gold-deep: #a88836;
+  --serif: 'Lora', Georgia, serif;
+  --sans: 'Inter', -apple-system, sans-serif;
+  --script: 'Allura', cursive;
+}
+
+.fdv-diary,
+.fdv-diary *,
+.fdv-diary *::before,
+.fdv-diary *::after {
+  box-sizing: border-box;
+}
+
+.fdv-diary {
+  font-family: var(--serif);
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.fdv-diary .diary {
+  font-family: var(--serif);
+  color: var(--ink);
+  background: var(--paper);
+  position: relative;
+  overflow: hidden;
+}
+
+.fdv-diary .diary.has-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(rgba(44, 36, 22, 0.025) 1px, transparent 1px),
+    radial-gradient(rgba(44, 36, 22, 0.018) 1px, transparent 1px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 1px;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 1;
+}
+.fdv-diary .diary > * { position: relative; z-index: 2; }
+
+/* ── Type ── */
+.fdv-diary .label {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0;
+}
+.fdv-diary .label--muted {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+}
+.fdv-diary .label--gold {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin: 0;
+}
+
+.fdv-diary .serif-italic {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.fdv-diary .sub-location {
+  font-family: var(--serif);
+  font-size: 12px;
+  color: var(--gold-deep);
+  letter-spacing: 0.02em;
+}
+
+.fdv-diary .brand-mark {
+  font-family: var(--sans);
+  font-weight: 700;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.fdv-diary .fdv-footer {
+  font-family: var(--sans);
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  font-size: 10px;
+}
+.fdv-diary .tagline {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 11px;
+  color: var(--gold-deep);
+  letter-spacing: 0.04em;
+}
+
+.fdv-diary .gold-rule {
+  height: 1px;
+  width: 36px;
+  background: var(--gold);
+  border: 0;
+  margin: 0;
+}
+.fdv-diary .hairline {
+  height: 1px;
+  background: var(--rule);
+  border: 0;
+}
+
+.fdv-diary .day-chip {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.fdv-diary .day-numeral {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold-deep);
+  line-height: 0.9;
+}
+
+/* ── Photos ── */
+.fdv-diary .photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--paper-warm);
+}
+.fdv-diary .photo-frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--paper-warm);
+}
+.fdv-diary .photo-placeholder {
+  position: relative;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #ede5d4 0px,
+      #ede5d4 8px,
+      #e5dcc7 8px,
+      #e5dcc7 16px
+    );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-soft);
+  font-family: 'Geist Mono', 'Fira Code', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 16px;
+}
+
+.fdv-diary .caption {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.fdv-diary .handwritten {
+  font-family: var(--script);
+  font-size: 22px;
+  color: var(--ink);
+  line-height: 1.1;
+}
+
+/* === Variation B: Photo-book Pages (PRINT CANONICAL) === */
+.fdv-diary .pb-book {
+  width: 1600px;
+  padding: 0;
+  margin: 0 auto;
+}
+.fdv-diary .pb-spread {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 1100px;
+  position: relative;
+}
+.fdv-diary .pb-spread + .pb-spread {
+  border-top: 1px solid var(--rule);
+}
+.fdv-diary .pb-spread::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 36px;
+  margin-left: -18px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(44, 36, 22, 0.04) 45%,
+    rgba(44, 36, 22, 0.07) 50%,
+    rgba(44, 36, 22, 0.04) 55%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+.fdv-diary .pb-cover-left {
+  position: relative;
+  padding: 80px 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--paper);
+}
+.fdv-diary .pb-cover-mark { display: flex; flex-direction: column; }
+.fdv-diary .pb-cover-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.fdv-diary .pb-cover-right {
+  position: relative;
+  background: #1a1a1a;
+}
+.fdv-diary .pb-cover-quote {
+  position: absolute;
+  bottom: 56px;
+  left: 56px;
+  right: 56px;
+  padding: 20px 24px;
+  background: rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-left: 2px solid var(--gold);
+}
+
+.fdv-diary .pb-page {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+.fdv-diary .pb-page-left { background: #1a1a1a; }
+.fdv-diary .pb-page-right {
+  background: var(--paper);
+  padding: 70px 80px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.fdv-diary .pb-page-num {
+  position: absolute;
+  bottom: 28px;
+  z-index: 2;
+}
+.fdv-diary .pb-page-num-left { left: 36px; }
+.fdv-diary .pb-page-num-left .label--muted { color: rgba(255,255,255,0.7); }
+.fdv-diary .pb-page-num-right {
+  right: 80px;
+  display: flex;
+  align-items: baseline;
+}
+
+.fdv-diary .pb-day-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+.fdv-diary .pb-day-meta {
+  flex: 1;
+  padding-top: 14px;
+}
+.fdv-diary .pb-mantra {
+  font-size: 18px;
+  color: var(--gold-deep);
+  border-left: 2px solid var(--gold);
+  padding-left: 16px;
+  margin-top: 4px;
+}
+.fdv-diary .pb-journal {
+  font-family: var(--serif);
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink);
+  margin: 0;
+}
+.fdv-diary .pb-moments {
+  border-top: 1px solid var(--rule);
+  padding-top: 16px;
+}
+.fdv-diary .pb-moment {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.fdv-diary .pb-moment:last-child { border-bottom: 0; }
+
+.fdv-diary .pb-photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: auto;
+}
+
+/* Scaled preview wrapper — shrinks the 1600px book to fit narrower screens */
+.fdv-diary-preview-wrap {
+  width: 100%;
+  overflow: hidden;
+  background: var(--paper, #faf8f5);
+}
+.fdv-diary-preview-scale {
+  transform-origin: top left;
+}
+
+/* === Mobile sample card styles === */
+.fdv-diary .mob-card {
+  width: 400px;
+  max-width: 100%;
+  background: var(--paper);
+  font-family: var(--serif);
+  color: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+.fdv-diary .mob-card .brand-mark,
+.fdv-diary .mob-card .label,
+.fdv-diary .mob-card .label--muted,
+.fdv-diary .mob-card .fdv-footer {
+  white-space: nowrap;
+}
+
+.fdv-diary .mob-cover { height: 500px; }
+.fdv-diary .mob-cover-photo { position: absolute; inset: 0; }
+.fdv-diary .mob-cover-photo .photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.fdv-diary .mob-cover-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.15) 0%,
+      rgba(0,0,0,0) 30%,
+      rgba(0,0,0,0) 55%,
+      rgba(0,0,0,0.55) 90%,
+      rgba(0,0,0,0.7) 100%
+    );
+}
+.fdv-diary .mob-cover-corner-tl {
+  position: absolute;
+  top: 18px; left: 20px;
+  z-index: 2;
+}
+.fdv-diary .mob-cover-corner-tr {
+  position: absolute;
+  top: 18px; right: 20px;
+  z-index: 2;
+}
+.fdv-diary .mob-cover-bottom {
+  position: absolute;
+  bottom: 28px;
+  left: 24px;
+  right: 24px;
+  z-index: 2;
+}
+
+.fdv-diary .mob-day {
+  height: 540px;
+  padding: 18px 22px 16px;
+  display: flex;
+  flex-direction: column;
+}
+.fdv-diary .mob-day-mast {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+.fdv-diary .mob-day-numline {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 12px 0 10px;
+}
+.fdv-diary .mob-day-locblock {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.fdv-diary .mob-day-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--paper-warm);
+  cursor: pointer;
+  position: relative;
+  transition: opacity 0.2s ease;
+}
+.fdv-diary .mob-day-photo:hover { opacity: 0.92; }
+.fdv-diary .mob-day-photo .photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.fdv-diary .mob-day-photo .tap-hint {
+  position: absolute;
+  bottom: 10px; right: 10px;
+  background: rgba(44, 36, 22, 0.78);
+  color: #faf8f5;
+  font-family: var(--sans);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+.fdv-diary .mob-day-mantra {
+  font-size: 14px;
+  color: var(--gold-deep);
+  border-left: 2px solid var(--gold);
+  padding-left: 12px;
+  margin: 14px 0 10px;
+  line-height: 1.3;
+}
+.fdv-diary .mob-day-journal {
+  font-family: var(--serif);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  flex: 1;
+  margin: 0;
+}
+.fdv-diary .mob-day-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--rule);
+}
+
+.fdv-diary .mob-index {
+  height: 520px;
+  padding: 20px 22px 18px;
+  display: flex;
+  flex-direction: column;
+}
+.fdv-diary .mob-idx-mast { text-align: center; }
+.fdv-diary .mob-idx-titleblock {
+  text-align: center;
+  padding: 16px 0 14px;
+}
+.fdv-diary .mob-idx-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 14px;
+}
+.fdv-diary .mob-idx-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.fdv-diary .mob-idx-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  position: relative;
+  overflow: hidden;
+}
+.fdv-diary .mob-idx-badge {
+  position: absolute;
+  top: 6px; left: 6px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 9px;
+}
+.fdv-diary .mob-idx-text { padding: 0 2px; }
+.fdv-diary .mob-idx-foot {
+  text-align: center;
+  padding-top: 12px;
+  margin-top: 10px;
+  border-top: 1px solid var(--rule);
+}
+
+/* === Mobile Day Detail sheet === */
+.fdv-diary .mdd-sheet {
+  width: 400px;
+  max-width: 100%;
+  background: var(--paper);
+  font-family: var(--serif);
+  color: var(--ink);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.fdv-diary .mdd-hero {
+  width: 100%;
+  height: 320px;
+  position: relative;
+  overflow: hidden;
+}
+.fdv-diary .mdd-hero .photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.fdv-diary .mdd-hero-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.25) 0%,
+    rgba(0,0,0,0) 35%,
+    rgba(0,0,0,0) 55%,
+    rgba(0,0,0,0.65) 100%
+  );
+}
+.fdv-diary .mdd-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.fdv-diary .mdd-hero-meta {
+  position: absolute;
+  top: 18px; left: 22px;
+  z-index: 2;
+}
+.fdv-diary .mdd-hero-title {
+  position: absolute;
+  bottom: 22px;
+  left: 22px;
+  right: 22px;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  z-index: 2;
+}
+.fdv-diary .mdd-hero-locblock {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 4px;
+}
+.fdv-diary .mdd-body {
+  padding: 24px 24px 22px;
+  display: flex;
+  flex-direction: column;
+}
+.fdv-diary .mdd-mantra-block {
+  text-align: center;
+  padding: 8px 0 18px;
+}
+.fdv-diary .mdd-mantra {
+  font-size: 18px;
+  color: var(--gold-deep);
+  line-height: 1.3;
+  margin: 0;
+}
+.fdv-diary .mdd-journal {
+  font-family: var(--serif);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0 0 24px;
+  text-align: left;
+}
+.fdv-diary .mdd-section {
+  border-top: 1px solid var(--rule);
+  padding-top: 16px;
+  margin-bottom: 20px;
+}
+.fdv-diary .mdd-section-label {
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--taupe);
+  margin: 0 0 12px;
+}
+.fdv-diary .mdd-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.fdv-diary .mdd-snap-frame {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+.fdv-diary .mdd-snap-caption {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 10px;
+  color: var(--taupe);
+  margin: 6px 0 0;
+  text-align: center;
+}
+.fdv-diary .mdd-moments {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.fdv-diary .mdd-moment {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 10px;
+  align-items: baseline;
+}
+.fdv-diary .mdd-moment-time {
+  font-family: var(--sans);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--gold-deep);
+  text-transform: uppercase;
+}
+.fdv-diary .mdd-moment-note {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+.fdv-diary .mdd-wardrobe {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+.fdv-diary .mdd-ward-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.fdv-diary .mdd-ward-swatch {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 2px;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+.fdv-diary .mdd-ward-label {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  text-align: center;
+  line-height: 1.4;
+}
+.fdv-diary .mdd-ward-label em {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--taupe);
+}
+.fdv-diary .mdd-booking {
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  padding: 12px 14px;
+}
+.fdv-diary .mdd-booking-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.fdv-diary .mdd-conf {
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #4a7c59;
+}
+.fdv-diary .mdd-booking-meta {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 10px;
+  color: var(--taupe);
+  margin-top: 4px;
+}
+.fdv-diary .mdd-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  margin-top: 8px;
+  border-top: 1px solid var(--rule);
+}
+
+/* Sheet overlay — within-modal (default, as designed) */
+.fdv-diary .mdd-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 16, 10, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 50;
+  animation: fdv-mdd-fade 0.25s ease;
+}
+.fdv-diary .pm-stage .mdd-overlay {
+  border-radius: 12px;
+  overflow: hidden;
+}
+/* Sheet overlay — page-level (fills viewport, used on /diary-keepsake) */
+.fdv-diary .mdd-overlay.mdd-overlay-fixed {
+  position: fixed;
+  z-index: 1000;
+  padding: 24px 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.fdv-diary .mdd-overlay-anim {
+  animation: fdv-mdd-slide 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes fdv-mdd-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fdv-mdd-slide {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* === Passage modal context frame === */
+.fdv-diary .pm-frame {
+  width: 460px;
+  max-width: 100%;
+  background: #faf8f5;
+  font-family: 'Inter', sans-serif;
+  color: #2c2416;
+  padding: 28px 28px 36px;
+  border-radius: 12px;
+  border: 1px solid #ece6d8;
+  position: relative;
+}
+.fdv-diary .pm-stage {
+  position: relative;
+  width: 460px;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.fdv-diary .pm-scroll { display: flex; flex-direction: column; }
+.fdv-diary .pm-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #c9a84c;
+  margin: 0 0 8px;
+}
+.fdv-diary .pm-title {
+  font-family: 'Lora', Georgia, serif;
+  font-weight: 400;
+  font-size: 38px;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+.fdv-diary .pm-deck {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  color: #5a5147;
+  font-size: 15px;
+  margin: 6px 0 22px;
+}
+.fdv-diary .pm-list-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #8a7e6b;
+  margin: 0 0 12px;
+}
+.fdv-diary .pm-list {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.fdv-diary .pm-list li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 13px;
+  color: #2c2416;
+  line-height: 1.4;
+}
+.fdv-diary .pm-list strong { font-weight: 600; }
+.fdv-diary .pm-bullet { color: #c9a84c; flex-shrink: 0; }
+.fdv-diary .pm-sample-block { margin: 16px 0 8px; text-align: center; }
+.fdv-diary .pm-sample-label {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  font-size: 12px;
+  color: #a89c83;
+  margin: 0 0 10px;
+}
+.fdv-diary .pm-sample-slot {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.fdv-diary .pm-divider {
+  height: 1px;
+  background: #ece6d8;
+  margin: 22px 0 18px;
+}
+.fdv-diary .pm-price-row { margin-bottom: 14px; }
+.fdv-diary .pm-price {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 32px;
+}
+.fdv-diary .pm-price-sub {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  color: #8a7e6b;
+  font-size: 14px;
+  margin-left: 6px;
+}
+.fdv-diary .pm-cta {
+  width: 100%;
+  background: #2c2416;
+  color: #faf8f5;
+  border: 0;
+  padding: 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+.fdv-diary .pm-cta-ghost {
+  width: 100%;
+  background: transparent;
+  color: #2c2416;
+  border: 1px solid #ece6d8;
+  padding: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+}
+
+/* === Print === */
+@media print {
+  @page { size: 11in 8.5in landscape; margin: 0; }
+  html, body { background: white !important; }
+  .fdv-diary-preview-wrap { overflow: visible !important; }
+  .fdv-diary-preview-scale {
+    transform: none !important;
+    width: 1600px !important;
+    height: auto !important;
+  }
+  .fdv-diary .pb-spread {
+    page-break-after: always;
+    break-after: page;
+  }
+  .fdv-diary .pb-spread:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+}

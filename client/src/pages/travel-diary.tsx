@@ -2,358 +2,12 @@
 import { useState } from 'react';
 import { Link } from 'wouter';
 // GlobalNav removed — TopBar is now app-level in App.tsx
-import { useJournal, JournalEntries } from '@/hooks/use-journal';
+import { useJournal } from '@/hooks/use-journal';
 import { ITINERARY_DATA, DayPage, FlowItem } from '@shared/itinerary-data';
 import { Camera, MapPin, ChevronRight, Share2, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { generateStoryImage, shareImage } from '@/lib/share-utils';
 
-function generateDiaryPrintWindow(dayPages: DayPage[], entries: JournalEntries) {
-  const escapeHtml = (s: string) =>
-    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-
-  const truncate = (s: string, n: number) =>
-    s.length <= n ? s : s.slice(0, n - 1).trimEnd() + '…';
-
-  // Gather one tile of content per day (first photo + first note)
-  const tiles = dayPages
-    .map(day => {
-      let firstPhoto = '';
-      let firstNote = '';
-      for (const flowItem of day.flow) {
-        const entry = entries[flowItem.id];
-        if (!entry) continue;
-        if (!firstPhoto && entry.logImages && entry.logImages.length > 0) {
-          firstPhoto = entry.logImages[0].src;
-        }
-        if (!firstNote && entry.note && entry.note.trim().length > 0) {
-          firstNote = entry.note.trim();
-        }
-        if (firstPhoto && firstNote) break;
-      }
-      return {
-        day: day.day,
-        title: day.title,
-        location: day.location,
-        firstPhoto,
-        firstNote,
-      };
-    })
-    .filter(t => t.firstPhoto || t.firstNote);
-
-  const count = tiles.length;
-  const isMagazine = count > 4;
-  const heroTiles = isMagazine ? tiles.slice(0, 2) : tiles;
-  const smallTiles = isMagazine ? tiles.slice(2) : [];
-  const heroCols = Math.min(Math.max(heroTiles.length, 1), 2);
-  const smallCols = smallTiles.length === 4 ? 4 : 3;
-
-  const renderTile = (t: typeof tiles[number], variant: 'hero' | 'small') => {
-    const snippetLen = variant === 'hero' ? 110 : 60;
-    const snippet = t.firstNote ? escapeHtml(truncate(t.firstNote, snippetLen)) : '';
-    const photoStyle = t.firstPhoto
-      ? `background-image: url('${t.firstPhoto.replace(/'/g, "\\'")}');`
-      : 'background: linear-gradient(135deg,#e8e1d4,#d6cdb9);';
-    return `
-      <div class="tile tile-${variant}" style="${photoStyle}">
-        <div class="tile-overlay"></div>
-        <div class="day-badge">${t.day}</div>
-        <div class="tile-text">
-          <h3 class="tile-title">${escapeHtml(t.title)}</h3>
-          ${snippet ? `<p class="tile-snippet">${snippet}</p>` : ''}
-        </div>
-      </div>`;
-  };
-
-  const heroHtml = heroTiles.length
-    ? `<div class="grid hero-grid" style="grid-template-columns: repeat(${heroCols}, 1fr);">
-         ${heroTiles.map(t => renderTile(t, 'hero')).join('')}
-       </div>`
-    : '';
-
-  const smallHtml = smallTiles.length
-    ? `<div class="grid small-grid" style="grid-template-columns: repeat(${smallCols}, 1fr);">
-         ${smallTiles.map(t => renderTile(t, 'small')).join('')}
-       </div>`
-    : '';
-
-  const emptyHtml = `
-    <div class="empty-state">
-      <p>No diary entries yet.</p>
-    </div>`;
-
-  const gridsHtml = count === 0 ? emptyHtml : `${heroHtml}${smallHtml}`;
-
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Travel Diary — FIL DE VIE Morocco 2026</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    body {
-      font-family: 'Lora', Georgia, serif;
-      background: #fafaf9;
-      color: #2c2416;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-
-    .spread {
-      width: 100%;
-      max-width: 800px;
-      max-height: 600px;
-      aspect-ratio: 4 / 3;
-      background: #fafaf9;
-      padding: 24px 28px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    /* ── HEADER ── */
-    .spread-header {
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .brand-name {
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.4em;
-      text-transform: uppercase;
-      color: #2c2416;
-      margin-bottom: 4px;
-    }
-    .destination-label {
-      font-family: 'Lora', Georgia, serif;
-      font-style: italic;
-      font-size: 22px;
-      font-weight: 400;
-      color: #2c2416;
-      margin-bottom: 8px;
-      line-height: 1.1;
-    }
-    .header-rule {
-      width: 36px;
-      height: 1px;
-      background: #c9a84c;
-      margin: 0 auto;
-    }
-
-    /* ── GRID AREA ── */
-    .grids {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-height: 0;
-    }
-    .grid {
-      display: grid;
-      gap: 8px;
-      min-height: 0;
-    }
-    .hero-grid { flex: 2; }
-    .small-grid { flex: 1; }
-
-    /* When only hero grid exists (≤4 days), let it fill all space */
-    .grids:not(:has(.small-grid)) .hero-grid { flex: 1; }
-
-    /* ── TILES ── */
-    .tile {
-      position: relative;
-      background-size: cover;
-      background-position: center;
-      background-color: #2c2416;
-      border-radius: 4px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      min-height: 0;
-    }
-    .tile-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(0,0,0,0) 40%,
-        rgba(0,0,0,0.55) 85%,
-        rgba(0,0,0,0.75) 100%
-      );
-      pointer-events: none;
-    }
-    .day-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: #c9a84c;
-      color: #2c2416;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Inter', sans-serif;
-      font-weight: 700;
-      font-size: 11px;
-      letter-spacing: 0.02em;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-      z-index: 2;
-    }
-    .tile-text {
-      position: relative;
-      padding: 12px 14px 12px;
-      color: #fff;
-      z-index: 1;
-    }
-    .tile-title {
-      font-family: 'Lora', Georgia, serif;
-      font-style: italic;
-      font-weight: 500;
-      color: #fff;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
-      line-height: 1.15;
-      margin-bottom: 4px;
-    }
-    .tile-snippet {
-      font-family: 'Lora', Georgia, serif;
-      color: rgba(255,255,255,0.92);
-      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-      line-height: 1.3;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    /* Hero variant — larger type */
-    .tile-hero .tile-title { font-size: 18px; }
-    .tile-hero .tile-snippet { font-size: 12px; }
-
-    /* Small variant — compact type */
-    .tile-small .tile-title { font-size: 13px; margin-bottom: 2px; }
-    .tile-small .tile-snippet { font-size: 10.5px; -webkit-line-clamp: 1; }
-    .tile-small .day-badge {
-      width: 22px;
-      height: 22px;
-      font-size: 10px;
-      top: 8px;
-      left: 8px;
-    }
-    .tile-small .tile-text { padding: 8px 10px; }
-
-    /* ── FOOTER ── */
-    .spread-footer {
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .tagline {
-      font-family: 'Lora', Georgia, serif;
-      font-style: italic;
-      font-size: 11px;
-      color: #c9a84c;
-      letter-spacing: 0.04em;
-    }
-
-    /* ── EMPTY STATE ── */
-    .empty-state {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #8a7e6b;
-      font-style: italic;
-      font-size: 14px;
-    }
-
-    /* ── PRINT OVERRIDES ── */
-    @media print {
-      @page {
-        margin: 0.4in;
-        size: letter landscape;
-      }
-      html, body { overflow: visible; }
-      body { padding: 0; background: white; }
-      .spread {
-        max-width: none;
-        max-height: none;
-        width: 100%;
-        height: 100vh;
-        page-break-inside: avoid;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="spread">
-    <header class="spread-header">
-      <p class="brand-name">FIL DE VIE</p>
-      <p class="destination-label">Morocco 2026</p>
-      <div class="header-rule"></div>
-    </header>
-
-    <div class="grids">${gridsHtml}</div>
-
-    <footer class="spread-footer">
-      <p class="tagline">FIL DE VIE &mdash; the thread of life.</p>
-    </footer>
-  </div>
-
-  <script>
-    // Wait for background images to load before printing.
-    var tiles = document.querySelectorAll('.tile');
-    var urls = [];
-    tiles.forEach(function(t) {
-      var bg = t.style.backgroundImage;
-      var m = bg && bg.match(/url\\(['"]?(.+?)['"]?\\)/);
-      if (m && m[1]) urls.push(m[1]);
-    });
-
-    function fireprint() { setTimeout(function() { window.print(); }, 300); }
-
-    if (urls.length === 0) {
-      fireprint();
-    } else {
-      var loaded = 0;
-      var done = false;
-      function check() {
-        loaded++;
-        if (!done && loaded >= urls.length) { done = true; fireprint(); }
-      }
-      urls.forEach(function(u) {
-        var img = new Image();
-        img.onload = check;
-        img.onerror = check;
-        img.src = u;
-      });
-      // Safety fallback in case some images stall
-      setTimeout(function() { if (!done) { done = true; window.print(); } }, 3500);
-    }
-  </script>
-</body>
-</html>`;
-
-  const win = window.open('', '_blank', 'width=900,height=720');
-  if (win) {
-    win.document.write(html);
-    win.document.close();
-  }
-}
 
 function isDayPage(page: any): page is DayPage {
   return 'day' in page;
@@ -547,10 +201,6 @@ export default function TravelDiary() {
 
   const dayPages = ITINERARY_DATA.filter(isDayPage) as DayPage[];
 
-  const handlePrintDiary = () => {
-    generateDiaryPrintWindow(dayPages, entries);
-  };
-
   const getEntriesForDay = (day: DayPage) => {
     const dayEntries: Array<{ flowItem: FlowItem; entry: any }> = [];
     day.flow.forEach(flowItem => {
@@ -596,8 +246,8 @@ export default function TravelDiary() {
             }}>
               Morocco 2026
             </p>
-            <button
-              onClick={handlePrintDiary}
+            <Link
+              href="/diary-keepsake"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -613,11 +263,12 @@ export default function TravelDiary() {
                 textTransform: 'uppercase' as const,
                 letterSpacing: '0.1em',
                 cursor: 'pointer',
+                textDecoration: 'none',
               }}
             >
               <BookOpen size={14} color="#c9a84c" />
               Save This Memory
-            </button>
+            </Link>
           </div>
 
           {/* Day filter tabs */}

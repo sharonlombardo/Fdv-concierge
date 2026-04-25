@@ -1,0 +1,141 @@
+export interface DiaryPhoto {
+  src: string;
+  caption: string;
+}
+
+export interface DiaryMoment {
+  title: string;
+  time: string;
+  note: string;
+}
+
+export interface DiaryDay {
+  n: number;
+  date: string;
+  day_label: string;
+  location: string;
+  sub_location: string;
+  mantra: string;
+  hero: string | null;
+  hero_alt: string;
+  photos: DiaryPhoto[];
+  moments: DiaryMoment[];
+  journal: string;
+}
+
+export interface DiaryCover {
+  pullquote: string;
+  intro: string;
+}
+
+export interface DiaryData {
+  brand: string;
+  destination: string;
+  year: string;
+  dateline: string;
+  traveler: string;
+  signature: string;
+  tagline: string;
+  cover: DiaryCover;
+  days: DiaryDay[];
+}
+
+const photo = (name: string): string => `/diary/photos/${name}`;
+
+export const MOROCCO_DIARY: DiaryData = {
+  brand: 'FDV CONCIERGE',
+  destination: 'Morocco',
+  year: '2026',
+  dateline: 'April 3 — 10, 2026',
+  traveler: 'Sharon',
+  signature: 'Sharon',
+  tagline: 'The thread of life.',
+  cover: {
+    pullquote: 'Marrakech is a city you feel, not a city you check off.',
+    intro:
+      'Eight days winding from the Atlas down into the medina — riads with rooftops, mint tea at every hour, light I can still see when I close my eyes.',
+  },
+  days: [
+    {
+      n: 1,
+      date: 'April 3',
+      day_label: 'Day One',
+      location: 'Arrival',
+      sub_location: 'Atlas Mountains',
+      mantra: 'Arrive softly.',
+      hero: photo('day1-arrival-linen.png'),
+      hero_alt: 'Linen curtains in afternoon light, Kasbah Bab Ourika',
+      photos: [
+        { src: photo('day1-mint-tea.png'), caption: 'mint tea, always' },
+        { src: photo('day1-dinner-kasbah.png'), caption: 'el fenn at last' },
+      ],
+      moments: [
+        { title: 'Check-in at Kasbah Bab Ourika', time: 'Afternoon', note: 'arrived.' },
+        { title: 'Walk the Grounds', time: 'Afternoon', note: 'a divine day' },
+        { title: 'Dinner at the Kasbah', time: 'Evening', note: 'never leaving' },
+      ],
+      journal:
+        'Landed and drove straight up. The light through linen at four in the afternoon is the only light I want for the rest of my life. Mint tea on the terrace and that quiet you get in the mountains.',
+    },
+    {
+      n: 2,
+      date: 'April 4',
+      day_label: 'Day Two',
+      location: 'Atlas Mountains',
+      sub_location: 'Rest Day',
+      mantra: "Slow down. You'll see more.",
+      hero: photo('day2-pool-lunch.png'),
+      hero_alt: 'Pool and terracotta walls overlooking the Atlas',
+      photos: [
+        { src: photo('day2-breakfast.png'), caption: 'the best morning' },
+        { src: photo('day2-terracotta.png'), caption: 'terracotta everywhere' },
+      ],
+      moments: [
+        { title: 'Breakfast on the Terrace', time: 'Morning', note: 'the best morning' },
+        { title: 'Reading, Walking, Rest', time: 'Afternoon', note: 'terracotta everywhere' },
+        { title: 'Lunch by the Pool', time: 'Afternoon', note: 'so warm' },
+      ],
+      journal:
+        'A whole day to do nothing. Read, swam, fell asleep on a daybed. The mountains do something to time — afternoons last twice as long. Linen and a long lunch and not one schedule to keep.',
+    },
+    {
+      n: 3,
+      date: 'April 5',
+      day_label: 'Day Three',
+      location: 'Atlas',
+      sub_location: 'Marrakech',
+      mantra: 'Let yourself get a little lost.',
+      hero: photo('day3-rooftop-elfenn.png'),
+      hero_alt: 'Sunset rooftop at El Fenn, Koutoubia in the distance',
+      photos: [
+        { src: photo('day3-arches.png'), caption: 'the day in marrakech' },
+      ],
+      moments: [
+        { title: 'Drive to Marrakech', time: 'Morning', note: 'back to the city' },
+        { title: 'Check-in at El Fenn', time: 'Afternoon', note: 'the day in marrakech' },
+        { title: 'Rooftop Snacks & Cocktails', time: 'Evening', note: 'coming here every night' },
+      ],
+      journal:
+        'Down out of the mountains and into the medina. El Fenn at the edge — exactly where you want to be. Climbed up for sunset and the call to prayer started at the same moment the sky turned pink. Rooftop, every night.',
+    },
+    {
+      n: 4,
+      date: 'April 6',
+      day_label: 'Day Four',
+      location: 'Marrakech',
+      sub_location: 'The Medina',
+      mantra: 'You be the canvas. Let the city be the color.',
+      hero: null,
+      hero_alt: 'Bahia Palace courtyard — placeholder',
+      photos: [],
+      moments: [
+        { title: 'Dar El Bacha', time: 'Morning', note: 'tile after tile' },
+        { title: 'Bahia Palace', time: 'Afternoon', note: 'stopped breathing twice' },
+        { title: 'Royal Mansour Tea', time: 'Afternoon', note: 'absurd, in the best way' },
+        { title: 'Dinner at Dar Yacout', time: 'Evening', note: 'candles, candles, candles' },
+      ],
+      journal:
+        'A full medina day. Tile, courtyard, fountain, repeat. Tea at the Royal Mansour because why not, and Dar Yacout for dinner — three hundred candles up to a rooftop. I stopped trying to take pictures and just stayed in it.',
+    },
+  ],
+};

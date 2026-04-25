@@ -32,6 +32,7 @@ import TodaysEdit from "@/pages/todays-edit";
 import Destinations from "@/pages/destinations";
 import ComingSoon from "@/pages/coming-soon";
 import TravelDiary from "@/pages/travel-diary";
+import DiaryKeepsake from "@/pages/diary-keepsake";
 import MoroccoGuide from "@/pages/guides/morocco";
 import HydraGuide from "@/pages/guides/hydra";
 import ShopPage from "@/pages/shop";
@@ -79,6 +80,7 @@ function Router() {
       <Route path="/packing" component={PackingList} />
       <Route path="/diary" component={TravelDiary} />
       <Route path="/travel-diary" component={TravelDiary} />
+      <Route path="/diary-keepsake" component={DiaryKeepsake} />
       <Route path="/current">{() => <CurrentFeed />}</Route>
       <Route path="/suitcase" component={SuitcasePage} />
       <Route path="/suitcase/edit/:editTag" component={EditDetail} />
