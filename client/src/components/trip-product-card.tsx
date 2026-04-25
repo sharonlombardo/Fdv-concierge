@@ -77,6 +77,7 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
       "Personal travel diary — a shareable keepsake",
       "Upload your own wardrobe — mix what you own with what we curate",
       "Booking confirmations delivered to your Suitcase",
+      "24/7 concierge while you travel — styling advice from your suitcase, restaurant updates, directions, weather, whatever you need in the moment",
     ],
     primaryCta: "Curate My Passage",
     confirmCta: "Confirm & Pay — $750",
@@ -308,12 +309,17 @@ function SampleWardrobeIntegration() {
   );
 }
 
-function PassageSample({ label, children }: { label: string; children: React.ReactNode }) {
+function PassageSample({ label, intro, children }: { label: string; intro?: string; children: React.ReactNode }) {
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
       <p style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", color: "rgba(44,36,22,0.38)", margin: 0, textAlign: "center" }}>
         {label}
       </p>
+      {intro && (
+        <p style={{ fontFamily: F.body, fontSize: 14, fontStyle: "italic", color: "#5a5147", lineHeight: 1.55, margin: "4px 0 18px", textAlign: "center", maxWidth: 460 }}>
+          {intro}
+        </p>
+      )}
       {children}
     </div>
   );
@@ -511,7 +517,12 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
             <div style={{ display: "flex", flexDirection: "column", gap: 28, marginBottom: 26, alignItems: "center" }}>
               {tier === "passage" ? (
                 <>
-                  <PassageSample label="Sample Travel Diary"><PassageTravelDiarySection /></PassageSample>
+                  <PassageSample
+                    label="Sample Travel Diary"
+                    intro="Your trip becomes a keepsake. Every day documented — your photos, your journal, your moments — designed into a personal travel diary you can share or print. Here's what yours could look like."
+                  >
+                    <PassageTravelDiarySection />
+                  </PassageSample>
                   <PassageSample label="Sample Booking Confirmation"><SampleBookingConfirmation /></PassageSample>
                   <PassageSample label="Sample Wardrobe Integration"><SampleWardrobeIntegration /></PassageSample>
                 </>
