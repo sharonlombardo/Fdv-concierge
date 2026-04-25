@@ -1,10 +1,12 @@
-import type { CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { DiaryData, DiaryDay } from './DiaryData';
 
 interface MobileDayDetailProps {
   data: DiaryData;
   day: DiaryDay;
   onClose: () => void;
+  onShare?: () => void;
+  variant?: 'card' | 'fullscreen';
 }
 
 interface WardrobeTile {
@@ -19,35 +21,95 @@ const DEFAULT_WARDROBE: WardrobeTile[] = [
   { label: 'straw hat', detail: 'natural', swatch: '#8a7e6b' },
 ];
 
-export function MobileDayDetail({ data, day, onClose }: MobileDayDetailProps) {
+function pullQuoteFromJournal(journal: string): string | null {
+  const sentences = journal
+    .split(/(?<=[.?!])\s+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (sentences.length === 0) return null;
+  const candidates = sentences.slice(1).filter((s) => s.length > 28 && s.length < 140);
+  return candidates[0] ?? sentences[0] ?? null;
+}
+
+export function MobileDayDetail({ data, day, onClose, onShare, variant = 'card' }: MobileDayDetailProps) {
   const heroBodyStyle: CSSProperties = day.hero
     ? {}
     : { background: 'var(--paper-warm)' };
 
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const [parallaxY, setParallaxY] = useState(0);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        setParallaxY(el.scrollTop * 0.3);
+      });
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [day.n]);
+
+  const handleShare = onShare ?? (() => {
+    const shareData = {
+      title: `${data.destination} — ${day.day_label}`,
+      text: day.journal,
+    };
+    if (typeof navigator !== 'undefined' && (navigator as Navigator & { share?: (d: ShareData) => Promise<void> }).share) {
+      (navigator as Navigator & { share: (d: ShareData) => Promise<void> }).share(shareData).catch(() => {});
+    }
+  });
+
+  const pullQuote = pullQuoteFromJournal(day.journal);
+
   return (
     <div
-      className="mdd-sheet"
+      ref={scrollerRef}
+      className={`mdd-sheet mdd-sheet--${variant}`}
       onClick={(e) => e.stopPropagation()}
       role="dialog"
       aria-modal="true"
     >
       {/* Hero */}
       <div className="mdd-hero" style={heroBodyStyle}>
-        {day.hero ? (
-          <img className="photo" src={day.hero} alt={day.hero_alt} />
-        ) : (
-          <div className="photo-placeholder" style={{ position: 'absolute', inset: 0 }}>
-            <span>{day.hero_alt}</span>
-          </div>
-        )}
-        <button className="mdd-close" onClick={onClose} aria-label="Close">
+        <div
+          className="mdd-hero-parallax"
+          style={{ transform: `translate3d(0, ${parallaxY}px, 0)` }}
+        >
+          {day.hero ? (
+            <img className="photo" src={day.hero} alt={day.hero_alt} />
+          ) : (
+            <div className="photo-placeholder" style={{ position: 'absolute', inset: 0 }}>
+              <span>{day.hero_alt}</span>
+            </div>
+          )}
+        </div>
+        <button
+          className="mdd-back"
+          onClick={onClose}
+          aria-label="Back to diary"
+          type="button"
+        >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path
-              d="M1 1L13 13M13 1L1 13"
-              stroke="#fff"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
+            <path d="M9 1L2 7L9 13" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <button
+          className="mdd-share"
+          onClick={handleShare}
+          aria-label="Share this day"
+          type="button"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 1V9" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
+            <path d="M3.5 4.5L7 1L10.5 4.5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M2 8V12C2 12.5523 2.44772 13 3 13H11C11.5523 13 12 12.5523 12 12V8" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
           </svg>
         </button>
         <div className="mdd-hero-veil" />
@@ -56,7 +118,7 @@ export function MobileDayDetail({ data, day, onClose }: MobileDayDetailProps) {
             className="brand-mark"
             style={{ fontSize: 8, color: 'rgba(255,255,255,0.85)' }}
           >
-            FIL DE VIE · {data.destination.toUpperCase()} {data.year}
+            FDV CONCIERGE · {data.destination.toUpperCase()} {data.year}
           </span>
         </div>
         <div className="mdd-hero-title">
@@ -91,14 +153,16 @@ export function MobileDayDetail({ data, day, onClose }: MobileDayDetailProps) {
       {/* Body */}
       <div className="mdd-body">
         <div className="mdd-mantra-block">
-          <hr
-            className="gold-rule"
-            style={{ margin: '0 auto 14px', width: 32, background: 'var(--gold)' }}
-          />
-          <p className="serif-italic mdd-mantra">&ldquo;{day.mantra}&rdquo;</p>
+          <p className="serif-italic mdd-pullquote">&ldquo;{day.mantra}&rdquo;</p>
         </div>
 
         <p className="mdd-journal">{day.journal}</p>
+
+        {pullQuote && pullQuote !== day.mantra && (
+          <blockquote className="mdd-pullquote-secondary">
+            &ldquo;{pullQuote}&rdquo;
+          </blockquote>
+        )}
 
         {day.photos.length > 0 && (
           <div className="mdd-section">
@@ -160,12 +224,12 @@ export function MobileDayDetail({ data, day, onClose }: MobileDayDetailProps) {
           <div className="mdd-booking">
             <div className="mdd-booking-row">
               <span className="serif-italic" style={{ fontSize: 13 }}>
-                Kasbah Bab Ourika
+                {day.n <= 2 ? 'Kasbah Bab Ourika' : day.n === 5 ? 'Villa Salama, Essaouira' : 'El Fenn, Marrakech'}
               </span>
               <span className="mdd-conf">✓ confirmed</span>
             </div>
             <div className="mdd-booking-meta">
-              3 nights · check-in {day.date} · ref FDV-04173-A
+              check-in {day.date} · ref FDV-{String(4173 + day.n).padStart(5, '0')}-{String.fromCharCode(64 + day.n)}
             </div>
           </div>
         </div>

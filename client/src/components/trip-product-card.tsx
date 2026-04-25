@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/contexts/user-context";
-import { MOROCCO_DIARY } from "@/components/diary/DiaryData";
-import { MobileDayPage } from "@/components/diary/MobileDayPage";
-import { MobileDayDetail } from "@/components/diary/MobileDayDetail";
+import { PassageTravelDiarySection } from "@/components/diary/PassageTravelDiarySection";
 import { getShopImageUrl } from "@/lib/brand-genome";
 import "@/styles/diary-keepsake.css";
 
@@ -137,60 +135,6 @@ const DESTINATION_IMAGES: Record<string, { card: string; img1: string; img2: str
     img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_pier_model_white.jpg",
   },
 };
-
-// ─── Sample Travel Diary (interactive — tap photo to expand day detail) ─────
-function SampleTravelDiary() {
-  const [open, setOpen] = useState(false);
-  const day = MOROCCO_DIARY.days[0];
-
-  return (
-    <>
-      <div className="fdv-diary" style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-        <div
-          style={{
-            position: "relative",
-            width: "100%",
-            maxWidth: 360,
-            boxShadow: "0 4px 18px rgba(44,36,22,0.13), 0 1px 4px rgba(44,36,22,0.08)",
-            border: "1px solid rgba(44,36,22,0.07)",
-            overflow: "hidden",
-            borderRadius: 4,
-          }}
-        >
-          <MobileDayPage data={MOROCCO_DIARY} day={day} onPhotoTap={() => setOpen(true)} />
-        </div>
-      </div>
-      {open && day && (
-        <div
-          className="fdv-diary"
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 10300,
-            background: "rgba(20, 16, 10, 0.62)",
-            backdropFilter: "blur(3px)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            padding: "24px 0",
-            overflowY: "auto",
-            WebkitOverflowScrolling: "touch",
-            animation: "fdv-mdd-fade 0.25s ease",
-          }}
-          onClick={() => setOpen(false)}
-        >
-          <div
-            className="mdd-overlay-anim"
-            onClick={(e) => e.stopPropagation()}
-            style={{ margin: "auto 0" }}
-          >
-            <MobileDayDetail data={MOROCCO_DIARY} day={day} onClose={() => setOpen(false)} />
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
 
 // ─── Sample Booking Confirmation card ───────────────────────────────────────
 function SampleBookingConfirmation() {
@@ -567,7 +511,7 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
             <div style={{ display: "flex", flexDirection: "column", gap: 28, marginBottom: 26, alignItems: "center" }}>
               {tier === "passage" ? (
                 <>
-                  <PassageSample label="Sample Travel Diary"><SampleTravelDiary /></PassageSample>
+                  <PassageSample label="Sample Travel Diary"><PassageTravelDiarySection /></PassageSample>
                   <PassageSample label="Sample Booking Confirmation"><SampleBookingConfirmation /></PassageSample>
                   <PassageSample label="Sample Wardrobe Integration"><SampleWardrobeIntegration /></PassageSample>
                 </>

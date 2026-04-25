@@ -105,11 +105,9 @@ export const MOROCCO_DIARY: DiaryData = {
       location: 'Atlas',
       sub_location: 'Marrakech',
       mantra: 'Let yourself get a little lost.',
-      hero: photo('day3-rooftop-elfenn.png'),
-      hero_alt: 'Sunset rooftop at El Fenn, Koutoubia in the distance',
-      photos: [
-        { src: photo('day3-arches.png'), caption: 'the day in marrakech' },
-      ],
+      hero: null,
+      hero_alt: 'Sunset rooftop at El Fenn — placeholder',
+      photos: [],
       moments: [
         { title: 'Drive to Marrakech', time: 'Morning', note: 'back to the city' },
         { title: 'Check-in at El Fenn', time: 'Afternoon', note: 'the day in marrakech' },
@@ -136,6 +134,64 @@ export const MOROCCO_DIARY: DiaryData = {
       ],
       journal:
         'A full medina day. Tile, courtyard, fountain, repeat. Tea at the Royal Mansour because why not, and Dar Yacout for dinner — three hundred candles up to a rooftop. I stopped trying to take pictures and just stayed in it.',
+    },
+    {
+      n: 5,
+      date: 'April 7',
+      day_label: 'Day Five',
+      location: 'Coast',
+      sub_location: 'Essaouira',
+      mantra: 'The sea changes the conversation.',
+      hero: null,
+      hero_alt: 'Essaouira ramparts and Atlantic — placeholder',
+      photos: [],
+      moments: [
+        { title: 'Drive to Essaouira', time: 'Morning', note: 'three hours, all blue' },
+        { title: 'Lunch at the Beach Club', time: 'Afternoon', note: 'salt on everything' },
+        { title: 'Walk the Ramparts', time: 'Afternoon', note: 'the wind never stops' },
+      ],
+      journal:
+        'Out of the medina, west to the coast. Three hours and the world goes blue. Essaouira does something Marrakech can’t — strips it back. White, blue, salt, wind. Lunch on the sand, a long walk along the ramparts, and back in time for the sky to do its thing.',
+    },
+    {
+      n: 6,
+      date: 'April 8',
+      day_label: 'Day Six',
+      location: 'Marrakech',
+      sub_location: 'The Souks',
+      mantra: 'Buy the thing. You came all this way.',
+      hero: photo('day6-elfenn-dinner.png'),
+      hero_alt: 'Candlelit table at El Fenn, evening',
+      photos: [
+        { src: photo('day6-yacout.png'), caption: 'three hundred candles' },
+      ],
+      moments: [
+        { title: 'Souk Crawl with Mustapha', time: 'Morning', note: 'a guide changes everything' },
+        { title: 'Late Lunch at Nomad', time: 'Afternoon', note: 'rooftop, again' },
+        { title: 'Dinner at El Fenn', time: 'Evening', note: 'candles, again' },
+      ],
+      journal:
+        'Day for the souks. Found Mustapha through the riad and it changed everything — three hours of being walked through doors I would have walked past. Two rugs, a brass tray, a pair of slippers. Dinner at El Fenn under the stars. The kind of day you can’t plan twice.',
+    },
+    {
+      n: 7,
+      date: 'April 9',
+      day_label: 'Day Seven',
+      location: 'Atlas Edge',
+      sub_location: 'Departure',
+      mantra: 'Leave a little behind so you have to come back.',
+      hero: photo('day7-camel-sunset.png'),
+      hero_alt: 'Camel silhouettes at sunset, Agafay desert',
+      photos: [
+        { src: photo('day1-mint-tea.png'), caption: 'one last tea' },
+      ],
+      moments: [
+        { title: 'Sunrise at the Riad', time: 'Morning', note: 'quiet courtyard' },
+        { title: 'Agafay Desert Camel Ride', time: 'Afternoon', note: 'the long view' },
+        { title: 'Departure', time: 'Evening', note: 'already booking the next one' },
+      ],
+      journal:
+        'Last day. Slow morning, one more mint tea, and out into the Agafay before the flight. The light at five in the desert is its own thing — nothing prepares you for it. Came home with sand in my shoes and a list of things to come back for.',
     },
   ],
 };
