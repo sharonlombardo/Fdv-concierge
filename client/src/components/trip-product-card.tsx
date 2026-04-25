@@ -3,6 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/contexts/user-context";
 import { MOROCCO_DIARY } from "@/components/diary/DiaryData";
 import { MobileDayPage } from "@/components/diary/MobileDayPage";
+import { MobileDayDetail } from "@/components/diary/MobileDayDetail";
 import { getShopImageUrl } from "@/lib/brand-genome";
 import "@/styles/diary-keepsake.css";
 
@@ -137,14 +138,57 @@ const DESTINATION_IMAGES: Record<string, { card: string; img1: string; img2: str
   },
 };
 
-// ─── Sample Travel Diary (uses real diary mobile day card) ──────────────────
+// ─── Sample Travel Diary (interactive — tap photo to expand day detail) ─────
 function SampleTravelDiary() {
+  const [open, setOpen] = useState(false);
+  const day = MOROCCO_DIARY.days[0];
+
   return (
-    <div className="fdv-diary" style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-      <div style={{ width: "100%", maxWidth: 360, boxShadow: "0 4px 18px rgba(44,36,22,0.13), 0 1px 4px rgba(44,36,22,0.08)", border: "1px solid rgba(44,36,22,0.07)" }}>
-        <MobileDayPage data={MOROCCO_DIARY} day={MOROCCO_DIARY.days[0]} />
+    <>
+      <div className="fdv-diary" style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            maxWidth: 360,
+            boxShadow: "0 4px 18px rgba(44,36,22,0.13), 0 1px 4px rgba(44,36,22,0.08)",
+            border: "1px solid rgba(44,36,22,0.07)",
+            overflow: "hidden",
+            borderRadius: 4,
+          }}
+        >
+          <MobileDayPage data={MOROCCO_DIARY} day={day} onPhotoTap={() => setOpen(true)} />
+        </div>
       </div>
-    </div>
+      {open && day && (
+        <div
+          className="fdv-diary"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 10300,
+            background: "rgba(20, 16, 10, 0.62)",
+            backdropFilter: "blur(3px)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            padding: "24px 0",
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+            animation: "fdv-mdd-fade 0.25s ease",
+          }}
+          onClick={() => setOpen(false)}
+        >
+          <div
+            className="mdd-overlay-anim"
+            onClick={(e) => e.stopPropagation()}
+            style={{ margin: "auto 0" }}
+          >
+            <MobileDayDetail data={MOROCCO_DIARY} day={day} onClose={() => setOpen(false)} />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -237,7 +281,7 @@ function SampleBookingConfirmation() {
 function SampleWardrobeIntegration() {
   const items = [
     { src: getShopImageUrl("look:fdv:isadoradress:blk.jpg"), label: "Isadora Dress", source: "yours" as const },
-    { src: getShopImageUrl("Look:alia:soukcoat:desertpants:blush.jpg"), label: "Alaïa Souk Coat", source: "curated" as const },
+    { src: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/morocco-tile-3", label: "Alaïa Souk Coat", source: "curated" as const },
     { src: getShopImageUrl("look:fildevie:columndress:black.jpg"), label: "Column Dress", source: "yours" as const },
     { src: getShopImageUrl("footwear:khaite:otto:wht.jpg"), label: "Robe Slide", source: "curated" as const },
   ];
