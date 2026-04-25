@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/contexts/user-context";
+import { MOROCCO_DIARY } from "@/components/diary/DiaryData";
+import { MobileDayPage } from "@/components/diary/MobileDayPage";
+import { getShopImageUrl } from "@/lib/brand-genome";
+import "@/styles/diary-keepsake.css";
 
 export type Tier = "compass" | "passage" | "trunk";
 type Stage = "detail" | "checkout" | "processing" | "success";
@@ -132,6 +136,200 @@ const DESTINATION_IMAGES: Record<string, { card: string; img1: string; img2: str
     img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_pier_model_white.jpg",
   },
 };
+
+// ─── Sample Travel Diary (uses real diary mobile day card) ──────────────────
+function SampleTravelDiary() {
+  return (
+    <div className="fdv-diary" style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+      <div style={{ width: "100%", maxWidth: 360, boxShadow: "0 4px 18px rgba(44,36,22,0.13), 0 1px 4px rgba(44,36,22,0.08)", border: "1px solid rgba(44,36,22,0.07)" }}>
+        <MobileDayPage data={MOROCCO_DIARY} day={MOROCCO_DIARY.days[0]} />
+      </div>
+    </div>
+  );
+}
+
+// ─── Sample Booking Confirmation card ───────────────────────────────────────
+function SampleBookingConfirmation() {
+  return (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: 360,
+        background: "#faf8f5",
+        border: "1px solid rgba(44,36,22,0.1)",
+        boxShadow: "0 4px 18px rgba(44,36,22,0.13), 0 1px 4px rgba(44,36,22,0.08)",
+        padding: "22px 22px 24px",
+        position: "relative",
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 18 }}>
+        <span style={{ fontFamily: F.ui, fontSize: 9, fontWeight: 700, letterSpacing: "0.32em", textTransform: "uppercase", color: "#2c2416" }}>
+          FIL DE VIE
+        </span>
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 5,
+            padding: "4px 9px",
+            border: "1px solid #c9a84c",
+            color: "#a88836",
+            fontFamily: F.ui,
+            fontSize: 8,
+            fontWeight: 700,
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            background: "rgba(201,168,76,0.06)",
+          }}
+        >
+          <span style={{ fontSize: 9 }}>✦</span> Confirmed
+        </span>
+      </div>
+
+      <p style={{ fontFamily: F.ui, fontSize: 8.5, fontWeight: 600, letterSpacing: "0.24em", textTransform: "uppercase", color: "rgba(44,36,22,0.5)", marginBottom: 6 }}>
+        Reservation
+      </p>
+      <h3 style={{ fontFamily: F.serif, fontStyle: "italic", fontSize: 22, color: "#2c2416", margin: "0 0 4px", lineHeight: 1.15 }}>
+        Le Jardin Secret
+      </h3>
+      <p style={{ fontFamily: F.body, fontSize: 11.5, fontStyle: "italic", color: "rgba(44,36,22,0.55)", margin: "0 0 16px" }}>
+        Marrakech, Medina
+      </p>
+
+      <hr style={{ border: 0, borderTop: "1px solid rgba(44,36,22,0.1)", margin: "0 0 14px" }} />
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 16px", marginBottom: 14 }}>
+        <div>
+          <p style={{ fontFamily: F.ui, fontSize: 8, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(44,36,22,0.45)", margin: "0 0 4px" }}>Date</p>
+          <p style={{ fontFamily: F.body, fontSize: 12, color: "#2c2416", margin: 0 }}>April 5, 2026</p>
+        </div>
+        <div>
+          <p style={{ fontFamily: F.ui, fontSize: 8, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(44,36,22,0.45)", margin: "0 0 4px" }}>Time</p>
+          <p style={{ fontFamily: F.body, fontSize: 12, color: "#2c2416", margin: 0 }}>8:30 PM</p>
+        </div>
+        <div>
+          <p style={{ fontFamily: F.ui, fontSize: 8, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(44,36,22,0.45)", margin: "0 0 4px" }}>Party</p>
+          <p style={{ fontFamily: F.body, fontSize: 12, color: "#2c2416", margin: 0 }}>2 guests</p>
+        </div>
+        <div>
+          <p style={{ fontFamily: F.ui, fontSize: 8, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(44,36,22,0.45)", margin: "0 0 4px" }}>Confirmation</p>
+          <p style={{ fontFamily: F.body, fontSize: 12, color: "#2c2416", margin: 0 }}>LJS-4019</p>
+        </div>
+      </div>
+
+      <hr style={{ border: 0, borderTop: "1px solid rgba(44,36,22,0.1)", margin: "0 0 14px" }} />
+
+      <p style={{ fontFamily: F.body, fontSize: 11.5, fontStyle: "italic", color: "rgba(44,36,22,0.6)", lineHeight: 1.55, margin: "0 0 14px" }}>
+        Asked for the courtyard table by the lemon tree. Your concierge has noted no peanuts.
+      </p>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 12, borderTop: "1px solid rgba(44,36,22,0.07)" }}>
+        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#c9a84c", flexShrink: 0 }} />
+        <p style={{ fontFamily: F.ui, fontSize: 9.5, letterSpacing: "0.06em", color: "rgba(44,36,22,0.55)", margin: 0 }}>
+          Saved to your Suitcase · Day 03
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Sample Wardrobe Integration card ───────────────────────────────────────
+function SampleWardrobeIntegration() {
+  const items = [
+    { src: getShopImageUrl("look:fdv:isadoradress:blk.jpg"), label: "Isadora Dress", source: "yours" as const },
+    { src: getShopImageUrl("Look:alia:soukcoat:desertpants:blush.jpg"), label: "Alaïa Souk Coat", source: "curated" as const },
+    { src: getShopImageUrl("look:fildevie:columndress:black.jpg"), label: "Column Dress", source: "yours" as const },
+    { src: getShopImageUrl("footwear:khaite:otto:wht.jpg"), label: "Robe Slide", source: "curated" as const },
+  ];
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: 360,
+        background: "#faf8f5",
+        border: "1px solid rgba(44,36,22,0.1)",
+        boxShadow: "0 4px 18px rgba(44,36,22,0.13), 0 1px 4px rgba(44,36,22,0.08)",
+        padding: "22px 22px 24px",
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 14 }}>
+        <span style={{ fontFamily: F.ui, fontSize: 9, fontWeight: 700, letterSpacing: "0.32em", textTransform: "uppercase", color: "#2c2416" }}>
+          Day 03 · Wardrobe
+        </span>
+        <span style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", color: "rgba(44,36,22,0.45)" }}>
+          Marrakech
+        </span>
+      </div>
+
+      <h3 style={{ fontFamily: F.serif, fontStyle: "italic", fontSize: 20, color: "#2c2416", margin: "0 0 14px", lineHeight: 1.2 }}>
+        Yours, with a few additions.
+      </h3>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
+        {items.map((it, i) => (
+          <div key={i} style={{ position: "relative" }}>
+            <div style={{ aspectRatio: "3/4", background: "#f5f0e6", overflow: "hidden", position: "relative" }}>
+              <img
+                src={it.src}
+                alt={it.label}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+              />
+              <span
+                style={{
+                  position: "absolute",
+                  top: 6,
+                  left: 6,
+                  padding: "3px 7px",
+                  background: it.source === "yours" ? "rgba(44,36,22,0.85)" : "#c9a84c",
+                  color: it.source === "yours" ? "#faf8f5" : "#2c2416",
+                  fontFamily: F.ui,
+                  fontSize: 7.5,
+                  fontWeight: 700,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {it.source === "yours" ? "Yours" : "✦ Curated"}
+              </span>
+            </div>
+            <p style={{ fontFamily: F.body, fontSize: 10, color: "rgba(44,36,22,0.65)", margin: "6px 0 0", textAlign: "center" }}>
+              {it.label}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <hr style={{ border: 0, borderTop: "1px solid rgba(44,36,22,0.1)", margin: "4px 0 12px" }} />
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, fontFamily: F.ui, fontSize: 9.5, color: "rgba(44,36,22,0.55)" }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <span style={{ width: 7, height: 7, background: "rgba(44,36,22,0.85)" }} /> 4 yours
+          </span>
+          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <span style={{ width: 7, height: 7, background: "#c9a84c" }} /> 3 curated
+          </span>
+        </div>
+        <span style={{ fontFamily: F.body, fontSize: 10, fontStyle: "italic", color: "rgba(44,36,22,0.42)" }}>
+          + sourced for you
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function PassageSample({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
+      <p style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", color: "rgba(44,36,22,0.38)", margin: 0, textAlign: "center" }}>
+        {label}
+      </p>
+      {children}
+    </div>
+  );
+}
 
 function PreviewCard({ src, label }: { src: string; label: string }) {
   return (
@@ -322,10 +520,18 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
             </ul>
 
             {/* Preview cards */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 20, marginBottom: 26, alignItems: "center" }}>
-              {cfg.previews.map((p, i) => (
-                <PreviewCard key={i} src={p.src} label={p.label} />
-              ))}
+            <div style={{ display: "flex", flexDirection: "column", gap: 28, marginBottom: 26, alignItems: "center" }}>
+              {tier === "passage" ? (
+                <>
+                  <PassageSample label="Sample Travel Diary"><SampleTravelDiary /></PassageSample>
+                  <PassageSample label="Sample Booking Confirmation"><SampleBookingConfirmation /></PassageSample>
+                  <PassageSample label="Sample Wardrobe Integration"><SampleWardrobeIntegration /></PassageSample>
+                </>
+              ) : (
+                cfg.previews.map((p, i) => (
+                  <PreviewCard key={i} src={p.src} label={p.label} />
+                ))
+              )}
             </div>
 
             {/* Expandable "What happens next?" */}
