@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** April 20, 2026
-**Updated by:** North Star V3 Addition committed
+**Last updated:** April 24, 2026
+**Updated by:** Diary keepsake build, About page rewrite, deploy pipeline fix
 
 > **📍 CURRENT STRATEGIC TRUTH:** See `FDV_USER_JOURNEY_NORTH_STAR_V2.md`
 > (April 14, 2026) + `FDV_NORTH_STAR_V3_ADDITION.md` (April 20, 2026) at the
@@ -220,6 +220,10 @@ systems-level infrastructure play.
 - Morocco route migration: /concierge → /destinations/morocco
 - Resend domain verification for custom from-email (fdvconcierge.com on GoDaddy)
 - Pilot monitoring — 3 users signed up Day 1, watching dashboard for journey data
+- **Travel Diary Keepsake (April 24)** — Full design system from Claude Design being implemented in Code session. Photo-Book Pages print layout + mobile day cards for Passage modal + expandable Day Detail sheet. Components in `client/src/components/diary/`, CSS at `client/src/styles/diary-keepsake.css`. First time Claude Design has been used in the FDV workflow — read GitHub repo directly, pulled brand tokens (Cormorant/Lora/Inter, gold #c9a84c, ink #2c2416), produced production-ready code + sample data for 4 Morocco days.
+
+### Tooling Update — Claude Design Integration (April 24, 2026):
+Claude Design (web browser tool) entered the FDV workflow. It can read public GitHub repos directly, pull design tokens (fonts, colors, spacing), and produce handoff packages (component code + CSS + sample data) that match existing brand patterns. Sharon used it to design the travel diary keepsake; output included a "Tweaks" panel for live font/color adjustments — this panel is **designer-only and must not ship to production**. Strong candidate for: brand guidelines document, gift card product card, Passage/Trunk preview images.
 
 ### Key Features BUILT (March 30 — Post-Pilot Fixes):
 
@@ -461,7 +465,16 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 10. **"Look" modal component** — New multi-product modal for fashion editorial images. Shows 3-5 items together (the dress, the sandal, the sunscreen) as a complete look. Not started.
 11. **Landing page clickable images** — Every image becomes a door. Fashion editorials open to "look" modals. Place images open to trip purchase modals. Depends on #2 and #10.
 12. **Product genome enrichment** — ~10 Phoebe Philo items need atelier_codes.
-13. **Brand guidelines document** — FDV Concierge voice, tone, visual language, and copy rules in one canonical reference. Needed for concierge prompt rewrite, investor materials, and any external content. Not started.
+13. **Brand guidelines document** — FDV Concierge voice, tone, visual language, and copy rules in one canonical reference. Needed for concierge prompt rewrite, investor materials, and any external content. Not started — Claude Design candidate.
+
+### Pilot Launch — Tier 1 Must-Haves (added April 24)
+- ✅ **About page rewrite** — Three product tiers (Compass $250, Passage $750, Trunk variable) introduced by name, gold inline links to /guides, /shop, /suitcase, shopping emphasis added throughout. Shipped April 24 (commit `3b57e3e`).
+- ✅ **Travel diary print/keepsake (basic)** — "Save This Memory" gold-bordered button on /travel-diary triggers compact 800×600 book-spread print view: FIL DE VIE header, Lora italic destination/year, adaptive photo grid with gradient overlay and gold day-number badges, auto-fires `window.print()`. Shipped April 24 (commits `ba15542`, `036a080`).
+- 🔄 **Travel diary keepsake (full version from Claude Design)** — IN PROGRESS in Code session `local_6d35c1fb`. Photo-Book Pages (Variation B) print layout + mobile day cards (Cover/Day Page/Index) for Passage modal + expandable Day Detail sheet with spring animation + Passage Modal context wrapper. Components going into `client/src/components/diary/`, new CSS at `client/src/styles/diary-keepsake.css`. Sharon's real Morocco photos to replace placeholders next.
+- ⬜ **Preview images for Passage and Trunk product cards** — Sharon sourcing via screenshots + Claude Design.
+- ⬜ **Gift card product (card + modal)** — Not started. About page already references it ("And soon: gift cards.").
+- ⬜ **Mobile QA pass on About page** — Sharon to verify all wouter `<Link>` components route correctly on phone.
+- ⬜ **Desktop formatting pass** — Explicitly deferred until mobile site is complete (mobile-first decision locked April 24).
 
 ### Intelligence — Taste System
 13. **Taste Intelligence Phase B** — Extract user taste profile (JSONB) after each chat session. Planned, not started.
@@ -564,6 +577,113 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 24, 2026 | Claude Code (web) + Claude Design — About Page Rewrite, Travel Diary Keepsake, Vercel Deploy Pipeline Fix
+
+**The day in one line:** Two Tier 1 pilot must-haves shipped (About page introducing Compass/Passage/Trunk by name + travel diary print keepsake), a broken Vercel deploy pipeline diagnosed and fixed, and Claude Design entered the FDV workflow for the first time — designing a full travel diary keepsake system that's now being implemented in the codebase.
+
+---
+
+**1. About Page Rewrite — Shipped (commit `3b57e3e`)**
+
+Rewrote all 5 sections of `/about` to introduce the three product tiers by name and add shopping emphasis throughout.
+
+- **Compass ($250), Passage ($750), Trunk (variable)** — bolded and linked to `/guides/morocco`
+- Added wouter `<Link>` components for `/guides`, `/shop`, `/suitcase` throughout the prose so every product reference is a door
+- Gold link style (`#c9a84c`) with a new `.about-link` hover-underline class added to `client/src/index.css`
+- Shopping emphasis: "And everything is shoppable" added to Section 1; "Start with the shop" opens Section 4
+- "And soon: gift cards." referenced in copy — gift card product not yet built
+- Mobile-first decision locked: Sharon will verify on phone before any desktop formatting pass
+
+---
+
+**2. Travel Diary "Save This Memory" Print Button — Shipped (commits `ba15542`, `036a080`)**
+
+Added gold-bordered "Save This Memory" button (BookOpen icon from `lucide-react`) to `/travel-diary`. First pass was a long scrolling print view — redesigned to a compact single-screen book spread per Sharon's feedback.
+
+- 800×600px, 4:3 aspect ratio
+- Adaptive grid of photo tiles with gradient overlay + gold day-number badges
+- Header: "FIL DE VIE" small-caps + "Morocco 2026" Lora italic
+- Auto-fires `window.print()` after images load
+- `/travel-diary` and `/diary` routes still active; removed from hamburger nav earlier
+
+---
+
+**3. Vercel Deploy Pipeline Fix — Shipped (commit `be8a093`, fixing `c4a50bb`)**
+
+Diagnosed a silent deploy failure that had broken **4 consecutive production deploys** (all returning state `ERROR`).
+
+**Root cause:** A previous Code session added a `.vercelignore` excluding `attached_assets/`. But `LOGO_1767219658929.png` inside that directory is imported by 3 source files via the Vite `@assets` alias. Every Vercel build failed with `ENOENT: no such file or directory` while the local dev build worked fine.
+
+**Fix:** Glob negation in `.vercelignore`:
+```
+attached_assets/*
+!attached_assets/LOGO_1767219658929.png
+```
+
+**Lesson worth keeping:** `.vercelignore` must preserve `attached_assets/LOGO_1767219658929.png` — breaking that path silently kills the deploy pipeline. Don't blanket-ignore `attached_assets/`.
+
+---
+
+**4. Travel Diary Keepsake — Full Design from Claude Design (IN PROGRESS in Code session `local_6d35c1fb`)**
+
+Sharon used **Claude Design** (web browser tool) for the first time to design a complete travel diary keepsake system. Claude Design read the FDV GitHub repo directly, pulled brand tokens (Cormorant/Lora/Inter, gold `#c9a84c`, ink `#2c2416`, cream `#fafaf9`), and produced a production-ready handoff package.
+
+**Handoff package contents:**
+- **Photo-Book Pages print layout (Variation B — confirmed canonical by Sharon)** — replaces today's basic version
+- **Mobile day cards** — Cover, Day Page, Index — for use inside The Passage modal
+- **Expandable Day Detail sheet** — modal-in-modal with spring animation
+- **Passage Modal context wrapper** — shows the cards in-situ
+- **Complete CSS design system** matching FDV brand tokens
+- **Sample data for 4 Morocco days** — journal entries, moments, wardrobe, bookings
+
+**Implementation status:** Code session `local_6d35c1fb` is currently:
+- Creating components in `client/src/components/diary/`
+- Adding new CSS file at `client/src/styles/diary-keepsake.css`
+- Wiring sample data structures
+
+**Tomorrow:** Replace placeholders with Sharon's real Morocco photos and wire the mobile diary cards into The Passage product modal.
+
+---
+
+**Strategic Notes from Today**
+
+- **Mobile-first locked.** Desktop formatting waits until the mobile site is complete. Don't get pulled into desktop polish during pilot prep.
+- Sharon: *"we really might be able to launch this thing without VC funding with how amazing all of you are"* — worth keeping. Tooling velocity (Claude Design + Code + Cowork) is materially changing the funding-need timeline.
+- **Claude Design = workflow accelerator.** First use was the diary keepsake. It read the repo, matched brand tokens, produced ship-ready code. Strong candidate for: brand guidelines document, gift card product card/modal, Passage/Trunk preview images, future visual designs.
+- **Photo-Book Pages (Variation B)** is the canonical print layout for the diary going forward.
+- **The "Tweaks" panel** Claude Design generated (live font/color/photo-tone adjusters) is **designer-only**. Must not ship to production.
+
+---
+
+**Tomorrow's Priorities (April 25)**
+1. Review and merge the diary keepsake Code session output (`local_6d35c1fb`)
+2. Replace diary placeholders with Sharon's real Morocco photos
+3. Wire mobile diary cards into The Passage product modal
+4. Mobile QA pass on About page — confirm all `<Link>` routes work
+5. Start gift card product (card + modal). About page already references it.
+
+---
+
+**Files Modified Today (so far):**
+- `client/src/pages/about.tsx` — full rewrite, three-tier product naming, inline `<Link>` routing, gold link styling
+- `client/src/index.css` — `.about-link` hover-underline class
+- `client/src/pages/travel-diary.tsx` — "Save This Memory" button + book-spread print layout (BookOpen icon, 800×600, 4:3, adaptive grid, gold badges, FIL DE VIE / Morocco 2026 header, auto-print)
+- `.vercelignore` — glob negation preserving `LOGO_1767219658929.png`
+
+**In Progress (Code session `local_6d35c1fb`):**
+- `client/src/components/diary/` (new folder, components from Claude Design handoff)
+- `client/src/styles/diary-keepsake.css` (new file)
+
+**Commits to main today:**
+- `3b57e3e` — About page rewrite with product tier names + shopping emphasis
+- `ba15542` — Travel diary "Save This Memory" print-to-PDF view
+- `c4a50bb` — Add `.vercelignore` (introduced the deploy bug)
+- `359bd11` — Force Vercel redeploy
+- `be8a093` — Fix Vercel build: keep `LOGO_1767219658929.png` in deploy
+- `036a080` — Travel diary print view: compact single-screen book spread
 
 ---
 
