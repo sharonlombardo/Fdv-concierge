@@ -309,6 +309,105 @@ function SampleWardrobeIntegration() {
   );
 }
 
+// ─── Trunk editorial card (wardrobe delivery + pre-trip gift) ───────────────
+function TrunkEditorialCard({
+  eyebrow,
+  title,
+  imageUrl,
+  imageAlt,
+  caption,
+  refLine,
+}: {
+  eyebrow: string;
+  title: string;
+  imageUrl: string;
+  imageAlt: string;
+  caption: string;
+  refLine: string;
+}) {
+  const [imgFailed, setImgFailed] = useState(false);
+  const showImage = imageUrl && !imgFailed;
+  return (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: 360,
+        background: "#faf8f5",
+        border: "1px solid rgba(44,36,22,0.1)",
+        borderRadius: 8,
+        boxShadow: "0 4px 18px rgba(44,36,22,0.13), 0 1px 4px rgba(44,36,22,0.08)",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "11px 16px",
+          borderBottom: "1px solid rgba(44,36,22,0.08)",
+        }}
+      >
+        <span style={{ fontFamily: F.ui, fontSize: 9, fontWeight: 700, letterSpacing: "0.32em", textTransform: "uppercase", color: "#2c2416" }}>
+          FIL DE VIE
+        </span>
+        <span style={{ fontFamily: F.ui, fontSize: 8.5, fontWeight: 600, letterSpacing: "0.28em", textTransform: "uppercase", color: "#a88836" }}>
+          {eyebrow}
+        </span>
+      </div>
+
+      <div style={{ position: "relative", width: "100%", aspectRatio: "4/3", background: "#f5f0e6", overflow: "hidden" }}>
+        {showImage ? (
+          <img
+            src={imageUrl}
+            alt={imageAlt}
+            onError={() => setImgFailed(true)}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        ) : (
+          <div
+            aria-label={imageAlt}
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage:
+                "repeating-linear-gradient(45deg, #ede5d4 0px, #ede5d4 10px, #e5dcc7 10px, #e5dcc7 20px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "rgba(44,36,22,0.55)",
+              fontFamily: F.ui,
+              fontSize: 9,
+              fontWeight: 600,
+              letterSpacing: "0.28em",
+              textTransform: "uppercase",
+              padding: 16,
+              textAlign: "center",
+            }}
+          >
+            {imageAlt}
+          </div>
+        )}
+      </div>
+
+      <div style={{ padding: "16px 18px 18px" }}>
+        <h3 style={{ fontFamily: F.serif, fontStyle: "italic", fontSize: 22, color: "#2c2416", margin: "0 0 8px", lineHeight: 1.2 }}>
+          {title}
+        </h3>
+        <p style={{ fontFamily: F.body, fontSize: 13, fontStyle: "italic", color: "#8a7e6b", lineHeight: 1.55, margin: "0 0 14px" }}>
+          {caption}
+        </p>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 10, borderTop: "1px solid rgba(44,36,22,0.07)" }}>
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#c9a84c", flexShrink: 0 }} />
+          <p style={{ fontFamily: F.ui, fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(44,36,22,0.55)", margin: 0 }}>
+            {refLine}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function PassageSample({ label, intro, children }: { label: string; intro?: string; children: React.ReactNode }) {
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
@@ -525,6 +624,29 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
                   </PassageSample>
                   <PassageSample label="Sample Booking Confirmation"><SampleBookingConfirmation /></PassageSample>
                   <PassageSample label="Sample Wardrobe Integration"><SampleWardrobeIntegration /></PassageSample>
+                </>
+              ) : tier === "trunk" ? (
+                <>
+                  <PassageSample label="Sample wardrobe delivery">
+                    <TrunkEditorialCard
+                      eyebrow="The Trunk · Delivery"
+                      title="Your Trunk arrives."
+                      imageUrl="/images/trunk-wardrobe-delivery.jpg"
+                      imageAlt="FDV Concierge trunk packed with wardrobe and accessories"
+                      caption="Everything arrives before you leave — beautifully packaged, ready to wear."
+                      refLine="Delivered to your door · Day −2"
+                    />
+                  </PassageSample>
+                  <PassageSample label="Sample pre-trip gift">
+                    <TrunkEditorialCard
+                      eyebrow="The Trunk · Pre-Trip"
+                      title="A small ritual, before you go."
+                      imageUrl="/images/trunk-pretrip-gift.jpg"
+                      imageAlt="FDV pre-trip gift box with passport holder, itinerary card, and perfume"
+                      caption="A personal gift before your journey begins — because the trip starts before you leave."
+                      refLine="Hand-packed · Day −1"
+                    />
+                  </PassageSample>
                 </>
               ) : (
                 cfg.previews.map((p, i) => (
