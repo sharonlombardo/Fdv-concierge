@@ -1,51 +1,8 @@
 import { useEffect, useState } from 'react';
 import { MOROCCO_DIARY, type DiaryDay } from './DiaryData';
+import { MobileDayPage } from './MobileDayPage';
 import { MobileDayDetail } from './MobileDayDetail';
 import '@/styles/diary-keepsake.css';
-
-function teaserFromJournal(journal: string): string {
-  const first = journal.split(/(?<=[.?!])\s+/)[0] ?? journal;
-  return first.length > 92 ? first.slice(0, 89).trimEnd() + '…' : first;
-}
-
-interface DayCardProps {
-  day: DiaryDay;
-  totalDays: number;
-  onTap: () => void;
-}
-
-function DayCard({ day, totalDays, onTap }: DayCardProps) {
-  const teaser = teaserFromJournal(day.journal);
-  return (
-    <button
-      type="button"
-      className="ptd-card"
-      onClick={onTap}
-      aria-label={`Open ${day.day_label}: ${day.location}`}
-    >
-      <div className="ptd-card-photo">
-        {day.hero ? (
-          <img className="photo" src={day.hero} alt={day.hero_alt} />
-        ) : (
-          <div className="photo-placeholder ptd-card-placeholder">
-            <span>{day.day_label.toUpperCase()}</span>
-          </div>
-        )}
-        <div className="ptd-card-veil" />
-        <div className="ptd-card-numchip">
-          <span>0{day.n}</span>
-          <span className="ptd-card-total">/ 0{totalDays}</span>
-        </div>
-      </div>
-      <div className="ptd-card-meta">
-        <p className="ptd-card-loc">{day.location}</p>
-        <p className="ptd-card-sub">/ {day.sub_location} · {day.date}</p>
-        <p className="ptd-card-mantra">&ldquo;{day.mantra}&rdquo;</p>
-        <p className="ptd-card-teaser">{teaser}</p>
-      </div>
-    </button>
-  );
-}
 
 export function PassageTravelDiarySection() {
   const data = MOROCCO_DIARY;
@@ -76,12 +33,13 @@ export function PassageTravelDiarySection() {
 
       <div className="ptd-list">
         {data.days.map((day) => (
-          <DayCard
-            key={day.n}
-            day={day}
-            totalDays={data.days.length}
-            onTap={() => setActiveDay(day)}
-          />
+          <div key={day.n} className="ptd-card-shell" role="group" aria-label={`${day.day_label}: ${day.location}`}>
+            <MobileDayPage
+              data={data}
+              day={day}
+              onPhotoTap={() => setActiveDay(day)}
+            />
+          </div>
         ))}
       </div>
 
