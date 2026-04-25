@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import type { DiaryData, DiaryDay } from './DiaryData';
+import type { DiaryData, DiaryDay, DiaryWardrobeItem } from './DiaryData';
+import { getShopImageUrl } from '@/lib/brand-genome';
 
 interface MobileDayDetailProps {
   data: DiaryData;
@@ -9,17 +10,20 @@ interface MobileDayDetailProps {
   variant?: 'card' | 'fullscreen';
 }
 
-interface WardrobeTile {
-  label: string;
-  detail: string;
-  swatch: string;
-}
-
-const DEFAULT_WARDROBE: WardrobeTile[] = [
-  { label: 'linen caftan', detail: 'cream', swatch: '#e8dfd1' },
-  { label: 'leather slides', detail: 'tan', swatch: '#c9a172' },
-  { label: 'straw hat', detail: 'natural', swatch: '#8a7e6b' },
+const DEFAULT_WARDROBE: DiaryWardrobeItem[] = [
+  { swatch: '#e8dfd1', label: 'linen caftan', detail: 'cream' },
+  { swatch: '#c9a172', label: 'leather slides', detail: 'tan' },
+  { swatch: '#8a7e6b', label: 'straw hat', detail: 'natural' },
 ];
+
+function resolveWardrobeImage(tile: DiaryWardrobeItem): string | null {
+  if (tile.imageUrl) return tile.imageUrl;
+  if (tile.genomeKey) {
+    const url = getShopImageUrl(tile.genomeKey);
+    return url || null;
+  }
+  return null;
+}
 
 function pullQuoteFromJournal(journal: string): string | null {
   const sentences = journal
@@ -203,19 +207,31 @@ export function MobileDayDetail({ data, day, onClose, onShare, variant = 'card' 
         <div className="mdd-section">
           <p className="mdd-section-label">WARDROBE</p>
           <div className="mdd-wardrobe">
-            {DEFAULT_WARDROBE.map((tile, i) => (
-              <div key={i} className="mdd-ward-tile">
-                <div
-                  className="mdd-ward-swatch"
-                  style={{ background: tile.swatch }}
-                />
-                <div className="mdd-ward-label">
-                  {tile.label}
-                  <br />
-                  <em>{tile.detail}</em>
+            {(day.wardrobe ?? DEFAULT_WARDROBE).map((tile, i) => {
+              const imgSrc = resolveWardrobeImage(tile);
+              return (
+                <div key={i} className="mdd-ward-tile">
+                  <div
+                    className="mdd-ward-swatch"
+                    style={imgSrc ? undefined : { background: tile.swatch ?? 'var(--paper-warm)' }}
+                  >
+                    {imgSrc && (
+                      <img
+                        className="mdd-ward-img"
+                        src={imgSrc}
+                        alt={tile.label}
+                        loading="lazy"
+                      />
+                    )}
+                  </div>
+                  <div className="mdd-ward-label">
+                    {tile.label}
+                    <br />
+                    <em>{tile.detail}</em>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

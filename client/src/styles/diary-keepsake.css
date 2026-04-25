@@ -752,6 +752,15 @@
   aspect-ratio: 1 / 1;
   border-radius: 2px;
   border: 1px solid rgba(0,0,0,0.05);
+  overflow: hidden;
+  position: relative;
+  background: var(--paper-warm);
+}
+.fdv-diary .mdd-ward-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .fdv-diary .mdd-ward-label {
   font-family: var(--sans);

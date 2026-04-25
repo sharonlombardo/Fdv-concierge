@@ -9,6 +9,17 @@ export interface DiaryMoment {
   note: string;
 }
 
+export interface DiaryWardrobeItem {
+  /** Lowercase brand-genome key, resolved via getShopImageUrl at render time. */
+  genomeKey?: string;
+  /** Optional explicit image URL — wins over genomeKey when both are set. */
+  imageUrl?: string;
+  /** Color swatch fallback used when no genomeKey/imageUrl is provided. */
+  swatch?: string;
+  label: string;
+  detail: string;
+}
+
 export interface DiaryDay {
   n: number;
   date: string;
@@ -21,6 +32,7 @@ export interface DiaryDay {
   photos: DiaryPhoto[];
   moments: DiaryMoment[];
   journal: string;
+  wardrobe?: DiaryWardrobeItem[];
 }
 
 export interface DiaryCover {
@@ -76,6 +88,11 @@ export const MOROCCO_DIARY: DiaryData = {
       ],
       journal:
         'Landed and drove straight up. The light through linen at four in the afternoon is the only light I want for the rest of my life. Mint tea on the terrace and that quiet you get in the mountains.',
+      wardrobe: [
+        { genomeKey: 'look:fdv:lillithcaftan:ivory.jpg', label: 'Lilith Caftan', detail: 'FIL DE VIE' },
+        { genomeKey: 'footwear:khaite:otto:wht.jpg', label: 'Robe Slide', detail: 'Phoebe Philo' },
+        { genomeKey: 'accessory:bag:demelier:santorini.jpg', label: 'Santorini Bag', detail: 'DeMellier' },
+      ],
     },
     {
       n: 2,
