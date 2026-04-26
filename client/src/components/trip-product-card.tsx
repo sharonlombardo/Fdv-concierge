@@ -100,7 +100,7 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
     price: null,
     priceDisplay: "Price based on your selections",
     priceLabel: "",
-    headline: "Your wardrobe, sourced and shipped. Your trip, handled down to the last detail.",
+    headline: "The complete FDV experience — curated, arranged, packed, and delivered.",
     features: [
       "Everything included in The Passage",
       "Your entire curated wardrobe — sourced and shipped to you",
