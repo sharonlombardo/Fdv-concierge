@@ -41,7 +41,7 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
     price: 250,
     priceDisplay: "$250",
     priceLabel: "one-time",
-    headline: "Your trip. Your wardrobe. Every detail considered.",
+    headline: "A personalized travel capsule: itinerary, wardrobe edit, and packing list.",
     features: [
       "Personalized day-by-day itinerary",
       "Curated wardrobe edit for every day",
