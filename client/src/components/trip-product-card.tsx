@@ -124,16 +124,52 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
   },
 };
 
-const DESTINATION_IMAGES: Record<string, { card: string; img1: string; img2: string }> = {
+type ImagePair = { img1: string; img2: string };
+type DestinationImagery = {
+  card: string;
+  // Passage is the canonical pair (most "trip-realized" mood). Compass and
+  // Trunk fall back to it if not provided.
+  passage: ImagePair;
+  compass?: ImagePair;
+  trunk?: ImagePair;
+};
+
+// Trunk header is the same product pair on every destination — these are the
+// physical deliverables, not destination shots.
+const TRUNK_HEADER: ImagePair = {
+  img1: "/images/trunk-wardrobe-delivery.jpg",
+  img2: "/images/trunk-pretrip-gift.jpg",
+};
+
+const DESTINATION_IMAGES: Record<string, DestinationImagery> = {
   Morocco: {
     card: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/Marrakech%2C%20%40amanjena%20copy.jpeg",
-    img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/stay-1-large.jpg",
-    img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/morocco-tile-3",
+    passage: {
+      img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/stay-1-large.jpg",
+      img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/morocco-tile-3",
+    },
+    // Compass header = the literal Compass deliverables (itinerary + packing
+    // sample). Reuses PREVIEW_IMAGES so we never drift between header and
+    // sample-card art.
+    compass: {
+      img1: PREVIEW_IMAGES.itinerary,
+      img2: PREVIEW_IMAGES.packing,
+    },
+    trunk: TRUNK_HEADER,
   },
   Hydra: {
     card: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_coats_villas.jpg",
-    img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_techne_cobble_stone.jpg",
-    img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_pier_model_white.jpg",
+    passage: {
+      img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_techne_cobble_stone.jpg",
+      img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_pier_model_white.jpg",
+    },
+    // Compass: an aerial overview (the "planning" feel) paired with a soft
+    // breezy figure (the "inspiration" feel).
+    compass: {
+      img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_overview_.jpg",
+      img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_malgosia_white_blowing_shirt.jpg",
+    },
+    trunk: TRUNK_HEADER,
   },
 };
 
@@ -485,6 +521,7 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
 
   const effectiveEmail = email || userEmail;
   const images = DESTINATION_IMAGES[destination] ?? DESTINATION_IMAGES.Morocco;
+  const headerPair = images[tier] ?? images.passage;
   const cfg = TIER_CONFIG[tier];
   const drillTo = DRILL_TARGET[tier] ?? null;
 
@@ -587,13 +624,13 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
             </svg>
           </button>
 
-          {/* Two editorial images */}
+          {/* Two editorial images — pair varies by tier */}
           <div style={{ display: "flex", gap: 2, height: "36vh", overflow: "hidden", borderRadius: "16px 16px 0 0" }}>
             <div style={{ flex: 1, overflow: "hidden" }}>
-              <img src={images.img1} alt={`${destination} destination`} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <img src={headerPair.img1} alt={`${destination} ${tier}`} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             </div>
             <div style={{ flex: 1, overflow: "hidden" }}>
-              <img src={images.img2} alt={`${destination} wardrobe`} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <img src={headerPair.img2} alt={`${destination} ${tier} detail`} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             </div>
           </div>
 
