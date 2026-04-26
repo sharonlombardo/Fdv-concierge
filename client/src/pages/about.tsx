@@ -101,13 +101,13 @@ export default function About() {
             And when you are planning a trip:
           </p>
           <p style={{ marginBottom: 20 }}>
-            <strong><Link href="/guides/morocco" className="about-link" style={goldLink}>The Compass</Link></strong> — $250. Your destination, decoded. A personalized itinerary, curated wardrobe, and packing list built around where you're going, when, and how you like to travel. Delivered to your <Link href="/suitcase" className="about-link" style={goldLink}>Suitcase</Link> within hours.
+            <strong><Link href="/guides/morocco" className="about-link" style={goldLink}>The Compass</Link></strong> — $250. Personalized trip curation. A bespoke itinerary, curated wardrobe, and packing list built around where you're going, when, and how you like to travel. Delivered to your <Link href="/suitcase" className="about-link" style={goldLink}>Suitcase</Link> within hours.
           </p>
           <p style={{ marginBottom: 20 }}>
-            <strong><Link href="/guides/morocco" className="about-link" style={goldLink}>The Passage</Link></strong> — $750. Your trip, fully realized. Every booking confirmed, every detail handled, a travel diary that captures the whole story. Upload your own wardrobe and we'll style around what you already own.
+            <strong><Link href="/guides/morocco" className="about-link" style={goldLink}>The Passage</Link></strong> — $750. Full trip arrangement. Every booking confirmed, every detail handled, a travel diary that captures the whole story. Upload your own wardrobe and we'll style around what you already own.
           </p>
           <p style={{ marginBottom: 20 }}>
-            <strong><Link href="/guides/morocco" className="about-link" style={goldLink}>The Trunk</Link></strong> — price based on your selections. Everything we've curated for your trip — sourced, packed, and shipped before you leave. A small gift arrives before departure. The rest is waiting when you get there.
+            <strong><Link href="/guides/morocco" className="about-link" style={goldLink}>The Trunk</Link></strong> — price based on your selections. The complete FDV experience. Everything we've curated for your trip — sourced, packed, and shipped before you leave. A small gift arrives before departure. The rest is waiting when you get there.
           </p>
           <p>
             And soon: gift cards. For the woman who has everything except someone to plan the trip.
