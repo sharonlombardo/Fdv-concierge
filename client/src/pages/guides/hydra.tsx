@@ -290,7 +290,7 @@ function HydraTripTeaserAndBriefForm() {
                 <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, fontWeight: 400, color: '#2c2416' }}>{t.name}</span>
                 <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 18, color: '#2c2416', flexShrink: 0, marginLeft: 12 }}>{t.price}</span>
               </div>
-              <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: 14, fontStyle: 'italic', color: 'rgba(44,36,22,0.55)', lineHeight: 1.6, margin: '0 0 14px' }}>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, color: 'rgba(44,36,22,0.55)', lineHeight: 1.6, margin: '0 0 14px' }}>
                 {t.description}
               </p>
               <button
