@@ -284,10 +284,7 @@ export default function Threshold() {
               fontWeight: 400,
             }}
           >
-            Some trips you remember for the place. Some for how you felt in it.
-            We think about both —{" "}
-            <em>the destination, what you bring,</em>
-            {" "}and the art of arriving like you already belong there.
+            Discover and shop curated destinations, wardrobe, beauty, and travel essentials — all chosen for where you're going.
           </p>
           <p
             style={{

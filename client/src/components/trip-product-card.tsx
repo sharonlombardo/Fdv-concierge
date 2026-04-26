@@ -148,14 +148,13 @@ const DESTINATION_IMAGES: Record<string, DestinationImagery> = {
       img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/stay-1-large.jpg",
       img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/morocco-tile-3",
     },
-    // Compass header = the literal Compass deliverables (itinerary + packing
-    // sample). Reuses PREVIEW_IMAGES so we never drift between header and
-    // sample-card art.
-    compass: {
-      img1: PREVIEW_IMAGES.itinerary,
-      img2: PREVIEW_IMAGES.packing,
+    // Trunk: Marrakech rooftop at sunset + YSL bikini in the Amanjena
+    // arched terracotta doorway with reflecting pool — the most luxe
+    // Morocco shots in the guide.
+    trunk: {
+      img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/exp-3-break-v2.jpeg",
+      img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/morocco-style-1",
     },
-    trunk: TRUNK_HEADER,
   },
   Hydra: {
     card: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_coats_villas.jpg",
@@ -163,11 +162,11 @@ const DESTINATION_IMAGES: Record<string, DestinationImagery> = {
       img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_techne_cobble_stone.jpg",
       img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_pier_model_white.jpg",
     },
-    // Compass: an aerial overview (the "planning" feel) paired with a soft
-    // breezy figure (the "inspiration" feel).
+    // Compass: the Kamini waterfront pier + Mandraki Beach Resort —
+    // Sharon's editorial picks for the "planning a trip to Hydra" mood.
     compass: {
-      img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_overview_.jpg",
-      img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_malgosia_white_blowing_shirt.jpg",
+      img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_pier_model_white.jpg",
+      img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_mandraki_beach.jpg",
     },
     trunk: TRUNK_HEADER,
   },
