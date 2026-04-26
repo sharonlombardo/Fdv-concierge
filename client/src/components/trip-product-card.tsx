@@ -103,9 +103,8 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
     priceLabel: "",
     headline: "The complete FDV experience — curated, arranged, packed, and delivered.",
     features: [
-      "Everything included in The Passage",
-      "Your entire curated wardrobe — sourced and shipped to you",
-      "Coordinated delivery — everything arrives together, beautifully packaged",
+      "Everything included in The Passage (and Compass)",
+      "Your entire curated wardrobe and travel essentials shipped directly to your door — arrives together, beautifully packaged",
       "Pre-trip ritual moment — a personal gift before your journey begins",
       "White-glove concierge from first click to touchdown",
     ],
