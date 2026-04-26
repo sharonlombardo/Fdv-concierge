@@ -469,15 +469,24 @@ export interface TripProductCardProps {
   onClose: () => void;
 }
 
+// Tier ladder for drill-down: tapping the first bullet of a tier opens the
+// referenced lower tier on top. Compass is the floor.
+const DRILL_TARGET: Partial<Record<Tier, Tier>> = {
+  trunk: "passage",
+  passage: "compass",
+};
+
 export function TripProductCard({ destination, tier = "compass", userEmail, onClose }: TripProductCardProps) {
   const [stage, setStage] = useState<Stage>("detail");
   const [nextOpen, setNextOpen] = useState(false);
+  const [drilledTier, setDrilledTier] = useState<Tier | null>(null);
   const { toast } = useToast();
   const { email } = useUser();
 
   const effectiveEmail = email || userEmail;
   const images = DESTINATION_IMAGES[destination] ?? DESTINATION_IMAGES.Morocco;
   const cfg = TIER_CONFIG[tier];
+  const drillTo = DRILL_TARGET[tier] ?? null;
 
   const overlay: React.CSSProperties = {
     position: "fixed",
@@ -566,7 +575,7 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
   // ─── Detail ───────────────────────────────────────────────────────────────
   if (stage === "detail") {
     return (
-      <div style={overlay} onClick={onClose}>
+      <div style={overlay} onClick={(e) => { e.stopPropagation(); onClose(); }}>
         <div style={sheet} onClick={e => e.stopPropagation()}>
           <button
             onClick={onClose}
@@ -604,12 +613,40 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
               What's included:
             </p>
             <ul style={{ listStyle: "none", margin: "0 0 22px", padding: 0 }}>
-              {cfg.features.map((f, i) => (
-                <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
-                  <span style={{ color: "#c9a84c", flexShrink: 0, fontSize: 11, marginTop: 3 }}>✦</span>
-                  <span style={{ fontFamily: F.body, fontSize: 14, color: "#2c2416", lineHeight: 1.55 }}>{f}</span>
-                </li>
-              ))}
+              {cfg.features.map((f, i) => {
+                const isDrillBullet = i === 0 && !!drillTo;
+                return (
+                  <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
+                    <span style={{ color: "#c9a84c", flexShrink: 0, fontSize: 11, marginTop: 3 }}>✦</span>
+                    {isDrillBullet ? (
+                      <button
+                        type="button"
+                        onClick={() => setDrilledTier(drillTo!)}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          padding: 0,
+                          margin: 0,
+                          textAlign: "left",
+                          cursor: "pointer",
+                          fontFamily: F.body,
+                          fontSize: 14,
+                          color: "#c9a84c",
+                          lineHeight: 1.55,
+                          textDecoration: "underline",
+                          textDecorationThickness: 1,
+                          textUnderlineOffset: 3,
+                        }}
+                        aria-label={`${f} — view details`}
+                      >
+                        {f}
+                      </button>
+                    ) : (
+                      <span style={{ fontFamily: F.body, fontSize: 14, color: "#2c2416", lineHeight: 1.55 }}>{f}</span>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
 
             {/* Preview cards */}
@@ -708,6 +745,15 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
             </button>
           </div>
         </div>
+
+        {drilledTier && (
+          <TripProductCard
+            destination={destination}
+            tier={drilledTier}
+            userEmail={userEmail}
+            onClose={() => setDrilledTier(null)}
+          />
+        )}
       </div>
     );
   }
