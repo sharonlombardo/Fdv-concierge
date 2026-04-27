@@ -1,7 +1,7 @@
 # NORTH STAR — FDV Concierge Priorities
 
 **Living priorities document. Updated as work ships and direction shifts.**
-**Last updated:** April 27, 2026
+**Last updated:** April 27, 2026 (EOD — phone bezel previews, real diary photos, concierge moments, Save for Later fix)
 
 > **Companion docs:**
 > - `FDV_USER_JOURNEY_NORTH_STAR_V2.md` — site architecture, nav, business model
@@ -21,6 +21,15 @@ The moat is taste, not technology. Editorial judgment applied to a specific plac
 
 ## Recently Shipped (April 2026)
 
+**Shipped April 27:**
+- **Phone bezel preview in tier modals** — sample itinerary/diary content renders inside an iPhone-style frame (dynamic island, FDV CONCIERGE header, bottom nav). Fixed iPhone-proportioned height with scrollable interior. Per-tier captions. Sample previews now feel like peeking at the actual product on a phone.
+- **Real Morocco diary photos in The Passage** — placeholder images replaced with El Fenn rooftop, Café Bacha, Badi Palace courtyard, and Essaouira from the Morocco guide.
+- **Concierge "Have questions?" moment in all tier modals** — pulsing gold orb with prompt, positioned between phone preview and "What happens next?" — the natural moment a buyer is weighing the purchase. Compass, Passage, and Trunk all updated.
+- **Save for Later button fix** — was silently failing on API errors. Now properly handles saves and routes anonymous users through the Passport gate.
+- **NORTH-STAR.md created** as living priorities tracker.
+- **Competitive landscape research documented** — 28+ screenshots across Stippl, Daydream, Alta, Vêtir, Sourced By, Glance, Layla AI, Navan Edge, Jacada Travel mapped into four quadrants. White space confirmed: nobody combines editorial taste + destination curation + wardrobe sourcing + booking coordination + human concierge.
+
+**Earlier in April:**
 - **Three product tiers live with full modal flows:**
   - The Compass ($250)
   - The Passage ($750)
@@ -45,6 +54,9 @@ Post-purchase experience. A beautifully designed confirmation that feels like re
 
 ### Emma Rayder / Vogue outreach
 Emma wrote the March 25 *"Tech to Pack for Your Next Trip"* piece covering Alta, Vêtir, Daydream, Sourced By. FDV wasn't included but fits the frame perfectly. **Time-sensitive** — the piece is fresh, the angle is hot, and the door is open while the conversation is still active.
+
+### Remaining Hydra/Morocco modal content additions
+Tier modals still have gaps in destination-specific content. Round out the sample itinerary and diary moments inside the phone bezel previews so each modal feels complete for both live destinations.
 
 ---
 

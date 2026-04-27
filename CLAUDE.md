@@ -1,7 +1,7 @@
 # CLAUDE.md — FDV Concierge Project Brain
 **Shared context file for Claude.ai, Claude Code, and Cowork**
-**Last updated:** April 24, 2026
-**Updated by:** Diary keepsake build, About page rewrite, deploy pipeline fix
+**Last updated:** April 27, 2026
+**Updated by:** Competitive research, NORTH-STAR.md creation, phone bezel previews, concierge moments in tier modals, Save for Later fix
 
 > **📍 CURRENT STRATEGIC TRUTH:** See `FDV_USER_JOURNEY_NORTH_STAR_V2.md`
 > (April 14, 2026) + `FDV_NORTH_STAR_V3_ADDITION.md` (April 20, 2026) at the
@@ -577,6 +577,125 @@ This CLAUDE.md file + CLAUDE-PRIVATE.md exist to reduce that overhead.
 
 ## DAILY SESSION LOG
 *Append new entries at the top. Format: Date | Environment | Summary*
+
+---
+
+### April 27, 2026 | Claude.ai + Claude Code — Competitive Landscape Research, NORTH-STAR.md, Phone Bezel Previews, Concierge Moments in Tier Modals
+
+**The day in one line:** Mapped the competitive landscape across 28+ screenshots, crystallized FDV's positioning, created a living priorities doc (NORTH-STAR.md), and shipped a major polish pass on the tier modals — phone bezel previews, real Morocco diary photos, concierge "Have questions?" moments, and a silent Save for Later bug fix.
+
+---
+
+**1. Competitive Research Deep Dive**
+
+Analyzed 28+ screenshots across nine players spanning four quadrants:
+
+- **Mass-market trip planning:** Stippl (4.6 stars, 500K users, $2–4/mo), Layla AI ($4–10/mo), Mindtrip, Wonderplan
+- **AI fashion discovery:** Daydream (natural language shopping, 10K+ stores, 10% travel search spike), Alta (photorealistic AI doubles, 45K trips), Glance
+- **High-touch fashion services:** Vêtir (Kate Davidson Hudson, white-glove closet digitization), Sourced By (Gab Waller, fashion sourcing detective)
+- **Luxury travel planning:** Jacada ($13K+ pp), Navan Edge (corporate)
+
+**FDV's white space:** Nobody combines editorial taste + destination curation + wardrobe sourcing + booking coordination + human concierge. Closest philosophically is Vêtir, but they're closet-first not destination-first.
+
+**Positioning crystallized:** *"Travel. A State of Mind." / "A travel magazine you can shop — with a concierge."* The moat is taste, not technology.
+
+---
+
+**2. NORTH-STAR.md — Living Priorities Doc (commit `6455bac`)**
+
+Created new canonical priorities tracker at repo root. Structure: Recently Shipped → Up Next → Coming Soon → On the Horizon → Competitive Landscape → Not Our Lane (Parked). Companion to V2 (architecture) and V3 (product/pricing) — this one tracks execution against them. Updated continuously as work ships.
+
+---
+
+**3. Phone Bezel Preview in Tier Modals (commits `6088ef4`, `e06d225`, `63c5cae`)**
+
+Sample itinerary/diary content in all three tier modals (Compass, Passage, Trunk) now renders inside an iPhone-style frame:
+- Dynamic island at top
+- "FDV CONCIERGE" header
+- Bottom nav (Home, Concierge, Suitcase, Passport)
+- Fixed iPhone-proportioned height with scrollable interior
+- Per-tier captions
+- iOS Safari nested-scroll fix in `63c5cae`
+
+Makes the sample previews feel like you're peeking at the actual product on a phone, not a 2D mockup.
+
+---
+
+**4. Real Morocco Photos in Passage Diary (commits `2ef2863`, `bd627a1`)**
+
+Replaced all Passage diary placeholder images with real photos from the Morocco guide:
+- El Fenn rooftop
+- Café Bacha
+- Badi Palace courtyard
+- Essaouira
+
+Day 3 + Day 5 placeholders cleaned up in the second pass.
+
+---
+
+**5. Trunk Editorial Headers Restored (part of commit `1c8d3f4`)**
+
+Trunk modal headers had been accidentally swapped during the phone bezel refactor. Restored to Sharon's editorial picks: Marrakech rooftop sunset + YSL bikini at the Amanjena archway.
+
+---
+
+**6. Concierge Moment in All Three Tier Modals (commits `1c8d3f4`, `e91ae36`, `761386d`)**
+
+Added "Have questions? Talk to your concierge" with pulsing gold orb in Compass, Passage, and Trunk modals. Positioned between phone preview and "What happens next?" — the natural moment a buyer is weighing the purchase. Polish pass: pulse animation, larger orb, font doubled (13 → 26px) for read-from-arms-length scale.
+
+---
+
+**7. Save for Later Button Fix (part of commit `1c8d3f4`)**
+
+Was silently failing on API errors. Now properly handles saves and routes anonymous users through the Passport gate. This had been an invisible drop-off — buyer taps "Save for Later," nothing happens, they leave.
+
+---
+
+**8. Full Git Audit + Memory Sync**
+
+Comprehensive site state walked through. All branches, recent commits, working tree, and deploy state confirmed clean and current.
+
+---
+
+**Strategic Notes from Today**
+
+- **Positioning is locked.** "A travel magazine you can shop — with a concierge." Don't keep redrafting it.
+- **The moat is taste, not tech.** Editorial judgment applied to a specific place and a specific person. AI fashion discovery (Daydream, Alta) and AI trip planning (Stippl, Layla) are commoditizing fast — neither holds the editorial layer.
+- **Time-sensitive: Emma Rayder / Vogue outreach.** Emma's March 25 *"Tech to Pack for Your Next Trip"* covered Alta, Vêtir, Daydream, Sourced By. FDV wasn't included but fits the frame perfectly. Door is open while the conversation is fresh.
+
+---
+
+**Product Ideas Captured (Up Next / Coming Soon in NORTH-STAR.md)**
+
+- Welcome email + printable itinerary (post-purchase editorial moment — currently a gap between Stripe and "your Compass is ready")
+- Favorites / "Add to Suitcase" mechanic (stickiness + passive taste data, no quiz)
+- Style profile (passive build from saves and browsing, surfaced as *"here's what we've learned about you"*)
+- EIP-style personalization (Net-a-Porter EIP — homepage reshuffles per visitor)
+- Geolocation awareness (browsing from JFK ≠ browsing from couch on Tuesday night)
+
+---
+
+**Files Modified Today (across all commits):**
+- `NORTH-STAR.md` — new
+- `client/src/components/diary/PassageTravelDiarySection.tsx` — new (referenced in pull)
+- Tier modal components — phone bezel wrapper, concierge moment, Save for Later fix
+- `client/src/styles/diary-keepsake.css` — phone frame styles
+- `client/src/components/diary/` — real Morocco photo URLs
+
+**Commits to main today (selection):**
+- `6455bac` — NORTH-STAR.md
+- `6088ef4`, `e06d225`, `63c5cae` — phone bezel preview + iOS fix
+- `2ef2863`, `bd627a1` — real Morocco photos in diary
+- `1c8d3f4` — Trunk headers restored, concierge moment, Save for Later fix
+- `e91ae36`, `761386d` — concierge moment polish
+
+---
+
+**Tomorrow's Priorities (April 28)**
+1. Welcome email + printable itinerary format — post-purchase editorial moment
+2. Emma Rayder / Vogue outreach — time-sensitive
+3. Remaining Hydra/Morocco modal content additions
+4. Mobile QA pass on About page (carryover from April 24)
 
 ---
 
