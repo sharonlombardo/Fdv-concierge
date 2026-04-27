@@ -124,9 +124,12 @@ export const MOROCCO_DIARY: DiaryData = {
       location: 'Atlas',
       sub_location: 'Marrakech',
       mantra: 'Let yourself get a little lost.',
-      hero: null,
-      hero_alt: 'Sunset rooftop at El Fenn — placeholder',
-      photos: [],
+      hero: photo('day3-rooftop-elfenn.png'),
+      hero_alt: 'Sunset rooftop at El Fenn, Koutoubia in the distance',
+      photos: [
+        { src: photo('day3-rooftop-sunset.png'), caption: 'pink sky, every night' },
+        { src: photo('day3-arches.png'), caption: 'the day in marrakech' },
+      ],
       moments: [
         { title: 'Drive to Marrakech', time: 'Morning', note: 'back to the city' },
         { title: 'Check-in at El Fenn', time: 'Afternoon', note: 'the day in marrakech' },
@@ -164,9 +167,12 @@ export const MOROCCO_DIARY: DiaryData = {
       location: 'Coast',
       sub_location: 'Essaouira',
       mantra: 'The sea changes the conversation.',
-      hero: null,
-      hero_alt: 'Essaouira ramparts and Atlantic — placeholder',
-      photos: [],
+      hero: photo('day5-essaouira-roof.png'),
+      hero_alt: 'Essaouira ramparts and Atlantic',
+      photos: [
+        { src: photo('day5-essaouira-rocks.png'), caption: 'salt on everything' },
+        { src: photo('day5-beach-club.png'), caption: 'lunch on the sand' },
+      ],
       moments: [
         { title: 'Drive to Essaouira', time: 'Morning', note: 'three hours, all blue' },
         { title: 'Lunch at the Beach Club', time: 'Afternoon', note: 'salt on everything' },
