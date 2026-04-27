@@ -54,6 +54,8 @@ export interface DiaryData {
 
 const photo = (name: string): string => `/diary/photos/${name}`;
 
+const MOROCCO_GUIDE_IMG = 'https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco';
+
 export const MOROCCO_DIARY: DiaryData = {
   brand: 'FDV CONCIERGE',
   destination: 'Morocco',
@@ -140,9 +142,12 @@ export const MOROCCO_DIARY: DiaryData = {
       location: 'Marrakech',
       sub_location: 'The Medina',
       mantra: 'You be the canvas. Let the city be the color.',
-      hero: null,
-      hero_alt: 'Bahia Palace courtyard — placeholder',
-      photos: [],
+      hero: `${MOROCCO_GUIDE_IMG}/eat-2-break.jpg`,
+      hero_alt: 'Marble and gold at Café Bacha, Dar el Bacha Palace',
+      photos: [
+        { src: `${MOROCCO_GUIDE_IMG}/exp-1-large.jpg`, caption: 'stopped breathing twice' },
+        { src: `${MOROCCO_GUIDE_IMG}/eat-6-large.jpg`, caption: 'candles, candles, candles' },
+      ],
       moments: [
         { title: 'Dar El Bacha', time: 'Morning', note: 'tile after tile' },
         { title: 'Bahia Palace', time: 'Afternoon', note: 'stopped breathing twice' },

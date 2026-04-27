@@ -34,6 +34,9 @@ interface TierConfig {
 const PREVIEW_IMAGES = {
   itinerary: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/morocco%20itiin%20overview%20sample.jpg",
   packing: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/daily%20itinerary%20with%20packing.jpg",
+  diary: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/exp-1-large.jpg",
+  booking: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/stay-1-large.jpg",
+  wardrobe: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/morocco-tile-1",
 };
 
 const TIER_CONFIG: Record<Tier, TierConfig> = {
@@ -92,9 +95,9 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
     conciergeMsg: (destination) =>
       `Your Passage is confirmed — the full experience. I'll handle everything from your itinerary to every booking. Let's start: when are you going to ${destination}? How many nights? Who's joining you? What matters most to you on this trip? I'll have everything in your Suitcase within 24 hours.`,
     previews: [
-      { src: "", label: "Sample Travel Diary" },
-      { src: "", label: "Sample Booking Confirmation" },
-      { src: "", label: "Sample Wardrobe Integration" },
+      { src: PREVIEW_IMAGES.diary, label: "Sample Travel Diary" },
+      { src: PREVIEW_IMAGES.booking, label: "Sample Booking Confirmation" },
+      { src: PREVIEW_IMAGES.wardrobe, label: "Sample Wardrobe Integration" },
     ],
     phoneCaption: "Your full trip, in your pocket.",
   },
