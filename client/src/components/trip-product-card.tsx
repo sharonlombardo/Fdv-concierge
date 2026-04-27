@@ -550,7 +550,7 @@ function PhoneFrame({ caption, children }: { caption: string; children: React.Re
             "0 22px 44px rgba(44,36,22,0.22), 0 6px 14px rgba(44,36,22,0.12), inset 0 0 0 1px rgba(255,255,255,0.05)",
         }}
       >
-        {/* Screen */}
+        {/* Screen — fixed iPhone-proportioned height, content scrolls inside */}
         <div
           style={{
             background: "#faf8f5",
@@ -559,6 +559,7 @@ function PhoneFrame({ caption, children }: { caption: string; children: React.Re
             position: "relative",
             display: "flex",
             flexDirection: "column",
+            height: 600,
           }}
         >
           {/* Status bar */}
@@ -651,9 +652,13 @@ function PhoneFrame({ caption, children }: { caption: string; children: React.Re
             </span>
           </div>
 
-          {/* Content area — children render at natural size */}
+          {/* Content area — scrolls inside the fixed-height phone */}
           <div
             style={{
+              flex: 1,
+              minHeight: 0,
+              overflowY: "auto",
+              WebkitOverflowScrolling: "touch",
               padding: "14px 10px",
               display: "flex",
               flexDirection: "column",
