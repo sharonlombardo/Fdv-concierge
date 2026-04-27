@@ -1017,37 +1017,44 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
             </div>
 
             {/* Have questions? — soft concierge invitation */}
-            <button
-              type="button"
-              onClick={handleAskConcierge}
-              aria-label="Talk to your concierge"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 12,
-                width: "100%",
-                margin: "0 auto 26px",
-                padding: "16px 18px",
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-                fontFamily: F.ui,
-              }}
-            >
-              <ConciergeOrb state="idle" circleSize={32} palette="gold" />
-              <span
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 26 }}>
+              <button
+                type="button"
+                onClick={handleAskConcierge}
+                aria-label="Talk to your concierge"
                 style={{
-                  fontFamily: F.body,
-                  fontSize: 13,
-                  fontStyle: "italic",
-                  color: "rgba(44,36,22,0.55)",
-                  letterSpacing: "0.01em",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 14,
+                  padding: "16px 18px",
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: F.ui,
                 }}
               >
-                Have questions? Talk to your concierge
-              </span>
-            </button>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    borderRadius: "50%",
+                    animation: "concierge-pulse 3s ease-in-out infinite",
+                  }}
+                >
+                  <ConciergeOrb state="idle" circleSize={45} palette="gold" />
+                </span>
+                <span
+                  style={{
+                    fontFamily: F.body,
+                    fontSize: 13,
+                    fontStyle: "italic",
+                    color: "rgba(44,36,22,0.55)",
+                    letterSpacing: "0.01em",
+                  }}
+                >
+                  Have questions? Talk to your concierge
+                </span>
+              </button>
+            </div>
 
             {/* Expandable "What happens next?" */}
             <div style={{ borderTop: "1px solid rgba(44,36,22,0.08)", borderBottom: "1px solid rgba(44,36,22,0.08)", marginBottom: 26 }}>
