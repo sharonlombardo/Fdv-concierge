@@ -125,51 +125,32 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
 };
 
 type ImagePair = { img1: string; img2: string };
-type DestinationImagery = {
-  card: string;
-  // Passage is the canonical pair (most "trip-realized" mood). Compass and
-  // Trunk fall back to it if not provided.
-  passage: ImagePair;
-  compass?: ImagePair;
-  trunk?: ImagePair;
+
+// Header pair is fixed per tier across every destination — the imagery
+// represents the tier's mood, not the place.
+//   Compass — planning/inspiration: Kamini pier + Mandraki Beach Resort
+//   Passage — the trip-realized mood: El Fenn + Alaïa Souk Coat editorial
+//   Trunk   — the physical product: wardrobe delivery + pre-trip gift
+const TIER_HEADERS: Record<Tier, ImagePair> = {
+  compass: {
+    img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_pier_model_white.jpg",
+    img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_mandraki_beach.jpg",
+  },
+  passage: {
+    img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/stay-1-large.jpg",
+    img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/morocco-tile-3",
+  },
+  trunk: {
+    img1: "/images/trunk-wardrobe-delivery.jpg",
+    img2: "/images/trunk-pretrip-gift.jpg",
+  },
 };
 
-// Trunk header is the same product pair on every destination — these are the
-// physical deliverables, not destination shots.
-const TRUNK_HEADER: ImagePair = {
-  img1: "/images/trunk-wardrobe-delivery.jpg",
-  img2: "/images/trunk-pretrip-gift.jpg",
-};
-
-const DESTINATION_IMAGES: Record<string, DestinationImagery> = {
-  Morocco: {
-    card: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/Marrakech%2C%20%40amanjena%20copy.jpeg",
-    passage: {
-      img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/stay-1-large.jpg",
-      img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/morocco-tile-3",
-    },
-    // Trunk: Marrakech rooftop at sunset + YSL bikini in the Amanjena
-    // arched terracotta doorway with reflecting pool — the most luxe
-    // Morocco shots in the guide.
-    trunk: {
-      img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/exp-3-break-v2.jpeg",
-      img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/morocco-style-1",
-    },
-  },
-  Hydra: {
-    card: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_coats_villas.jpg",
-    passage: {
-      img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_techne_cobble_stone.jpg",
-      img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_pier_model_white.jpg",
-    },
-    // Compass: the Kamini waterfront pier + Mandraki Beach Resort —
-    // Sharon's editorial picks for the "planning a trip to Hydra" mood.
-    compass: {
-      img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_pier_model_white.jpg",
-      img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_mandraki_beach.jpg",
-    },
-    trunk: TRUNK_HEADER,
-  },
+// Card thumbnail is still per-destination — it represents the place in the
+// user's saved-trips list, not the tier.
+const DESTINATION_CARD_IMAGE: Record<string, string> = {
+  Morocco: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/Marrakech%2C%20%40amanjena%20copy.jpeg",
+  Hydra: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_coats_villas.jpg",
 };
 
 // ─── Sample Booking Confirmation card ───────────────────────────────────────
@@ -519,8 +500,8 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
   const { email } = useUser();
 
   const effectiveEmail = email || userEmail;
-  const images = DESTINATION_IMAGES[destination] ?? DESTINATION_IMAGES.Morocco;
-  const headerPair = images[tier] ?? images.passage;
+  const headerPair = TIER_HEADERS[tier];
+  const cardImage = DESTINATION_CARD_IMAGE[destination] ?? DESTINATION_CARD_IMAGE.Morocco;
   const cfg = TIER_CONFIG[tier];
   const drillTo = DRILL_TARGET[tier] ?? null;
 
@@ -556,7 +537,7 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
         aestheticTags: ["travel", "curated"],
         metadata: {
           title: `${destination} — ${cfg.name}`,
-          imageUrl: images.card,
+          imageUrl: cardImage,
           bucket: "my-trips",
           tier,
           tierName: cfg.name,
