@@ -652,13 +652,19 @@ function PhoneFrame({ caption, children }: { caption: string; children: React.Re
             </span>
           </div>
 
-          {/* Content area — scrolls inside the fixed-height phone */}
+          {/* Content area — scrolls inside the fixed-height phone.
+              On iOS Safari, nested scroll inside a scrolling modal needs all
+              of: overflow-y: scroll (not auto), -webkit-overflow-scrolling:
+              touch (momentum), touch-action: pan-y (claim vertical gestures),
+              and overscroll-behavior: contain (don't chain to the modal). */}
           <div
             style={{
               flex: 1,
               minHeight: 0,
-              overflowY: "auto",
+              overflowY: "scroll",
               WebkitOverflowScrolling: "touch",
+              touchAction: "pan-y",
+              overscrollBehavior: "contain",
               padding: "14px 10px",
               display: "flex",
               flexDirection: "column",
