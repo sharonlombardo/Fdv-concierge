@@ -3,6 +3,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/contexts/user-context";
 import { PassageTravelDiarySection } from "@/components/diary/PassageTravelDiarySection";
 import { getShopImageUrl } from "@/lib/brand-genome";
+import { ConciergeOrb } from "@/components/concierge-orb";
+import { getSessionId } from "@/lib/session";
 import "@/styles/diary-keepsake.css";
 
 export type Tier = "compass" | "passage" | "trunk";
@@ -137,7 +139,8 @@ type ImagePair = { img1: string; img2: string };
 // represents the tier's mood, not the place.
 //   Compass — planning/inspiration: Kamini pier + Mandraki Beach Resort
 //   Passage — the trip-realized mood: El Fenn + Alaïa Souk Coat editorial
-//   Trunk   — the physical product: wardrobe delivery + pre-trip gift
+//   Trunk   — the most luxe editorial: Marrakech rooftop sunset + YSL bikini
+//             in the Amanjena arched terracotta doorway
 const TIER_HEADERS: Record<Tier, ImagePair> = {
   compass: {
     img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/hydra_pier_model_white.jpg",
@@ -148,8 +151,8 @@ const TIER_HEADERS: Record<Tier, ImagePair> = {
     img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/morocco-tile-3",
   },
   trunk: {
-    img1: "/images/trunk-wardrobe-delivery.jpg",
-    img2: "/images/trunk-pretrip-gift.jpg",
+    img1: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/guide-morocco/exp-3-break-v2.jpeg",
+    img2: "https://dzjf7ytng5vblbwy.public.blob.vercel-storage.com/images-v2/morocco-style-1",
   },
 };
 
@@ -758,7 +761,7 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
   const [nextOpen, setNextOpen] = useState(false);
   const [drilledTier, setDrilledTier] = useState<Tier | null>(null);
   const { toast } = useToast();
-  const { email } = useUser();
+  const { email, user, authLoading, setShowPassportGate, setPendingSaveCallback } = useUser();
 
   const effectiveEmail = email || userEmail;
   const headerPair = TIER_HEADERS[tier];
@@ -786,16 +789,20 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
   };
 
   async function saveTrip(purchaseStatus: "saved" | "purchased") {
-    await fetch("/api/saves", {
+    const itemId = `trip-${destination.toLowerCase()}-${tier}-${purchaseStatus}`;
+    const res = await fetch("/api/saves", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({
         itemType: "trip",
-        itemId: `trip-${destination.toLowerCase()}-${tier}-${purchaseStatus}`,
+        itemId,
         sourceContext: `/guides/${destination.toLowerCase()}`,
         storyTag: destination.toLowerCase(),
         aestheticTags: ["travel", "curated"],
+        title: `${destination} — ${cfg.name}`,
+        assetUrl: cardImage,
+        price: cfg.price ? String(cfg.price) : undefined,
         metadata: {
           title: `${destination} — ${cfg.name}`,
           imageUrl: cardImage,
@@ -809,19 +816,56 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
           purchaseStatus,
           destination,
         },
-        userEmail: effectiveEmail,
+        userEmail: effectiveEmail || undefined,
+        sessionId: getSessionId(),
       }),
     });
+
+    // 400 / 409 "Already pinned" — treat as success (user already saved this trip)
+    if (res.status === 400 || res.status === 409) {
+      const body = await res.json().catch(() => ({}));
+      if (body.error === "Already pinned") return;
+      throw new Error(body.error || "Save failed");
+    }
+    if (!res.ok) {
+      throw new Error(`Save failed (${res.status})`);
+    }
   }
 
   async function handleSaveForLater() {
+    // Anonymous user: show the Digital Passport gate first, then save once they sign up
+    if (!authLoading && !user) {
+      setPendingSaveCallback(() => async () => {
+        try {
+          await saveTrip("saved");
+          toast({ description: "Saved to your Suitcase", duration: 3000 });
+        } catch (err) {
+          console.error("[TripProductCard] Save for later failed:", err);
+          toast({ description: "Couldn't save — please try again", duration: 3000 });
+        }
+        onClose();
+      });
+      setShowPassportGate(true);
+      return;
+    }
+
     try {
       await saveTrip("saved");
-      toast({ title: "Saved to your Suitcase", duration: 3000 });
+      toast({ description: "Saved to your Suitcase", duration: 3000 });
       onClose();
-    } catch {
-      toast({ title: "Couldn't save", description: "Try again in a moment.", duration: 2000 });
+    } catch (err) {
+      console.error("[TripProductCard] Save for later failed:", err);
+      toast({ description: "Couldn't save — please try again", duration: 3000 });
     }
+  }
+
+  function handleAskConcierge() {
+    onClose();
+    // Defer the open-concierge dispatch to next tick so the modal close
+    // animation has a frame to start before the concierge slides up.
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("open-concierge"));
+    }, 0);
   }
 
   async function handleTrunkBegin() {
@@ -928,7 +972,7 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
             </ul>
 
             {/* Phone preview — your trip in your pocket */}
-            <div style={{ marginBottom: 32 }}>
+            <div style={{ marginBottom: 24 }}>
               <PhoneFrame caption={cfg.phoneCaption}>
                 {tier === "passage" ? (
                   <>
@@ -971,6 +1015,39 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
                 )}
               </PhoneFrame>
             </div>
+
+            {/* Have questions? — soft concierge invitation */}
+            <button
+              type="button"
+              onClick={handleAskConcierge}
+              aria-label="Talk to your concierge"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 12,
+                width: "100%",
+                margin: "0 auto 26px",
+                padding: "16px 18px",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                fontFamily: F.ui,
+              }}
+            >
+              <ConciergeOrb state="idle" circleSize={32} palette="gold" />
+              <span
+                style={{
+                  fontFamily: F.body,
+                  fontSize: 13,
+                  fontStyle: "italic",
+                  color: "rgba(44,36,22,0.55)",
+                  letterSpacing: "0.01em",
+                }}
+              >
+                Have questions? Talk to your concierge
+              </span>
+            </button>
 
             {/* Expandable "What happens next?" */}
             <div style={{ borderTop: "1px solid rgba(44,36,22,0.08)", borderBottom: "1px solid rgba(44,36,22,0.08)", marginBottom: 26 }}>
