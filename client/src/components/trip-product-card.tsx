@@ -28,6 +28,7 @@ interface TierConfig {
   successTitle: string;
   conciergeMsg: (destination: string) => string;
   previews: Array<{ src: string; label: string }>;
+  phoneCaption: string;
 }
 
 const PREVIEW_IMAGES = {
@@ -63,6 +64,7 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
       { src: PREVIEW_IMAGES.itinerary, label: "Sample itinerary" },
       { src: PREVIEW_IMAGES.packing, label: "Sample packing list" },
     ],
+    phoneCaption: "Your itinerary, always with you.",
   },
 
   passage: {
@@ -94,6 +96,7 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
       { src: "", label: "Sample Booking Confirmation" },
       { src: "", label: "Sample Wardrobe Integration" },
     ],
+    phoneCaption: "Your full trip, in your pocket.",
   },
 
   trunk: {
@@ -121,6 +124,7 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
       { src: "", label: "Sample wardrobe delivery" },
       { src: "", label: "Sample pre-trip gift" },
     ],
+    phoneCaption: "Everything we plan, ready when you are.",
   },
 };
 
@@ -440,10 +444,254 @@ function PassageSample({ label, intro, children }: { label: string; intro?: stri
   );
 }
 
+function PhoneNavBar() {
+  const itemStyle: React.CSSProperties = {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 2,
+  };
+  const labelStyle: React.CSSProperties = {
+    fontFamily: F.ui,
+    fontSize: 7,
+    fontWeight: 700,
+    letterSpacing: "0.07em",
+    color: "rgba(255,255,255,0.85)",
+    textTransform: "uppercase",
+  };
+
+  return (
+    <div
+      style={{
+        background: "#1A1A18",
+        padding: "8px 6px 10px",
+        display: "flex",
+        alignItems: "stretch",
+        flexShrink: 0,
+        borderTop: "0.5px solid rgba(255,255,255,0.06)",
+      }}
+    >
+      {/* Home */}
+      <div style={itemStyle}>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="2 10 12 2 22 10" />
+          <path d="M4 10v10h16V10" />
+          <rect x="9" y="14" width="6" height="6" rx="0.5" />
+        </svg>
+        <span style={labelStyle}>Home</span>
+      </div>
+
+      {/* Concierge — gold compass orb (center) */}
+      <div style={itemStyle}>
+        <div
+          style={{
+            width: 26,
+            height: 26,
+            borderRadius: "50%",
+            background: "radial-gradient(circle at 35% 30%, #e3c478 0%, #c9a84c 55%, #a88937 100%)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 0 0 1.5px rgba(201,168,76,0.22), 0 1px 5px rgba(201,168,76,0.40)",
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#faf8f5" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="9.5" />
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="#faf8f5" stroke="none" />
+          </svg>
+        </div>
+        <span style={{ ...labelStyle, color: "rgba(255,255,255,0.95)" }}>Concierge</span>
+      </div>
+
+      {/* Suitcase */}
+      <div style={itemStyle}>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="8" width="18" height="13" rx="2" />
+          <path d="M8 8V5.5a2.5 2.5 0 015 0V8" />
+          <line x1="3" y1="14" x2="21" y2="14" />
+        </svg>
+        <span style={labelStyle}>Suitcase</span>
+      </div>
+
+      {/* Passport */}
+      <div style={itemStyle}>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="4" y="2" width="16" height="18" rx="2.5" />
+          <circle cx="12" cy="11" r="3.5" />
+        </svg>
+        <span style={labelStyle}>Passport</span>
+      </div>
+    </div>
+  );
+}
+
+function PhoneFrame({ caption, children }: { caption: string; children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        width: "84%",
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 16,
+      }}
+    >
+      {/* Phone bezel */}
+      <div
+        style={{
+          width: "100%",
+          background: "linear-gradient(180deg, #2a2420 0%, #16120e 100%)",
+          borderRadius: 38,
+          padding: 8,
+          boxShadow:
+            "0 22px 44px rgba(44,36,22,0.22), 0 6px 14px rgba(44,36,22,0.12), inset 0 0 0 1px rgba(255,255,255,0.05)",
+        }}
+      >
+        {/* Screen */}
+        <div
+          style={{
+            background: "#faf8f5",
+            borderRadius: 30,
+            overflow: "hidden",
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          {/* Status bar */}
+          <div
+            style={{
+              height: 28,
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "8px 18px 0",
+              flexShrink: 0,
+            }}
+          >
+            <span style={{ fontFamily: F.ui, fontSize: 9, fontWeight: 700, color: "#2c2416", letterSpacing: "0.01em" }}>
+              9:41
+            </span>
+            {/* Dynamic island */}
+            <div
+              style={{
+                position: "absolute",
+                top: 6,
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: 62,
+                height: 15,
+                borderRadius: 8,
+                background: "#0a0807",
+              }}
+            />
+            <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+              {/* signal */}
+              <svg width="11" height="7" viewBox="0 0 12 8" fill="#2c2416">
+                <rect x="0" y="6" width="2" height="2" />
+                <rect x="3" y="4" width="2" height="4" />
+                <rect x="6" y="2" width="2" height="6" />
+                <rect x="9" y="0" width="2" height="8" />
+              </svg>
+              {/* battery */}
+              <div
+                style={{
+                  width: 18,
+                  height: 9,
+                  border: "0.7px solid #2c2416",
+                  borderRadius: 2,
+                  padding: "1px",
+                  display: "flex",
+                  alignItems: "stretch",
+                  position: "relative",
+                }}
+              >
+                <div style={{ width: "72%", background: "#2c2416", borderRadius: 0.6 }} />
+                <div
+                  style={{
+                    position: "absolute",
+                    right: -2,
+                    top: 2.5,
+                    width: 1.4,
+                    height: 4,
+                    background: "#2c2416",
+                    borderRadius: 0.5,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* App header strip */}
+          <div
+            style={{
+              padding: "6px 16px 8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              borderBottom: "0.5px solid rgba(44,36,22,0.06)",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: F.ui,
+                fontSize: 7.5,
+                fontWeight: 700,
+                letterSpacing: "0.24em",
+                color: "#2c2416",
+                textTransform: "uppercase",
+              }}
+            >
+              FDV Concierge
+            </span>
+          </div>
+
+          {/* Content area — children render at natural size */}
+          <div
+            style={{
+              padding: "14px 10px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 18,
+              alignItems: "center",
+            }}
+          >
+            {children}
+          </div>
+
+          {/* FDV nav bar — fixed to the bottom of the phone */}
+          <PhoneNavBar />
+        </div>
+      </div>
+
+      {/* Caption */}
+      <p
+        style={{
+          fontFamily: F.body,
+          fontSize: 12.5,
+          fontStyle: "italic",
+          color: "rgba(44,36,22,0.5)",
+          margin: 0,
+          textAlign: "center",
+          letterSpacing: "0.01em",
+          lineHeight: 1.5,
+        }}
+      >
+        {caption}
+      </p>
+    </div>
+  );
+}
+
 function PreviewCard({ src, label }: { src: string; label: string }) {
   return (
-    <div style={{ width: "60%", display: "flex", flexDirection: "column", gap: 8 }}>
-      <p style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", color: "rgba(44,36,22,0.38)", margin: 0, textAlign: "center" }}>
+    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 8 }}>
+      <p style={{ fontFamily: F.body, fontSize: 10, fontStyle: "italic", color: "rgba(44,36,22,0.42)", margin: 0, textAlign: "center" }}>
         {label}
       </p>
       {src ? (
@@ -452,24 +700,23 @@ function PreviewCard({ src, label }: { src: string; label: string }) {
           alt={label}
           style={{
             width: "100%",
-            borderRadius: 10,
-            boxShadow: "0 4px 18px rgba(44,36,22,0.13), 0 1px 4px rgba(44,36,22,0.08)",
+            borderRadius: 6,
             display: "block",
-            border: "1px solid rgba(44,36,22,0.07)",
+            border: "0.5px solid rgba(44,36,22,0.08)",
           }}
         />
       ) : (
         <div style={{
           width: "100%",
           aspectRatio: "4/3",
-          borderRadius: 10,
+          borderRadius: 6,
           background: "rgba(44,36,22,0.03)",
-          border: "1px dashed rgba(44,36,22,0.14)",
+          border: "0.5px dashed rgba(44,36,22,0.16)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}>
-          <span style={{ fontFamily: F.body, fontSize: 11, fontStyle: "italic", color: "rgba(44,36,22,0.22)", textAlign: "center", padding: "0 16px" }}>
+          <span style={{ fontFamily: F.body, fontSize: 10, fontStyle: "italic", color: "rgba(44,36,22,0.28)", textAlign: "center", padding: "0 12px" }}>
             {label}
           </span>
         </div>
@@ -666,47 +913,49 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
               })}
             </ul>
 
-            {/* Preview cards */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 28, marginBottom: 26, alignItems: "center" }}>
-              {tier === "passage" ? (
-                <>
-                  <PassageSample
-                    label="Sample Travel Diary"
-                    intro="Your trip becomes a keepsake. Every day documented — your photos, your journal, your moments — designed into a personal travel diary you can share or print. Here's what yours could look like."
-                  >
-                    <PassageTravelDiarySection />
-                  </PassageSample>
-                  <PassageSample label="Sample Booking Confirmation"><SampleBookingConfirmation /></PassageSample>
-                  <PassageSample label="Sample Wardrobe Integration"><SampleWardrobeIntegration /></PassageSample>
-                </>
-              ) : tier === "trunk" ? (
-                <>
-                  <PassageSample label="Sample wardrobe delivery">
-                    <TrunkEditorialCard
-                      eyebrow="The Trunk · Delivery"
-                      title="Your Trunk arrives."
-                      imageUrl="/images/trunk-wardrobe-delivery.jpg"
-                      imageAlt="FDV Concierge trunk packed with wardrobe and accessories"
-                      caption="Everything arrives before you leave — beautifully packaged, ready to wear."
-                      refLine="Delivered to your door · Day −2"
-                    />
-                  </PassageSample>
-                  <PassageSample label="Sample pre-trip gift">
-                    <TrunkEditorialCard
-                      eyebrow="The Trunk · Pre-Trip"
-                      title="A small ritual, before you go."
-                      imageUrl="/images/trunk-pretrip-gift.jpg"
-                      imageAlt="FDV pre-trip gift box with passport holder, itinerary card, and perfume"
-                      caption="A personal gift before your journey begins — because the trip starts before you leave."
-                      refLine="Hand-packed · Day −1"
-                    />
-                  </PassageSample>
-                </>
-              ) : (
-                cfg.previews.map((p, i) => (
-                  <PreviewCard key={i} src={p.src} label={p.label} />
-                ))
-              )}
+            {/* Phone preview — your trip in your pocket */}
+            <div style={{ marginBottom: 32 }}>
+              <PhoneFrame caption={cfg.phoneCaption}>
+                {tier === "passage" ? (
+                  <>
+                    <PassageSample
+                      label="Sample Travel Diary"
+                      intro="Your trip becomes a keepsake. Every day documented — your photos, your journal, your moments — designed into a personal travel diary you can share or print. Here's what yours could look like."
+                    >
+                      <PassageTravelDiarySection />
+                    </PassageSample>
+                    <PassageSample label="Sample Booking Confirmation"><SampleBookingConfirmation /></PassageSample>
+                    <PassageSample label="Sample Wardrobe Integration"><SampleWardrobeIntegration /></PassageSample>
+                  </>
+                ) : tier === "trunk" ? (
+                  <>
+                    <PassageSample label="Sample wardrobe delivery">
+                      <TrunkEditorialCard
+                        eyebrow="The Trunk · Delivery"
+                        title="Your Trunk arrives."
+                        imageUrl="/images/trunk-wardrobe-delivery.jpg"
+                        imageAlt="FDV Concierge trunk packed with wardrobe and accessories"
+                        caption="Everything arrives before you leave — beautifully packaged, ready to wear."
+                        refLine="Delivered to your door · Day −2"
+                      />
+                    </PassageSample>
+                    <PassageSample label="Sample pre-trip gift">
+                      <TrunkEditorialCard
+                        eyebrow="The Trunk · Pre-Trip"
+                        title="A small ritual, before you go."
+                        imageUrl="/images/trunk-pretrip-gift.jpg"
+                        imageAlt="FDV pre-trip gift box with passport holder, itinerary card, and perfume"
+                        caption="A personal gift before your journey begins — because the trip starts before you leave."
+                        refLine="Hand-packed · Day −1"
+                      />
+                    </PassageSample>
+                  </>
+                ) : (
+                  cfg.previews.map((p, i) => (
+                    <PreviewCard key={i} src={p.src} label={p.label} />
+                  ))
+                )}
+              </PhoneFrame>
             </div>
 
             {/* Expandable "What happens next?" */}
