@@ -1045,7 +1045,7 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
                 <span
                   style={{
                     fontFamily: F.body,
-                    fontSize: 13,
+                    fontSize: 26,
                     fontStyle: "italic",
                     color: "rgba(44,36,22,0.55)",
                     letterSpacing: "0.01em",
