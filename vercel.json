@@ -5,7 +5,7 @@
   "framework": null,
   "rewrites": [
     {
-      "source": "/api/(.*)",
+      "source": "/api/((?!stripe-webhook$).*)",
       "destination": "/api"
     },
     {
@@ -16,6 +16,9 @@
   "functions": {
     "api/index.ts": {
       "maxDuration": 60
+    },
+    "api/stripe-webhook.ts": {
+      "maxDuration": 30
     }
   }
 }

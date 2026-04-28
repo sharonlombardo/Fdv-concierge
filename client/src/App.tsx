@@ -51,6 +51,7 @@ import { ConciergeNudge } from "@/components/concierge-nudge";
 import { FloatingConcierge } from "@/components/floating-concierge";
 import AdminPilot from "@/pages/admin/pilot";
 import ConciergeChat from "@/pages/concierge-chat";
+import TripSuccess from "@/pages/trip-success";
 import { usePageView } from "@/hooks/use-page-view";
 
 function PageViewTracker() {
@@ -97,6 +98,7 @@ function Router() {
       <Route path="/profile" component={Profile} />
       <Route path="/concierge-chat" component={ConciergeChat} />
       <Route path="/admin/pilot" component={AdminPilot} />
+      <Route path="/trip-success" component={TripSuccess} />
       <Route component={NotFound} />
     </Switch>
   );

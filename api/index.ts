@@ -1709,6 +1709,148 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json(result.rows);
     }
 
+    // POST /api/create-checkout-session — create a Stripe Checkout Session for trip purchase
+    if (path === '/api/create-checkout-session' && method === 'POST') {
+      const stripeKey = process.env.STRIPE_SECRET_KEY;
+      if (!stripeKey) {
+        console.error('STRIPE_SECRET_KEY not set');
+        return res.status(500).json({ error: 'Payments not configured' });
+      }
+
+      const cookieEmail = getUserEmailFromRequest(req);
+      const buyerEmail = cookieEmail || req.body?.userEmail || null;
+      if (!buyerEmail) return res.status(401).json({ error: 'Authentication required' });
+
+      const { tier, destination, imageUrl } = req.body || {};
+      const TIERS: Record<string, { name: string; amount: number; description: string }> = {
+        compass: {
+          name: 'The Compass',
+          amount: 25000,
+          description: 'Personalized itinerary, wardrobe edit, and packing list. One round of changes with your concierge.',
+        },
+        passage: {
+          name: 'The Passage',
+          amount: 75000,
+          description: 'Personalized itinerary, wardrobe edit, packing list, and all bookings handled. Includes travel diary keepsake.',
+        },
+      };
+      const tierConfig = TIERS[tier];
+      if (!tierConfig) return res.status(400).json({ error: 'Invalid tier' });
+      if (!destination) return res.status(400).json({ error: 'Destination is required' });
+
+      const Stripe = (await import('stripe')).default;
+      const stripe = new Stripe(stripeKey);
+
+      // Create a pending save record so the trip shows up in My Trips immediately
+      const itemId = `trip-${destination.toLowerCase()}-${tier}-purchased`;
+      const cardImage = imageUrl || null;
+      let saveId: number | null = null;
+      try {
+        // Upsert: if a save already exists for this user/itemId, reuse it
+        const existing = await pool.query(
+          'SELECT id FROM saves WHERE item_id = $1 AND user_email = $2 LIMIT 1',
+          [itemId, buyerEmail]
+        );
+        if (existing.rows.length > 0) {
+          saveId = existing.rows[0].id;
+          await pool.query(
+            `UPDATE saves SET purchase_status = 'pending', metadata = metadata || $1::jsonb WHERE id = $2`,
+            [JSON.stringify({ status: 'pending_payment', tier, tierName: tierConfig.name, price: tierConfig.amount / 100, destination }), saveId]
+          );
+        } else {
+          const inserted = await pool.query(
+            `INSERT INTO saves (item_type, item_id, source_context, story_tag, purchase_status, title, asset_url, user_email, metadata, saved_at)
+             VALUES ('trip', $1, $2, $3, 'pending', $4, $5, $6, $7, $8)
+             RETURNING id`,
+            [
+              itemId,
+              `/guides/${destination.toLowerCase()}`,
+              destination.toLowerCase(),
+              `${destination} — ${tierConfig.name.toUpperCase()}`,
+              cardImage,
+              buyerEmail,
+              JSON.stringify({
+                title: `${destination} — ${tierConfig.name.toUpperCase()}`,
+                imageUrl: cardImage,
+                bucket: 'my-trips',
+                tier,
+                tierName: tierConfig.name.toUpperCase(),
+                price: tierConfig.amount / 100,
+                status: 'pending_payment',
+                purchaseStatus: 'pending',
+                destination,
+              }),
+              Date.now(),
+            ]
+          );
+          saveId = inserted.rows[0].id;
+        }
+      } catch (e: any) {
+        console.error('Pre-checkout save creation failed:', e?.message);
+        // Continue — webhook will reconcile via metadata if needed
+      }
+
+      const origin = `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers.host}`;
+      try {
+        const session = await stripe.checkout.sessions.create({
+          mode: 'payment',
+          payment_method_types: ['card'],
+          customer_email: buyerEmail,
+          client_reference_id: buyerEmail,
+          line_items: [
+            {
+              price_data: {
+                currency: 'usd',
+                product_data: {
+                  name: `${destination} — ${tierConfig.name}`,
+                  description: tierConfig.description,
+                  ...(cardImage ? { images: [cardImage] } : {}),
+                },
+                unit_amount: tierConfig.amount,
+              },
+              quantity: 1,
+            },
+          ],
+          metadata: {
+            tier,
+            destination,
+            userEmail: buyerEmail,
+            saveId: saveId != null ? String(saveId) : '',
+            itemId,
+          },
+          success_url: `${origin}/trip-success?session_id={CHECKOUT_SESSION_ID}&destination=${encodeURIComponent(destination)}&tier=${tier}`,
+          cancel_url: `${origin}/guides/${destination.toLowerCase()}?checkout=cancelled`,
+        });
+        return res.status(200).json({ url: session.url, sessionId: session.id });
+      } catch (e: any) {
+        console.error('Stripe session creation failed:', e?.message);
+        return res.status(500).json({ error: 'Could not start checkout' });
+      }
+    }
+
+    // GET /api/checkout-session/:sessionId — verify checkout session for success page
+    if (path.startsWith('/api/checkout-session/') && method === 'GET') {
+      const stripeKey = process.env.STRIPE_SECRET_KEY;
+      if (!stripeKey) return res.status(500).json({ error: 'Payments not configured' });
+      const sessionId = path.replace('/api/checkout-session/', '');
+      if (!sessionId) return res.status(400).json({ error: 'Session id required' });
+
+      const Stripe = (await import('stripe')).default;
+      const stripe = new Stripe(stripeKey);
+      try {
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        return res.status(200).json({
+          paid: session.payment_status === 'paid',
+          email: session.customer_email,
+          tier: session.metadata?.tier || null,
+          destination: session.metadata?.destination || null,
+        });
+      } catch (e: any) {
+        console.error('Session retrieve failed:', e?.message);
+        return res.status(404).json({ error: 'Session not found' });
+      }
+    }
+
     // GET /api/link-health — client-side check for broken links (cached per-request)
     if (path === '/api/link-health' && method === 'GET') {
       const broken = await pool.query(

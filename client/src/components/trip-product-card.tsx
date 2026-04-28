@@ -8,7 +8,7 @@ import { getSessionId } from "@/lib/session";
 import "@/styles/diary-keepsake.css";
 
 export type Tier = "compass" | "passage" | "trunk";
-type Stage = "detail" | "checkout" | "processing" | "success";
+type Stage = "detail" | "checkout" | "processing";
 
 const F = {
   serif: "'Cormorant Garamond', Georgia, serif" as const,
@@ -27,7 +27,6 @@ interface TierConfig {
   confirmCta: string | null;
   whatHappensNext: string;
   refundPolicy: string;
-  successTitle: string;
   conciergeMsg: (destination: string) => string;
   previews: Array<{ src: string; label: string }>;
   phoneCaption: string;
@@ -62,7 +61,6 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
       "The moment you confirm, your concierge opens and the conversation begins. Your personalized itinerary, wardrobe edit, and packing list will be delivered to your Suitcase within 1–2 hours.",
     refundPolicy:
       "Non-refundable once your concierge has started. Full refund within 30 minutes of purchase if curating hasn't begun.",
-    successTitle: "Your Compass\nis underway.",
     conciergeMsg: (destination) =>
       `Your Compass is underway. I just need a few details to make it perfect — when are you thinking of going to ${destination}? How long do you have? Who's joining you? And what matters most — the food, the quiet, the art, the shopping? Once I have this, I'll have your itinerary, wardrobe, and packing list ready within 1–2 hours.`,
     previews: [
@@ -93,7 +91,6 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
       "Your concierge begins immediately — learning about your trip, your style, your preferences. Within 1-2 days, your complete itinerary, all bookings, wardrobe curation, and packing list will be delivered to your Suitcase. Your travel diary begins the moment you arrive.",
     refundPolicy:
       "24-hour cancellation window after purchase. Once bookings are confirmed, the service is non-refundable.",
-    successTitle: "Your Passage\nis underway.",
     conciergeMsg: (destination) =>
       `Your Passage is confirmed — the full experience. I'll handle everything from your itinerary to every booking. Let's start: when are you going to ${destination}? How many nights? Who's joining you? What matters most to you on this trip? I'll have everything in your Suitcase within 24 hours.`,
     previews: [
@@ -122,7 +119,6 @@ const TIER_CONFIG: Record<Tier, TierConfig> = {
       "Your concierge will guide you through the full experience — building your itinerary, handling every booking, curating your wardrobe piece by piece. Once your selections are made, everything is sourced, coordinated, and shipped to arrive together. A small gift arrives before your departure — a ritual to mark the beginning.",
     refundPolicy:
       "Pricing and cancellation terms are confirmed with your concierge before any commitment.",
-    successTitle: "",
     conciergeMsg: (destination) =>
       `I'd love to walk you through The Trunk for ${destination}. This is the full experience — I'll source and ship your entire curated wardrobe, handle every booking, and make sure everything arrives beautifully before you leave. To put together an accurate quote: when are you thinking of going? How many nights? Who's joining you?`,
     previews: [
@@ -878,20 +874,39 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
 
   async function handleConfirmPay() {
     setStage("processing");
-    await new Promise(r => setTimeout(r, 1800));
-    try { await saveTrip("purchased"); } catch {}
-    setStage("success");
-
-    setTimeout(() => {
-      window.dispatchEvent(new CustomEvent("open-concierge", { detail: { message: cfg.conciergeMsg(destination) } }));
-      onClose();
-    }, 600);
-
-    setTimeout(() => {
-      const readyMsg = `Your ${destination} ${cfg.name} is ready. Open your Suitcase to see everything.`;
-      try { sessionStorage.setItem("fdv_trip_ready_message", readyMsg); } catch {}
-      window.dispatchEvent(new CustomEvent("trip-ready", { detail: { destination, message: readyMsg } }));
-    }, 30000);
+    try {
+      const r = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          tier,
+          destination,
+          imageUrl: images.card,
+          userEmail: effectiveEmail,
+        }),
+      });
+      if (!r.ok) {
+        const data = await r.json().catch(() => ({}));
+        throw new Error(data.error || `Checkout failed (${r.status})`);
+      }
+      const { url } = await r.json();
+      if (!url) throw new Error("No checkout URL returned");
+      // Stash the conversation prompt so /trip-success can re-open the concierge after redirect
+      try {
+        sessionStorage.setItem("fdv_pending_concierge_msg", cfg.conciergeMsg(destination));
+        sessionStorage.setItem("fdv_pending_destination", destination);
+        sessionStorage.setItem("fdv_pending_tier_name", cfg.name);
+      } catch {}
+      window.location.href = url;
+    } catch (e: any) {
+      setStage("checkout");
+      toast({
+        title: "Couldn't start checkout",
+        description: e?.message || "Try again in a moment.",
+        duration: 3000,
+      });
+    }
   }
 
   // ─── Detail ───────────────────────────────────────────────────────────────
@@ -1185,35 +1200,15 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
     );
   }
 
-  // ─── Processing ───────────────────────────────────────────────────────────
+  // ─── Processing (briefly visible while we create the Stripe session) ──────
   if (stage === "processing") {
     return (
       <div style={overlay}>
         <div style={{ ...sheet, padding: "28px 20px 52px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "38vh", textAlign: "center" }}>
           <div style={{ width: 44, height: 44, borderRadius: "50%", border: "1.5px solid rgba(44,36,22,0.08)", borderTop: "1.5px solid #c9a84c", animation: "spin 1s linear infinite", marginBottom: 24 }} />
-          <p style={{ fontFamily: F.serif, fontSize: 24, color: "#2c2416", marginBottom: 6 }}>Processing...</p>
+          <p style={{ fontFamily: F.serif, fontSize: 24, color: "#2c2416", marginBottom: 6 }}>Opening secure checkout…</p>
           <p style={{ fontFamily: F.body, fontSize: 13, fontStyle: "italic", color: "rgba(44,36,22,0.45)" }}>One moment.</p>
           <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        </div>
-      </div>
-    );
-  }
-
-  // ─── Success (brief flash — concierge opens on top) ───────────────────────
-  if (stage === "success") {
-    return (
-      <div style={overlay}>
-        <div style={{ ...sheet, padding: "52px 20px 52px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "32vh", textAlign: "center" }}>
-          <span style={{ fontSize: 30, color: "#c9a84c", marginBottom: 16 }}>✦</span>
-          <p style={{ fontFamily: F.ui, fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#c9a84c", marginBottom: 10 }}>
-            Confirmed
-          </p>
-          <p style={{ fontFamily: F.serif, fontSize: 28, color: "#2c2416", lineHeight: 1.2, marginBottom: 8, whiteSpace: "pre-line" }}>
-            {cfg.successTitle}
-          </p>
-          <p style={{ fontFamily: F.body, fontSize: 13, fontStyle: "italic", color: "rgba(44,36,22,0.42)" }}>
-            Your concierge is opening now…
-          </p>
         </div>
       </div>
     );
