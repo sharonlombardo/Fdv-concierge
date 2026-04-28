@@ -873,24 +873,31 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
   }
 
   async function handleConfirmPay() {
+    console.log("[ConfirmPay] entry", { tier, destination, cardImage, effectiveEmail, hasCfg: !!cfg, hasToast: typeof toast });
     setStage("processing");
     try {
+      const body = {
+        tier,
+        destination,
+        imageUrl: cardImage,
+        userEmail: effectiveEmail,
+      };
+      console.log("[ConfirmPay] about to fetch", body);
       const r = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
-          tier,
-          destination,
-          imageUrl: cardImage,
-          userEmail: effectiveEmail,
-        }),
+        body: JSON.stringify(body),
       });
+      console.log("[ConfirmPay] fetch returned", { status: r.status, ok: r.ok, type: r.type });
       if (!r.ok) {
         const data = await r.json().catch(() => ({}));
+        console.error("[ConfirmPay] non-ok response body", data);
         throw new Error(data.error || `Checkout failed (${r.status})`);
       }
-      const { url } = await r.json();
+      const json = await r.json();
+      console.log("[ConfirmPay] parsed json", json);
+      const { url } = json;
       if (!url) throw new Error("No checkout URL returned");
       // Stash the conversation prompt so /trip-success can re-open the concierge after redirect
       try {
@@ -898,13 +905,16 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
         sessionStorage.setItem("fdv_pending_destination", destination);
         sessionStorage.setItem("fdv_pending_tier_name", cfg.name);
       } catch {}
+      console.log("[ConfirmPay] redirecting to", url);
       window.location.href = url;
     } catch (e: any) {
+      console.error("[ConfirmPay] caught error:", e);
+      console.error("[ConfirmPay] error details:", { name: e?.name, message: e?.message, stack: e?.stack });
       setStage("checkout");
       toast({
         title: "Couldn't start checkout",
-        description: e?.message || "Try again in a moment.",
-        duration: 3000,
+        description: `${e?.name || "Error"}: ${e?.message || "unknown"} — open the browser console for details.`,
+        duration: 6000,
       });
     }
   }
