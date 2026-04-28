@@ -882,7 +882,7 @@ export function TripProductCard({ destination, tier = "compass", userEmail, onCl
         body: JSON.stringify({
           tier,
           destination,
-          imageUrl: images.card,
+          imageUrl: cardImage,
           userEmail: effectiveEmail,
         }),
       });
